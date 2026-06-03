@@ -77,14 +77,18 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Lovable App" },
-      { name: "description", content: "Lovable Generated Project" },
+      { title: "SIGER PRO" },
+      { name: "description", content: "Sistema Inteligente de Gerenciamento de Resíduos" },
       { name: "author", content: "Lovable" },
-      { property: "og:title", content: "Lovable App" },
-      { property: "og:description", content: "Lovable Generated Project" },
+      { property: "og:title", content: "SIGER PRO" },
+      { property: "og:description", content: "Sistema Inteligente de Gerenciamento de Resíduos" },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
       { name: "twitter:site", content: "@Lovable" },
+      { name: "twitter:title", content: "SIGER PRO" },
+      { name: "twitter:description", content: "Sistema Inteligente de Gerenciamento de Resíduos" },
+      { property: "og:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/74271702-ce9f-4ac0-81ba-8a38e955d054/id-preview-d6d66797--51cdb10c-bbd1-4ce2-b964-56c2bdda6891.lovable.app-1780519787984.png" },
+      { name: "twitter:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/74271702-ce9f-4ac0-81ba-8a38e955d054/id-preview-d6d66797--51cdb10c-bbd1-4ce2-b964-56c2bdda6891.lovable.app-1780519787984.png" },
     ],
     links: [
       {
