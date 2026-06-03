@@ -271,7 +271,7 @@ function PropostasPage() {
     );
   };
 
-  const downloadPDF = async (p: Proposta) => {
+  const buildPDF = async (p: Proposta) => {
     const { jsPDF } = await import("jspdf");
     const autoTable = (await import("jspdf-autotable")).default;
     const { data: itens } = await supabase
@@ -359,8 +359,77 @@ function PropostasPage() {
     doc.setTextColor(120);
     doc.text("Biologus Ambiental - comercial@biologusambiental.com.br", 14, 285);
 
+    return doc;
+  };
+
+  const downloadPDF = async (p: Proposta) => {
+    const doc = await buildPDF(p);
     doc.save(`Proposta-${p.numero}.pdf`);
   };
+
+  const [emailDialog, setEmailDialog] = useState<{ open: boolean; proposta: Proposta | null; email: string; mensagem: string; sending: boolean }>({
+    open: false, proposta: null, email: "", mensagem: "", sending: false,
+  });
+
+  const openEmailDialog = (p: Proposta) => {
+    setEmailDialog({ open: true, proposta: p, email: p.clientes?.email ?? "", mensagem: "", sending: false });
+  };
+
+  const sendByEmail = async () => {
+    const p = emailDialog.proposta;
+    if (!p) return;
+    if (!emailDialog.email.trim()) return toast.error("Informe o e-mail do destinatário");
+    setEmailDialog((s) => ({ ...s, sending: true }));
+    try {
+      const doc = await buildPDF(p);
+      const blob = doc.output("blob");
+      const path = `${user.id}/${p.id}/Proposta-${p.numero}.pdf`;
+      const { error: upErr } = await supabase.storage
+        .from("propostas")
+        .upload(path, blob, { contentType: "application/pdf", upsert: true });
+      if (upErr) throw upErr;
+      const { data: signed, error: sErr } = await supabase.storage
+        .from("propostas")
+        .createSignedUrl(path, 60 * 60 * 24 * 30); // 30 dias
+      if (sErr || !signed) throw sErr ?? new Error("Falha ao gerar link");
+
+      const { data: sess } = await supabase.auth.getSession();
+      const token = sess.session?.access_token;
+      if (!token) throw new Error("Sessão expirada");
+
+      const res = await fetch("/lovable/email/transactional/send", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
+        body: JSON.stringify({
+          templateName: "proposta-comercial",
+          recipientEmail: emailDialog.email.trim(),
+          idempotencyKey: `proposta-${p.id}-${Date.now()}`,
+          templateData: {
+            clienteNome: p.clientes?.razao_social ?? "Cliente",
+            numero: p.numero,
+            valorTotal: brl(Number(p.valor_total)),
+            validade: p.validade ? new Date(p.validade).toLocaleDateString("pt-BR") : "",
+            pdfUrl: signed.signedUrl,
+            mensagemPersonalizada: emailDialog.mensagem || undefined,
+          },
+        }),
+      });
+      if (!res.ok) {
+        const t = await res.text();
+        throw new Error(`Falha ao enviar (${res.status}): ${t}`);
+      }
+
+      await supabase.from("propostas").update({ status: "enviada", enviada_em: new Date().toISOString() } as never).eq("id", p.id);
+      qc.invalidateQueries({ queryKey: ["propostas"] });
+      toast.success(`Proposta enviada para ${emailDialog.email}`);
+      setEmailDialog({ open: false, proposta: null, email: "", mensagem: "", sending: false });
+    } catch (e) {
+      const msg = e instanceof Error ? e.message : "Erro ao enviar";
+      toast.error(msg);
+      setEmailDialog((s) => ({ ...s, sending: false }));
+    }
+  };
+
 
   const shareWhatsApp = (p: Proposta) => {
     const tel = (p.clientes?.whatsapp ?? p.clientes?.telefone ?? "").replace(/\D/g, "");
