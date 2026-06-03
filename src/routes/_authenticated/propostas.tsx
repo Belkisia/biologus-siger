@@ -11,7 +11,7 @@ import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogFooter } from "@/components/ui/dialog";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Plus, FileText, Loader2, Trash2, Download, Send, FileSignature, Copy } from "lucide-react";
+import { Plus, FileText, Loader2, Trash2, Download, Send, FileSignature, Copy, Mail } from "lucide-react";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/_authenticated/propostas")({
@@ -271,7 +271,7 @@ function PropostasPage() {
     );
   };
 
-  const downloadPDF = async (p: Proposta) => {
+  const buildPDF = async (p: Proposta) => {
     const { jsPDF } = await import("jspdf");
     const autoTable = (await import("jspdf-autotable")).default;
     const { data: itens } = await supabase
@@ -359,8 +359,77 @@ function PropostasPage() {
     doc.setTextColor(120);
     doc.text("Biologus Ambiental - comercial@biologusambiental.com.br", 14, 285);
 
+    return doc;
+  };
+
+  const downloadPDF = async (p: Proposta) => {
+    const doc = await buildPDF(p);
     doc.save(`Proposta-${p.numero}.pdf`);
   };
+
+  const [emailDialog, setEmailDialog] = useState<{ open: boolean; proposta: Proposta | null; email: string; mensagem: string; sending: boolean }>({
+    open: false, proposta: null, email: "", mensagem: "", sending: false,
+  });
+
+  const openEmailDialog = (p: Proposta) => {
+    setEmailDialog({ open: true, proposta: p, email: p.clientes?.email ?? "", mensagem: "", sending: false });
+  };
+
+  const sendByEmail = async () => {
+    const p = emailDialog.proposta;
+    if (!p) return;
+    if (!emailDialog.email.trim()) return toast.error("Informe o e-mail do destinatário");
+    setEmailDialog((s) => ({ ...s, sending: true }));
+    try {
+      const doc = await buildPDF(p);
+      const blob = doc.output("blob");
+      const path = `${user.id}/${p.id}/Proposta-${p.numero}.pdf`;
+      const { error: upErr } = await supabase.storage
+        .from("propostas")
+        .upload(path, blob, { contentType: "application/pdf", upsert: true });
+      if (upErr) throw upErr;
+      const { data: signed, error: sErr } = await supabase.storage
+        .from("propostas")
+        .createSignedUrl(path, 60 * 60 * 24 * 30); // 30 dias
+      if (sErr || !signed) throw sErr ?? new Error("Falha ao gerar link");
+
+      const { data: sess } = await supabase.auth.getSession();
+      const token = sess.session?.access_token;
+      if (!token) throw new Error("Sessão expirada");
+
+      const res = await fetch("/lovable/email/transactional/send", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
+        body: JSON.stringify({
+          templateName: "proposta-comercial",
+          recipientEmail: emailDialog.email.trim(),
+          idempotencyKey: `proposta-${p.id}-${Date.now()}`,
+          templateData: {
+            clienteNome: p.clientes?.razao_social ?? "Cliente",
+            numero: p.numero,
+            valorTotal: brl(Number(p.valor_total)),
+            validade: p.validade ? new Date(p.validade).toLocaleDateString("pt-BR") : "",
+            pdfUrl: signed.signedUrl,
+            mensagemPersonalizada: emailDialog.mensagem || undefined,
+          },
+        }),
+      });
+      if (!res.ok) {
+        const t = await res.text();
+        throw new Error(`Falha ao enviar (${res.status}): ${t}`);
+      }
+
+      await supabase.from("propostas").update({ status: "enviada", enviada_em: new Date().toISOString() } as never).eq("id", p.id);
+      qc.invalidateQueries({ queryKey: ["propostas"] });
+      toast.success(`Proposta enviada para ${emailDialog.email}`);
+      setEmailDialog({ open: false, proposta: null, email: "", mensagem: "", sending: false });
+    } catch (e) {
+      const msg = e instanceof Error ? e.message : "Erro ao enviar";
+      toast.error(msg);
+      setEmailDialog((s) => ({ ...s, sending: false }));
+    }
+  };
+
 
   const shareWhatsApp = (p: Proposta) => {
     const tel = (p.clientes?.whatsapp ?? p.clientes?.telefone ?? "").replace(/\D/g, "");
@@ -566,6 +635,9 @@ function PropostasPage() {
                         <Button variant="ghost" size="icon" title="Baixar PDF" onClick={() => downloadPDF(p)}>
                           <Download className="h-4 w-4" />
                         </Button>
+                        <Button variant="ghost" size="icon" title="Enviar por e-mail" onClick={() => openEmailDialog(p)}>
+                          <Mail className="h-4 w-4" />
+                        </Button>
                         <Button variant="ghost" size="icon" title="Enviar por WhatsApp" onClick={() => shareWhatsApp(p)}>
                           <Send className="h-4 w-4" />
                         </Button>
@@ -593,6 +665,32 @@ function PropostasPage() {
           </Table>
         )}
       </Card>
+
+      <Dialog open={emailDialog.open} onOpenChange={(o) => !emailDialog.sending && setEmailDialog((s) => ({ ...s, open: o }))}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Enviar proposta {emailDialog.proposta?.numero} por e-mail</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4">
+            <div className="space-y-2">
+              <Label>E-mail do destinatário</Label>
+              <Input type="email" value={emailDialog.email} onChange={(e) => setEmailDialog((s) => ({ ...s, email: e.target.value }))} placeholder="cliente@empresa.com.br" />
+            </div>
+            <div className="space-y-2">
+              <Label>Mensagem personalizada (opcional)</Label>
+              <Textarea rows={4} value={emailDialog.mensagem} onChange={(e) => setEmailDialog((s) => ({ ...s, mensagem: e.target.value }))} placeholder="Substitui o texto padrão do e-mail." />
+            </div>
+            <p className="text-xs text-muted-foreground">O PDF da proposta será gerado e enviado como link de download (válido por 30 dias). Status mudará para <strong>Enviada</strong>.</p>
+          </div>
+          <DialogFooter>
+            <Button variant="ghost" onClick={() => setEmailDialog((s) => ({ ...s, open: false }))} disabled={emailDialog.sending}>Cancelar</Button>
+            <Button onClick={sendByEmail} disabled={emailDialog.sending}>
+              {emailDialog.sending ? <Loader2 className="h-4 w-4 mr-2 animate-spin" /> : <Mail className="h-4 w-4 mr-2" />}
+              Enviar
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
