@@ -1,6 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useServerFn } from "@tanstack/react-start";
 import { supabase } from "@/integrations/supabase/client";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -10,8 +11,9 @@ import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogFooter } from "@/components/ui/dialog";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Plus, Search, Building2, Trash2, Loader2 } from "lucide-react";
+import { Plus, Search, Building2, Trash2, Loader2, UserPlus, UserMinus, CheckCircle2 } from "lucide-react";
 import { toast } from "sonner";
+import { vincularClienteUsuario, desvincularClienteUsuario } from "@/lib/clientes.functions";
 
 export const Route = createFileRoute("/_authenticated/clientes")({
   component: ClientesPage,
@@ -27,6 +29,7 @@ type Cliente = {
   cidade: string | null;
   estado: string | null;
   status: string;
+  user_id: string | null;
   created_at: string;
 };
 
@@ -34,7 +37,12 @@ function ClientesPage() {
   const qc = useQueryClient();
   const [search, setSearch] = useState("");
   const [open, setOpen] = useState(false);
+  const [linkTarget, setLinkTarget] = useState<Cliente | null>(null);
+  const [linkEmail, setLinkEmail] = useState("");
   const { user } = Route.useRouteContext();
+
+  const vincular = useServerFn(vincularClienteUsuario);
+  const desvincular = useServerFn(desvincularClienteUsuario);
 
   const { data: clientes = [], isLoading } = useQuery({
     queryKey: ["clientes"],
@@ -68,6 +76,31 @@ function ClientesPage() {
       qc.invalidateQueries({ queryKey: ["clientes"] });
       toast.success("Cliente removido");
     },
+  });
+
+  const linkMutation = useMutation({
+    mutationFn: async () => {
+      if (!linkTarget) return;
+      await vincular({ data: { cliente_id: linkTarget.id, email: linkEmail.trim() } });
+    },
+    onSuccess: () => {
+      toast.success("Usuário vinculado ao cliente");
+      qc.invalidateQueries({ queryKey: ["clientes"] });
+      setLinkTarget(null);
+      setLinkEmail("");
+    },
+    onError: (e: Error) => toast.error(e.message),
+  });
+
+  const unlinkMutation = useMutation({
+    mutationFn: async (cliente_id: string) => {
+      await desvincular({ data: { cliente_id } });
+    },
+    onSuccess: () => {
+      toast.success("Vínculo removido");
+      qc.invalidateQueries({ queryKey: ["clientes"] });
+    },
+    onError: (e: Error) => toast.error(e.message),
   });
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
@@ -153,8 +186,9 @@ function ClientesPage() {
                 <TableHead>CNPJ</TableHead>
                 <TableHead>Cidade/UF</TableHead>
                 <TableHead>Contato</TableHead>
+                <TableHead>Portal</TableHead>
                 <TableHead>Status</TableHead>
-                <TableHead className="w-12"></TableHead>
+                <TableHead className="w-24"></TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -167,11 +201,31 @@ function ClientesPage() {
                   <TableCell className="font-mono text-sm">{c.cnpj}</TableCell>
                   <TableCell className="text-sm">{[c.cidade, c.estado].filter(Boolean).join(" / ") || "—"}</TableCell>
                   <TableCell className="text-sm">{c.email || c.telefone || "—"}</TableCell>
+                  <TableCell>
+                    {c.user_id ? (
+                      <Badge variant="default" className="gap-1"><CheckCircle2 className="h-3 w-3" />Vinculado</Badge>
+                    ) : (
+                      <Badge variant="secondary">Sem acesso</Badge>
+                    )}
+                  </TableCell>
                   <TableCell><Badge variant={c.status === "ativo" ? "default" : "secondary"}>{c.status}</Badge></TableCell>
                   <TableCell>
-                    <Button variant="ghost" size="icon" onClick={() => { if (confirm("Remover este cliente?")) deleteMutation.mutate(c.id); }}>
-                      <Trash2 className="h-4 w-4 text-destructive" />
-                    </Button>
+                    <div className="flex items-center gap-1">
+                      {c.user_id ? (
+                        <Button variant="ghost" size="icon" title="Desvincular usuário"
+                          onClick={() => { if (confirm("Remover acesso do portal para este cliente?")) unlinkMutation.mutate(c.id); }}>
+                          <UserMinus className="h-4 w-4" />
+                        </Button>
+                      ) : (
+                        <Button variant="ghost" size="icon" title="Vincular usuário"
+                          onClick={() => { setLinkTarget(c); setLinkEmail(c.email ?? ""); }}>
+                          <UserPlus className="h-4 w-4" />
+                        </Button>
+                      )}
+                      <Button variant="ghost" size="icon" onClick={() => { if (confirm("Remover este cliente?")) deleteMutation.mutate(c.id); }}>
+                        <Trash2 className="h-4 w-4 text-destructive" />
+                      </Button>
+                    </div>
                   </TableCell>
                 </TableRow>
               ))}
@@ -179,6 +233,40 @@ function ClientesPage() {
           </Table>
         )}
       </Card>
+
+      <Dialog open={!!linkTarget} onOpenChange={(v) => !v && setLinkTarget(null)}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Vincular usuário ao cliente</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-3">
+            <p className="text-sm text-muted-foreground">
+              {linkTarget?.razao_social}
+            </p>
+            <p className="text-xs text-muted-foreground">
+              O usuário precisa estar previamente cadastrado no sistema (tela de Usuários).
+              Ao vincular, ele poderá acessar o Portal do Cliente com os dados desta empresa.
+            </p>
+            <div className="space-y-2">
+              <Label htmlFor="link-email">E-mail do usuário</Label>
+              <Input
+                id="link-email"
+                type="email"
+                value={linkEmail}
+                onChange={(e) => setLinkEmail(e.target.value)}
+                placeholder="cliente@empresa.com"
+              />
+            </div>
+          </div>
+          <DialogFooter>
+            <Button variant="ghost" onClick={() => setLinkTarget(null)}>Cancelar</Button>
+            <Button onClick={() => linkMutation.mutate()} disabled={linkMutation.isPending || !linkEmail.trim()}>
+              {linkMutation.isPending && <Loader2 className="h-4 w-4 mr-2 animate-spin" />}
+              Vincular
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
