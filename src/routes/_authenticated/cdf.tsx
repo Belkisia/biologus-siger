@@ -154,9 +154,8 @@ function CDFPage() {
                   <Label htmlFor="quantidade_destinada">Quantidade destinada (kg)</Label>
                   <Input id="quantidade_destinada" name="quantidade_destinada" type="number" step="0.001" />
                 </div>
-                <div className="space-y-2">
-                  <Label htmlFor="url_documento">URL do documento (PDF)</Label>
-                  <Input id="url_documento" name="url_documento" type="url" placeholder="https://..." />
+                <div className="space-y-2 md:col-span-2">
+                  <DocumentUpload folder="cdfs" value={docPath} onChange={setDocPath} label="Documento (PDF)" />
                 </div>
                 <div className="space-y-2 md:col-span-2">
                   <Label htmlFor="observacoes">Observações</Label>
