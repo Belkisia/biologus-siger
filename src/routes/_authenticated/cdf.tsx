@@ -72,6 +72,7 @@ function CDFPage() {
       qc.invalidateQueries({ queryKey: ["cdfs"] });
       qc.invalidateQueries({ queryKey: ["mtrs"] });
       toast.success("CDF emitido");
+      setDocPath(null);
       setOpen(false);
     },
     onError: (e: Error) => toast.error(e.message),
