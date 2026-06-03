@@ -14,16 +14,231 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      clientes: {
+        Row: {
+          bairro: string | null
+          cep: string | null
+          cidade: string | null
+          cnae: string | null
+          cnpj: string
+          created_at: string
+          email: string | null
+          endereco: string | null
+          estado: string | null
+          id: string
+          inscricao_estadual: string | null
+          inscricao_municipal: string | null
+          latitude: number | null
+          longitude: number | null
+          nome_fantasia: string | null
+          numero: string | null
+          observacoes: string | null
+          owner_id: string
+          porte: string | null
+          razao_social: string
+          responsavel_financeiro: string | null
+          responsavel_operacional: string | null
+          responsavel_tecnico: string | null
+          status: string
+          telefone: string | null
+          updated_at: string
+          whatsapp: string | null
+        }
+        Insert: {
+          bairro?: string | null
+          cep?: string | null
+          cidade?: string | null
+          cnae?: string | null
+          cnpj: string
+          created_at?: string
+          email?: string | null
+          endereco?: string | null
+          estado?: string | null
+          id?: string
+          inscricao_estadual?: string | null
+          inscricao_municipal?: string | null
+          latitude?: number | null
+          longitude?: number | null
+          nome_fantasia?: string | null
+          numero?: string | null
+          observacoes?: string | null
+          owner_id: string
+          porte?: string | null
+          razao_social: string
+          responsavel_financeiro?: string | null
+          responsavel_operacional?: string | null
+          responsavel_tecnico?: string | null
+          status?: string
+          telefone?: string | null
+          updated_at?: string
+          whatsapp?: string | null
+        }
+        Update: {
+          bairro?: string | null
+          cep?: string | null
+          cidade?: string | null
+          cnae?: string | null
+          cnpj?: string
+          created_at?: string
+          email?: string | null
+          endereco?: string | null
+          estado?: string | null
+          id?: string
+          inscricao_estadual?: string | null
+          inscricao_municipal?: string | null
+          latitude?: number | null
+          longitude?: number | null
+          nome_fantasia?: string | null
+          numero?: string | null
+          observacoes?: string | null
+          owner_id?: string
+          porte?: string | null
+          razao_social?: string
+          responsavel_financeiro?: string | null
+          responsavel_operacional?: string | null
+          responsavel_tecnico?: string | null
+          status?: string
+          telefone?: string | null
+          updated_at?: string
+          whatsapp?: string | null
+        }
+        Relationships: []
+      }
+      coletas: {
+        Row: {
+          cliente_id: string
+          created_at: string
+          data_agendada: string
+          grupo_residuo: string | null
+          horario: string | null
+          id: string
+          motorista: string | null
+          observacoes: string | null
+          owner_id: string
+          peso_real: number | null
+          quantidade_prevista: number | null
+          status: string
+          tipo_residuo: string
+          unidade: string | null
+          updated_at: string
+          veiculo: string | null
+        }
+        Insert: {
+          cliente_id: string
+          created_at?: string
+          data_agendada: string
+          grupo_residuo?: string | null
+          horario?: string | null
+          id?: string
+          motorista?: string | null
+          observacoes?: string | null
+          owner_id: string
+          peso_real?: number | null
+          quantidade_prevista?: number | null
+          status?: string
+          tipo_residuo: string
+          unidade?: string | null
+          updated_at?: string
+          veiculo?: string | null
+        }
+        Update: {
+          cliente_id?: string
+          created_at?: string
+          data_agendada?: string
+          grupo_residuo?: string | null
+          horario?: string | null
+          id?: string
+          motorista?: string | null
+          observacoes?: string | null
+          owner_id?: string
+          peso_real?: number | null
+          quantidade_prevista?: number | null
+          status?: string
+          tipo_residuo?: string
+          unidade?: string | null
+          updated_at?: string
+          veiculo?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "coletas_cliente_id_fkey"
+            columns: ["cliente_id"]
+            isOneToOne: false
+            referencedRelation: "clientes"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      profiles: {
+        Row: {
+          avatar_url: string | null
+          created_at: string
+          email: string | null
+          full_name: string | null
+          id: string
+          updated_at: string
+        }
+        Insert: {
+          avatar_url?: string | null
+          created_at?: string
+          email?: string | null
+          full_name?: string | null
+          id: string
+          updated_at?: string
+        }
+        Update: {
+          avatar_url?: string | null
+          created_at?: string
+          email?: string | null
+          full_name?: string | null
+          id?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      user_roles: {
+        Row: {
+          created_at: string
+          id: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          role?: Database["public"]["Enums"]["app_role"]
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      has_role: {
+        Args: {
+          _role: Database["public"]["Enums"]["app_role"]
+          _user_id: string
+        }
+        Returns: boolean
+      }
     }
     Enums: {
-      [_ in never]: never
+      app_role:
+        | "admin"
+        | "diretor"
+        | "financeiro"
+        | "comercial"
+        | "operacional"
+        | "motorista"
+        | "cliente"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -150,6 +365,16 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      app_role: [
+        "admin",
+        "diretor",
+        "financeiro",
+        "comercial",
+        "operacional",
+        "motorista",
+        "cliente",
+      ],
+    },
   },
 } as const
