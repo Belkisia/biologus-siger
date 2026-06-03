@@ -21,12 +21,12 @@ const operacional = [
   { title: "MTR", url: "/mtr", icon: FileText },
   { title: "Certificados (CDF)", url: "/cdf", icon: FileCheck },
   { title: "Financeiro", url: "/financeiro", icon: DollarSign },
+  { title: "Licenças", url: "/licencas", icon: Shield },
   { title: "Relatórios", url: "/relatorios", icon: BarChart3 },
 ];
 
-const futuros = [
-  { title: "Licenças", icon: Shield },
-];
+const futuros: { title: string; icon: typeof Shield }[] = [];
+
 
 export function AppSidebar() {
   const { state } = useSidebar();
