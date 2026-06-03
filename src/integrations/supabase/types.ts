@@ -714,6 +714,125 @@ export type Database = {
         }
         Relationships: []
       }
+      proposta_itens: {
+        Row: {
+          created_at: string
+          descricao: string
+          id: string
+          ordem: number
+          proposta_id: string
+          quantidade: number
+          tipo_residuo: string | null
+          unidade: string
+          valor_total: number
+          valor_unitario: number
+        }
+        Insert: {
+          created_at?: string
+          descricao: string
+          id?: string
+          ordem?: number
+          proposta_id: string
+          quantidade?: number
+          tipo_residuo?: string | null
+          unidade?: string
+          valor_total?: number
+          valor_unitario?: number
+        }
+        Update: {
+          created_at?: string
+          descricao?: string
+          id?: string
+          ordem?: number
+          proposta_id?: string
+          quantidade?: number
+          tipo_residuo?: string | null
+          unidade?: string
+          valor_total?: number
+          valor_unitario?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "proposta_itens_proposta_id_fkey"
+            columns: ["proposta_id"]
+            isOneToOne: false
+            referencedRelation: "propostas"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      propostas: {
+        Row: {
+          cliente_id: string
+          condicoes_pagamento: string | null
+          contrato_id: string | null
+          created_at: string
+          data_emissao: string
+          enviada_em: string | null
+          id: string
+          numero: string
+          observacoes: string | null
+          owner_id: string
+          prazo_coleta: string | null
+          respondida_em: string | null
+          status: string
+          updated_at: string
+          validade: string | null
+          valor_total: number
+        }
+        Insert: {
+          cliente_id: string
+          condicoes_pagamento?: string | null
+          contrato_id?: string | null
+          created_at?: string
+          data_emissao?: string
+          enviada_em?: string | null
+          id?: string
+          numero: string
+          observacoes?: string | null
+          owner_id: string
+          prazo_coleta?: string | null
+          respondida_em?: string | null
+          status?: string
+          updated_at?: string
+          validade?: string | null
+          valor_total?: number
+        }
+        Update: {
+          cliente_id?: string
+          condicoes_pagamento?: string | null
+          contrato_id?: string | null
+          created_at?: string
+          data_emissao?: string
+          enviada_em?: string | null
+          id?: string
+          numero?: string
+          observacoes?: string | null
+          owner_id?: string
+          prazo_coleta?: string | null
+          respondida_em?: string | null
+          status?: string
+          updated_at?: string
+          validade?: string | null
+          valor_total?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "propostas_cliente_id_fkey"
+            columns: ["cliente_id"]
+            isOneToOne: false
+            referencedRelation: "clientes"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "propostas_contrato_id_fkey"
+            columns: ["contrato_id"]
+            isOneToOne: false
+            referencedRelation: "contratos"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       suppressed_emails: {
         Row: {
           created_at: string
