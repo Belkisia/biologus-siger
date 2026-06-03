@@ -47,7 +47,8 @@ function ClientesPage() {
 
   const createMutation = useMutation({
     mutationFn: async (payload: Record<string, unknown>) => {
-      const { error } = await supabase.from("clientes").insert({ ...payload, owner_id: user.id });
+      const row = { ...payload, owner_id: user.id } as never;
+      const { error } = await supabase.from("clientes").insert(row);
       if (error) throw error;
     },
     onSuccess: () => {
