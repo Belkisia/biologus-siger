@@ -219,6 +219,7 @@ function MTRPage() {
                 </div>
                 <div className="space-y-2 md:col-span-2">
                   <DocumentUpload folder="mtrs" value={docPath} onChange={setDocPath} label="Documento (PDF)" />
+                </div>
                 <div className="space-y-2 md:col-span-2">
                   <Label htmlFor="observacoes">Observações</Label>
                   <Textarea id="observacoes" name="observacoes" rows={2} />
