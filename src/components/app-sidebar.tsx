@@ -18,11 +18,11 @@ const operacional = [
   { title: "Clientes", url: "/clientes", icon: Users },
   { title: "Coletas", url: "/coletas", icon: Truck },
   { title: "Contratos", url: "/contratos", icon: FileSignature },
+  { title: "MTR", url: "/mtr", icon: FileText },
+  { title: "Certificados (CDF)", url: "/cdf", icon: FileCheck },
 ];
 
 const futuros = [
-  { title: "MTR", icon: FileText },
-  { title: "Certificados", icon: FileCheck },
   { title: "Financeiro", icon: DollarSign },
   { title: "Relatórios", icon: BarChart3 },
   { title: "Licenças", icon: Shield },
