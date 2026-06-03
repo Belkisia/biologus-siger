@@ -14,6 +14,7 @@ import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AuthenticatedRelatoriosRouteImport } from './routes/_authenticated/relatorios'
 import { Route as AuthenticatedMtrRouteImport } from './routes/_authenticated/mtr'
+import { Route as AuthenticatedLicencasRouteImport } from './routes/_authenticated/licencas'
 import { Route as AuthenticatedFinanceiroRouteImport } from './routes/_authenticated/financeiro'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
 import { Route as AuthenticatedContratosRouteImport } from './routes/_authenticated/contratos'
@@ -43,6 +44,11 @@ const AuthenticatedRelatoriosRoute = AuthenticatedRelatoriosRouteImport.update({
 const AuthenticatedMtrRoute = AuthenticatedMtrRouteImport.update({
   id: '/mtr',
   path: '/mtr',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedLicencasRoute = AuthenticatedLicencasRouteImport.update({
+  id: '/licencas',
+  path: '/licencas',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
 const AuthenticatedFinanceiroRoute = AuthenticatedFinanceiroRouteImport.update({
@@ -85,6 +91,7 @@ export interface FileRoutesByFullPath {
   '/contratos': typeof AuthenticatedContratosRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/financeiro': typeof AuthenticatedFinanceiroRoute
+  '/licencas': typeof AuthenticatedLicencasRoute
   '/mtr': typeof AuthenticatedMtrRoute
   '/relatorios': typeof AuthenticatedRelatoriosRoute
 }
@@ -97,6 +104,7 @@ export interface FileRoutesByTo {
   '/contratos': typeof AuthenticatedContratosRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/financeiro': typeof AuthenticatedFinanceiroRoute
+  '/licencas': typeof AuthenticatedLicencasRoute
   '/mtr': typeof AuthenticatedMtrRoute
   '/relatorios': typeof AuthenticatedRelatoriosRoute
 }
@@ -111,6 +119,7 @@ export interface FileRoutesById {
   '/_authenticated/contratos': typeof AuthenticatedContratosRoute
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
   '/_authenticated/financeiro': typeof AuthenticatedFinanceiroRoute
+  '/_authenticated/licencas': typeof AuthenticatedLicencasRoute
   '/_authenticated/mtr': typeof AuthenticatedMtrRoute
   '/_authenticated/relatorios': typeof AuthenticatedRelatoriosRoute
 }
@@ -125,6 +134,7 @@ export interface FileRouteTypes {
     | '/contratos'
     | '/dashboard'
     | '/financeiro'
+    | '/licencas'
     | '/mtr'
     | '/relatorios'
   fileRoutesByTo: FileRoutesByTo
@@ -137,6 +147,7 @@ export interface FileRouteTypes {
     | '/contratos'
     | '/dashboard'
     | '/financeiro'
+    | '/licencas'
     | '/mtr'
     | '/relatorios'
   id:
@@ -150,6 +161,7 @@ export interface FileRouteTypes {
     | '/_authenticated/contratos'
     | '/_authenticated/dashboard'
     | '/_authenticated/financeiro'
+    | '/_authenticated/licencas'
     | '/_authenticated/mtr'
     | '/_authenticated/relatorios'
   fileRoutesById: FileRoutesById
@@ -195,6 +207,13 @@ declare module '@tanstack/react-router' {
       path: '/mtr'
       fullPath: '/mtr'
       preLoaderRoute: typeof AuthenticatedMtrRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/licencas': {
+      id: '/_authenticated/licencas'
+      path: '/licencas'
+      fullPath: '/licencas'
+      preLoaderRoute: typeof AuthenticatedLicencasRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/financeiro': {
@@ -249,6 +268,7 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedContratosRoute: typeof AuthenticatedContratosRoute
   AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
   AuthenticatedFinanceiroRoute: typeof AuthenticatedFinanceiroRoute
+  AuthenticatedLicencasRoute: typeof AuthenticatedLicencasRoute
   AuthenticatedMtrRoute: typeof AuthenticatedMtrRoute
   AuthenticatedRelatoriosRoute: typeof AuthenticatedRelatoriosRoute
 }
@@ -260,6 +280,7 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedContratosRoute: AuthenticatedContratosRoute,
   AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
   AuthenticatedFinanceiroRoute: AuthenticatedFinanceiroRoute,
+  AuthenticatedLicencasRoute: AuthenticatedLicencasRoute,
   AuthenticatedMtrRoute: AuthenticatedMtrRoute,
   AuthenticatedRelatoriosRoute: AuthenticatedRelatoriosRoute,
 }
@@ -275,3 +296,13 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}
