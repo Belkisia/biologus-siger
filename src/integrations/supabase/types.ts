@@ -331,6 +331,81 @@ export type Database = {
           },
         ]
       }
+      faturas: {
+        Row: {
+          cliente_id: string
+          competencia: string
+          contrato_id: string | null
+          created_at: string
+          data_emissao: string
+          data_pagamento: string | null
+          data_vencimento: string
+          descricao: string | null
+          forma_pagamento: string | null
+          id: string
+          numero: string
+          observacoes: string | null
+          owner_id: string
+          status: string
+          updated_at: string
+          valor: number
+          valor_pago: number | null
+        }
+        Insert: {
+          cliente_id: string
+          competencia: string
+          contrato_id?: string | null
+          created_at?: string
+          data_emissao?: string
+          data_pagamento?: string | null
+          data_vencimento: string
+          descricao?: string | null
+          forma_pagamento?: string | null
+          id?: string
+          numero: string
+          observacoes?: string | null
+          owner_id: string
+          status?: string
+          updated_at?: string
+          valor?: number
+          valor_pago?: number | null
+        }
+        Update: {
+          cliente_id?: string
+          competencia?: string
+          contrato_id?: string | null
+          created_at?: string
+          data_emissao?: string
+          data_pagamento?: string | null
+          data_vencimento?: string
+          descricao?: string | null
+          forma_pagamento?: string | null
+          id?: string
+          numero?: string
+          observacoes?: string | null
+          owner_id?: string
+          status?: string
+          updated_at?: string
+          valor?: number
+          valor_pago?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "faturas_cliente_id_fkey"
+            columns: ["cliente_id"]
+            isOneToOne: false
+            referencedRelation: "clientes"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "faturas_contrato_id_fkey"
+            columns: ["contrato_id"]
+            isOneToOne: false
+            referencedRelation: "contratos"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       mtrs: {
         Row: {
           acondicionamento: string | null
