@@ -11,7 +11,8 @@ import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogFooter } from "@/components/ui/dialog";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Plus, FileText, Loader2, Trash2, ExternalLink } from "lucide-react";
+import { Plus, FileText, Loader2, Trash2 } from "lucide-react";
+import { DocumentUpload, OpenDocumentButton } from "@/components/document-upload";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/_authenticated/mtr")({
@@ -53,6 +54,7 @@ const TECNOLOGIAS = ["Aterro Industrial", "Incineração", "Co-processamento", "
 function MTRPage() {
   const qc = useQueryClient();
   const [open, setOpen] = useState(false);
+  const [docPath, setDocPath] = useState<string | null>(null);
   const { user } = Route.useRouteContext();
 
   const { data: clientes = [] } = useQuery({
@@ -84,6 +86,7 @@ function MTRPage() {
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["mtrs"] });
       toast.success("MTR registrado");
+      setDocPath(null);
       setOpen(false);
     },
     onError: (e: Error) => toast.error(e.message),
@@ -118,6 +121,7 @@ function MTRPage() {
       return toast.error("Preencha cliente, número e descrição do resíduo");
     }
     if (payload.quantidade) payload.quantidade = Number(payload.quantidade);
+    payload.url_documento = docPath;
     createMutation.mutate(payload);
   };
 
@@ -214,8 +218,7 @@ function MTRPage() {
                   </Select>
                 </div>
                 <div className="space-y-2 md:col-span-2">
-                  <Label htmlFor="url_documento">URL do documento (PDF)</Label>
-                  <Input id="url_documento" name="url_documento" type="url" placeholder="https://..." />
+                  <DocumentUpload folder="mtrs" value={docPath} onChange={setDocPath} label="Documento (PDF)" />
                 </div>
                 <div className="space-y-2 md:col-span-2">
                   <Label htmlFor="observacoes">Observações</Label>
@@ -305,11 +308,7 @@ function MTRPage() {
                     </TableCell>
                     <TableCell>
                       <div className="flex items-center gap-1">
-                        {m.url_documento && (
-                          <Button variant="ghost" size="icon" asChild>
-                            <a href={m.url_documento} target="_blank" rel="noreferrer"><ExternalLink className="h-4 w-4" /></a>
-                          </Button>
-                        )}
+                        <OpenDocumentButton path={m.url_documento} />
                         <Button variant="ghost" size="icon" onClick={() => {
                           if (confirm(`Remover MTR ${m.numero}?`)) deleteMutation.mutate(m.id);
                         }}>

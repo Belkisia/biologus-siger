@@ -10,7 +10,8 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogFooter } from "@/components/ui/dialog";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Plus, FileCheck, Loader2, Trash2, ExternalLink } from "lucide-react";
+import { Plus, FileCheck, Loader2, Trash2 } from "lucide-react";
+import { DocumentUpload, OpenDocumentButton } from "@/components/document-upload";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/_authenticated/cdf")({
@@ -35,6 +36,7 @@ const TECNOLOGIAS = ["Aterro Industrial", "Incineração", "Co-processamento", "
 function CDFPage() {
   const qc = useQueryClient();
   const [open, setOpen] = useState(false);
+  const [docPath, setDocPath] = useState<string | null>(null);
   const { user } = Route.useRouteContext();
 
   const { data: mtrs = [] } = useQuery({
@@ -70,6 +72,7 @@ function CDFPage() {
       qc.invalidateQueries({ queryKey: ["cdfs"] });
       qc.invalidateQueries({ queryKey: ["mtrs"] });
       toast.success("CDF emitido");
+      setDocPath(null);
       setOpen(false);
     },
     onError: (e: Error) => toast.error(e.message),
@@ -96,6 +99,7 @@ function CDFPage() {
       return toast.error("Preencha MTR, número e data de destinação");
     }
     if (payload.quantidade_destinada) payload.quantidade_destinada = Number(payload.quantidade_destinada);
+    payload.url_documento = docPath;
     createMutation.mutate(payload);
   };
 
@@ -150,9 +154,8 @@ function CDFPage() {
                   <Label htmlFor="quantidade_destinada">Quantidade destinada (kg)</Label>
                   <Input id="quantidade_destinada" name="quantidade_destinada" type="number" step="0.001" />
                 </div>
-                <div className="space-y-2">
-                  <Label htmlFor="url_documento">URL do documento (PDF)</Label>
-                  <Input id="url_documento" name="url_documento" type="url" placeholder="https://..." />
+                <div className="space-y-2 md:col-span-2">
+                  <DocumentUpload folder="cdfs" value={docPath} onChange={setDocPath} label="Documento (PDF)" />
                 </div>
                 <div className="space-y-2 md:col-span-2">
                   <Label htmlFor="observacoes">Observações</Label>
@@ -209,11 +212,7 @@ function CDFPage() {
                   <TableCell className="text-sm whitespace-nowrap">{c.quantidade_destinada ? `${Number(c.quantidade_destinada)} kg` : "—"}</TableCell>
                   <TableCell>
                     <div className="flex items-center gap-1">
-                      {c.url_documento && (
-                        <Button variant="ghost" size="icon" asChild>
-                          <a href={c.url_documento} target="_blank" rel="noreferrer"><ExternalLink className="h-4 w-4" /></a>
-                        </Button>
-                      )}
+                      <OpenDocumentButton path={c.url_documento} />
                       <Button variant="ghost" size="icon" onClick={() => {
                         if (confirm(`Remover CDF ${c.numero}?`)) deleteMutation.mutate(c.id);
                       }}>

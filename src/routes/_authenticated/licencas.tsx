@@ -12,6 +12,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogFooter } from "@/components/ui/dialog";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Plus, Shield, Loader2, Trash2, AlertTriangle, CheckCircle2, Clock } from "lucide-react";
+import { DocumentUpload, OpenDocumentButton } from "@/components/document-upload";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/_authenticated/licencas")({
@@ -74,6 +75,7 @@ function alertaVencimento(dias: number) {
 function LicencasPage() {
   const qc = useQueryClient();
   const [open, setOpen] = useState(false);
+  const [arquivoPath, setArquivoPath] = useState<string | null>(null);
   const { user } = Route.useRouteContext();
 
   const { data: clientes = [] } = useQuery({
@@ -121,7 +123,7 @@ function LicencasPage() {
         status: (form.get("status") as string) || "ativa",
         escopo: (form.get("escopo") as string) || null,
         condicionantes: (form.get("condicionantes") as string) || null,
-        arquivo_url: (form.get("arquivo_url") as string) || null,
+        arquivo_url: arquivoPath,
         observacoes: (form.get("observacoes") as string) || null,
       };
       const { error } = await supabase.from("licencas").insert(payload);
@@ -130,6 +132,7 @@ function LicencasPage() {
     onSuccess: () => {
       toast.success("Licença cadastrada");
       qc.invalidateQueries({ queryKey: ["licencas"] });
+      setArquivoPath(null);
       setOpen(false);
     },
     onError: (e: Error) => toast.error(e.message),
@@ -224,9 +227,8 @@ function LicencasPage() {
                     </SelectContent>
                   </Select>
                 </div>
-                <div>
-                  <Label>URL do Arquivo</Label>
-                  <Input name="arquivo_url" type="url" placeholder="https://..." />
+                <div className="col-span-2">
+                  <DocumentUpload folder="licencas" value={arquivoPath} onChange={setArquivoPath} label="Arquivo da licença" />
                 </div>
               </div>
               <div>
@@ -315,13 +317,16 @@ function LicencasPage() {
                     </Select>
                   </TableCell>
                   <TableCell>
-                    <Button
-                      size="icon"
-                      variant="ghost"
-                      onClick={() => { if (confirm("Excluir licença?")) deleteMutation.mutate(l.id); }}
-                    >
-                      <Trash2 className="h-4 w-4 text-destructive" />
-                    </Button>
+                    <div className="flex items-center gap-1">
+                      <OpenDocumentButton path={l.arquivo_url} />
+                      <Button
+                        size="icon"
+                        variant="ghost"
+                        onClick={() => { if (confirm("Excluir licença?")) deleteMutation.mutate(l.id); }}
+                      >
+                        <Trash2 className="h-4 w-4 text-destructive" />
+                      </Button>
+                    </div>
                   </TableCell>
                 </TableRow>
               );
