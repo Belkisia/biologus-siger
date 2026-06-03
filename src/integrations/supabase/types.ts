@@ -406,6 +406,68 @@ export type Database = {
           },
         ]
       }
+      licencas: {
+        Row: {
+          arquivo_url: string | null
+          cliente_id: string | null
+          condicionantes: string | null
+          created_at: string
+          data_emissao: string
+          data_validade: string
+          escopo: string | null
+          id: string
+          numero: string
+          observacoes: string | null
+          orgao_emissor: string
+          owner_id: string
+          status: string
+          tipo: string
+          updated_at: string
+        }
+        Insert: {
+          arquivo_url?: string | null
+          cliente_id?: string | null
+          condicionantes?: string | null
+          created_at?: string
+          data_emissao: string
+          data_validade: string
+          escopo?: string | null
+          id?: string
+          numero: string
+          observacoes?: string | null
+          orgao_emissor: string
+          owner_id: string
+          status?: string
+          tipo: string
+          updated_at?: string
+        }
+        Update: {
+          arquivo_url?: string | null
+          cliente_id?: string | null
+          condicionantes?: string | null
+          created_at?: string
+          data_emissao?: string
+          data_validade?: string
+          escopo?: string | null
+          id?: string
+          numero?: string
+          observacoes?: string | null
+          orgao_emissor?: string
+          owner_id?: string
+          status?: string
+          tipo?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "licencas_cliente_id_fkey"
+            columns: ["cliente_id"]
+            isOneToOne: false
+            referencedRelation: "clientes"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       mtrs: {
         Row: {
           acondicionamento: string | null
