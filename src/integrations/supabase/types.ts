@@ -169,6 +169,115 @@ export type Database = {
           },
         ]
       }
+      contrato_itens: {
+        Row: {
+          contrato_id: string
+          created_at: string
+          descricao: string
+          franquia: number | null
+          grupo_residuo: string | null
+          id: string
+          preco_excedente: number | null
+          preco_unitario: number
+          unidade: string | null
+        }
+        Insert: {
+          contrato_id: string
+          created_at?: string
+          descricao: string
+          franquia?: number | null
+          grupo_residuo?: string | null
+          id?: string
+          preco_excedente?: number | null
+          preco_unitario?: number
+          unidade?: string | null
+        }
+        Update: {
+          contrato_id?: string
+          created_at?: string
+          descricao?: string
+          franquia?: number | null
+          grupo_residuo?: string | null
+          id?: string
+          preco_excedente?: number | null
+          preco_unitario?: number
+          unidade?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "contrato_itens_contrato_id_fkey"
+            columns: ["contrato_id"]
+            isOneToOne: false
+            referencedRelation: "contratos"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      contratos: {
+        Row: {
+          cliente_id: string
+          created_at: string
+          data_fim: string | null
+          data_inicio: string
+          dia_vencimento: number | null
+          forma_pagamento: string | null
+          id: string
+          indice_reajuste: string | null
+          numero: string
+          objeto: string | null
+          observacoes: string | null
+          owner_id: string
+          periodicidade_reajuste: string | null
+          status: string
+          updated_at: string
+          valor_mensal: number | null
+        }
+        Insert: {
+          cliente_id: string
+          created_at?: string
+          data_fim?: string | null
+          data_inicio: string
+          dia_vencimento?: number | null
+          forma_pagamento?: string | null
+          id?: string
+          indice_reajuste?: string | null
+          numero: string
+          objeto?: string | null
+          observacoes?: string | null
+          owner_id: string
+          periodicidade_reajuste?: string | null
+          status?: string
+          updated_at?: string
+          valor_mensal?: number | null
+        }
+        Update: {
+          cliente_id?: string
+          created_at?: string
+          data_fim?: string | null
+          data_inicio?: string
+          dia_vencimento?: number | null
+          forma_pagamento?: string | null
+          id?: string
+          indice_reajuste?: string | null
+          numero?: string
+          objeto?: string | null
+          observacoes?: string | null
+          owner_id?: string
+          periodicidade_reajuste?: string | null
+          status?: string
+          updated_at?: string
+          valor_mensal?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "contratos_cliente_id_fkey"
+            columns: ["cliente_id"]
+            isOneToOne: false
+            referencedRelation: "clientes"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       profiles: {
         Row: {
           avatar_url: string | null
