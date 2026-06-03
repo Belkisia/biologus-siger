@@ -218,9 +218,7 @@ function MTRPage() {
                   </Select>
                 </div>
                 <div className="space-y-2 md:col-span-2">
-                  <Label htmlFor="url_documento">URL do documento (PDF)</Label>
-                  <Input id="url_documento" name="url_documento" type="url" placeholder="https://..." />
-                </div>
+                  <DocumentUpload folder="mtrs" value={docPath} onChange={setDocPath} label="Documento (PDF)" />
                 <div className="space-y-2 md:col-span-2">
                   <Label htmlFor="observacoes">Observações</Label>
                   <Textarea id="observacoes" name="observacoes" rows={2} />
