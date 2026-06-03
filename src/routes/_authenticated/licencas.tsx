@@ -12,6 +12,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogFooter } from "@/components/ui/dialog";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Plus, Shield, Loader2, Trash2, AlertTriangle, CheckCircle2, Clock } from "lucide-react";
+import { DocumentUpload, OpenDocumentButton } from "@/components/document-upload";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/_authenticated/licencas")({
