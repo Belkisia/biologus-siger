@@ -54,6 +54,7 @@ const TECNOLOGIAS = ["Aterro Industrial", "Incineração", "Co-processamento", "
 function MTRPage() {
   const qc = useQueryClient();
   const [open, setOpen] = useState(false);
+  const [docPath, setDocPath] = useState<string | null>(null);
   const { user } = Route.useRouteContext();
 
   const { data: clientes = [] } = useQuery({
