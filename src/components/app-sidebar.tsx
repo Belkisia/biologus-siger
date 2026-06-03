@@ -17,10 +17,10 @@ const operacional = [
   { title: "Dashboard", url: "/dashboard", icon: LayoutDashboard },
   { title: "Clientes", url: "/clientes", icon: Users },
   { title: "Coletas", url: "/coletas", icon: Truck },
+  { title: "Contratos", url: "/contratos", icon: FileSignature },
 ];
 
 const futuros = [
-  { title: "Contratos", icon: FileSignature },
   { title: "MTR", icon: FileText },
   { title: "Certificados", icon: FileCheck },
   { title: "Financeiro", icon: DollarSign },
