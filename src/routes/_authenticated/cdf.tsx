@@ -212,11 +212,7 @@ function CDFPage() {
                   <TableCell className="text-sm whitespace-nowrap">{c.quantidade_destinada ? `${Number(c.quantidade_destinada)} kg` : "—"}</TableCell>
                   <TableCell>
                     <div className="flex items-center gap-1">
-                      {c.url_documento && (
-                        <Button variant="ghost" size="icon" asChild>
-                          <a href={c.url_documento} target="_blank" rel="noreferrer"><ExternalLink className="h-4 w-4" /></a>
-                        </Button>
-                      )}
+                      <OpenDocumentButton path={c.url_documento} />
                       <Button variant="ghost" size="icon" onClick={() => {
                         if (confirm(`Remover CDF ${c.numero}?`)) deleteMutation.mutate(c.id);
                       }}>
