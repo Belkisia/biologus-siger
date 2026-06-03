@@ -113,3 +113,30 @@ export function DocumentUpload({
     </div>
   );
 }
+
+export function OpenDocumentButton({ path }: { path: string | null }) {
+  const [loading, setLoading] = useState(false);
+  if (!path) return null;
+  const open = async () => {
+    setLoading(true);
+    try {
+      // Backwards-compat: se for URL completa, abre direto
+      if (/^https?:\/\//i.test(path)) {
+        window.open(path, "_blank");
+      } else {
+        const { data, error } = await supabase.storage.from(BUCKET).createSignedUrl(path, 3600);
+        if (error) throw error;
+        window.open(data.signedUrl, "_blank");
+      }
+    } catch (e) {
+      toast.error((e as Error).message);
+    } finally {
+      setLoading(false);
+    }
+  };
+  return (
+    <Button variant="ghost" size="icon" onClick={open} disabled={loading}>
+      {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : <ExternalLink className="h-4 w-4" />}
+    </Button>
+  );
+}
