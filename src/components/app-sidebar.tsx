@@ -1,5 +1,5 @@
 import { Link, useRouterState } from "@tanstack/react-router";
-import { LayoutDashboard, Users, Truck, FileText, FileCheck, FileSignature, DollarSign, BarChart3, Shield, Recycle } from "lucide-react";
+import { LayoutDashboard, Users, Truck, FileText, FileCheck, FileSignature, DollarSign, BarChart3, Shield, Recycle, UserCog } from "lucide-react";
 import {
   Sidebar,
   SidebarContent,
@@ -23,6 +23,7 @@ const operacional = [
   { title: "Financeiro", url: "/financeiro", icon: DollarSign },
   { title: "Licenças", url: "/licencas", icon: Shield },
   { title: "Relatórios", url: "/relatorios", icon: BarChart3 },
+  { title: "Usuários", url: "/usuarios", icon: UserCog },
 ];
 
 const futuros: { title: string; icon: typeof Shield }[] = [];
