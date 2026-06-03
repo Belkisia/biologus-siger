@@ -14,6 +14,7 @@ import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AuthenticatedUsuariosRouteImport } from './routes/_authenticated/usuarios'
 import { Route as AuthenticatedRelatoriosRouteImport } from './routes/_authenticated/relatorios'
+import { Route as AuthenticatedPropostasRouteImport } from './routes/_authenticated/propostas'
 import { Route as AuthenticatedPortalRouteImport } from './routes/_authenticated/portal'
 import { Route as AuthenticatedMtrRouteImport } from './routes/_authenticated/mtr'
 import { Route as AuthenticatedLicencasRouteImport } from './routes/_authenticated/licencas'
@@ -49,6 +50,11 @@ const AuthenticatedUsuariosRoute = AuthenticatedUsuariosRouteImport.update({
 const AuthenticatedRelatoriosRoute = AuthenticatedRelatoriosRouteImport.update({
   id: '/relatorios',
   path: '/relatorios',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedPropostasRoute = AuthenticatedPropostasRouteImport.update({
+  id: '/propostas',
+  path: '/propostas',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
 const AuthenticatedPortalRoute = AuthenticatedPortalRouteImport.update({
@@ -125,6 +131,7 @@ export interface FileRoutesByFullPath {
   '/licencas': typeof AuthenticatedLicencasRoute
   '/mtr': typeof AuthenticatedMtrRoute
   '/portal': typeof AuthenticatedPortalRoute
+  '/propostas': typeof AuthenticatedPropostasRoute
   '/relatorios': typeof AuthenticatedRelatoriosRoute
   '/usuarios': typeof AuthenticatedUsuariosRoute
   '/lovable/email/auth/preview': typeof LovableEmailAuthPreviewRoute
@@ -143,6 +150,7 @@ export interface FileRoutesByTo {
   '/licencas': typeof AuthenticatedLicencasRoute
   '/mtr': typeof AuthenticatedMtrRoute
   '/portal': typeof AuthenticatedPortalRoute
+  '/propostas': typeof AuthenticatedPropostasRoute
   '/relatorios': typeof AuthenticatedRelatoriosRoute
   '/usuarios': typeof AuthenticatedUsuariosRoute
   '/lovable/email/auth/preview': typeof LovableEmailAuthPreviewRoute
@@ -163,6 +171,7 @@ export interface FileRoutesById {
   '/_authenticated/licencas': typeof AuthenticatedLicencasRoute
   '/_authenticated/mtr': typeof AuthenticatedMtrRoute
   '/_authenticated/portal': typeof AuthenticatedPortalRoute
+  '/_authenticated/propostas': typeof AuthenticatedPropostasRoute
   '/_authenticated/relatorios': typeof AuthenticatedRelatoriosRoute
   '/_authenticated/usuarios': typeof AuthenticatedUsuariosRoute
   '/lovable/email/auth/preview': typeof LovableEmailAuthPreviewRoute
@@ -183,6 +192,7 @@ export interface FileRouteTypes {
     | '/licencas'
     | '/mtr'
     | '/portal'
+    | '/propostas'
     | '/relatorios'
     | '/usuarios'
     | '/lovable/email/auth/preview'
@@ -201,6 +211,7 @@ export interface FileRouteTypes {
     | '/licencas'
     | '/mtr'
     | '/portal'
+    | '/propostas'
     | '/relatorios'
     | '/usuarios'
     | '/lovable/email/auth/preview'
@@ -220,6 +231,7 @@ export interface FileRouteTypes {
     | '/_authenticated/licencas'
     | '/_authenticated/mtr'
     | '/_authenticated/portal'
+    | '/_authenticated/propostas'
     | '/_authenticated/relatorios'
     | '/_authenticated/usuarios'
     | '/lovable/email/auth/preview'
@@ -271,6 +283,13 @@ declare module '@tanstack/react-router' {
       path: '/relatorios'
       fullPath: '/relatorios'
       preLoaderRoute: typeof AuthenticatedRelatoriosRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/propostas': {
+      id: '/_authenticated/propostas'
+      path: '/propostas'
+      fullPath: '/propostas'
+      preLoaderRoute: typeof AuthenticatedPropostasRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/portal': {
@@ -370,6 +389,7 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedLicencasRoute: typeof AuthenticatedLicencasRoute
   AuthenticatedMtrRoute: typeof AuthenticatedMtrRoute
   AuthenticatedPortalRoute: typeof AuthenticatedPortalRoute
+  AuthenticatedPropostasRoute: typeof AuthenticatedPropostasRoute
   AuthenticatedRelatoriosRoute: typeof AuthenticatedRelatoriosRoute
   AuthenticatedUsuariosRoute: typeof AuthenticatedUsuariosRoute
 }
@@ -384,6 +404,7 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedLicencasRoute: AuthenticatedLicencasRoute,
   AuthenticatedMtrRoute: AuthenticatedMtrRoute,
   AuthenticatedPortalRoute: AuthenticatedPortalRoute,
+  AuthenticatedPropostasRoute: AuthenticatedPropostasRoute,
   AuthenticatedRelatoriosRoute: AuthenticatedRelatoriosRoute,
   AuthenticatedUsuariosRoute: AuthenticatedUsuariosRoute,
 }
@@ -402,13 +423,3 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}
