@@ -86,6 +86,7 @@ function MTRPage() {
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["mtrs"] });
       toast.success("MTR registrado");
+      setDocPath(null);
       setOpen(false);
     },
     onError: (e: Error) => toast.error(e.message),
