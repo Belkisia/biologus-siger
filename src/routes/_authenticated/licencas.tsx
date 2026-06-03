@@ -132,6 +132,7 @@ function LicencasPage() {
     onSuccess: () => {
       toast.success("Licença cadastrada");
       qc.invalidateQueries({ queryKey: ["licencas"] });
+      setArquivoPath(null);
       setOpen(false);
     },
     onError: (e: Error) => toast.error(e.message),
