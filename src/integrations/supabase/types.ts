@@ -95,6 +95,7 @@ export type Database = {
           status: string
           telefone: string | null
           updated_at: string
+          user_id: string | null
           whatsapp: string | null
         }
         Insert: {
@@ -124,6 +125,7 @@ export type Database = {
           status?: string
           telefone?: string | null
           updated_at?: string
+          user_id?: string | null
           whatsapp?: string | null
         }
         Update: {
@@ -153,6 +155,7 @@ export type Database = {
           status?: string
           telefone?: string | null
           updated_at?: string
+          user_id?: string | null
           whatsapp?: string | null
         }
         Relationships: []
@@ -650,6 +653,7 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      current_cliente_id: { Args: never; Returns: string }
       gerar_notificacoes_vencimento: { Args: never; Returns: number }
       has_role: {
         Args: {
