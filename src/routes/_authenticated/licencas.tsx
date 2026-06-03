@@ -123,7 +123,7 @@ function LicencasPage() {
         status: (form.get("status") as string) || "ativa",
         escopo: (form.get("escopo") as string) || null,
         condicionantes: (form.get("condicionantes") as string) || null,
-        arquivo_url: (form.get("arquivo_url") as string) || null,
+        arquivo_url: arquivoPath,
         observacoes: (form.get("observacoes") as string) || null,
       };
       const { error } = await supabase.from("licencas").insert(payload);
