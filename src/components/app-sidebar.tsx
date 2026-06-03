@@ -21,10 +21,10 @@ const operacional = [
   { title: "MTR", url: "/mtr", icon: FileText },
   { title: "Certificados (CDF)", url: "/cdf", icon: FileCheck },
   { title: "Financeiro", url: "/financeiro", icon: DollarSign },
+  { title: "Relatórios", url: "/relatorios", icon: BarChart3 },
 ];
 
 const futuros = [
-  { title: "Relatórios", icon: BarChart3 },
   { title: "Licenças", icon: Shield },
 ];
 
