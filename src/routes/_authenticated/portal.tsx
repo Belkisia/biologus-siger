@@ -173,7 +173,7 @@ function PortalPage() {
                   <TableRow key={c.id}>
                     <TableCell>{dt(c.data_agendada)}</TableCell>
                     <TableCell><Badge variant="secondary">{c.status ?? "—"}</Badge></TableCell>
-                    <TableCell>{c.quantidade_total ?? "—"}</TableCell>
+                    <TableCell>{c.peso_real ?? c.quantidade_prevista ?? "—"}</TableCell>
                     <TableCell className="text-sm text-muted-foreground truncate max-w-xs">{c.observacoes ?? "—"}</TableCell>
                   </TableRow>
                 ))}
