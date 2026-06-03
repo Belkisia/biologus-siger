@@ -12,10 +12,12 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AuthenticatedMtrRouteImport } from './routes/_authenticated/mtr'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
 import { Route as AuthenticatedContratosRouteImport } from './routes/_authenticated/contratos'
 import { Route as AuthenticatedColetasRouteImport } from './routes/_authenticated/coletas'
 import { Route as AuthenticatedClientesRouteImport } from './routes/_authenticated/clientes'
+import { Route as AuthenticatedCdfRouteImport } from './routes/_authenticated/cdf'
 
 const AuthRoute = AuthRouteImport.update({
   id: '/auth',
@@ -30,6 +32,11 @@ const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
+} as any)
+const AuthenticatedMtrRoute = AuthenticatedMtrRouteImport.update({
+  id: '/mtr',
+  path: '/mtr',
+  getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
 const AuthenticatedDashboardRoute = AuthenticatedDashboardRouteImport.update({
   id: '/dashboard',
@@ -51,53 +58,76 @@ const AuthenticatedClientesRoute = AuthenticatedClientesRouteImport.update({
   path: '/clientes',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedCdfRoute = AuthenticatedCdfRouteImport.update({
+  id: '/cdf',
+  path: '/cdf',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
+  '/cdf': typeof AuthenticatedCdfRoute
   '/clientes': typeof AuthenticatedClientesRoute
   '/coletas': typeof AuthenticatedColetasRoute
   '/contratos': typeof AuthenticatedContratosRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
+  '/mtr': typeof AuthenticatedMtrRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
+  '/cdf': typeof AuthenticatedCdfRoute
   '/clientes': typeof AuthenticatedClientesRoute
   '/coletas': typeof AuthenticatedColetasRoute
   '/contratos': typeof AuthenticatedContratosRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
+  '/mtr': typeof AuthenticatedMtrRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
   '/auth': typeof AuthRoute
+  '/_authenticated/cdf': typeof AuthenticatedCdfRoute
   '/_authenticated/clientes': typeof AuthenticatedClientesRoute
   '/_authenticated/coletas': typeof AuthenticatedColetasRoute
   '/_authenticated/contratos': typeof AuthenticatedContratosRoute
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
+  '/_authenticated/mtr': typeof AuthenticatedMtrRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
     | '/auth'
+    | '/cdf'
     | '/clientes'
     | '/coletas'
     | '/contratos'
     | '/dashboard'
+    | '/mtr'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/auth' | '/clientes' | '/coletas' | '/contratos' | '/dashboard'
+  to:
+    | '/'
+    | '/auth'
+    | '/cdf'
+    | '/clientes'
+    | '/coletas'
+    | '/contratos'
+    | '/dashboard'
+    | '/mtr'
   id:
     | '__root__'
     | '/'
     | '/_authenticated'
     | '/auth'
+    | '/_authenticated/cdf'
     | '/_authenticated/clientes'
     | '/_authenticated/coletas'
     | '/_authenticated/contratos'
     | '/_authenticated/dashboard'
+    | '/_authenticated/mtr'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -129,6 +159,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_authenticated/mtr': {
+      id: '/_authenticated/mtr'
+      path: '/mtr'
+      fullPath: '/mtr'
+      preLoaderRoute: typeof AuthenticatedMtrRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/dashboard': {
       id: '/_authenticated/dashboard'
       path: '/dashboard'
@@ -157,21 +194,32 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedClientesRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/cdf': {
+      id: '/_authenticated/cdf'
+      path: '/cdf'
+      fullPath: '/cdf'
+      preLoaderRoute: typeof AuthenticatedCdfRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
   }
 }
 
 interface AuthenticatedRouteRouteChildren {
+  AuthenticatedCdfRoute: typeof AuthenticatedCdfRoute
   AuthenticatedClientesRoute: typeof AuthenticatedClientesRoute
   AuthenticatedColetasRoute: typeof AuthenticatedColetasRoute
   AuthenticatedContratosRoute: typeof AuthenticatedContratosRoute
   AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
+  AuthenticatedMtrRoute: typeof AuthenticatedMtrRoute
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
+  AuthenticatedCdfRoute: AuthenticatedCdfRoute,
   AuthenticatedClientesRoute: AuthenticatedClientesRoute,
   AuthenticatedColetasRoute: AuthenticatedColetasRoute,
   AuthenticatedContratosRoute: AuthenticatedContratosRoute,
   AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
+  AuthenticatedMtrRoute: AuthenticatedMtrRoute,
 }
 
 const AuthenticatedRouteRouteWithChildren =
@@ -185,3 +233,13 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}
