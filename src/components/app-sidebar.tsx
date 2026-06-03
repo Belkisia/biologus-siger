@@ -24,6 +24,8 @@ const operacional = [
   { title: "Licenças", url: "/licencas", icon: Shield },
   { title: "Relatórios", url: "/relatorios", icon: BarChart3 },
   { title: "Usuários", url: "/usuarios", icon: UserCog },
+  { title: "Portal do Cliente", url: "/portal", icon: Building2 },
+
 ];
 
 const futuros: { title: string; icon: typeof Shield }[] = [];
