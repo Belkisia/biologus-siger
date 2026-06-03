@@ -98,6 +98,7 @@ function CDFPage() {
       return toast.error("Preencha MTR, número e data de destinação");
     }
     if (payload.quantidade_destinada) payload.quantidade_destinada = Number(payload.quantidade_destinada);
+    payload.url_documento = docPath;
     createMutation.mutate(payload);
   };
 
