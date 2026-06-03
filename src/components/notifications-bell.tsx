@@ -82,23 +82,37 @@ export function NotificationsBell() {
       const limite30 = new Date(Date.now() + 30 * 86400000).toISOString().slice(0, 10);
       const limite7 = new Date(Date.now() + 7 * 86400000).toISOString().slice(0, 10);
 
-      const [{ data: licencas }, { data: faturas }, { data: existentes }] = await Promise.all([
+      const [licRes, fatRes, existRes] = await Promise.all([
         supabase.from("licencas").select("id,numero,tipo,data_validade,status").lte("data_validade", limite30),
-        supabase.from("faturas").select("id,numero,vencimento,valor,pago").lte("vencimento", limite7),
+        supabase.from("faturas").select("id,numero,data_vencimento,valor,status").lte("data_vencimento", limite7),
         supabase.from("notificacoes").select("ref_tabela,ref_id,created_at"),
       ]);
+      if (licRes.error) throw licRes.error;
+      if (fatRes.error) throw fatRes.error;
+      if (existRes.error) throw existRes.error;
 
       const jaHoje = new Set(
-        (existentes ?? [])
+        (existRes.data ?? [])
           .filter((n) => n.created_at?.slice(0, 10) === hoje)
           .map((n) => `${n.ref_tabela}:${n.ref_id}`),
       );
 
-      const rows: Array<Record<string, unknown>> = [];
-      for (const l of licencas ?? []) {
+      type NotifInsert = {
+        owner_id: string;
+        tipo: string;
+        titulo: string;
+        mensagem: string;
+        ref_tabela: string;
+        ref_id: string;
+        prioridade: "alta" | "media" | "baixa";
+      };
+      const rows: NotifInsert[] = [];
+
+      for (const l of licRes.data ?? []) {
         if (l.status === "cancelada") continue;
         if (jaHoje.has(`licencas:${l.id}`)) continue;
         const vencida = l.data_validade < hoje;
+        const limite15 = new Date(Date.now() + 15 * 86400000).toISOString().slice(0, 10);
         rows.push({
           owner_id: user.id,
           tipo: vencida ? "licenca_vencida" : "licenca_vencendo",
@@ -106,18 +120,18 @@ export function NotificationsBell() {
           mensagem: `Validade: ${new Date(l.data_validade).toLocaleDateString("pt-BR")}`,
           ref_tabela: "licencas",
           ref_id: l.id,
-          prioridade: vencida || l.data_validade <= new Date(Date.now() + 15 * 86400000).toISOString().slice(0,10) ? "alta" : "media",
+          prioridade: vencida || l.data_validade <= limite15 ? "alta" : "media",
         });
       }
-      for (const f of faturas ?? []) {
-        if (f.pago) continue;
+      for (const f of fatRes.data ?? []) {
+        if (f.status === "pago" || f.status === "cancelada") continue;
         if (jaHoje.has(`faturas:${f.id}`)) continue;
-        const vencida = f.vencimento < hoje;
+        const vencida = f.data_vencimento < hoje;
         rows.push({
           owner_id: user.id,
           tipo: vencida ? "fatura_vencida" : "fatura_vencendo",
           titulo: `Fatura ${f.numero ?? f.id.slice(0, 8)}`,
-          mensagem: `Vencimento: ${new Date(f.vencimento).toLocaleDateString("pt-BR")} - R$ ${Number(f.valor).toLocaleString("pt-BR", { minimumFractionDigits: 2 })}`,
+          mensagem: `Vencimento: ${new Date(f.data_vencimento).toLocaleDateString("pt-BR")} - R$ ${Number(f.valor).toLocaleString("pt-BR", { minimumFractionDigits: 2 })}`,
           ref_tabela: "faturas",
           ref_id: f.id,
           prioridade: vencida ? "alta" : "media",
@@ -129,6 +143,7 @@ export function NotificationsBell() {
       if (error) throw error;
       return rows.length;
     },
+
     onSuccess: (n) => {
       toast.success(n ? `${n} notificação(ões) geradas` : "Nada novo para notificar");
       qc.invalidateQueries({ queryKey: ["notificacoes"] });
