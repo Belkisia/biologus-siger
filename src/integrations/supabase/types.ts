@@ -14,6 +14,59 @@ export type Database = {
   }
   public: {
     Tables: {
+      cdfs: {
+        Row: {
+          created_at: string
+          data_destinacao: string
+          destinador: string | null
+          id: string
+          mtr_id: string
+          numero: string
+          observacoes: string | null
+          owner_id: string
+          quantidade_destinada: number | null
+          tecnologia: string | null
+          updated_at: string
+          url_documento: string | null
+        }
+        Insert: {
+          created_at?: string
+          data_destinacao: string
+          destinador?: string | null
+          id?: string
+          mtr_id: string
+          numero: string
+          observacoes?: string | null
+          owner_id: string
+          quantidade_destinada?: number | null
+          tecnologia?: string | null
+          updated_at?: string
+          url_documento?: string | null
+        }
+        Update: {
+          created_at?: string
+          data_destinacao?: string
+          destinador?: string | null
+          id?: string
+          mtr_id?: string
+          numero?: string
+          observacoes?: string | null
+          owner_id?: string
+          quantidade_destinada?: number | null
+          tecnologia?: string | null
+          updated_at?: string
+          url_documento?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "cdfs_mtr_id_fkey"
+            columns: ["mtr_id"]
+            isOneToOne: false
+            referencedRelation: "mtrs"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       clientes: {
         Row: {
           bairro: string | null
@@ -274,6 +327,93 @@ export type Database = {
             columns: ["cliente_id"]
             isOneToOne: false
             referencedRelation: "clientes"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      mtrs: {
+        Row: {
+          acondicionamento: string | null
+          classe_ibama: string | null
+          cliente_id: string
+          codigo_residuo: string | null
+          coleta_id: string | null
+          created_at: string
+          data_emissao: string
+          descricao_residuo: string
+          destinador: string | null
+          gerador: string | null
+          id: string
+          numero: string
+          observacoes: string | null
+          owner_id: string
+          quantidade: number
+          status: string
+          tecnologia_destinacao: string | null
+          transportador: string | null
+          unidade: string
+          updated_at: string
+          url_documento: string | null
+        }
+        Insert: {
+          acondicionamento?: string | null
+          classe_ibama?: string | null
+          cliente_id: string
+          codigo_residuo?: string | null
+          coleta_id?: string | null
+          created_at?: string
+          data_emissao?: string
+          descricao_residuo: string
+          destinador?: string | null
+          gerador?: string | null
+          id?: string
+          numero: string
+          observacoes?: string | null
+          owner_id: string
+          quantidade?: number
+          status?: string
+          tecnologia_destinacao?: string | null
+          transportador?: string | null
+          unidade?: string
+          updated_at?: string
+          url_documento?: string | null
+        }
+        Update: {
+          acondicionamento?: string | null
+          classe_ibama?: string | null
+          cliente_id?: string
+          codigo_residuo?: string | null
+          coleta_id?: string | null
+          created_at?: string
+          data_emissao?: string
+          descricao_residuo?: string
+          destinador?: string | null
+          gerador?: string | null
+          id?: string
+          numero?: string
+          observacoes?: string | null
+          owner_id?: string
+          quantidade?: number
+          status?: string
+          tecnologia_destinacao?: string | null
+          transportador?: string | null
+          unidade?: string
+          updated_at?: string
+          url_documento?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "mtrs_cliente_id_fkey"
+            columns: ["cliente_id"]
+            isOneToOne: false
+            referencedRelation: "clientes"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "mtrs_coleta_id_fkey"
+            columns: ["coleta_id"]
+            isOneToOne: false
+            referencedRelation: "coletas"
             referencedColumns: ["id"]
           },
         ]
