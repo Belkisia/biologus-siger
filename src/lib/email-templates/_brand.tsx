@@ -1,5 +1,9 @@
 import * as React from 'react'
-import { Container, Hr, Section, Text } from '@react-email/components'
+import { Container, Hr, Img, Section, Text } from '@react-email/components'
+import logoAsset from '@/assets/biologus-logo.jpeg.asset.json'
+
+const PROJECT_URL = 'https://project--51cdb10c-bbd1-4ce2-b964-56c2bdda6891.lovable.app'
+export const LOGO_URL = `${PROJECT_URL}${logoAsset.url}`
 
 export const BRAND = {
   name: 'Biólogus Ambiental',
@@ -101,8 +105,15 @@ export const footerText = {
 
 export const Header = () => (
   <Section style={headerStyle}>
+    <Img
+      src={LOGO_URL}
+      alt={BRAND.name}
+      width="64"
+      height="64"
+      style={{ display: 'block', borderRadius: '12px', marginBottom: '12px', background: '#ffffff', padding: '6px' }}
+    />
     <Text style={brandText}>{BRAND.name}</Text>
-    <Text style={brandTagline}>Gestão Ambiental</Text>
+    <Text style={brandTagline}>Gerenciamento de Resíduos</Text>
   </Section>
 )
 
