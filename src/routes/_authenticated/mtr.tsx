@@ -121,6 +121,7 @@ function MTRPage() {
       return toast.error("Preencha cliente, número e descrição do resíduo");
     }
     if (payload.quantidade) payload.quantidade = Number(payload.quantidade);
+    payload.url_documento = docPath;
     createMutation.mutate(payload);
   };
 
