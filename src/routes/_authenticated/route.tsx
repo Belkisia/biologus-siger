@@ -4,7 +4,9 @@ import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/app-sidebar";
 import { Button } from "@/components/ui/button";
 import { LogOut } from "lucide-react";
+import { NotificationsBell } from "@/components/notifications-bell";
 import { toast } from "sonner";
+
 
 export const Route = createFileRoute("/_authenticated")({
   ssr: false,
@@ -39,11 +41,13 @@ function AuthenticatedLayout() {
               </span>
             </div>
             <div className="flex items-center gap-3">
+              <NotificationsBell />
               <span className="text-sm text-muted-foreground hidden sm:inline">{user.email}</span>
               <Button variant="ghost" size="sm" onClick={handleLogout}>
                 <LogOut className="h-4 w-4 mr-2" />
                 Sair
               </Button>
+
             </div>
           </header>
           <main className="flex-1 p-6 overflow-auto">
