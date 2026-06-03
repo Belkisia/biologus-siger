@@ -308,11 +308,7 @@ function MTRPage() {
                     </TableCell>
                     <TableCell>
                       <div className="flex items-center gap-1">
-                        {m.url_documento && (
-                          <Button variant="ghost" size="icon" asChild>
-                            <a href={m.url_documento} target="_blank" rel="noreferrer"><ExternalLink className="h-4 w-4" /></a>
-                          </Button>
-                        )}
+                        <OpenDocumentButton path={m.url_documento} />
                         <Button variant="ghost" size="icon" onClick={() => {
                           if (confirm(`Remover MTR ${m.numero}?`)) deleteMutation.mutate(m.id);
                         }}>
