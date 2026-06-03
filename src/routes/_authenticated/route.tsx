@@ -4,7 +4,9 @@ import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/app-sidebar";
 import { Button } from "@/components/ui/button";
 import { LogOut } from "lucide-react";
+import { NotificationsBell } from "@/components/notifications-bell";
 import { toast } from "sonner";
+
 
 export const Route = createFileRoute("/_authenticated")({
   ssr: false,
