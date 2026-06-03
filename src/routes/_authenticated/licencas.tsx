@@ -75,6 +75,7 @@ function alertaVencimento(dias: number) {
 function LicencasPage() {
   const qc = useQueryClient();
   const [open, setOpen] = useState(false);
+  const [arquivoPath, setArquivoPath] = useState<string | null>(null);
   const { user } = Route.useRouteContext();
 
   const { data: clientes = [] } = useQuery({
