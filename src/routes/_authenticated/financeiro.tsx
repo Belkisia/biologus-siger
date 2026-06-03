@@ -127,7 +127,7 @@ function FinanceiroPage() {
         patch.valor_pago = null;
         patch.data_pagamento = null;
       }
-      const { error } = await supabase.from("faturas").update(patch).eq("id", id);
+      const { error } = await supabase.from("faturas").update(patch as never).eq("id", id);
       if (error) throw error;
     },
     onSuccess: () => qc.invalidateQueries({ queryKey: ["faturas"] }),
