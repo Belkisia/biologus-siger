@@ -227,9 +227,8 @@ function LicencasPage() {
                     </SelectContent>
                   </Select>
                 </div>
-                <div>
-                  <Label>URL do Arquivo</Label>
-                  <Input name="arquivo_url" type="url" placeholder="https://..." />
+                <div className="col-span-2">
+                  <DocumentUpload folder="licencas" value={arquivoPath} onChange={setArquivoPath} label="Arquivo da licença" />
                 </div>
               </div>
               <div>
