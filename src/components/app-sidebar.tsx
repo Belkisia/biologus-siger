@@ -23,6 +23,7 @@ const operacional = [
   { title: "Financeiro", url: "/financeiro", icon: DollarSign },
   { title: "Licenças", url: "/licencas", icon: Shield },
   { title: "Relatórios", url: "/relatorios", icon: BarChart3 },
+  { title: "Usuários", url: "/usuarios", icon: UserCog },
 ];
 
 const futuros: { title: string; icon: typeof Shield }[] = [];
