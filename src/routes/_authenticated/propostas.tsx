@@ -211,7 +211,7 @@ function PropostasPage() {
       const patch: Record<string, unknown> = { status };
       if (status === "enviada") patch.enviada_em = new Date().toISOString();
       if (status === "aceita" || status === "recusada") patch.respondida_em = new Date().toISOString();
-      const { error } = await supabase.from("propostas").update(patch).eq("id", id);
+      const { error } = await supabase.from("propostas").update(patch as never).eq("id", id);
       if (error) throw error;
     },
     onSuccess: () => qc.invalidateQueries({ queryKey: ["propostas"] }),
@@ -334,8 +334,7 @@ function PropostasPage() {
       styles: { fontSize: 9 },
     });
 
-    type DocWithAT = jsPDF & { lastAutoTable?: { finalY: number } };
-    const finalY = (doc as DocWithAT).lastAutoTable?.finalY ?? y + 30;
+    const finalY = (doc as unknown as { lastAutoTable?: { finalY: number } }).lastAutoTable?.finalY ?? y + 30;
 
     doc.setFontSize(12);
     doc.setFont("helvetica", "bold");
