@@ -25,6 +25,7 @@ export async function sha256(bytes: Uint8Array): Promise<string> {
 export async function gerarPDFContrato(args: {
   numero: string;
   data: string;
+  conteudoHtml?: string | null;
   contratante: { nome: string; cnpj: string; endereco: string };
   contratada: { nome: string; cnpj?: string; endereco?: string; email?: string };
   objeto: string;
@@ -99,6 +100,15 @@ export async function gerarPDFContrato(args: {
   h1(`CONTRATO DE PRESTAÇÃO DE SERVIÇOS Nº ${args.numero}`);
   drawText(`Data: ${args.data}`, { size: 9 });
   spacer(6);
+
+  if (args.conteudoHtml?.trim()) {
+    for (const block of htmlToTextBlocks(args.conteudoHtml)) {
+      if (block.kind === "heading") h2(block.text);
+      else drawText(block.text);
+      spacer(3);
+    }
+    return await doc.save();
+  }
 
   // ── Partes ──
   h2("DAS PARTES");
@@ -260,4 +270,34 @@ export async function anexarManifestoAssinatura(args: {
 
 function brl(v: number) {
   return v.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
+}
+
+function htmlToTextBlocks(html: string) {
+  const blocks: Array<{ kind: "heading" | "text"; text: string }> = [];
+  const normalized = html
+    .replace(/<br\s*\/?\s*>/gi, "\n")
+    .replace(/<\/p>/gi, "</p>\n")
+    .replace(/<\/h[1-6]>/gi, "</h>\n")
+    .replace(/<\/li>/gi, "</li>\n")
+    .replace(/<\/tr>/gi, "</tr>\n")
+    .replace(/<\/(td|th)>/gi, " | ");
+  const matches = normalized.matchAll(/<(h[1-6]|p|li|tr)[^>]*>([\s\S]*?)<\/(?:h[1-6]|p|li|tr)>/gi);
+  for (const m of matches) {
+    const kind = m[1].toLowerCase().startsWith("h") ? "heading" : "text";
+    const text = decodeHtml(m[2].replace(/<[^>]+>/g, " ").replace(/\s+/g, " ").replace(/\s+\|/g, " |").trim());
+    if (text) blocks.push({ kind, text });
+  }
+  if (blocks.length) return blocks;
+  const text = decodeHtml(normalized.replace(/<[^>]+>/g, " ").replace(/\s+/g, " ").trim());
+  return text ? [{ kind: "text" as const, text }] : [];
+}
+
+function decodeHtml(text: string) {
+  return text
+    .replace(/&nbsp;/g, " ")
+    .replace(/&amp;/g, "&")
+    .replace(/&lt;/g, "<")
+    .replace(/&gt;/g, ">")
+    .replace(/&quot;/g, '"')
+    .replace(/&#39;/g, "'");
 }
