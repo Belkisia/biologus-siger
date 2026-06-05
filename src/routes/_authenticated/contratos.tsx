@@ -160,6 +160,24 @@ function ContratosPage() {
   const [filtroEmail, setFiltroEmail] = useState<string>("todos");
   const [ordemEmail, setOrdemEmail] = useState<string>("recente");
 
+  const contratosFiltrados = (() => {
+    let list = contratos;
+    if (filtroEmail === "nunca") {
+      list = list.filter((c) => !c.ultimo_email_status);
+    } else if (filtroEmail !== "todos") {
+      list = list.filter((c) => c.ultimo_email_status === filtroEmail);
+    }
+    if (ordemEmail !== "nenhum") {
+      list = [...list].sort((a, b) => {
+        const ta = a.ultimo_email_em ? new Date(a.ultimo_email_em).getTime() : 0;
+        const tb = b.ultimo_email_em ? new Date(b.ultimo_email_em).getTime() : 0;
+        return ordemEmail === "recente" ? tb - ta : ta - tb;
+      });
+    }
+    return list;
+  })();
+
+
   const [emailContrato, setEmailContrato] = useState<Contrato | null>(null);
   const [emailDestino, setEmailDestino] = useState("");
   const [emailMensagem, setEmailMensagem] = useState("");
