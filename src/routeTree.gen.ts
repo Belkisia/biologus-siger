@@ -13,7 +13,9 @@ import { Route as UnsubscribeRouteImport } from './routes/unsubscribe'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as ValidarCodigoRouteImport } from './routes/validar.$codigo'
 import { Route as EmailUnsubscribeRouteImport } from './routes/email/unsubscribe'
+import { Route as AssinarTokenRouteImport } from './routes/assinar.$token'
 import { Route as ApiAnthropicProxyRouteImport } from './routes/api/anthropic-proxy'
 import { Route as AuthenticatedUsuariosRouteImport } from './routes/_authenticated/usuarios'
 import { Route as AuthenticatedRelatoriosRouteImport } from './routes/_authenticated/relatorios'
@@ -55,9 +57,19 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ValidarCodigoRoute = ValidarCodigoRouteImport.update({
+  id: '/validar/$codigo',
+  path: '/validar/$codigo',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const EmailUnsubscribeRoute = EmailUnsubscribeRouteImport.update({
   id: '/email/unsubscribe',
   path: '/email/unsubscribe',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AssinarTokenRoute = AssinarTokenRouteImport.update({
+  id: '/assinar/$token',
+  path: '/assinar/$token',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ApiAnthropicProxyRoute = ApiAnthropicProxyRouteImport.update({
@@ -189,7 +201,9 @@ export interface FileRoutesByFullPath {
   '/relatorios': typeof AuthenticatedRelatoriosRoute
   '/usuarios': typeof AuthenticatedUsuariosRoute
   '/api/anthropic-proxy': typeof ApiAnthropicProxyRoute
+  '/assinar/$token': typeof AssinarTokenRoute
   '/email/unsubscribe': typeof EmailUnsubscribeRoute
+  '/validar/$codigo': typeof ValidarCodigoRoute
   '/propostas/nova': typeof AuthenticatedPropostasNovaRoute
   '/lovable/email/suppression': typeof LovableEmailSuppressionRoute
   '/lovable/email/auth/preview': typeof LovableEmailAuthPreviewRoute
@@ -216,7 +230,9 @@ export interface FileRoutesByTo {
   '/relatorios': typeof AuthenticatedRelatoriosRoute
   '/usuarios': typeof AuthenticatedUsuariosRoute
   '/api/anthropic-proxy': typeof ApiAnthropicProxyRoute
+  '/assinar/$token': typeof AssinarTokenRoute
   '/email/unsubscribe': typeof EmailUnsubscribeRoute
+  '/validar/$codigo': typeof ValidarCodigoRoute
   '/propostas/nova': typeof AuthenticatedPropostasNovaRoute
   '/lovable/email/suppression': typeof LovableEmailSuppressionRoute
   '/lovable/email/auth/preview': typeof LovableEmailAuthPreviewRoute
@@ -245,7 +261,9 @@ export interface FileRoutesById {
   '/_authenticated/relatorios': typeof AuthenticatedRelatoriosRoute
   '/_authenticated/usuarios': typeof AuthenticatedUsuariosRoute
   '/api/anthropic-proxy': typeof ApiAnthropicProxyRoute
+  '/assinar/$token': typeof AssinarTokenRoute
   '/email/unsubscribe': typeof EmailUnsubscribeRoute
+  '/validar/$codigo': typeof ValidarCodigoRoute
   '/_authenticated/propostas/nova': typeof AuthenticatedPropostasNovaRoute
   '/lovable/email/suppression': typeof LovableEmailSuppressionRoute
   '/lovable/email/auth/preview': typeof LovableEmailAuthPreviewRoute
@@ -274,7 +292,9 @@ export interface FileRouteTypes {
     | '/relatorios'
     | '/usuarios'
     | '/api/anthropic-proxy'
+    | '/assinar/$token'
     | '/email/unsubscribe'
+    | '/validar/$codigo'
     | '/propostas/nova'
     | '/lovable/email/suppression'
     | '/lovable/email/auth/preview'
@@ -301,7 +321,9 @@ export interface FileRouteTypes {
     | '/relatorios'
     | '/usuarios'
     | '/api/anthropic-proxy'
+    | '/assinar/$token'
     | '/email/unsubscribe'
+    | '/validar/$codigo'
     | '/propostas/nova'
     | '/lovable/email/suppression'
     | '/lovable/email/auth/preview'
@@ -329,7 +351,9 @@ export interface FileRouteTypes {
     | '/_authenticated/relatorios'
     | '/_authenticated/usuarios'
     | '/api/anthropic-proxy'
+    | '/assinar/$token'
     | '/email/unsubscribe'
+    | '/validar/$codigo'
     | '/_authenticated/propostas/nova'
     | '/lovable/email/suppression'
     | '/lovable/email/auth/preview'
@@ -345,7 +369,9 @@ export interface RootRouteChildren {
   AuthRoute: typeof AuthRoute
   UnsubscribeRoute: typeof UnsubscribeRoute
   ApiAnthropicProxyRoute: typeof ApiAnthropicProxyRoute
+  AssinarTokenRoute: typeof AssinarTokenRoute
   EmailUnsubscribeRoute: typeof EmailUnsubscribeRoute
+  ValidarCodigoRoute: typeof ValidarCodigoRoute
   LovableEmailSuppressionRoute: typeof LovableEmailSuppressionRoute
   LovableEmailAuthPreviewRoute: typeof LovableEmailAuthPreviewRoute
   LovableEmailAuthWebhookRoute: typeof LovableEmailAuthWebhookRoute
@@ -384,11 +410,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/validar/$codigo': {
+      id: '/validar/$codigo'
+      path: '/validar/$codigo'
+      fullPath: '/validar/$codigo'
+      preLoaderRoute: typeof ValidarCodigoRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/email/unsubscribe': {
       id: '/email/unsubscribe'
       path: '/email/unsubscribe'
       fullPath: '/email/unsubscribe'
       preLoaderRoute: typeof EmailUnsubscribeRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/assinar/$token': {
+      id: '/assinar/$token'
+      path: '/assinar/$token'
+      fullPath: '/assinar/$token'
+      preLoaderRoute: typeof AssinarTokenRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/api/anthropic-proxy': {
@@ -596,7 +636,9 @@ const rootRouteChildren: RootRouteChildren = {
   AuthRoute: AuthRoute,
   UnsubscribeRoute: UnsubscribeRoute,
   ApiAnthropicProxyRoute: ApiAnthropicProxyRoute,
+  AssinarTokenRoute: AssinarTokenRoute,
   EmailUnsubscribeRoute: EmailUnsubscribeRoute,
+  ValidarCodigoRoute: ValidarCodigoRoute,
   LovableEmailSuppressionRoute: LovableEmailSuppressionRoute,
   LovableEmailAuthPreviewRoute: LovableEmailAuthPreviewRoute,
   LovableEmailAuthWebhookRoute: LovableEmailAuthWebhookRoute,
