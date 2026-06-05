@@ -211,7 +211,11 @@ function ClientesPage() {
                   <TableCell><Badge variant={c.status === "ativo" ? "default" : "secondary"}>{c.status}</Badge></TableCell>
                   <TableCell>
                     <div className="flex items-center gap-1">
-                      {c.user_id ? (
+                      <Button variant="ghost" size="icon" title="Pasta digital" asChild>
+                        <Link to="/clientes/$clienteId" params={{ clienteId: c.id }}>
+                          <FolderOpen className="h-4 w-4" />
+                        </Link>
+                      </Button>
                         <Button variant="ghost" size="icon" title="Desvincular usuário"
                           onClick={() => { if (confirm("Remover acesso do portal para este cliente?")) unlinkMutation.mutate(c.id); }}>
                           <UserMinus className="h-4 w-4" />
