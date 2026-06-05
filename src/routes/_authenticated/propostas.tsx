@@ -542,6 +542,21 @@ function PropostasPage() {
     );
 
     return doc;
+    };
+
+    // Tenta cada tier; retorna o primeiro que couber em 1 página A4
+    let doc = renderWithTier(tiers[0]);
+    for (let i = 1; i < tiers.length; i++) {
+      const pages = (doc.internal as unknown as { getNumberOfPages: () => number }).getNumberOfPages();
+      if (pages <= 1) break;
+      doc = renderWithTier(tiers[i]);
+    }
+    // Força 1 página: descarta páginas extras do último tier se ainda houver overflow
+    const finalPages = (doc.internal as unknown as { getNumberOfPages: () => number }).getNumberOfPages();
+    if (finalPages > 1) {
+      for (let p = finalPages; p > 1; p--) doc.deletePage(p);
+    }
+    return doc;
   };
 
 
