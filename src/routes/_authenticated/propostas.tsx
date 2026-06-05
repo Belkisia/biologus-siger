@@ -280,6 +280,22 @@ function PropostasPage() {
       .eq("proposta_id", p.id)
       .order("ordem");
 
+    // ── MODO COMPACTAÇÃO AUTOMÁTICA ─────────────────────────────────────
+    // Tenta níveis progressivamente menores até caber em 1 página A4.
+    type Tier = {
+      bodyFont: number; bodyPad: number; headFont: number; headPad: number;
+      blockH: number; inclH: number; obsLines: number; inclSpacing: number;
+      sectionGap: number; nomeFont: number; condFont: number; destFont: number;
+    };
+    const tiers: Tier[] = [
+      { bodyFont: 8.0, bodyPad: 1.6, headFont: 8.0, headPad: 1.8, blockH: 36, inclH: 34, obsLines: 7, inclSpacing: 4.6, sectionGap: 4, nomeFont: 10.5, condFont: 8.0, destFont: 7.8 },
+      { bodyFont: 7.5, bodyPad: 1.3, headFont: 7.5, headPad: 1.5, blockH: 33, inclH: 31, obsLines: 7, inclSpacing: 4.2, sectionGap: 3, nomeFont: 10.0, condFont: 7.6, destFont: 7.5 },
+      { bodyFont: 7.0, bodyPad: 1.0, headFont: 7.0, headPad: 1.2, blockH: 30, inclH: 28, obsLines: 6, inclSpacing: 3.8, sectionGap: 2.5, nomeFont: 9.5,  condFont: 7.2, destFont: 7.2 },
+      { bodyFont: 6.5, bodyPad: 0.8, headFont: 6.5, headPad: 1.0, blockH: 27, inclH: 25, obsLines: 5, inclSpacing: 3.4, sectionGap: 2, nomeFont: 9.0,  condFont: 6.8, destFont: 6.8 },
+      { bodyFont: 6.0, bodyPad: 0.6, headFont: 6.2, headPad: 0.9, blockH: 25, inclH: 23, obsLines: 4, inclSpacing: 3.1, sectionGap: 1.5, nomeFont: 8.5, condFont: 6.4, destFont: 6.4 },
+    ];
+
+    const renderWithTier = (t: Tier) => {
     const doc = new jsPDF({ unit: "mm", format: "a4" });
     const cli = p.clientes;
     const PAGE_W = 210;
@@ -317,7 +333,7 @@ function PropostasPage() {
 
     // ── BLOCO 2 — DESTINATÁRIO + CONDIÇÕES (2 colunas) ──────────────────
     const colW = (PAGE_W - M * 2 - 4) / 2;
-    const blockH = 36;
+    const blockH = t.blockH;
     // Esquerda: destinatário
     doc.setFillColor(...SOFT);
     doc.rect(M, y, colW, blockH, "F");
@@ -328,12 +344,12 @@ function PropostasPage() {
     doc.setFontSize(6.8);
     doc.text("DESTINATÁRIO", M + 3, y + 4);
     doc.setTextColor(0);
-    doc.setFontSize(10.5);
+    doc.setFontSize(t.nomeFont);
     const nome = cli?.razao_social ?? "—";
     const nomeLines = doc.splitTextToSize(nome, colW - 6) as string[];
     doc.text(nomeLines.slice(0, 2), M + 3, y + 9);
     doc.setFont("helvetica", "normal");
-    doc.setFontSize(7.8);
+    doc.setFontSize(t.destFont);
     let yL = y + 9 + Math.min(nomeLines.length, 2) * 4.2;
     if (cli?.cnpj) { doc.text(`CNPJ: ${cli.cnpj}`, M + 3, yL); yL += 3.6; }
     if (cli?.cidade) { doc.text(`${cli.cidade}${cli.estado ? ` – ${cli.estado}` : ""}`, M + 3, yL); yL += 3.6; }
@@ -363,7 +379,7 @@ function PropostasPage() {
       ["Pagamento", p.condicoes_pagamento || "a combinar"],
     ];
     doc.setTextColor(0);
-    doc.setFontSize(8);
+    doc.setFontSize(t.condFont);
     let yR = y + 9;
     for (const [k, v] of rows) {
       doc.setFont("helvetica", "bold");
@@ -374,7 +390,7 @@ function PropostasPage() {
       yR += Math.max(4.6, vLines.slice(0, 2).length * 4.2);
     }
 
-    y += blockH + 4;
+    y += blockH + t.sectionGap;
 
     // ── BLOCO 3 — TABELA DE SERVIÇOS ────────────────────────────────────
     autoTable(doc, {
@@ -393,11 +409,11 @@ function PropostasPage() {
         fillColor: BRAND,
         textColor: 255,
         fontStyle: "bold",
-        fontSize: 8,
-        cellPadding: 1.8,
+        fontSize: t.headFont,
+        cellPadding: t.headPad,
         halign: "center",
       },
-      bodyStyles: { fontSize: 8, textColor: 30, cellPadding: 1.6 },
+      bodyStyles: { fontSize: t.bodyFont, textColor: 30, cellPadding: t.bodyPad },
       alternateRowStyles: { fillColor: [248, 251, 248] },
       styles: { lineColor: [220, 220, 220], lineWidth: 0.1, overflow: "linebreak" },
       columnStyles: {
@@ -439,7 +455,7 @@ function PropostasPage() {
       "Emissão de MTR e CDF",
       "Conformidade com a PNRS (Lei 12.305/2010)",
     ];
-    const inclH = 34;
+    const inclH = t.inclH;
     // Esquerda: incluso
     doc.setDrawColor(...BRAND2);
     doc.setLineWidth(0.2);
@@ -460,7 +476,7 @@ function PropostasPage() {
       doc.setTextColor(0);
       const lines = doc.splitTextToSize(it, colW - 8) as string[];
       doc.text(lines.slice(0, 1), M + 6, yi);
-      yi += 4.6;
+      yi += t.inclSpacing;
     }
 
     // Direita: observações
@@ -479,9 +495,9 @@ function PropostasPage() {
     const obs = (p.observacoes && p.observacoes.trim()) ||
       "Valores válidos para as quantidades estimadas. Reajuste anual por IPCA. MTR/CDF emitidos a cada coleta.";
     const obsLines = doc.splitTextToSize(obs, colW - 4) as string[];
-    doc.text(obsLines.slice(0, 7), xR + 2, y + 9);
+    doc.text(obsLines.slice(0, t.obsLines), xR + 2, y + 9);
 
-    y += inclH + 4;
+    y += inclH + t.sectionGap;
 
     // ── BLOCO 6 — ASSINATURA + CONTATO (rodapé) ─────────────────────────
     // Posiciona próximo do fim mas usa o y atual se já estiver alto
@@ -525,6 +541,21 @@ function PropostasPage() {
       { align: "center" },
     );
 
+    return doc;
+    };
+
+    // Tenta cada tier; retorna o primeiro que couber em 1 página A4
+    let doc = renderWithTier(tiers[0]);
+    for (let i = 1; i < tiers.length; i++) {
+      const pages = (doc.internal as unknown as { getNumberOfPages: () => number }).getNumberOfPages();
+      if (pages <= 1) break;
+      doc = renderWithTier(tiers[i]);
+    }
+    // Força 1 página: descarta páginas extras do último tier se ainda houver overflow
+    const finalPages = (doc.internal as unknown as { getNumberOfPages: () => number }).getNumberOfPages();
+    if (finalPages > 1) {
+      for (let p = finalPages; p > 1; p--) doc.deletePage(p);
+    }
     return doc;
   };
 
