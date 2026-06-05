@@ -469,7 +469,7 @@ function DocumentosTab({ clienteId, ownerId }: { clienteId: string; ownerId: str
                 <TableCell className="text-xs">{fmtDate(d.updated_at)}</TableCell>
                 <TableCell>
                   <div className="flex gap-1">
-                    <Button variant="ghost" size="icon" title="Abrir versão atual"><OpenInline path={d.storage_path} /></Button>
+                    <OpenInline path={d.storage_path} />
                     <Button variant="ghost" size="icon" title="Nova versão" onClick={() => setVerTarget(d)}>
                       <Upload className="h-4 w-4" />
                     </Button>
