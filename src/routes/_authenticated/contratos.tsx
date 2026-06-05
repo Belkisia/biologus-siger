@@ -63,6 +63,16 @@ type Contrato = {
   clientes?: { razao_social: string } | null;
 };
 
+type ClienteContrato = {
+  id: string;
+  razao_social: string;
+  cnpj: string | null;
+  email: string | null;
+  responsavel_financeiro?: string | null;
+  responsavel_tecnico?: string | null;
+  responsavel_operacional?: string | null;
+};
+
 const EMAIL_STATUS_MAP: Record<
   string,
   {
@@ -124,7 +134,7 @@ function ContratosPage() {
     queryKey: ["clientes-select"],
     queryFn: async () => {
       const { data } = await supabase.from("clientes").select("*").order("razao_social");
-      return data ?? [];
+      return (data ?? []) as ClienteContrato[];
     },
   });
 
@@ -140,7 +150,7 @@ function ContratosPage() {
     },
   });
 
-  const selectedCliente = clientes.find((c) => c.id === selectedClienteId) as any;
+  const selectedCliente = clientes.find((c) => c.id === selectedClienteId);
 
   const createMutation = useMutation({
     mutationFn: async (payload: Record<string, unknown>) => {
@@ -238,7 +248,7 @@ function ContratosPage() {
         representante_nome: _rn,
         representante_cpf: _rc,
         ...dbPayload
-      } = payload as any;
+      } = payload;
       const row = { ...dbPayload, owner_id: user.id, conteudo_html, modelo_id } as never;
       const { error } = await supabase.from("contratos").insert(row);
       if (error) throw error;
