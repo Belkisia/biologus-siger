@@ -36,8 +36,19 @@ type Contrato = {
   forma_pagamento: string | null;
   status: string;
   observacoes: string | null;
+  ultimo_email_status: string | null;
+  ultimo_email_em: string | null;
+  ultimo_email_destino: string | null;
+  ultimo_email_erro: string | null;
   clientes?: { razao_social: string } | null;
 };
+
+const EMAIL_STATUS_MAP: Record<string, { label: string; variant: "default" | "secondary" | "outline" | "destructive"; className?: string }> = {
+  processando: { label: "Em processamento", variant: "secondary" },
+  enviado: { label: "Enviado", variant: "default", className: "bg-emerald-600 hover:bg-emerald-600" },
+  falhou: { label: "Falhou", variant: "destructive" },
+};
+
 
 const STATUS_MAP: Record<string, { label: string; variant: "default" | "secondary" | "outline" | "destructive" }> = {
   ativo: { label: "Ativo", variant: "default" },
