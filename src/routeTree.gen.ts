@@ -28,6 +28,7 @@ import { Route as AuthenticatedColetasRouteImport } from './routes/_authenticate
 import { Route as AuthenticatedClientesRouteImport } from './routes/_authenticated/clientes'
 import { Route as AuthenticatedCdfRouteImport } from './routes/_authenticated/cdf'
 import { Route as LovableEmailSuppressionRouteImport } from './routes/lovable/email/suppression'
+import { Route as AuthenticatedPropostasNovaRouteImport } from './routes/_authenticated/propostas.nova'
 import { Route as LovableEmailTransactionalSendRouteImport } from './routes/lovable/email/transactional/send'
 import { Route as LovableEmailTransactionalPreviewRouteImport } from './routes/lovable/email/transactional/preview'
 import { Route as LovableEmailQueueProcessRouteImport } from './routes/lovable/email/queue/process'
@@ -129,6 +130,12 @@ const LovableEmailSuppressionRoute = LovableEmailSuppressionRouteImport.update({
   path: '/lovable/email/suppression',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AuthenticatedPropostasNovaRoute =
+  AuthenticatedPropostasNovaRouteImport.update({
+    id: '/nova',
+    path: '/nova',
+    getParentRoute: () => AuthenticatedPropostasRoute,
+  } as any)
 const LovableEmailTransactionalSendRoute =
   LovableEmailTransactionalSendRouteImport.update({
     id: '/lovable/email/transactional/send',
@@ -172,10 +179,11 @@ export interface FileRoutesByFullPath {
   '/licencas': typeof AuthenticatedLicencasRoute
   '/mtr': typeof AuthenticatedMtrRoute
   '/portal': typeof AuthenticatedPortalRoute
-  '/propostas': typeof AuthenticatedPropostasRoute
+  '/propostas': typeof AuthenticatedPropostasRouteWithChildren
   '/relatorios': typeof AuthenticatedRelatoriosRoute
   '/usuarios': typeof AuthenticatedUsuariosRoute
   '/email/unsubscribe': typeof EmailUnsubscribeRoute
+  '/propostas/nova': typeof AuthenticatedPropostasNovaRoute
   '/lovable/email/suppression': typeof LovableEmailSuppressionRoute
   '/lovable/email/auth/preview': typeof LovableEmailAuthPreviewRoute
   '/lovable/email/auth/webhook': typeof LovableEmailAuthWebhookRoute
@@ -197,10 +205,11 @@ export interface FileRoutesByTo {
   '/licencas': typeof AuthenticatedLicencasRoute
   '/mtr': typeof AuthenticatedMtrRoute
   '/portal': typeof AuthenticatedPortalRoute
-  '/propostas': typeof AuthenticatedPropostasRoute
+  '/propostas': typeof AuthenticatedPropostasRouteWithChildren
   '/relatorios': typeof AuthenticatedRelatoriosRoute
   '/usuarios': typeof AuthenticatedUsuariosRoute
   '/email/unsubscribe': typeof EmailUnsubscribeRoute
+  '/propostas/nova': typeof AuthenticatedPropostasNovaRoute
   '/lovable/email/suppression': typeof LovableEmailSuppressionRoute
   '/lovable/email/auth/preview': typeof LovableEmailAuthPreviewRoute
   '/lovable/email/auth/webhook': typeof LovableEmailAuthWebhookRoute
@@ -224,10 +233,11 @@ export interface FileRoutesById {
   '/_authenticated/licencas': typeof AuthenticatedLicencasRoute
   '/_authenticated/mtr': typeof AuthenticatedMtrRoute
   '/_authenticated/portal': typeof AuthenticatedPortalRoute
-  '/_authenticated/propostas': typeof AuthenticatedPropostasRoute
+  '/_authenticated/propostas': typeof AuthenticatedPropostasRouteWithChildren
   '/_authenticated/relatorios': typeof AuthenticatedRelatoriosRoute
   '/_authenticated/usuarios': typeof AuthenticatedUsuariosRoute
   '/email/unsubscribe': typeof EmailUnsubscribeRoute
+  '/_authenticated/propostas/nova': typeof AuthenticatedPropostasNovaRoute
   '/lovable/email/suppression': typeof LovableEmailSuppressionRoute
   '/lovable/email/auth/preview': typeof LovableEmailAuthPreviewRoute
   '/lovable/email/auth/webhook': typeof LovableEmailAuthWebhookRoute
@@ -255,6 +265,7 @@ export interface FileRouteTypes {
     | '/relatorios'
     | '/usuarios'
     | '/email/unsubscribe'
+    | '/propostas/nova'
     | '/lovable/email/suppression'
     | '/lovable/email/auth/preview'
     | '/lovable/email/auth/webhook'
@@ -280,6 +291,7 @@ export interface FileRouteTypes {
     | '/relatorios'
     | '/usuarios'
     | '/email/unsubscribe'
+    | '/propostas/nova'
     | '/lovable/email/suppression'
     | '/lovable/email/auth/preview'
     | '/lovable/email/auth/webhook'
@@ -306,6 +318,7 @@ export interface FileRouteTypes {
     | '/_authenticated/relatorios'
     | '/_authenticated/usuarios'
     | '/email/unsubscribe'
+    | '/_authenticated/propostas/nova'
     | '/lovable/email/suppression'
     | '/lovable/email/auth/preview'
     | '/lovable/email/auth/webhook'
@@ -463,6 +476,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LovableEmailSuppressionRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_authenticated/propostas/nova': {
+      id: '/_authenticated/propostas/nova'
+      path: '/nova'
+      fullPath: '/propostas/nova'
+      preLoaderRoute: typeof AuthenticatedPropostasNovaRouteImport
+      parentRoute: typeof AuthenticatedPropostasRoute
+    }
     '/lovable/email/transactional/send': {
       id: '/lovable/email/transactional/send'
       path: '/lovable/email/transactional/send'
@@ -501,6 +521,20 @@ declare module '@tanstack/react-router' {
   }
 }
 
+interface AuthenticatedPropostasRouteChildren {
+  AuthenticatedPropostasNovaRoute: typeof AuthenticatedPropostasNovaRoute
+}
+
+const AuthenticatedPropostasRouteChildren: AuthenticatedPropostasRouteChildren =
+  {
+    AuthenticatedPropostasNovaRoute: AuthenticatedPropostasNovaRoute,
+  }
+
+const AuthenticatedPropostasRouteWithChildren =
+  AuthenticatedPropostasRoute._addFileChildren(
+    AuthenticatedPropostasRouteChildren,
+  )
+
 interface AuthenticatedRouteRouteChildren {
   AuthenticatedCdfRoute: typeof AuthenticatedCdfRoute
   AuthenticatedClientesRoute: typeof AuthenticatedClientesRoute
@@ -512,7 +546,7 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedLicencasRoute: typeof AuthenticatedLicencasRoute
   AuthenticatedMtrRoute: typeof AuthenticatedMtrRoute
   AuthenticatedPortalRoute: typeof AuthenticatedPortalRoute
-  AuthenticatedPropostasRoute: typeof AuthenticatedPropostasRoute
+  AuthenticatedPropostasRoute: typeof AuthenticatedPropostasRouteWithChildren
   AuthenticatedRelatoriosRoute: typeof AuthenticatedRelatoriosRoute
   AuthenticatedUsuariosRoute: typeof AuthenticatedUsuariosRoute
 }
@@ -528,7 +562,7 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedLicencasRoute: AuthenticatedLicencasRoute,
   AuthenticatedMtrRoute: AuthenticatedMtrRoute,
   AuthenticatedPortalRoute: AuthenticatedPortalRoute,
-  AuthenticatedPropostasRoute: AuthenticatedPropostasRoute,
+  AuthenticatedPropostasRoute: AuthenticatedPropostasRouteWithChildren,
   AuthenticatedRelatoriosRoute: AuthenticatedRelatoriosRoute,
   AuthenticatedUsuariosRoute: AuthenticatedUsuariosRoute,
 }
