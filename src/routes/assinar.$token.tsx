@@ -80,7 +80,7 @@ function AssinarPage() {
     try {
       const rubrica = sigRef.current?.getCanvas().toDataURL("image/png");
       const r = await confirmar({ data: { token, codigo, rubrica_base64: rubrica, aceite: true } });
-      setSucesso({ codigo: r.codigo_verificacao, todos: r.todosAssinados });
+      setSucesso({ codigo: r.codigo_verificacao, todos: !!r.todosAssinados });
     } catch (e: any) {
       toast.error(e.message);
     } finally {
