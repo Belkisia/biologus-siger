@@ -387,9 +387,11 @@ function ContratosPage() {
                         <Button variant="ghost" size="icon" title="Visualizar PDF" onClick={() => handlePreview(c)} disabled={previewing === c.id}>
                           {previewing === c.id ? <Loader2 className="h-4 w-4 animate-spin" /> : <Eye className="h-4 w-4" />}
                         </Button>
-                        <Button variant="ghost" size="icon" title="Enviar por e-mail" onClick={() => openEmailDialog(c)}>
-                          <Mail className="h-4 w-4 text-primary" />
+                        <Button variant="outline" size="sm" onClick={() => openEmailDialog(c)} className="gap-1.5">
+                          <Mail className="h-4 w-4" />
+                          Enviar por e-mail
                         </Button>
+
                         <Button variant="ghost" size="icon" title="Enviar para assinatura" onClick={() => setAssinaturaContrato(c)}>
                           <PenTool className="h-4 w-4 text-primary" />
                         </Button>
