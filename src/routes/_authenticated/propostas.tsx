@@ -344,12 +344,12 @@ function PropostasPage() {
     doc.setFontSize(6.8);
     doc.text("DESTINATÁRIO", M + 3, y + 4);
     doc.setTextColor(0);
-    doc.setFontSize(10.5);
+    doc.setFontSize(t.nomeFont);
     const nome = cli?.razao_social ?? "—";
     const nomeLines = doc.splitTextToSize(nome, colW - 6) as string[];
     doc.text(nomeLines.slice(0, 2), M + 3, y + 9);
     doc.setFont("helvetica", "normal");
-    doc.setFontSize(7.8);
+    doc.setFontSize(t.destFont);
     let yL = y + 9 + Math.min(nomeLines.length, 2) * 4.2;
     if (cli?.cnpj) { doc.text(`CNPJ: ${cli.cnpj}`, M + 3, yL); yL += 3.6; }
     if (cli?.cidade) { doc.text(`${cli.cidade}${cli.estado ? ` – ${cli.estado}` : ""}`, M + 3, yL); yL += 3.6; }
