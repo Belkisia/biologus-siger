@@ -15,6 +15,7 @@ import {
   FileBarChart,
   Landmark,
   ExternalLink,
+  Sparkles,
 } from "lucide-react";
 import {
   Sidebar,
@@ -43,6 +44,7 @@ const operacao: NavItem[] = [
 const comercial: NavItem[] = [
   { title: "Clientes", url: "/clientes", icon: Users },
   { title: "Propostas", url: "/propostas", icon: FileBarChart },
+  { title: "Nova Proposta (IA)", url: "/propostas/nova", icon: Sparkles },
   { title: "Contratos", url: "/contratos", icon: FileSignature },
   { title: "Financeiro", url: "/financeiro", icon: DollarSign },
   { title: "Conciliação Bancária", url: "/conciliacao", icon: Landmark },
