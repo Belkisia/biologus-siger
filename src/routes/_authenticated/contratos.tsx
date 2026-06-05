@@ -157,6 +157,9 @@ function ContratosPage() {
     .reduce((acc, c) => acc + (c.valor_mensal ?? 0), 0);
 
   const [assinaturaContrato, setAssinaturaContrato] = useState<Contrato | null>(null);
+  const [filtroEmail, setFiltroEmail] = useState<string>("todos");
+  const [ordemEmail, setOrdemEmail] = useState<string>("recente");
+
   const [emailContrato, setEmailContrato] = useState<Contrato | null>(null);
   const [emailDestino, setEmailDestino] = useState("");
   const [emailMensagem, setEmailMensagem] = useState("");
