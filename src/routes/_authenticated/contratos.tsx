@@ -425,7 +425,7 @@ function ContratosPage() {
                 <TableHead>Cliente</TableHead>
                 <TableHead>Vigência</TableHead>
                 <TableHead>Valor mensal</TableHead>
-                <TableHead>Reajuste</TableHead>
+                
                 <TableHead>Status</TableHead>
                 <TableHead>Envio e-mail</TableHead>
                 <TableHead className="w-12"></TableHead>
@@ -444,10 +444,6 @@ function ContratosPage() {
                       {c.data_fim && <> → {new Date(c.data_fim).toLocaleDateString("pt-BR")}</>}
                     </TableCell>
                     <TableCell className="text-sm">{formatBRL(c.valor_mensal)}</TableCell>
-                    <TableCell className="text-sm">
-                      {c.indice_reajuste ?? "—"}
-                      {c.periodicidade_reajuste && <div className="text-xs text-muted-foreground">{c.periodicidade_reajuste}</div>}
-                    </TableCell>
                     <TableCell>
                       <Select value={c.status} onValueChange={(v) => updateStatus.mutate({ id: c.id, status: v })}>
                         <SelectTrigger className="w-32 h-8">
