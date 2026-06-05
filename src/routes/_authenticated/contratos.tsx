@@ -57,9 +57,7 @@ const STATUS_MAP: Record<string, { label: string; variant: "default" | "secondar
   cancelado: { label: "Cancelado", variant: "destructive" },
 };
 
-const INDICES = ["IPCA", "IGP-M", "INPC", "IPC-FIPE", "Personalizado"];
-
-const OBJETO_PADRAO = `Prestação de serviços de gerenciamento de resíduos sólidos, compreendendo coleta, transporte, armazenamento temporário, tratamento e destinação final ambientalmente adequada dos resíduos gerados pela CONTRATANTE, em conformidade com a Lei nº 12.305/2010 (Política Nacional de Resíduos Sólidos), bem como a emissão dos respectivos Manifestos de Transporte de Resíduos (MTR) e Certificados de Destinação Final (CDF).`;
+import { buildVars, renderTemplate } from "@/lib/contrato-modelo.functions";
 
 function addMonthsISO(dataInicio: string, meses: number): string {
   const d = new Date(dataInicio + "T00:00:00");
