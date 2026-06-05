@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { Card } from "@/components/ui/card";
@@ -17,7 +17,42 @@ import { RichTextEditor } from "@/components/RichTextEditor";
 import {
   listarModelos, obterModelo, criarModelo, atualizarModelo, duplicarModelo,
   alternarAtivoModelo, excluirModelo, listarVersoes,
+  renderTemplate, buildVars,
 } from "@/lib/contrato-modelo.functions";
+
+// Dados de exemplo para a pré-visualização (não persistidos)
+const SAMPLE_CLIENTE = {
+  razao_social: "MV. OROFACI ODONTOLOGIA LTDA",
+  nome_fantasia: "MV. OROFACI ODONTOLOGIA",
+  cnpj: "18.526.332/0001-70",
+  inscricao_estadual: "ISENTO",
+  inscricao_municipal: "123456",
+  cnae: "8630-5/04 - Atividade odontológica",
+  endereco: "Avenida Presidente Vargas, Quadra 23, Lote 01",
+  numero: "S/N",
+  bairro: "Jardim Marista",
+  cidade: "Trindade",
+  estado: "GO",
+  cep: "75.388-408",
+  email: "contato@orofaci.com.br",
+  telefone: "(62) 98257-1491",
+  whatsapp: "(62) 98257-1491",
+  responsavel_tecnico: "Márcia Vieira da Silva",
+  responsavel_financeiro: "Márcia Vieira da Silva",
+  responsavel_operacional: "Márcia Vieira da Silva",
+};
+const SAMPLE_ITENS = [
+  { descricao: "Resíduo infectante perfurocortante", grupo_residuo: "E", unidade: "kg", franquia: 20, preco_unitario: 9.5, preco_excedente: 11 },
+  { descricao: "Resíduo químico (amálgama, reveladores)", grupo_residuo: "B", unidade: "kg", franquia: 5, preco_unitario: 18, preco_excedente: 22 },
+  { descricao: "Resíduo biológico", grupo_residuo: "A", unidade: "kg", franquia: 15, preco_unitario: 8, preco_excedente: 10 },
+];
+const SAMPLE_CONTRATO = {
+  numero: "CTR-2026-0001",
+  data_inicio: new Date().toISOString().slice(0, 10),
+  data_fim: null,
+  valor_mensal: 1850,
+  periodicidade_reajuste: "mensal",
+};
 
 export const Route = createFileRoute("/_authenticated/modelos-contrato")({
   component: ModelosPage,
@@ -166,7 +201,7 @@ function ModelosPage() {
       </Card>
 
       <Dialog open={editor.open} onOpenChange={(o) => setEditor((s) => ({ ...s, open: o }))}>
-        <DialogContent className="max-w-5xl max-h-[90vh] overflow-y-auto">
+        <DialogContent className="max-w-[95vw] max-h-[92vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle>{editor.id ? "Editar modelo" : "Novo modelo"}</DialogTitle>
           </DialogHeader>
@@ -181,16 +216,19 @@ function ModelosPage() {
                 <Input value={editor.descricao} onChange={(e) => setEditor((s) => ({ ...s, descricao: e.target.value }))} />
               </div>
             </div>
-            <div className="space-y-2">
-              <Label>Conteúdo do contrato</Label>
-              <RichTextEditor
-                value={editor.conteudo_html}
-                onChange={(html) => setEditor((s) => ({ ...s, conteudo_html: html }))}
-                minHeight={420}
-              />
-              <p className="text-xs text-muted-foreground">
-                Use {`{{VARIAVEL}}`} para campos dinâmicos. O seletor na barra inferior do editor lista todas as variáveis disponíveis.
-              </p>
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label>Conteúdo do contrato</Label>
+                <RichTextEditor
+                  value={editor.conteudo_html}
+                  onChange={(html) => setEditor((s) => ({ ...s, conteudo_html: html }))}
+                  minHeight={520}
+                />
+                <p className="text-xs text-muted-foreground">
+                  Use {`{{VARIAVEL}}`} para campos dinâmicos. O painel ao lado mostra como ficará com dados reais.
+                </p>
+              </div>
+              <PreviewPane html={editor.conteudo_html} />
             </div>
             {editor.id && (
               <div className="space-y-2">
@@ -233,6 +271,43 @@ function ModelosPage() {
           )}
         </DialogContent>
       </Dialog>
+    </div>
+  );
+}
+
+function PreviewPane({ html }: { html: string }) {
+  const [showRaw, setShowRaw] = useState(false);
+  const rendered = useMemo(() => {
+    try {
+      const vars = buildVars({
+        cliente: SAMPLE_CLIENTE,
+        contrato: SAMPLE_CONTRATO,
+        itens: SAMPLE_ITENS,
+      });
+      return renderTemplate(html || "", vars);
+    } catch {
+      return html;
+    }
+  }, [html]);
+
+  return (
+    <div className="space-y-2">
+      <div className="flex items-center justify-between">
+        <Label>Pré-visualização (dados de exemplo)</Label>
+        <div className="flex items-center gap-2">
+          <span className="text-xs text-muted-foreground">Modelo</span>
+          <Switch checked={!showRaw} onCheckedChange={(v) => setShowRaw(!v)} />
+          <span className="text-xs text-muted-foreground">Preenchido</span>
+        </div>
+      </div>
+      <div
+        className="prose prose-sm max-w-none border rounded-md p-4 bg-background overflow-y-auto"
+        style={{ minHeight: 520, maxHeight: 640 }}
+        dangerouslySetInnerHTML={{ __html: showRaw ? (html || "") : rendered }}
+      />
+      <p className="text-xs text-muted-foreground">
+        Placeholders sem dado aparecem em <span className="text-destructive font-mono">[VARIAVEL]</span>. Dados reais serão usados ao gerar o contrato a partir de um cliente/proposta.
+      </p>
     </div>
   );
 }

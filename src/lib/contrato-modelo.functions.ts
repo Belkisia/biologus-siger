@@ -23,7 +23,7 @@ function dataBR(d: string | null | undefined) {
 }
 
 // Constrói o dicionário de variáveis a partir do cliente + opcionalmente contrato/proposta + itens
-function buildVars(args: {
+export function buildVars(args: {
   cliente: any;
   contrato?: any | null;
   proposta?: any | null;
