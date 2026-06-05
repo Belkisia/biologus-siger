@@ -46,7 +46,7 @@ const comercial: NavItem[] = [
   { title: "Propostas", url: "/propostas", icon: FileBarChart },
   { title: "Nova Proposta (IA)", url: "/propostas/nova", icon: Sparkles },
   { title: "Contratos", url: "/contratos", icon: FileSignature },
-  { title: "Modelos de Contrato", url: "/contratos/modelos", icon: FileText },
+  { title: "Modelos de Contrato", url: "/modelos-contrato", icon: FileText },
   { title: "Financeiro", url: "/financeiro", icon: DollarSign },
   { title: "Conciliação Bancária", url: "/conciliacao", icon: Landmark },
 ];

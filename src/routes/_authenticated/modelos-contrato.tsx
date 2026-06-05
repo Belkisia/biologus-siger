@@ -19,7 +19,7 @@ import {
   alternarAtivoModelo, excluirModelo, listarVersoes,
 } from "@/lib/contrato-modelo.functions";
 
-export const Route = createFileRoute("/_authenticated/contratos/modelos")({
+export const Route = createFileRoute("/_authenticated/modelos-contrato")({
   component: ModelosPage,
 });
 
