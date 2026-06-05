@@ -11,7 +11,7 @@ import { Badge } from "@/components/ui/badge";
 import { Switch } from "@/components/ui/switch";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Plus, FileText, Loader2, Trash2, Copy, History, Eye } from "lucide-react";
+import { Plus, FileText, Loader2, Trash2, Copy, History, Eye, AlertTriangle, CheckCircle2 } from "lucide-react";
 import { toast } from "sonner";
 import { RichTextEditor } from "@/components/RichTextEditor";
 import {
@@ -107,9 +107,26 @@ function ModelosPage() {
     });
   }
 
+  // Validação em tempo real dos placeholders
+  const validation = useMemo(() => {
+    const html = editor.conteudo_html || "";
+    const used = Array.from(new Set(Array.from(html.matchAll(/\{\{\s*([A-Z0-9_]+)\s*\}\}/g)).map((m) => m[1])));
+    const sampleVars = buildVars({ cliente: SAMPLE_CLIENTE, contrato: SAMPLE_CONTRATO, itens: SAMPLE_ITENS }) as Record<string, string>;
+    const known = new Set(Object.keys(sampleVars));
+    const unknown = used.filter((k) => !known.has(k));
+    const emptyWithSample = used.filter((k) => known.has(k) && (sampleVars[k] === "" || sampleVars[k] == null));
+    const ok = used.filter((k) => known.has(k) && sampleVars[k] !== "" && sampleVars[k] != null);
+    return { used, unknown, emptyWithSample, ok };
+  }, [editor.conteudo_html]);
+
+  const podeSalvar = !!editor.nome.trim() && validation.unknown.length === 0;
+
   const salvar = useMutation({
     mutationFn: async () => {
       if (!editor.nome.trim()) throw new Error("Nome é obrigatório");
+      if (validation.unknown.length > 0) {
+        throw new Error(`Placeholders não reconhecidos: ${validation.unknown.map((v) => `{{${v}}}`).join(", ")}`);
+      }
       if (editor.id) {
         return fnUpdate({ data: { id: editor.id, nome: editor.nome, descricao: editor.descricao, conteudo_html: editor.conteudo_html, motivo: editor.motivo } });
       } else {
@@ -230,6 +247,55 @@ function ModelosPage() {
               </div>
               <PreviewPane html={editor.conteudo_html} />
             </div>
+
+            <Card className="p-3 space-y-2">
+              <div className="flex items-center justify-between">
+                <div className="text-sm font-medium flex items-center gap-2">
+                  {validation.unknown.length > 0 ? (
+                    <><AlertTriangle className="h-4 w-4 text-destructive" /> Validação dos placeholders</>
+                  ) : validation.emptyWithSample.length > 0 ? (
+                    <><AlertTriangle className="h-4 w-4 text-amber-500" /> Validação dos placeholders</>
+                  ) : (
+                    <><CheckCircle2 className="h-4 w-4 text-emerald-600" /> Validação dos placeholders</>
+                  )}
+                </div>
+                <span className="text-xs text-muted-foreground">{validation.used.length} usados</span>
+              </div>
+              {validation.unknown.length > 0 && (
+                <div className="text-xs">
+                  <div className="text-destructive font-medium mb-1">Desconhecidos (bloqueiam o salvamento):</div>
+                  <div className="flex flex-wrap gap-1">
+                    {validation.unknown.map((v) => (
+                      <Badge key={v} variant="destructive" className="font-mono">{`{{${v}}}`}</Badge>
+                    ))}
+                  </div>
+                </div>
+              )}
+              {validation.emptyWithSample.length > 0 && (
+                <div className="text-xs">
+                  <div className="text-amber-700 font-medium mb-1">Sem dado no exemplo (verifique se serão preenchidos pelo cadastro do cliente/contrato):</div>
+                  <div className="flex flex-wrap gap-1">
+                    {validation.emptyWithSample.map((v) => (
+                      <Badge key={v} variant="outline" className="font-mono border-amber-400 text-amber-700">{`{{${v}}}`}</Badge>
+                    ))}
+                  </div>
+                </div>
+              )}
+              {validation.ok.length > 0 && (
+                <div className="text-xs">
+                  <div className="text-muted-foreground mb-1">Preenchidos no exemplo:</div>
+                  <div className="flex flex-wrap gap-1">
+                    {validation.ok.map((v) => (
+                      <Badge key={v} variant="secondary" className="font-mono">{`{{${v}}}`}</Badge>
+                    ))}
+                  </div>
+                </div>
+              )}
+              {validation.used.length === 0 && (
+                <p className="text-xs text-muted-foreground">Nenhum placeholder {`{{...}}`} encontrado no conteúdo.</p>
+              )}
+            </Card>
+
             {editor.id && (
               <div className="space-y-2">
                 <Label>Motivo da alteração (opcional)</Label>
@@ -239,12 +305,14 @@ function ModelosPage() {
           </div>
           <DialogFooter>
             <Button variant="outline" onClick={() => setEditor((s) => ({ ...s, open: false }))}>Cancelar</Button>
-            <Button onClick={() => salvar.mutate()} disabled={salvar.isPending}>
+            <Button onClick={() => salvar.mutate()} disabled={salvar.isPending || !podeSalvar}
+              title={!podeSalvar ? "Corrija os placeholders desconhecidos para salvar" : ""}>
               {salvar.isPending && <Loader2 className="h-4 w-4 animate-spin" />} Salvar
             </Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
+
 
       <Dialog open={versHistorico.open} onOpenChange={(o) => setVersHistorico({ open: o, modelo: o ? versHistorico.modelo : undefined })}>
         <DialogContent className="max-w-2xl">
