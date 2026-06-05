@@ -495,9 +495,9 @@ function PropostasPage() {
     const obs = (p.observacoes && p.observacoes.trim()) ||
       "Valores válidos para as quantidades estimadas. Reajuste anual por IPCA. MTR/CDF emitidos a cada coleta.";
     const obsLines = doc.splitTextToSize(obs, colW - 4) as string[];
-    doc.text(obsLines.slice(0, 7), xR + 2, y + 9);
+    doc.text(obsLines.slice(0, t.obsLines), xR + 2, y + 9);
 
-    y += inclH + 4;
+    y += inclH + t.sectionGap;
 
     // ── BLOCO 6 — ASSINATURA + CONTATO (rodapé) ─────────────────────────
     // Posiciona próximo do fim mas usa o y atual se já estiver alto
