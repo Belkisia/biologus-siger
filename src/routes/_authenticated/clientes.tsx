@@ -1,4 +1,4 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
@@ -11,7 +11,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogFooter } from "@/components/ui/dialog";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Plus, Search, Building2, Trash2, Loader2, UserPlus, UserMinus, CheckCircle2 } from "lucide-react";
+import { Plus, Search, Building2, Trash2, Loader2, UserPlus, UserMinus, CheckCircle2, FolderOpen } from "lucide-react";
 import { toast } from "sonner";
 import { vincularClienteUsuario, desvincularClienteUsuario } from "@/lib/clientes.functions";
 
@@ -211,6 +211,11 @@ function ClientesPage() {
                   <TableCell><Badge variant={c.status === "ativo" ? "default" : "secondary"}>{c.status}</Badge></TableCell>
                   <TableCell>
                     <div className="flex items-center gap-1">
+                      <Button variant="ghost" size="icon" title="Pasta digital" asChild>
+                        <Link to="/clientes/$clienteId" params={{ clienteId: c.id }}>
+                          <FolderOpen className="h-4 w-4" />
+                        </Link>
+                      </Button>
                       {c.user_id ? (
                         <Button variant="ghost" size="icon" title="Desvincular usuário"
                           onClick={() => { if (confirm("Remover acesso do portal para este cliente?")) unlinkMutation.mutate(c.id); }}>
