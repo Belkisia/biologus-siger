@@ -271,7 +271,7 @@ function ContratosPage() {
                 </div>
                 <div className="space-y-2">
                   <Label>Periodicidade reajuste</Label>
-                  <Select name="periodicidade_reajuste" defaultValue="anual">
+                  <Select name="periodicidade_reajuste" value={periodicidade} onValueChange={onPeriodicidadeChange}>
                     <SelectTrigger><SelectValue /></SelectTrigger>
                     <SelectContent>
                       <SelectItem value="anual">Anual</SelectItem>
@@ -280,6 +280,7 @@ function ContratosPage() {
                     </SelectContent>
                   </Select>
                 </div>
+
                 <div className="space-y-2">
                   <Label htmlFor="dia_vencimento">Dia vencimento</Label>
                   <Input id="dia_vencimento" name="dia_vencimento" type="number" min="1" max="31" />
