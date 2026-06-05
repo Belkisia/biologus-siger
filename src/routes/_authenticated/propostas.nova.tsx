@@ -1,338 +1,300 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useServerFn } from "@tanstack/react-start";
-import { useRef, useState } from "react";
-import { gerarPropostaIA } from "@/lib/proposta-ai.functions";
+import { useState, useRef } from "react";
 
 export const Route = createFileRoute("/_authenticated/propostas/nova")({
   component: GeradorPropostas,
 });
 
-// ─── PALETA BRAND ────────────────────────────────────────────────────────────
+// ─── PALETA BRAND BIO LOGUS ───────────────────────────────────────────────────
 const C = {
-  vesc: "#0E3D1A",
-  vmed: "#1A6B2E",
-  vacc: "#2E8B47",
-  vclr: "#EAF4ED",
-  branco: "#FFFFFF",
-  cinza: "#3D3D3D",
-  muted: "#666666",
-  erro: "#A32D2D",
-  erroBg: "#FCEBEB",
+  vesc: "#0E3D1A", vmed: "#1A6B2E", vacc: "#2E8B47",
+  vclr: "#EAF4ED", branco: "#FFFFFF", cinza: "#3D3D3D",
+  muted: "#666666", erro: "#A32D2D", erroBg: "#FCEBEB",
 };
 
-// ─── SISTEMA PROMPT ──────────────────────────────────────────────────────────
-const SYSTEM = `Você é o gerador oficial de propostas comerciais da Bio Logus Ambiental, empresa de gestão de resíduos sólidos sediada em Goiânia-GO.
+// ─── PROMPT DE SISTEMA CIRÚRGICO ─────────────────────────────────────────────
+// Descreve o modelo exato célula por célula para não haver ambiguidade
+const SYSTEM = `Você é o gerador de propostas da Bio Logus Ambiental.
 
-IDENTIDADE FIXA (nunca alterar):
-- Empresa: Bio Logus Ambiental | CNPJ: 26.484.921/0001-60
-- Sede: Goiânia – GO | Tel: (62) 3558-2791 / (62) 9 8423-6682
-- E-mail: comercial@biologusambiental.com.br | Responsável: Belkisia P. Santana
+REGRA ABSOLUTA: A proposta é UMA ÚNICA FOLHA A4. Máximo duas se inevitável. PROIBIDO gerar seções narrativas longas, parágrafos de apresentação, textos de encerramento ou qualquer conteúdo que alongue o documento. Cada bloco é uma tabela compacta.
 
-Ao receber os dados, gere uma proposta técnica e comercial compacta estruturada EXATAMENTE assim:
+━━━ IDENTIDADE FIXA (nunca alterar) ━━━
+Empresa: Bio Logus Ambiental | CNPJ: 26.484.921/0001-60
+Responsável: Belkisia P. Santana — Comercial
+Tel: (62) 3558-2791 / (62) 9 8423-6682
+E-mail: comercial@biologusambiental.com.br
 
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-BIO LOGUS AMBIENTAL · Gestão Inteligente de Resíduos · Goiânia – GO
-CNPJ 26.484.921/0001-60 · [NÚMERO DA PROPOSTA] · Emitida em [DATA]
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+━━━ ESTRUTURA OBRIGATÓRIA — SIGA EXATAMENTE ESTA ORDEM ━━━
 
-DESTINATÁRIO
-[Nome do cliente] — [Cidade–UF]
-[Descrição resumida do serviço em 1 linha]
+▌BLOCO 1 — CABEÇALHO (faixa verde escura, 1 linha)
+Fundo #0E3D1A, texto branco centralizado:
+"BIO LOGUS AMBIENTAL · Gestão Inteligente de Resíduos · Goiânia – GO"
+Linha abaixo: "CNPJ 26.484.921/0001-60 · Nº [NUM_PROPOSTA] · Emitida em [DATA]"
 
-CONDIÇÕES COMERCIAIS
-Validade: [X dias] | Início: [X dias úteis] | Pagamento: [forma]
-Frequência: [freq] | Volume: [min] a [max] kg/coleta
+▌BLOCO 2 — DESTINATÁRIO + CONDIÇÕES (2 colunas, sem título de seção)
+Coluna esquerda (fundo #EAF4ED, borda esquerda verde):
+  Label pequeno: "DESTINATÁRIO"
+  Nome do cliente em negrito grande
+  Cidade – UF
+  Descrição do serviço em 1 linha itálico
 
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-SERVIÇO CONTRATADO
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-Coleta, transporte e destinação final ambientalmente adequada de:
-[Listar cada grupo de resíduo selecionado com acondicionamento correto]
+Coluna direita (fundo branco):
+  Tabela de 2 colunas sem bordas externas:
+  Validade     | [X] dias corridos
+  Início       | [X] dias úteis após assinatura
+  Pagamento    | [forma]
+  Frequência   | [freq]
+  Volume       | [min] a [max] kg/coleta
 
-INCLUSO SEM CUSTO ADICIONAL:
-▸ Pesagem + comprovante assinado no ato da coleta
-▸ MTR (Manifesto de Transporte de Resíduos)
-▸ CDF (Certificado de Destinação Final) em até 15 dias
-▸ Nota Fiscal discriminada por grupo e peso
-▸ Veículo licenciado SEMARH-GO com monitoramento de rota
+▌BLOCO 3 — SERVIÇO + INCLUSO + PREÇO (3 colunas, sem título de seção)
+Coluna 1 — "SERVIÇO PRESTADO" (header verde escuro):
+  "Coleta, transporte e destinação final de:"
+  ▸ [cada grupo de resíduo com seu acondicionamento]
 
-PREÇO: R$ [X,XX] por kg coletado
-Valor máximo estimado: R$ [total] ([max]kg × R$ [preço])
-Faturamento pelo peso efetivamente coletado. Sem cobrança mínima.
-Conformidade: [citar apenas normas aplicáveis aos grupos selecionados]
+Coluna 2 — "INCLUSO NO VALOR" (header verde escuro):
+  ▸ Pesagem + comprovante assinado na coleta
+  ▸ MTR (Manifesto de Transporte de Resíduos)
+  ▸ CDF (Certificado de Destinação Final) em até 15 dias
+  ▸ Nota Fiscal discriminada por grupo e peso
+  ▸ Veículo licenciado SEMARH-GO
 
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-OBRIGAÇÕES DA CONTRATADA          | OBRIGAÇÕES DO CONTRATANTE
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-[5 itens adaptados ao tipo]       | [5 itens adaptados ao tipo]
+Coluna 3 — "PREÇO POR KG COLETADO" (header + fundo verde escuro, texto branco):
+  R$ [X,XX] em fonte grande e negrito
+  "por quilo coletado" em itálico pequeno
+  ———
+  "Máximo estimado:"
+  R$ [TOTAL] em negrito
+  "([max]kg × R$ [preço])" pequeno
 
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-[Cláusula jurídica: público=empenho+IGP-M | privado=CC+multa 2%]
-[Observações adicionais se houver]
+▌BLOCO 4 — NOTA DE FATURAMENTO (faixa com borda esquerda verde, 1 linha)
+"Faturamento: cobrado pelo peso efetivamente coletado, com base em comprovante assinado pelo responsável. Sem cobrança mínima. Conformidade: [normas aplicáveis]."
+[Se cliente público adicionar: "Sujeito à emissão de empenho pelo órgão contratante."]
+[Se cliente privado adicionar: "Multa de 2% + juros 1%/mês sobre valores em atraso."]
 
-ASSINATURA
-Contratada: Belkisia P. Santana – Comercial | Contratante: _______________
-Data: ___/___/${new Date().getFullYear()}
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+▌BLOCO 5 — OBRIGAÇÕES (2 colunas, sem texto longo)
+Header esquerdo verde: "OBRIGAÇÕES DA CONTRATADA"
+Header direito verde: "OBRIGAÇÕES DO CONTRATANTE"
+Máximo 5 bullets por lado. Verbos no infinitivo. Frases curtas.
 
-NORMAS POR GRUPO (usar somente as aplicáveis):
-- Grupos A, B, E (RSS): RDC ANVISA 222/2018 · CONAMA 358/2005 · PNRS Lei 12.305/10
-- Classe I industrial: ABNT NBR 10.004:2004 · PNRS Lei 12.305/10 · Lei GO 14.248/2002
-- Classe II: ABNT NBR 10.004:2004 · PNRS Lei 12.305/10
-- Grupo D: PNRS Lei 12.305/10
+CONTRATADA:
+▸ Coletar resíduos com equipe treinada e EPIs completos.
+▸ Pesar e emitir comprovante no ato da coleta.
+▸ Transportar em veículo licenciado com monitoramento de rota.
+▸ Emitir MTR e CDF em até 15 dias após destinação final.
+▸ Apresentar Nota Fiscal discriminada por grupo e peso.
 
-Tom: formal, direto, sem floreios. Verbos no infinitivo nas obrigações. Nunca inventar dados não fornecidos.`;
+CONTRATANTE (adaptar ao acondicionamento dos grupos marcados):
+▸ Acondicionar resíduos: [adaptar por grupo].
+▸ Designar responsável para acompanhar e assinar a coleta.
+▸ Garantir acesso às instalações nos dias acordados.
+▸ Efetuar pagamento no prazo mediante nota fiscal.
+▸ Comunicar alterações de volume com 72h de antecedência.
 
-// ─── GRUPOS CONFIG ────────────────────────────────────────────────────────────
+▌BLOCO 6 — ASSINATURA (2 colunas)
+Esquerda (fundo #EAF4ED, borda verde):
+  "CONTRATADA"
+  "Bio Logus Ambiental"
+  [linha de assinatura]
+  "Belkisia P. Santana — Comercial"
+  "Goiânia, [data]"
+
+Direita (fundo branco, borda cinza):
+  "CONTRATANTE"
+  "[Nome do cliente]"
+  [linha de assinatura]
+  "Nome / Cargo: _______________"
+  "Data: ___/___/[ano]"
+
+▌RODAPÉ (todas as páginas)
+"(62) 3558-2791 · (62) 9 8423-6682 · comercial@biologusambiental.com.br" | "Página X"
+
+━━━ NORMAS — CITAR APENAS AS APLICÁVEIS ━━━
+Grupos A, B, E (RSS): RDC ANVISA 222/2018 · CONAMA 358/2005 · PNRS Lei 12.305/2010
+Classe I industrial:   ABNT NBR 10.004:2004 · PNRS Lei 12.305/2010 · Lei GO 14.248/2002
+Classe II:             ABNT NBR 10.004:2004 · PNRS Lei 12.305/2010
+Grupo D:               PNRS Lei 12.305/2010
+
+━━━ PROIBIDO ━━━
+✗ Seção "Apresentação da Empresa"
+✗ Seção "Diferenciais"
+✗ Seção "Encerramento" ou texto de agradecimento
+✗ Parágrafos com mais de 2 linhas em qualquer bloco
+✗ Qualquer conteúdo que não esteja nos 6 blocos acima
+✗ Numerar seções (1., 2., 3. etc.)
+✗ Mais de 2 páginas A4`;
+
+// ─── CONFIG GRUPOS ────────────────────────────────────────────────────────────
 const GRUPOS = [
-  { id: "A", label: "Grupo A", desc: "Biológicos (bombonas)" },
-  { id: "B", label: "Grupo B", desc: "Químicos (recipiente compatível)" },
-  { id: "E", label: "Grupo E", desc: "Perfurocortantes (descartex)" },
-  { id: "D", label: "Grupo D", desc: "Domiciliar / comum" },
-  { id: "I", label: "Classe I", desc: "Perigoso industrial" },
+  { id: "A",   label: "Grupo A",    desc: "Biológicos (bombonas)" },
+  { id: "B",   label: "Grupo B",    desc: "Químicos (recipiente compatível)" },
+  { id: "E",   label: "Grupo E",    desc: "Perfurocortantes (descartex)" },
+  { id: "D",   label: "Grupo D",    desc: "Domiciliar / comum" },
+  { id: "I",   label: "Classe I",   desc: "Perigoso industrial" },
   { id: "IIA", label: "Classe II-A", desc: "Não perigoso / não inerte" },
   { id: "IIB", label: "Classe II-B", desc: "Não perigoso / inerte" },
-] as const;
-
-type GrupoId = (typeof GRUPOS)[number]["id"];
+];
 
 // ─── HELPERS ─────────────────────────────────────────────────────────────────
-function fmtBRL(v: number) {
-  return Number(v).toLocaleString("pt-BR", {
-    minimumFractionDigits: 2,
-    maximumFractionDigits: 2,
-  });
+function fmtBRL(v: any) {
+  return Number(v).toLocaleString("pt-BR", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 }
 
 function gerarNumero(cidade: string) {
   const siglas: Record<string, string> = {
-    goiania: "GOI",
-    anapolis: "ANA",
-    aparecida: "APG",
-    luziania: "LUZ",
-    formosa: "FOR",
-    cabeceiras: "CAB",
-    catalao: "CAT",
-    jatai: "JAT",
-    itumbiara: "ITU",
-    "rio verde": "RVE",
-    "aguas lindas": "AGL",
-    trindade: "TRI",
-    senador: "SEN",
+    goiania:"GOI", anapolis:"ANA", aparecida:"APG", luziania:"LUZ",
+    formosa:"FOR", cabeceiras:"CAB", catalao:"CAT", jatai:"JAT",
+    itumbiara:"ITU", "rio verde":"RVE", trindade:"TRI",
   };
-  const chave = (cidade || "").toLowerCase().split(/[\s–-]/)[0];
-  const sigla =
-    siglas[chave] ||
-    (cidade || "XXX").replace(/[^a-zA-Z]/g, "").substring(0, 3).toUpperCase();
+  const chave = (cidade || "").toLowerCase().split(/[\s–\-]/)[0];
+  const sigla = siglas[chave] || (cidade || "XXX").replace(/[^a-zA-Z]/g,"").substring(0,3).toUpperCase();
   const seq = String(Math.floor(Math.random() * 899) + 101);
   return `BL-${new Date().getFullYear()}-${sigla}-${seq}`;
 }
 
-// ─── UI HELPERS ──────────────────────────────────────────────────────────────
-const labelStyle: React.CSSProperties = {
-  fontSize: 11.5,
-  fontWeight: 600,
-  color: C.cinza,
-  textTransform: "uppercase",
-  letterSpacing: 0.3,
-  marginBottom: 4,
-  display: "block",
-};
+// ─── UI PRIMITIVOS ────────────────────────────────────────────────────────────
+const Label = ({ children, required }: any) => (
+  <div style={{ fontSize: 10.5, fontWeight: 700, color: C.muted, marginBottom: 4,
+    textTransform: "uppercase", letterSpacing: ".06em" }}>
+    {children}{required && <span style={{ color: C.erro }}> *</span>}
+  </div>
+);
 
-const inputStyle: React.CSSProperties = {
-  width: "100%",
-  padding: "7px 10px",
-  fontSize: 13,
-  borderRadius: 6,
-  border: "0.5px solid #ccc",
-  background: "#fff",
-  color: C.cinza,
-  fontFamily: "inherit",
-  outline: "none",
-  boxSizing: "border-box",
-};
+const Inp = ({ style, ...p }: any) => (
+  <input style={{ width: "100%", padding: "7px 10px", fontSize: 13,
+    border: "0.5px solid #ccc", borderRadius: 6,
+    background: "var(--color-background-secondary)",
+    color: "var(--color-text-primary)", fontFamily: "inherit", outline: "none", ...style }} {...p} />
+);
 
-function Field({
-  label,
-  required,
-  children,
-}: {
-  label: string;
-  required?: boolean;
-  children: React.ReactNode;
-}) {
-  return (
-    <div style={{ flex: 1, minWidth: 0 }}>
-      <span style={labelStyle}>
-        {label}
-        {required && <span style={{ color: C.erro }}> *</span>}
-      </span>
-      {children}
+const Sel = ({ children, ...p }: any) => (
+  <select style={{ width: "100%", padding: "7px 10px", fontSize: 13,
+    border: "0.5px solid #ccc", borderRadius: 6,
+    background: "var(--color-background-secondary)",
+    color: "var(--color-text-primary)", fontFamily: "inherit", outline: "none" }} {...p}>
+    {children}
+  </select>
+);
+
+const Card = ({ title, icon, children }: any) => (
+  <div style={{ background: "var(--color-background-primary)",
+    border: "0.5px solid var(--color-border-tertiary)", borderRadius: 10,
+    padding: "14px 16px", marginBottom: 10 }}>
+    <div style={{ fontSize: 10, fontWeight: 700, color: C.vmed, textTransform: "uppercase",
+      letterSpacing: ".08em", marginBottom: 12, display: "flex", alignItems: "center", gap: 6 }}>
+      {icon} {title}
     </div>
-  );
-}
+    {children}
+  </div>
+);
 
-function Card({
-  title,
-  children,
-}: {
-  title: string;
-  children: React.ReactNode;
-}) {
-  return (
-    <div
-      style={{
-        background: "#fff",
-        border: `1px solid ${C.vclr}`,
-        borderRadius: 10,
-        padding: 16,
-        marginBottom: 14,
-      }}
-    >
-      <div
-        style={{
-          fontSize: 12,
-          fontWeight: 700,
-          color: C.vesc,
-          textTransform: "uppercase",
-          letterSpacing: 0.5,
-          marginBottom: 12,
-          paddingBottom: 8,
-          borderBottom: `1px solid ${C.vclr}`,
-        }}
-      >
-        {title}
-      </div>
-      {children}
-    </div>
-  );
-}
+const Row = ({ children, cols = 2, gap = 10 }: any) => (
+  <div style={{ display: "grid", gridTemplateColumns: `repeat(${cols}, 1fr)`,
+    gap, marginBottom: 10 }}>
+    {children}
+  </div>
+);
 
-function Row({ children }: { children: React.ReactNode }) {
-  return (
-    <div style={{ display: "flex", gap: 10, flexWrap: "wrap", marginBottom: 10 }}>
-      {children}
-    </div>
-  );
-}
+const Field = ({ label, required, children }: any) => (
+  <div><Label required={required}>{label}</Label>{children}</div>
+);
 
 // ─── COMPONENTE PRINCIPAL ────────────────────────────────────────────────────
 function GeradorPropostas() {
   const [form, setForm] = useState({
-    cliente_nome: "",
-    cliente_tipo: "publico",
-    cliente_cidade: "",
-    cliente_contato: "",
-    locais: "",
-    frequencia: "mensal",
-    vol_min: "0",
-    vol_max: "500",
-    preco_kg: "6.90",
-    pagamento: "30 dias após cada coleta",
-    prazo_inicio: "7",
-    validade: "60",
-    num_proposta: "",
-    obs: "",
+    cliente_nome: "", cliente_tipo: "publico", cliente_cidade: "",
+    cliente_cnpj: "", cliente_endereco: "", cliente_email: "",
+    cliente_tel: "", cliente_contato: "",
+    locais: "", frequencia: "mensal",
+    vol_min: "0", vol_max: "500",
+    preco_kg: "6.90", pagamento: "30 dias após cada coleta",
+    prazo_inicio: "7", validade: "60",
+    num_proposta: "", obs: "",
   });
-  const [grupos, setGrupos] = useState<Record<GrupoId, boolean>>({
-    A: true,
-    B: false,
-    E: true,
-    D: false,
-    I: false,
-    IIA: false,
-    IIB: false,
+  const [grupos, setGrupos] = useState<Record<string, boolean>>({
+    A: true, B: false, E: true, D: false, I: false, IIA: false, IIB: false,
   });
   const [loading, setLoading] = useState(false);
   const [proposta, setProposta] = useState("");
   const [erro, setErro] = useState("");
   const [copied, setCopied] = useState(false);
-  const outRef = useRef<HTMLDivElement | null>(null);
+  const outRef = useRef<HTMLDivElement>(null);
 
-  const gerarIA = useServerFn(gerarPropostaIA);
-
-  const set = (k: keyof typeof form, v: string) =>
-    setForm((f) => ({ ...f, [k]: v }));
-
-  const maxEst = fmtBRL(
-    (parseFloat(form.vol_max) || 0) * (parseFloat(form.preco_kg) || 0),
-  );
+  const set = (k: string, v: string) => setForm(f => ({ ...f, [k]: v }));
+  const maxEst = fmtBRL((parseFloat(form.vol_max) || 0) * (parseFloat(form.preco_kg) || 0));
   const numProposta = form.num_proposta || gerarNumero(form.cliente_cidade);
-  const gruposSel = GRUPOS.filter((g) => grupos[g.id]);
+  const gruposSel = GRUPOS.filter(g => grupos[g.id]);
 
   const validar = () => {
     if (!form.cliente_nome.trim()) return "Informe o nome do cliente.";
     if (!form.cliente_cidade.trim()) return "Informe a cidade do cliente.";
     if (!form.locais.trim()) return "Informe os locais de coleta.";
-    if (gruposSel.length === 0)
-      return "Selecione pelo menos um grupo de resíduo.";
-    if (!form.preco_kg || parseFloat(form.preco_kg) <= 0)
-      return "Informe o preço por kg.";
+    if (gruposSel.length === 0) return "Selecione pelo menos um grupo de resíduo.";
+    if (!form.preco_kg || parseFloat(form.preco_kg) <= 0) return "Informe o preço por kg.";
     return null;
   };
 
   const gerar = async () => {
     const err = validar();
-    if (err) {
-      setErro(err);
-      return;
-    }
+    if (err) { setErro(err); return; }
     setErro("");
     setLoading(true);
     setProposta("");
 
-    const tipoLabel = {
-      publico: "Público",
-      privado: "Privado",
-      terceiro_setor: "Terceiro Setor",
-    }[form.cliente_tipo as "publico" | "privado" | "terceiro_setor"];
-    const freqLabel = {
-      mensal: "Mensal",
-      quinzenal: "Quinzenal",
-      semanal: "Semanal",
-      sob_demanda: "Sob demanda",
-    }[form.frequencia as "mensal" | "quinzenal" | "semanal" | "sob_demanda"];
-    const grpTexto = gruposSel
-      .map((g) => `${g.label} — ${g.desc}`)
-      .join("\n  ");
+    const tipoLabel = ({ publico: "Público", privado: "Privado", terceiro_setor: "Terceiro Setor" } as any)[form.cliente_tipo];
+    const freqLabel = ({ mensal: "Mensal", quinzenal: "Quinzenal", semanal: "Semanal", sob_demanda: "Sob demanda" } as any)[form.frequencia];
+    const grpTexto = gruposSel.map(g => `${g.label} — ${g.desc}`).join("\n  ");
     const hoje = new Date().toLocaleDateString("pt-BR");
+    const precoFmt = parseFloat(form.preco_kg).toFixed(2).replace(".", ",");
 
-    const userMsg = `Gere a proposta com estes dados:
+    const userMsg = `Gere a proposta com os dados abaixo. Siga EXATAMENTE os 6 blocos definidos. NÃO adicione seções extras.
 
 NÚMERO: ${numProposta}
 DATA: ${hoje}
 
 CLIENTE:
 - Nome: ${form.cliente_nome}
+- CNPJ: ${form.cliente_cnpj || "Não informado"}
+- Endereço: ${form.cliente_endereco || "Não informado"}
+- E-mail: ${form.cliente_email || "Não informado"}
+- Telefone: ${form.cliente_tel || "Não informado"}
+- Contato: ${form.cliente_contato || "Não informado"}
 - Tipo: ${tipoLabel}
 - Cidade: ${form.cliente_cidade}
-- Contato: ${form.cliente_contato || "Não informado"}
 
 SERVIÇO:
-- Locais: ${form.locais}
+- Locais de coleta: ${form.locais}
 - Grupos de resíduo:
   ${grpTexto}
 - Frequência: ${freqLabel}
 - Volume: ${form.vol_min} a ${form.vol_max} kg/coleta
 
 COMERCIAL:
-- Preço: R$ ${parseFloat(form.preco_kg).toFixed(2).replace(".", ",")} por kg
-- Máximo estimado: R$ ${maxEst} (${form.vol_max} kg × R$ ${parseFloat(form.preco_kg).toFixed(2).replace(".", ",")})
+- Preço: R$ ${precoFmt}/kg
+- Máximo estimado: R$ ${maxEst} (${form.vol_max} kg × R$ ${precoFmt})
 - Pagamento: ${form.pagamento}
-- Início: ${form.prazo_inicio} dias úteis
+- Prazo de início: ${form.prazo_inicio} dias úteis após assinatura
 - Validade: ${form.validade} dias corridos
-${form.obs ? `\nOBSERVAÇÕES: ${form.obs}` : ""}`;
+${form.obs ? `\nOBSERVAÇÕES ESPECIAIS: ${form.obs}` : ""}
+
+LEMBRE: apenas os 6 blocos. Sem seções numeradas. Sem apresentação. Sem encerramento. 1 folha A4.`;
 
     try {
-      const { text } = await gerarIA({ data: { system: SYSTEM, user: userMsg } });
-      setProposta(text);
-      setTimeout(
-        () => outRef.current?.scrollIntoView({ behavior: "smooth" }),
-        100,
-      );
-    } catch (e: unknown) {
-      const message = e instanceof Error ? e.message : String(e);
-      setErro(message || "Erro ao conectar com a IA. Tente novamente.");
+      const res = await fetch("https://api.anthropic.com/v1/messages", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          model: "claude-sonnet-4-20250514",
+          max_tokens: 1800,
+          system: SYSTEM,
+          messages: [{ role: "user", content: userMsg }],
+        }),
+      });
+      const data = await res.json();
+      const texto = data.content?.map((b: any) => b.text || "").join("") || "";
+      setProposta(texto);
+      setTimeout(() => outRef.current?.scrollIntoView({ behavior: "smooth" }), 100);
+    } catch (e) {
+      setErro("Erro ao conectar com a IA. Verifique a conexão e tente novamente.");
     }
     setLoading(false);
   };
@@ -345,434 +307,256 @@ ${form.obs ? `\nOBSERVAÇÕES: ${form.obs}` : ""}`;
 
   const limpar = () => {
     setForm({
-      cliente_nome: "",
-      cliente_tipo: "publico",
-      cliente_cidade: "",
-      cliente_contato: "",
-      locais: "",
-      frequencia: "mensal",
-      vol_min: "0",
-      vol_max: "500",
-      preco_kg: "6.90",
-      pagamento: "30 dias após cada coleta",
-      prazo_inicio: "7",
-      validade: "60",
-      num_proposta: "",
-      obs: "",
+      cliente_nome: "", cliente_tipo: "publico", cliente_cidade: "",
+      cliente_cnpj: "", cliente_endereco: "", cliente_email: "",
+      cliente_tel: "", cliente_contato: "",
+      locais: "", frequencia: "mensal",
+      vol_min: "0", vol_max: "500", preco_kg: "6.90",
+      pagamento: "30 dias após cada coleta", prazo_inicio: "7",
+      validade: "60", num_proposta: "", obs: "",
     });
-    setGrupos({
-      A: true,
-      B: false,
-      E: true,
-      D: false,
-      I: false,
-      IIA: false,
-      IIB: false,
-    });
+    setGrupos({ A: true, B: false, E: true, D: false, I: false, IIA: false, IIB: false });
     setProposta("");
     setErro("");
   };
 
+  // ─── RENDER ───────────────────────────────────────────────────────────────
   return (
-    <div style={{ maxWidth: 980, margin: "0 auto", fontFamily: "inherit" }}>
-      {/* HEADER */}
-      <div
-        style={{
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "space-between",
-          marginBottom: 16,
-          paddingBottom: 12,
-          borderBottom: `2px solid ${C.vesc}`,
-        }}
-      >
+    <div style={{ padding: "1rem 0", maxWidth: 680, fontFamily: "var(--font-sans)" }}>
+
+      {/* TOPO */}
+      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 14 }}>
         <div>
-          <div style={{ fontSize: 22, fontWeight: 700, color: C.vesc }}>
+          <div style={{ fontSize: 15, fontWeight: 600, color: "var(--color-text-primary)" }}>
             Gerador de Propostas
           </div>
-          <div style={{ fontSize: 12, color: C.muted, marginTop: 2 }}>
-            Bio Logus Ambiental · SIGER PRO
+          <div style={{ fontSize: 12, color: "var(--color-text-tertiary)", marginTop: 2 }}>
+            Modelo compacto · 1 folha A4 · Bio Logus Ambiental
           </div>
         </div>
-        <div
-          style={{
-            background: C.vclr,
-            color: C.vesc,
-            padding: "6px 12px",
-            borderRadius: 6,
-            fontSize: 12.5,
-            fontWeight: 600,
-            fontFamily: "'Courier New', monospace",
-          }}
-        >
+        <div style={{ fontSize: 11, background: C.vclr, color: C.vmed, padding: "4px 12px",
+          borderRadius: 20, fontWeight: 600, border: `0.5px solid ${C.vacc}` }}>
           {numProposta}
         </div>
       </div>
 
-      {/* DADOS DO CLIENTE */}
-      <Card title="Dados do Cliente">
-        <Row>
-          <Field label="Nome do cliente" required>
-            <input
-              style={inputStyle}
-              value={form.cliente_nome}
-              onChange={(e) => set("cliente_nome", e.target.value)}
-              placeholder="ex: Fundo Municipal de Saúde de Cabeceiras"
-            />
+      {/* ── BLOCO CLIENTE ───────────────────────────────────────────────────── */}
+      <Card title="Dados do Cliente" icon="🏢">
+        <Row cols={2}>
+          <Field label="Razão Social / Nome" required>
+            <Inp value={form.cliente_nome} onChange={(e: any) => set("cliente_nome", e.target.value)}
+              placeholder="ex: Clínica Constanza Marçal" />
           </Field>
-          <Field label="Tipo">
-            <select
-              style={inputStyle}
-              value={form.cliente_tipo}
-              onChange={(e) => set("cliente_tipo", e.target.value)}
-            >
+          <Field label="Tipo de Cliente" required>
+            <Sel value={form.cliente_tipo} onChange={(e: any) => set("cliente_tipo", e.target.value)}>
               <option value="publico">Público (prefeitura, fundo, hospital)</option>
               <option value="privado">Privado (clínica, laboratório, indústria)</option>
               <option value="terceiro_setor">Terceiro Setor (ONG, associação)</option>
-            </select>
+            </Sel>
           </Field>
         </Row>
-        <Row>
-          <Field label="Cidade – UF" required>
-            <input
-              style={inputStyle}
-              value={form.cliente_cidade}
-              onChange={(e) => set("cliente_cidade", e.target.value)}
-              placeholder="ex: Cabeceiras – GO"
-            />
+        <Row cols={2}>
+          <Field label="CNPJ">
+            <Inp value={form.cliente_cnpj} onChange={(e: any) => set("cliente_cnpj", e.target.value)}
+              placeholder="ex: 27.894.384/0001-90" />
           </Field>
-          <Field label="Contato">
-            <input
-              style={inputStyle}
-              value={form.cliente_contato}
-              onChange={(e) => set("cliente_contato", e.target.value)}
-              placeholder="ex: João Silva – Secretário de Saúde"
-            />
+          <Field label="Cidade – UF" required>
+            <Inp value={form.cliente_cidade} onChange={(e: any) => set("cliente_cidade", e.target.value)}
+              placeholder="ex: Goiânia – GO" />
+          </Field>
+        </Row>
+        <Row cols={2}>
+          <Field label="Endereço">
+            <Inp value={form.cliente_endereco} onChange={(e: any) => set("cliente_endereco", e.target.value)}
+              placeholder="ex: Rua J 31, 145 – Setor Jáo" />
+          </Field>
+          <Field label="E-mail">
+            <Inp value={form.cliente_email} onChange={(e: any) => set("cliente_email", e.target.value)}
+              placeholder="ex: contato@clinica.com.br" />
+          </Field>
+        </Row>
+        <Row cols={2}>
+          <Field label="Telefone">
+            <Inp value={form.cliente_tel} onChange={(e: any) => set("cliente_tel", e.target.value)}
+              placeholder="ex: (62) 9855-5661" />
+          </Field>
+          <Field label="Contato (nome e cargo)">
+            <Inp value={form.cliente_contato} onChange={(e: any) => set("cliente_contato", e.target.value)}
+              placeholder="ex: Talita Alves – Adm." />
           </Field>
         </Row>
       </Card>
 
-      {/* DADOS DO SERVIÇO */}
-      <Card title="Serviço">
-        <Field label="Locais de coleta" required>
-          <input
-            style={{ ...inputStyle, marginBottom: 12 }}
-            value={form.locais}
-            onChange={(e) => set("locais", e.target.value)}
-            placeholder="ex: Unidades de saúde do município, UPA, Hospital Municipal"
-          />
+      {/* ── BLOCO SERVIÇO ────────────────────────────────────────────────────── */}
+      <Card title="Dados do Serviço" icon="🚛">
+        <Field label="Locais de Coleta" required>
+          <Inp value={form.locais} onChange={(e: any) => set("locais", e.target.value)}
+            placeholder="ex: Clínica — Rua J 31, 145, Setor Jáo, Goiânia/GO"
+            style={{ marginBottom: 12 }} />
         </Field>
 
-        <span style={labelStyle}>Grupos de resíduo</span>
-        <div
-          style={{
-            display: "grid",
-            gridTemplateColumns: "repeat(auto-fill, minmax(220px, 1fr))",
-            gap: 6,
-            marginBottom: 12,
-          }}
-        >
-          {GRUPOS.map((g) => (
-            <label
-              key={g.id}
-              style={{
-                display: "flex",
-                alignItems: "center",
-                gap: 8,
-                fontSize: 12.5,
-                color: C.cinza,
-                padding: "6px 8px",
-                background: grupos[g.id] ? C.vclr : "transparent",
-                borderRadius: 5,
-                cursor: "pointer",
-                border: `0.5px solid ${grupos[g.id] ? C.vacc : "#e5e5e5"}`,
-              }}
-            >
-              <input
-                type="checkbox"
-                checked={grupos[g.id]}
-                onChange={(e) =>
-                  setGrupos((gs) => ({ ...gs, [g.id]: e.target.checked }))
-                }
-                style={{
-                  accentColor: C.vmed,
-                  width: 14,
-                  height: 14,
-                  cursor: "pointer",
-                }}
-              />
-              <span>
-                <strong>{g.label}</strong> — {g.desc}
-              </span>
+        <Label required>Grupos de Resíduo</Label>
+        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 4, marginBottom: 12 }}>
+          {GRUPOS.map(g => (
+            <label key={g.id} style={{
+              display: "flex", alignItems: "center", gap: 7, fontSize: 12.5,
+              color: "var(--color-text-secondary)", cursor: "pointer", padding: "5px 8px",
+              borderRadius: 6, transition: "all .15s",
+              background: grupos[g.id] ? C.vclr : "transparent",
+              border: `0.5px solid ${grupos[g.id] ? C.vacc : "transparent"}`,
+            }}>
+              <input type="checkbox" checked={grupos[g.id]}
+                onChange={e => setGrupos(gs => ({ ...gs, [g.id]: e.target.checked }))}
+                style={{ accentColor: C.vmed, width: 14, height: 14, cursor: "pointer" }} />
+              <span><strong>{g.label}</strong> — {g.desc}</span>
             </label>
           ))}
         </div>
 
-        <Row>
-          <Field label="Frequência">
-            <select
-              style={inputStyle}
-              value={form.frequencia}
-              onChange={(e) => set("frequencia", e.target.value)}
-            >
+        <Row cols={2}>
+          <Field label="Frequência de Coleta" required>
+            <Sel value={form.frequencia} onChange={(e: any) => set("frequencia", e.target.value)}>
               <option value="mensal">Mensal</option>
               <option value="quinzenal">Quinzenal</option>
               <option value="semanal">Semanal</option>
               <option value="sob_demanda">Sob demanda</option>
-            </select>
+            </Sel>
           </Field>
-          <Field label="Volume estimado por coleta">
-            <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
-              <input
-                type="number"
-                style={{ ...inputStyle, width: 80 }}
-                min="0"
-                value={form.vol_min}
-                onChange={(e) => set("vol_min", e.target.value)}
-              />
-              <span style={{ fontSize: 12, color: C.muted }}>a</span>
-              <input
-                type="number"
-                style={{ ...inputStyle, width: 80 }}
-                min="0"
-                value={form.vol_max}
-                onChange={(e) => set("vol_max", e.target.value)}
-              />
-              <span style={{ fontSize: 12, color: C.muted }}>kg</span>
+          <Field label="Volume estimado (kg/coleta)" required>
+            <div style={{ display: "flex", gap: 6, alignItems: "center" }}>
+              <Inp type="number" value={form.vol_min}
+                onChange={(e: any) => set("vol_min", e.target.value)} style={{ width: 70 }} min="0" />
+              <span style={{ fontSize: 12, color: "var(--color-text-tertiary)", flexShrink: 0 }}>a</span>
+              <Inp type="number" value={form.vol_max}
+                onChange={(e: any) => set("vol_max", e.target.value)} style={{ width: 70 }} min="0" />
+              <span style={{ fontSize: 12, color: "var(--color-text-tertiary)", flexShrink: 0 }}>kg</span>
             </div>
           </Field>
         </Row>
       </Card>
 
-      {/* DADOS COMERCIAIS */}
-      <Card title="Comercial">
-        <Row>
-          <Field label="Preço por kg (R$)" required>
+      {/* ── BLOCO COMERCIAL ──────────────────────────────────────────────────── */}
+      <Card title="Dados Comerciais" icon="💰">
+        <Row cols={2}>
+          <div>
+            <Label required>Preço por kg (R$)</Label>
             <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
-              <span style={{ fontSize: 13, color: C.muted }}>R$</span>
-              <input
-                type="number"
-                step="0.01"
-                value={form.preco_kg}
-                onChange={(e) => set("preco_kg", e.target.value)}
-                style={{
-                  ...inputStyle,
-                  fontSize: 18,
-                  fontWeight: 700,
-                  color: C.vesc,
-                  maxWidth: 110,
-                  border: `1.5px solid ${C.vacc}`,
-                }}
-              />
-              <span style={{ fontSize: 12, color: C.muted }}>/kg</span>
+              <span style={{ fontSize: 16, fontWeight: 700, color: C.vesc }}>R$</span>
+              <Inp type="number" step="0.01" value={form.preco_kg}
+                onChange={(e: any) => set("preco_kg", e.target.value)}
+                style={{ fontSize: 18, fontWeight: 700, color: C.vesc, maxWidth: 100,
+                  border: `1.5px solid ${C.vacc}` }} />
+              <span style={{ fontSize: 13, color: "var(--color-text-tertiary)" }}>/kg</span>
             </div>
-            <div style={{ fontSize: 11, color: C.muted, marginTop: 4 }}>
+            <div style={{ fontSize: 12, background: C.vclr, color: C.vmed,
+              padding: "5px 10px", borderRadius: 6, marginTop: 6,
+              border: `0.5px solid ${C.vacc}` }}>
               Máx. estimado: <strong>R$ {maxEst}</strong>
             </div>
-          </Field>
-          <Field label="Pagamento">
-            <select
-              style={inputStyle}
-              value={form.pagamento}
-              onChange={(e) => set("pagamento", e.target.value)}
-            >
+          </div>
+          <Field label="Forma de Pagamento">
+            <Sel value={form.pagamento} onChange={(e: any) => set("pagamento", e.target.value)}>
               <option>30 dias após cada coleta</option>
               <option>28 dias após cada coleta</option>
               <option>15 dias após cada coleta</option>
               <option>À vista na coleta</option>
-            </select>
+            </Sel>
           </Field>
         </Row>
 
-        <Row>
-          <Field label="Início (dias úteis)">
-            <input
-              type="number"
-              style={inputStyle}
-              min="0"
-              value={form.prazo_inicio}
-              onChange={(e) => set("prazo_inicio", e.target.value)}
-            />
+        <Row cols={3}>
+          <Field label="Prazo início (dias úteis)">
+            <Inp type="number" value={form.prazo_inicio} min="1" max="30"
+              onChange={(e: any) => set("prazo_inicio", e.target.value)} />
           </Field>
-          <Field label="Validade (dias)">
-            <input
-              type="number"
-              style={inputStyle}
-              min="0"
-              value={form.validade}
-              onChange={(e) => set("validade", e.target.value)}
-            />
+          <Field label="Validade (dias corridos)">
+            <Inp type="number" value={form.validade} min="15" max="180"
+              onChange={(e: any) => set("validade", e.target.value)} />
           </Field>
-          <Field label="Nº da proposta (opcional)">
-            <input
-              style={inputStyle}
-              value={form.num_proposta}
-              onChange={(e) => set("num_proposta", e.target.value)}
-              placeholder={numProposta}
-            />
+          <Field label="Número da proposta">
+            <Inp value={form.num_proposta || numProposta}
+              onChange={(e: any) => set("num_proposta", e.target.value)}
+              placeholder={numProposta} />
           </Field>
         </Row>
 
-        <Field label="Observações">
-          <textarea
-            value={form.obs}
-            onChange={(e) => set("obs", e.target.value)}
-            placeholder="ex: Sujeito a emissão de empenho; cláusula de reajuste anual IGP-M..."
-            style={{
-              ...inputStyle,
-              minHeight: 60,
-              resize: "vertical",
-              fontFamily: "inherit",
-            }}
-          />
+        <Field label="Observações / Condições especiais">
+          <textarea value={form.obs} onChange={e => set("obs", e.target.value)}
+            placeholder="ex: Sujeito a empenho; reajuste anual IGP-M; coleta em múltiplos pontos..."
+            style={{ width: "100%", padding: "7px 10px", fontSize: 13, borderRadius: 6,
+              minHeight: 52, border: "0.5px solid #ccc",
+              background: "var(--color-background-secondary)",
+              color: "var(--color-text-primary)", fontFamily: "inherit",
+              resize: "vertical", outline: "none" }} />
         </Field>
       </Card>
 
       {/* ERRO */}
       {erro && (
-        <div
-          style={{
-            background: C.erroBg,
-            border: `0.5px solid ${C.erro}`,
-            borderRadius: 6,
-            padding: "10px 14px",
-            fontSize: 13,
-            color: C.erro,
-            marginBottom: 10,
-          }}
-        >
-          {erro}
+        <div style={{ background: C.erroBg, border: `0.5px solid ${C.erro}`, borderRadius: 6,
+          padding: "10px 14px", fontSize: 13, color: C.erro, marginBottom: 10 }}>
+          ⚠ {erro}
         </div>
       )}
 
       {/* BOTÕES */}
       <div style={{ display: "flex", gap: 8, marginBottom: 16 }}>
-        <button
-          onClick={gerar}
-          disabled={loading}
-          style={{
-            background: loading ? "#5a8a65" : C.vesc,
-            color: "#fff",
-            border: "none",
-            borderRadius: 7,
-            padding: "10px 22px",
-            fontSize: 13.5,
-            fontWeight: 600,
-            cursor: loading ? "not-allowed" : "pointer",
-            fontFamily: "inherit",
-            display: "flex",
-            alignItems: "center",
-            gap: 8,
-            transition: "background .2s",
-          }}
-        >
+        <button onClick={gerar} disabled={loading}
+          style={{ background: loading ? "#5a8a65" : C.vesc, color: "#fff", border: "none",
+            borderRadius: 7, padding: "10px 22px", fontSize: 13.5, fontWeight: 600,
+            cursor: loading ? "not-allowed" : "pointer", fontFamily: "inherit",
+            display: "flex", alignItems: "center", gap: 8, transition: "background .2s" }}>
           {loading ? (
             <>
-              <span
-                style={{
-                  display: "inline-block",
-                  width: 14,
-                  height: 14,
-                  border: "2px solid #fff",
-                  borderTopColor: "transparent",
-                  borderRadius: "50%",
-                  animation: "spin 0.7s linear infinite",
-                }}
-              />
-              Gerando proposta…
+              <span style={{ display: "inline-block", width: 14, height: 14,
+                border: "2px solid #fff", borderTopColor: "transparent",
+                borderRadius: "50%", animation: "spin .7s linear infinite" }} />
+              Gerando proposta compacta…
             </>
-          ) : (
-            "✦ Gerar Proposta com IA"
-          )}
+          ) : "✦ Gerar Proposta — 1 Folha"}
         </button>
-        <button
-          onClick={limpar}
-          style={{
-            background: "#f5f5f5",
-            color: C.cinza,
-            border: "0.5px solid #ccc",
-            borderRadius: 7,
-            padding: "10px 16px",
-            fontSize: 13,
-            cursor: "pointer",
-            fontFamily: "inherit",
-          }}
-        >
+        <button onClick={limpar}
+          style={{ background: "var(--color-background-secondary)",
+            color: "var(--color-text-secondary)",
+            border: "0.5px solid var(--color-border-tertiary)",
+            borderRadius: 7, padding: "10px 16px", fontSize: 13,
+            cursor: "pointer", fontFamily: "inherit" }}>
           Limpar
         </button>
       </div>
 
       {/* OUTPUT */}
       {proposta && (
-        <div
-          ref={outRef}
-          style={{
-            background: "#fff",
-            border: `1.5px solid ${C.vacc}`,
-            borderRadius: 10,
-            overflow: "hidden",
-          }}
-        >
-          <div
-            style={{
-              background: C.vesc,
-              padding: "10px 16px",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "space-between",
-            }}
-          >
+        <div ref={outRef} style={{ background: "var(--color-background-primary)",
+          border: `1.5px solid ${C.vacc}`, borderRadius: 10, overflow: "hidden" }}>
+          <div style={{ background: C.vesc, padding: "10px 16px",
+            display: "flex", alignItems: "center", justifyContent: "space-between" }}>
             <span style={{ fontSize: 12.5, fontWeight: 600, color: "#fff" }}>
-              ✦ Proposta gerada — {numProposta}
+              ✦ Proposta gerada — {numProposta} · modelo 1 folha
             </span>
             <div style={{ display: "flex", gap: 8 }}>
-              <button
-                onClick={copiar}
-                style={{
-                  fontSize: 12,
-                  padding: "4px 12px",
-                  borderRadius: 5,
-                  cursor: "pointer",
+              <button onClick={copiar}
+                style={{ fontSize: 12, padding: "4px 12px", borderRadius: 5,
+                  cursor: "pointer", color: "#fff", fontFamily: "inherit",
                   background: copied ? C.vacc : "rgba(255,255,255,0.15)",
-                  color: "#fff",
                   border: "0.5px solid rgba(255,255,255,0.3)",
-                  fontFamily: "inherit",
-                  transition: "background .2s",
-                }}
-              >
+                  transition: "background .2s" }}>
                 {copied ? "✓ Copiado!" : "Copiar texto"}
               </button>
-              <button
-                onClick={() => setProposta("")}
-                style={{
-                  fontSize: 12,
-                  padding: "4px 10px",
-                  borderRadius: 5,
-                  cursor: "pointer",
+              <button onClick={() => setProposta("")}
+                style={{ fontSize: 12, padding: "4px 10px", borderRadius: 5,
+                  cursor: "pointer", color: "rgba(255,255,255,0.7)",
                   background: "rgba(255,255,255,0.1)",
-                  color: "rgba(255,255,255,0.7)",
                   border: "0.5px solid rgba(255,255,255,0.2)",
-                  fontFamily: "inherit",
-                }}
-              >
+                  fontFamily: "inherit" }}>
                 ✕
               </button>
             </div>
           </div>
-          <pre
-            style={{
-              padding: "16px 18px",
-              fontSize: 12.5,
-              lineHeight: 1.7,
-              whiteSpace: "pre-wrap",
-              color: C.cinza,
-              fontFamily: "'Courier New', monospace",
-              margin: 0,
-              overflowX: "auto",
-              maxHeight: 520,
-              overflowY: "auto",
-            }}
-          >
+          <pre style={{ padding: "16px 18px", fontSize: 12.5, lineHeight: 1.75,
+            whiteSpace: "pre-wrap", color: "var(--color-text-primary)",
+            fontFamily: "'Courier New', monospace", margin: 0,
+            maxHeight: 560, overflowY: "auto" }}>
             {proposta}
           </pre>
         </div>
