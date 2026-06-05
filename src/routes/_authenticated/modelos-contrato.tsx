@@ -11,7 +11,7 @@ import { Badge } from "@/components/ui/badge";
 import { Switch } from "@/components/ui/switch";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Plus, FileText, Loader2, Trash2, Copy, History, Eye } from "lucide-react";
+import { Plus, FileText, Loader2, Trash2, Copy, History, Eye, AlertTriangle, CheckCircle2 } from "lucide-react";
 import { toast } from "sonner";
 import { RichTextEditor } from "@/components/RichTextEditor";
 import {
@@ -107,9 +107,26 @@ function ModelosPage() {
     });
   }
 
+  // Validação em tempo real dos placeholders
+  const validation = useMemo(() => {
+    const html = editor.conteudo_html || "";
+    const used = Array.from(new Set(Array.from(html.matchAll(/\{\{\s*([A-Z0-9_]+)\s*\}\}/g)).map((m) => m[1])));
+    const sampleVars = buildVars({ cliente: SAMPLE_CLIENTE, contrato: SAMPLE_CONTRATO, itens: SAMPLE_ITENS });
+    const known = new Set(Object.keys(sampleVars));
+    const unknown = used.filter((k) => !known.has(k));
+    const emptyWithSample = used.filter((k) => known.has(k) && (sampleVars[k] === "" || sampleVars[k] == null));
+    const ok = used.filter((k) => known.has(k) && sampleVars[k] !== "" && sampleVars[k] != null);
+    return { used, unknown, emptyWithSample, ok };
+  }, [editor.conteudo_html]);
+
+  const podeSalvar = !!editor.nome.trim() && validation.unknown.length === 0;
+
   const salvar = useMutation({
     mutationFn: async () => {
       if (!editor.nome.trim()) throw new Error("Nome é obrigatório");
+      if (validation.unknown.length > 0) {
+        throw new Error(`Placeholders não reconhecidos: ${validation.unknown.map((v) => `{{${v}}}`).join(", ")}`);
+      }
       if (editor.id) {
         return fnUpdate({ data: { id: editor.id, nome: editor.nome, descricao: editor.descricao, conteudo_html: editor.conteudo_html, motivo: editor.motivo } });
       } else {
