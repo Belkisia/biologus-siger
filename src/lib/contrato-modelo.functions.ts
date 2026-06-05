@@ -444,9 +444,10 @@ export const gerarContratoDeModelo = createServerFn({ method: "POST" })
       data_fim: data.data_fim,
       valor_mensal: data.valor_mensal,
     };
-    const html = data.conteudo_html_editado
-      ? data.conteudo_html_editado
-      : renderTemplate(m.conteudo_html, buildVars({ cliente, contrato: contratoStub, itens }));
+    const html = renderTemplate(
+      data.conteudo_html_editado || m.conteudo_html,
+      buildVars({ cliente, contrato: contratoStub, itens }),
+    );
 
     const { data: novo, error } = await supabaseAdmin
       .from("contratos")
