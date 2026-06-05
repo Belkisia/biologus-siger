@@ -362,7 +362,9 @@ function ContratosPage() {
                 <TableHead>Valor mensal</TableHead>
                 <TableHead>Reajuste</TableHead>
                 <TableHead>Status</TableHead>
+                <TableHead>Envio e-mail</TableHead>
                 <TableHead className="w-12"></TableHead>
+
               </TableRow>
             </TableHeader>
             <TableBody>
