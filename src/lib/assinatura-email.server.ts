@@ -12,14 +12,16 @@ function getKey() {
 // Em produção, troque por um domínio verificado no Resend (ex: assinaturas@biologus.com.br)
 const FROM = "Bio Logus Ambiental <onboarding@resend.dev>";
 
-async function send(to: string, subject: string, html: string) {
+async function send(to: string, subject: string, html: string, attachments?: Array<{ filename: string; content: string }>) {
+  const body: any = { from: FROM, to: [to], subject, html };
+  if (attachments?.length) body.attachments = attachments;
   const res = await fetch(RESEND_URL, {
     method: "POST",
     headers: {
       Authorization: `Bearer ${getKey()}`,
       "Content-Type": "application/json",
     },
-    body: JSON.stringify({ from: FROM, to: [to], subject, html }),
+    body: JSON.stringify(body),
   });
   if (!res.ok) {
     const txt = await res.text();
@@ -27,6 +29,7 @@ async function send(to: string, subject: string, html: string) {
   }
   return res.json();
 }
+
 
 const baseStyle = `font-family:-apple-system,Segoe UI,Roboto,sans-serif;max-width:560px;margin:0 auto;padding:32px 24px;color:#1a1a1a`;
 const greenHeader = `background:linear-gradient(135deg,#1a5d3f,#2d8a5f);color:#fff;padding:24px;border-radius:8px 8px 0 0;text-align:center`;
