@@ -8,13 +8,49 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogFooter } from "@/components/ui/dialog";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Plus, FileText, Loader2, Trash2, Download, Send, FileSignature, Copy, Mail, Eye, Wand2 } from "lucide-react";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+  DialogFooter,
+} from "@/components/ui/dialog";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import {
+  Plus,
+  FileText,
+  Loader2,
+  Trash2,
+  Download,
+  Send,
+  FileSignature,
+  Copy,
+  Mail,
+  Eye,
+  Wand2,
+} from "lucide-react";
 import { toast } from "sonner";
 import { useServerFn } from "@tanstack/react-start";
-import { listarModelos, renderizarModelo, gerarContratoDeModelo } from "@/lib/contrato-modelo.functions";
+import {
+  listarModelos,
+  renderizarModelo,
+  gerarContratoDeModelo,
+} from "@/lib/contrato-modelo.functions";
 
 export const Route = createFileRoute("/_authenticated/propostas")({
   component: PropostasPage,
@@ -58,7 +94,10 @@ type Proposta = {
   } | null;
 };
 
-const STATUS_MAP: Record<string, { label: string; variant: "default" | "secondary" | "outline" | "destructive" }> = {
+const STATUS_MAP: Record<
+  string,
+  { label: string; variant: "default" | "secondary" | "outline" | "destructive" }
+> = {
   rascunho: { label: "Rascunho", variant: "outline" },
   enviada: { label: "Enviada", variant: "secondary" },
   aceita: { label: "Aceita", variant: "default" },
@@ -74,7 +113,14 @@ function brl(v: number) {
 }
 
 function emptyItem(): Item {
-  return { descricao: "", tipo_residuo: "", quantidade: 1, unidade: "kg", valor_unitario: 0, valor_total: 0 };
+  return {
+    descricao: "",
+    tipo_residuo: "",
+    quantidade: 1,
+    unidade: "kg",
+    valor_unitario: 0,
+    valor_total: 0,
+  };
 }
 
 function PropostasPage() {
@@ -99,7 +145,10 @@ function PropostasPage() {
   const { data: clientes = [] } = useQuery({
     queryKey: ["clientes-select"],
     queryFn: async () => {
-      const { data } = await supabase.from("clientes").select("id, razao_social").order("razao_social");
+      const { data } = await supabase
+        .from("clientes")
+        .select("id, razao_social")
+        .order("razao_social");
       return data ?? [];
     },
   });
@@ -109,7 +158,9 @@ function PropostasPage() {
     queryFn: async () => {
       const { data } = await supabase
         .from("contratos")
-        .select("id, numero, cliente_id, objeto, valor_mensal, forma_pagamento, observacoes, indice_reajuste, periodicidade_reajuste, dia_vencimento, data_inicio, data_fim, status")
+        .select(
+          "id, numero, cliente_id, objeto, valor_mensal, forma_pagamento, observacoes, indice_reajuste, periodicidade_reajuste, dia_vencimento, data_inicio, data_fim, status",
+        )
         .order("created_at", { ascending: false });
       return data ?? [];
     },
@@ -120,7 +171,9 @@ function PropostasPage() {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("propostas")
-        .select("*, clientes(razao_social, nome_fantasia, cnpj, email, telefone, whatsapp, endereco, numero, bairro, cidade, estado)")
+        .select(
+          "*, clientes(razao_social, nome_fantasia, cnpj, email, telefone, whatsapp, endereco, numero, bairro, cidade, estado)",
+        )
         .order("created_at", { ascending: false });
       if (error) throw error;
       return data as Proposta[];
@@ -167,7 +220,9 @@ function PropostasPage() {
       clausulas.push(`Vigência até ${new Date(c.data_fim).toLocaleDateString("pt-BR")}.`);
     (citens ?? []).forEach((it) => {
       if (it.franquia && it.preco_excedente)
-        clausulas.push(`${it.grupo_residuo ?? it.descricao}: franquia ${it.franquia} ${it.unidade ?? "kg"}/mês, excedente R$ ${Number(it.preco_excedente).toFixed(2).replace(".", ",")}/${it.unidade ?? "kg"}.`);
+        clausulas.push(
+          `${it.grupo_residuo ?? it.descricao}: franquia ${it.franquia} ${it.unidade ?? "kg"}/mês, excedente R$ ${Number(it.preco_excedente).toFixed(2).replace(".", ",")}/${it.unidade ?? "kg"}.`,
+        );
     });
     if (c.observacoes) clausulas.push(c.observacoes);
 
@@ -183,7 +238,9 @@ function PropostasPage() {
       const qtd = Number(it.franquia ?? 1);
       const vu = Number(it.preco_unitario ?? 0);
       return {
-        descricao: it.descricao || `Coleta, transporte e destinação final — ${it.grupo_residuo ?? ""}`.trim(),
+        descricao:
+          it.descricao ||
+          `Coleta, transporte e destinação final — ${it.grupo_residuo ?? ""}`.trim(),
         tipo_residuo: it.grupo_residuo ?? "",
         quantidade: qtd,
         unidade: it.unidade ?? "kg",
@@ -195,8 +252,10 @@ function PropostasPage() {
     toast.success(`Dados do contrato ${c.numero} aplicados`);
   };
 
-
-  const openNew = () => { resetForm(); setOpen(true); };
+  const openNew = () => {
+    resetForm();
+    setOpen(true);
+  };
 
   const openEdit = async (p: Proposta) => {
     setEditing(p);
@@ -277,8 +336,12 @@ function PropostasPage() {
     mutationFn: async ({ id, status }: { id: string; status: string }) => {
       const patch: Record<string, unknown> = { status };
       if (status === "enviada") patch.enviada_em = new Date().toISOString();
-      if (status === "aceita" || status === "recusada") patch.respondida_em = new Date().toISOString();
-      const { error } = await supabase.from("propostas").update(patch as never).eq("id", id);
+      if (status === "aceita" || status === "recusada")
+        patch.respondida_em = new Date().toISOString();
+      const { error } = await supabase
+        .from("propostas")
+        .update(patch as never)
+        .eq("id", id);
       if (error) throw error;
     },
     onSuccess: () => qc.invalidateQueries({ queryKey: ["propostas"] }),
@@ -332,10 +395,25 @@ function PropostasPage() {
   const fnRender = useServerFn(renderizarModelo);
   const fnGerar = useServerFn(gerarContratoDeModelo);
   const [modeloDlg, setModeloDlg] = useState<{
-    open: boolean; proposta?: Proposta; modelo_id: string;
-    numero: string; data_inicio: string; data_fim: string; valor_mensal: string;
-    previewHtml: string; loadingPreview: boolean;
-  }>({ open: false, modelo_id: "", numero: "", data_inicio: new Date().toISOString().slice(0,10), data_fim: "", valor_mensal: "", previewHtml: "", loadingPreview: false });
+    open: boolean;
+    proposta?: Proposta;
+    modelo_id: string;
+    numero: string;
+    data_inicio: string;
+    data_fim: string;
+    valor_mensal: string;
+    previewHtml: string;
+    loadingPreview: boolean;
+  }>({
+    open: false,
+    modelo_id: "",
+    numero: "",
+    data_inicio: new Date().toISOString().slice(0, 10),
+    data_fim: "",
+    valor_mensal: "",
+    previewHtml: "",
+    loadingPreview: false,
+  });
 
   const { data: modelosAtivos = [] } = useQuery({
     queryKey: ["contrato_modelos_ativos"],
@@ -344,12 +422,15 @@ function PropostasPage() {
 
   async function abrirModeloDlg(p: Proposta) {
     setModeloDlg({
-      open: true, proposta: p, modelo_id: "",
+      open: true,
+      proposta: p,
+      modelo_id: "",
       numero: `CTR-${new Date().getFullYear()}-${String(Date.now()).slice(-4)}`,
-      data_inicio: new Date().toISOString().slice(0,10),
+      data_inicio: new Date().toISOString().slice(0, 10),
       data_fim: "",
       valor_mensal: String(p.valor_total || ""),
-      previewHtml: "", loadingPreview: false,
+      previewHtml: "",
+      loadingPreview: false,
     });
   }
 
@@ -357,7 +438,13 @@ function PropostasPage() {
     if (!modeloDlg.modelo_id || !modeloDlg.proposta) return;
     setModeloDlg((s) => ({ ...s, loadingPreview: true }));
     try {
-      const r = await fnRender({ data: { modelo_id: modeloDlg.modelo_id, cliente_id: modeloDlg.proposta.cliente_id, proposta_id: modeloDlg.proposta.id } });
+      const r = await fnRender({
+        data: {
+          modelo_id: modeloDlg.modelo_id,
+          cliente_id: modeloDlg.proposta.cliente_id,
+          proposta_id: modeloDlg.proposta.id,
+        },
+      });
       setModeloDlg((s) => ({ ...s, previewHtml: r.html, loadingPreview: false }));
     } catch (e: any) {
       toast.error(e?.message || "Erro ao gerar prévia");
@@ -368,16 +455,18 @@ function PropostasPage() {
   const gerarContratoModelo = useMutation({
     mutationFn: async () => {
       if (!modeloDlg.modelo_id || !modeloDlg.proposta) throw new Error("Selecione um modelo");
-      return fnGerar({ data: {
-        modelo_id: modeloDlg.modelo_id,
-        cliente_id: modeloDlg.proposta.cliente_id,
-        proposta_id: modeloDlg.proposta.id,
-        numero: modeloDlg.numero,
-        data_inicio: modeloDlg.data_inicio,
-        data_fim: modeloDlg.data_fim || null,
-        valor_mensal: modeloDlg.valor_mensal ? Number(modeloDlg.valor_mensal) : null,
-        conteudo_html_editado: null,
-      } });
+      return fnGerar({
+        data: {
+          modelo_id: modeloDlg.modelo_id,
+          cliente_id: modeloDlg.proposta.cliente_id,
+          proposta_id: modeloDlg.proposta.id,
+          numero: modeloDlg.numero,
+          data_inicio: modeloDlg.data_inicio,
+          data_fim: modeloDlg.data_fim || null,
+          valor_mensal: modeloDlg.valor_mensal ? Number(modeloDlg.valor_mensal) : null,
+          conteudo_html_editado: null,
+        },
+      });
     },
     onSuccess: () => {
       toast.success("Contrato gerado a partir do modelo");
@@ -410,10 +499,10 @@ function PropostasPage() {
     const PAGE_W = 210;
     const PAGE_H = 297;
     const M = 10;
-    const BRAND: [number, number, number] = [14, 61, 26];    // #0E3D1A
-    const BRAND2: [number, number, number] = [26, 107, 46];  // #1A6B2E
-    const ACC: [number, number, number] = [46, 139, 71];     // #2E8B47
-    const SOFT: [number, number, number] = [234, 244, 237];  // #EAF4ED
+    const BRAND: [number, number, number] = [14, 61, 26]; // #0E3D1A
+    const BRAND2: [number, number, number] = [26, 107, 46]; // #1A6B2E
+    const ACC: [number, number, number] = [46, 139, 71]; // #2E8B47
+    const SOFT: [number, number, number] = [234, 244, 237]; // #EAF4ED
     const MUTED: [number, number, number] = [102, 102, 102];
     const BORDER: [number, number, number] = [210, 215, 212];
 
@@ -424,9 +513,12 @@ function PropostasPage() {
 
     // Derivações de serviço
     const itensList = (itens ?? []) as Array<{
-      descricao: string; tipo_residuo: string | null;
-      quantidade: number; unidade: string;
-      valor_unitario: number; valor_total: number;
+      descricao: string;
+      tipo_residuo: string | null;
+      quantidade: number;
+      unidade: string;
+      valor_unitario: number;
+      valor_total: number;
     }>;
     const totalQtd = itensList.reduce((s, i) => s + Number(i.quantidade || 0), 0);
     const totalKg = itensList
@@ -438,15 +530,61 @@ function PropostasPage() {
     const volMin = Math.max(0, Math.round(volMax * 0.4));
 
     type Tier = {
-      h2: number; h3: number; h5: number; h6: number;
-      fNome: number; fBody: number; fSmall: number; fXs: number;
+      h2: number;
+      h3: number;
+      h5: number;
+      h6: number;
+      fNome: number;
+      fBody: number;
+      fSmall: number;
+      fXs: number;
       bulletGap: number;
     };
     const tiers: Tier[] = [
-      { h2: 30, h3: 62, h5: 48, h6: 30, fNome: 13, fBody: 8.2, fSmall: 7.4, fXs: 6.6, bulletGap: 4.4 },
-      { h2: 28, h3: 58, h5: 42, h6: 28, fNome: 12, fBody: 7.8, fSmall: 7.0, fXs: 6.3, bulletGap: 4.0 },
-      { h2: 26, h3: 54, h5: 38, h6: 26, fNome: 11, fBody: 7.4, fSmall: 6.6, fXs: 6.0, bulletGap: 3.7 },
-      { h2: 24, h3: 50, h5: 34, h6: 24, fNome: 10.5, fBody: 7.0, fSmall: 6.3, fXs: 5.8, bulletGap: 3.4 },
+      {
+        h2: 30,
+        h3: 62,
+        h5: 48,
+        h6: 30,
+        fNome: 13,
+        fBody: 8.2,
+        fSmall: 7.4,
+        fXs: 6.6,
+        bulletGap: 4.4,
+      },
+      {
+        h2: 28,
+        h3: 58,
+        h5: 42,
+        h6: 28,
+        fNome: 12,
+        fBody: 7.8,
+        fSmall: 7.0,
+        fXs: 6.3,
+        bulletGap: 4.0,
+      },
+      {
+        h2: 26,
+        h3: 54,
+        h5: 38,
+        h6: 26,
+        fNome: 11,
+        fBody: 7.4,
+        fSmall: 6.6,
+        fXs: 6.0,
+        bulletGap: 3.7,
+      },
+      {
+        h2: 24,
+        h3: 50,
+        h5: 34,
+        h6: 24,
+        fNome: 10.5,
+        fBody: 7.0,
+        fSmall: 6.3,
+        fXs: 5.8,
+        bulletGap: 3.4,
+      },
     ];
 
     // Normas — apenas as aplicáveis (deduz dos tipos de resíduo)
@@ -466,10 +604,12 @@ function PropostasPage() {
     // Acondicionamento por tipo
     const acond: string[] = [];
     if (/grupo\s*a|biolog/i.test(tipos)) acond.push("Grupo A em bombonas brancas leitosas");
-    if (/grupo\s*b|qu[ií]mico/i.test(tipos)) acond.push("Grupo B em recipiente compatível identificado");
+    if (/grupo\s*b|qu[ií]mico/i.test(tipos))
+      acond.push("Grupo B em recipiente compatível identificado");
     if (/grupo\s*e|perfuro/i.test(tipos)) acond.push("Grupo E em coletor descartex rígido");
     if (/grupo\s*d|domiciliar|comum/i.test(tipos)) acond.push("Grupo D em saco preto reforçado");
-    if (/classe\s*i\b|perigos|industrial/i.test(tipos)) acond.push("Classe I em embalagem homologada com rótulo de risco");
+    if (/classe\s*i\b|perigos|industrial/i.test(tipos))
+      acond.push("Classe I em embalagem homologada com rótulo de risco");
     if (/classe\s*ii/i.test(tipos)) acond.push("Classe II em big bag ou tambor lacrado");
     if (acond.length === 0) acond.push("Conforme orientação técnica fornecida na visita inicial");
 
@@ -485,13 +625,17 @@ function PropostasPage() {
       doc.text("BIO LOGUS AMBIENTAL", PAGE_W / 2, 6, { align: "center" });
       doc.setFont("helvetica", "normal");
       doc.setFontSize(7.6);
-      doc.text("Gestão Inteligente de Resíduos  ·  Goiânia – GO", PAGE_W / 2, 10.3, { align: "center" });
+      doc.text("Gestão Inteligente de Resíduos  ·  Goiânia – GO", PAGE_W / 2, 10.3, {
+        align: "center",
+      });
       doc.setFillColor(...BRAND2);
       doc.rect(0, 13, PAGE_W, 4.6, "F");
       doc.setFontSize(7);
       doc.text(
         `CNPJ 26.484.921/0001-60   ·   Nº ${p.numero}   ·   Emitida em ${dataEmissao}`,
-        PAGE_W / 2, 16.4, { align: "center" },
+        PAGE_W / 2,
+        16.4,
+        { align: "center" },
       );
 
       let y = 20.5;
@@ -516,17 +660,25 @@ function PropostasPage() {
       let yL = y + 8.2 + Math.min(nomeLines.length, 2) * (t.fNome * 0.4);
       doc.setFont("helvetica", "normal");
       doc.setFontSize(t.fSmall);
-      if (cidadeCli) { doc.text(cidadeCli, M + 3, yL); yL += 3.6; }
-      if (cli?.cnpj) { doc.text(`CNPJ ${cli.cnpj}`, M + 3, yL); yL += 3.6; }
+      if (cidadeCli) {
+        doc.text(cidadeCli, M + 3, yL);
+        yL += 3.6;
+      }
+      if (cli?.cnpj) {
+        doc.text(`CNPJ ${cli.cnpj}`, M + 3, yL);
+        yL += 3.6;
+      }
       if (cli?.endereco) {
         const end = `${cli.endereco}${cli.numero ? `, ${cli.numero}` : ""}${cli.bairro ? ` – ${cli.bairro}` : ""}`;
         const endLines = doc.splitTextToSize(end, colW - 6) as string[];
-        doc.text(endLines.slice(0, 2), M + 3, yL); yL += endLines.slice(0, 2).length * 3.4;
+        doc.text(endLines.slice(0, 2), M + 3, yL);
+        yL += endLines.slice(0, 2).length * 3.4;
       }
       doc.setFont("helvetica", "italic");
       doc.setFontSize(t.fXs);
       doc.setTextColor(...MUTED);
-      const descServ = itensList[0]?.descricao || "Coleta, transporte e destinação final de resíduos";
+      const descServ =
+        itensList[0]?.descricao || "Coleta, transporte e destinação final de resíduos";
       const descLines = doc.splitTextToSize(descServ, colW - 6) as string[];
       doc.text(descLines.slice(0, 2), M + 3, y + h2 - 2.5);
 
@@ -539,7 +691,12 @@ function PropostasPage() {
       doc.setFontSize(6.6);
       doc.text("CONDIÇÕES COMERCIAIS", xR + 3, y + 3.6);
       const cond: [string, string][] = [
-        ["Validade", p.validade ? `até ${new Date(p.validade).toLocaleDateString("pt-BR")}` : "60 dias corridos"],
+        [
+          "Validade",
+          p.validade
+            ? `até ${new Date(p.validade).toLocaleDateString("pt-BR")}`
+            : "60 dias corridos",
+        ],
         ["Início", p.prazo_coleta || "7 dias úteis após assinatura"],
         ["Pagamento", p.condicoes_pagamento || "30 dias após cada coleta"],
         ["Frequência", "Mensal"],
@@ -592,7 +749,8 @@ function PropostasPage() {
       }
       if (bullets1.length === 0) bullets1.push("Resíduos conforme especificação técnica");
       for (const b of bullets1) {
-        doc.setTextColor(...ACC); doc.text("▸", x3a + 2.5, ys);
+        doc.setTextColor(...ACC);
+        doc.text("▸", x3a + 2.5, ys);
         doc.setTextColor(25);
         const lines = doc.splitTextToSize(b, w3 - 7) as string[];
         doc.text(lines.slice(0, 2), x3a + 5.5, ys);
@@ -621,7 +779,8 @@ function PropostasPage() {
       ];
       let yi = y + 9;
       for (const it of incl) {
-        doc.setTextColor(...ACC); doc.text("✓", x3b + 2.5, yi);
+        doc.setTextColor(...ACC);
+        doc.text("✓", x3b + 2.5, yi);
         doc.setTextColor(25);
         const lines = doc.splitTextToSize(it, w3 - 7) as string[];
         doc.text(lines.slice(0, 1), x3b + 5.5, yi);
@@ -653,7 +812,9 @@ function PropostasPage() {
       doc.setFont("helvetica", "normal");
       doc.setFontSize(6.6);
       if (precoKg > 0 && volMax > 0) {
-        doc.text(`(${Math.round(volMax)} kg × ${brl(precoKg)})`, x3c + w3 / 2, y + 38, { align: "center" });
+        doc.text(`(${Math.round(volMax)} kg × ${brl(precoKg)})`, x3c + w3 / 2, y + 38, {
+          align: "center",
+        });
       }
 
       y += h3 + 3;
@@ -673,7 +834,8 @@ function PropostasPage() {
       doc.setFont("helvetica", "italic");
       doc.setFontSize(t.fXs);
       doc.setTextColor(...MUTED);
-      const extra = "Sujeito à emissão de empenho pelo órgão contratante. / Multa de 2% + juros 1%/mês sobre valores em atraso.";
+      const extra =
+        "Sujeito à emissão de empenho pelo órgão contratante. / Multa de 2% + juros 1%/mês sobre valores em atraso.";
       doc.text(extra, M + 3, y + h4 - 1.8);
 
       y += h4 + 3;
@@ -706,7 +868,8 @@ function PropostasPage() {
         let yy = y + 9;
         const gap = (h5 - 11) / arr.length;
         for (const s of arr) {
-          doc.setTextColor(...ACC); doc.text("▸", x + 2.5, yy);
+          doc.setTextColor(...ACC);
+          doc.text("▸", x + 2.5, yy);
           doc.setTextColor(25);
           const lines = doc.splitTextToSize(s, w - 7) as string[];
           doc.text(lines.slice(0, 2), x + 5.5, yy);
@@ -770,7 +933,8 @@ function PropostasPage() {
       doc.setFontSize(6.8);
       doc.text(
         "(62) 3558-2791  ·  (62) 9 8423-6682  ·  comercial@biologusambiental.com.br",
-        M, PAGE_H - 2.2,
+        M,
+        PAGE_H - 2.2,
       );
       doc.text("Página 1", PAGE_W - M, PAGE_H - 2.2, { align: "right" });
 
@@ -780,18 +944,20 @@ function PropostasPage() {
     // Auto-compactação: tenta cada tier até caber em 1 página
     let doc = render(tiers[0]);
     for (let i = 1; i < tiers.length; i++) {
-      const pages = (doc.internal as unknown as { getNumberOfPages: () => number }).getNumberOfPages();
+      const pages = (
+        doc.internal as unknown as { getNumberOfPages: () => number }
+      ).getNumberOfPages();
       if (pages <= 1) break;
       doc = render(tiers[i]);
     }
-    const finalPages = (doc.internal as unknown as { getNumberOfPages: () => number }).getNumberOfPages();
+    const finalPages = (
+      doc.internal as unknown as { getNumberOfPages: () => number }
+    ).getNumberOfPages();
     if (finalPages > 1) {
       for (let pg = finalPages; pg > 1; pg--) doc.deletePage(pg);
     }
     return doc;
   };
-
-
 
   const downloadPDF = async (p: Proposta) => {
     const doc = await buildPDF(p);
@@ -815,12 +981,28 @@ function PropostasPage() {
     }
   };
 
-  const [emailDialog, setEmailDialog] = useState<{ open: boolean; proposta: Proposta | null; email: string; mensagem: string; sending: boolean }>({
-    open: false, proposta: null, email: "", mensagem: "", sending: false,
+  const [emailDialog, setEmailDialog] = useState<{
+    open: boolean;
+    proposta: Proposta | null;
+    email: string;
+    mensagem: string;
+    sending: boolean;
+  }>({
+    open: false,
+    proposta: null,
+    email: "",
+    mensagem: "",
+    sending: false,
   });
 
   const openEmailDialog = (p: Proposta) => {
-    setEmailDialog({ open: true, proposta: p, email: p.clientes?.email ?? "", mensagem: "", sending: false });
+    setEmailDialog({
+      open: true,
+      proposta: p,
+      email: p.clientes?.email ?? "",
+      mensagem: "",
+      sending: false,
+    });
   };
 
   const sendByEmail = async () => {
@@ -867,7 +1049,10 @@ function PropostasPage() {
         throw new Error(`Falha ao enviar (${res.status}): ${t}`);
       }
 
-      await supabase.from("propostas").update({ status: "enviada", enviada_em: new Date().toISOString() } as never).eq("id", p.id);
+      await supabase
+        .from("propostas")
+        .update({ status: "enviada", enviada_em: new Date().toISOString() } as never)
+        .eq("id", p.id);
       qc.invalidateQueries({ queryKey: ["propostas"] });
       toast.success(`Proposta enviada para ${emailDialog.email}`);
       setEmailDialog({ open: false, proposta: null, email: "", mensagem: "", sending: false });
@@ -877,7 +1062,6 @@ function PropostasPage() {
       setEmailDialog((s) => ({ ...s, sending: false }));
     }
   };
-
 
   const shareWhatsApp = (p: Proposta) => {
     const tel = (p.clientes?.whatsapp ?? p.clientes?.telefone ?? "").replace(/\D/g, "");
@@ -894,27 +1078,41 @@ function PropostasPage() {
       <div className="flex items-start justify-between flex-wrap gap-4">
         <div>
           <h1 className="text-2xl font-bold text-foreground">Propostas Comerciais</h1>
-          <p className="text-sm text-muted-foreground">Crie, envie e acompanhe propostas. Converta em contrato com um clique.</p>
+          <p className="text-sm text-muted-foreground">
+            Crie, envie e acompanhe propostas. Converta em contrato com um clique.
+          </p>
         </div>
         <Dialog open={open} onOpenChange={setOpen}>
           <DialogTrigger asChild>
             <Button onClick={openNew} disabled={clientes.length === 0}>
-              <Plus className="h-4 w-4 mr-2" />Nova proposta
+              <Plus className="h-4 w-4 mr-2" />
+              Nova proposta
             </Button>
           </DialogTrigger>
           <DialogContent className="max-w-5xl max-h-[90vh] overflow-y-auto">
             <DialogHeader>
-              <DialogTitle>{editing ? `Editar proposta ${editing.numero}` : "Nova proposta"}</DialogTitle>
+              <DialogTitle>
+                {editing ? `Editar proposta ${editing.numero}` : "Nova proposta"}
+              </DialogTitle>
             </DialogHeader>
 
             <div className="space-y-4">
               <div className="grid md:grid-cols-2 gap-4">
                 <div className="space-y-2 md:col-span-2">
                   <Label>Cliente *</Label>
-                  <Select value={form.cliente_id} onValueChange={(v) => setForm({ ...form, cliente_id: v })}>
-                    <SelectTrigger><SelectValue placeholder="Selecione o cliente" /></SelectTrigger>
+                  <Select
+                    value={form.cliente_id}
+                    onValueChange={(v) => setForm({ ...form, cliente_id: v })}
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Selecione o cliente" />
+                    </SelectTrigger>
                     <SelectContent>
-                      {clientes.map((c) => <SelectItem key={c.id} value={c.id}>{c.razao_social}</SelectItem>)}
+                      {clientes.map((c) => (
+                        <SelectItem key={c.id} value={c.id}>
+                          {c.razao_social}
+                        </SelectItem>
+                      ))}
                     </SelectContent>
                   </Select>
                 </div>
@@ -933,7 +1131,10 @@ function PropostasPage() {
                         <Label>Importar do contrato (opcional)</Label>
                         <button
                           type="button"
-                          onClick={() => { setShowContratoImport(false); setForm((f) => ({ ...f, contrato_id: "" })); }}
+                          onClick={() => {
+                            setShowContratoImport(false);
+                            setForm((f) => ({ ...f, contrato_id: "" }));
+                          }}
                           className="text-xs text-muted-foreground hover:text-foreground"
                         >
                           Ocultar
@@ -949,7 +1150,9 @@ function PropostasPage() {
                           }
                         }}
                       >
-                        <SelectTrigger><SelectValue placeholder="Nenhum contrato vinculado" /></SelectTrigger>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Nenhum contrato vinculado" />
+                        </SelectTrigger>
                         <SelectContent>
                           <SelectItem value="none">— Sem contrato —</SelectItem>
                           {contratos
@@ -966,35 +1169,64 @@ function PropostasPage() {
                 </div>
                 <div className="space-y-2">
                   <Label>Número *</Label>
-                  <Input value={form.numero} onChange={(e) => setForm({ ...form, numero: e.target.value })} />
+                  <Input
+                    value={form.numero}
+                    onChange={(e) => setForm({ ...form, numero: e.target.value })}
+                  />
                 </div>
                 <div className="space-y-2">
                   <Label>Data emissão</Label>
-                  <Input type="date" value={form.data_emissao} onChange={(e) => setForm({ ...form, data_emissao: e.target.value })} />
+                  <Input
+                    type="date"
+                    value={form.data_emissao}
+                    onChange={(e) => setForm({ ...form, data_emissao: e.target.value })}
+                  />
                 </div>
                 <div className="space-y-2">
                   <Label>Validade</Label>
-                  <Input type="date" value={form.validade} onChange={(e) => setForm({ ...form, validade: e.target.value })} />
+                  <Input
+                    type="date"
+                    value={form.validade}
+                    onChange={(e) => setForm({ ...form, validade: e.target.value })}
+                  />
                 </div>
                 <div className="space-y-2">
                   <Label>Condições de pagamento</Label>
-                  <Input placeholder="Ex: 30 dias após coleta" value={form.condicoes_pagamento} onChange={(e) => setForm({ ...form, condicoes_pagamento: e.target.value })} />
+                  <Input
+                    placeholder="Ex: 30 dias após coleta"
+                    value={form.condicoes_pagamento}
+                    onChange={(e) => setForm({ ...form, condicoes_pagamento: e.target.value })}
+                  />
                 </div>
                 <div className="space-y-2 md:col-span-2">
                   <Label>Prazo de coleta</Label>
-                  <Input placeholder="Ex: até 5 dias úteis após aprovação" value={form.prazo_coleta} onChange={(e) => setForm({ ...form, prazo_coleta: e.target.value })} />
+                  <Input
+                    placeholder="Ex: até 5 dias úteis após aprovação"
+                    value={form.prazo_coleta}
+                    onChange={(e) => setForm({ ...form, prazo_coleta: e.target.value })}
+                  />
                 </div>
                 <div className="space-y-2 md:col-span-2">
                   <Label>Observações</Label>
-                  <Textarea rows={2} value={form.observacoes} onChange={(e) => setForm({ ...form, observacoes: e.target.value })} />
+                  <Textarea
+                    rows={2}
+                    value={form.observacoes}
+                    onChange={(e) => setForm({ ...form, observacoes: e.target.value })}
+                  />
                 </div>
               </div>
 
               <div className="space-y-2">
                 <div className="flex items-center justify-between">
                   <Label className="text-base">Itens da proposta</Label>
-                  <Button type="button" size="sm" variant="outline" onClick={() => setItems([...items, emptyItem()])}>
-                    <Plus className="h-3 w-3 mr-1" />Adicionar item
+                  <Button
+                    type="button"
+                    size="sm"
+                    variant="outline"
+                    onClick={() => setItems([...items, emptyItem()])}
+                  >
+                    <Plus className="h-3 w-3 mr-1" />
+                    Adicionar item
                   </Button>
                 </div>
                 <Card className="p-3 overflow-x-auto">
@@ -1013,19 +1245,63 @@ function PropostasPage() {
                     <TableBody>
                       {items.map((it, idx) => (
                         <TableRow key={idx}>
-                          <TableCell><Input value={it.descricao} onChange={(e) => setItem(idx, { descricao: e.target.value })} placeholder="Coleta e destinação..." /></TableCell>
-                          <TableCell><Input value={it.tipo_residuo} onChange={(e) => setItem(idx, { tipo_residuo: e.target.value })} placeholder="Grupo A" /></TableCell>
-                          <TableCell><Input type="number" step="0.01" value={it.quantidade} onChange={(e) => setItem(idx, { quantidade: Number(e.target.value) })} /></TableCell>
                           <TableCell>
-                            <Select value={it.unidade} onValueChange={(v) => setItem(idx, { unidade: v })}>
-                              <SelectTrigger><SelectValue /></SelectTrigger>
-                              <SelectContent>{UNIDADES.map((u) => <SelectItem key={u} value={u}>{u}</SelectItem>)}</SelectContent>
+                            <Input
+                              value={it.descricao}
+                              onChange={(e) => setItem(idx, { descricao: e.target.value })}
+                              placeholder="Coleta e destinação..."
+                            />
+                          </TableCell>
+                          <TableCell>
+                            <Input
+                              value={it.tipo_residuo}
+                              onChange={(e) => setItem(idx, { tipo_residuo: e.target.value })}
+                              placeholder="Grupo A"
+                            />
+                          </TableCell>
+                          <TableCell>
+                            <Input
+                              type="number"
+                              step="0.01"
+                              value={it.quantidade}
+                              onChange={(e) => setItem(idx, { quantidade: Number(e.target.value) })}
+                            />
+                          </TableCell>
+                          <TableCell>
+                            <Select
+                              value={it.unidade}
+                              onValueChange={(v) => setItem(idx, { unidade: v })}
+                            >
+                              <SelectTrigger>
+                                <SelectValue />
+                              </SelectTrigger>
+                              <SelectContent>
+                                {UNIDADES.map((u) => (
+                                  <SelectItem key={u} value={u}>
+                                    {u}
+                                  </SelectItem>
+                                ))}
+                              </SelectContent>
                             </Select>
                           </TableCell>
-                          <TableCell><Input type="number" step="0.01" value={it.valor_unitario} onChange={(e) => setItem(idx, { valor_unitario: Number(e.target.value) })} /></TableCell>
+                          <TableCell>
+                            <Input
+                              type="number"
+                              step="0.01"
+                              value={it.valor_unitario}
+                              onChange={(e) =>
+                                setItem(idx, { valor_unitario: Number(e.target.value) })
+                              }
+                            />
+                          </TableCell>
                           <TableCell className="font-medium">{brl(it.valor_total)}</TableCell>
                           <TableCell>
-                            <Button type="button" variant="ghost" size="icon" onClick={() => setItems(items.filter((_, i) => i !== idx))}>
+                            <Button
+                              type="button"
+                              variant="ghost"
+                              size="icon"
+                              onClick={() => setItems(items.filter((_, i) => i !== idx))}
+                            >
                               <Trash2 className="h-4 w-4 text-destructive" />
                             </Button>
                           </TableCell>
@@ -1044,7 +1320,9 @@ function PropostasPage() {
             </div>
 
             <DialogFooter>
-              <Button type="button" variant="ghost" onClick={() => setOpen(false)}>Cancelar</Button>
+              <Button type="button" variant="ghost" onClick={() => setOpen(false)}>
+                Cancelar
+              </Button>
               <Button onClick={() => saveMutation.mutate()} disabled={saveMutation.isPending}>
                 {saveMutation.isPending && <Loader2 className="h-4 w-4 mr-2 animate-spin" />}
                 {editing ? "Salvar alterações" : "Criar proposta"}
@@ -1057,33 +1335,49 @@ function PropostasPage() {
       <div className="grid md:grid-cols-4 gap-4">
         <Card className="p-4">
           <p className="text-xs text-muted-foreground uppercase tracking-wider">Rascunhos</p>
-          <p className="text-2xl font-bold mt-1">{propostas.filter((p) => p.status === "rascunho").length}</p>
+          <p className="text-2xl font-bold mt-1">
+            {propostas.filter((p) => p.status === "rascunho").length}
+          </p>
         </Card>
         <Card className="p-4">
           <p className="text-xs text-muted-foreground uppercase tracking-wider">Enviadas</p>
-          <p className="text-2xl font-bold mt-1">{propostas.filter((p) => p.status === "enviada").length}</p>
+          <p className="text-2xl font-bold mt-1">
+            {propostas.filter((p) => p.status === "enviada").length}
+          </p>
         </Card>
         <Card className="p-4">
           <p className="text-xs text-muted-foreground uppercase tracking-wider">Aceitas</p>
-          <p className="text-2xl font-bold mt-1 text-primary">{propostas.filter((p) => p.status === "aceita" || p.status === "convertida").length}</p>
+          <p className="text-2xl font-bold mt-1 text-primary">
+            {propostas.filter((p) => p.status === "aceita" || p.status === "convertida").length}
+          </p>
         </Card>
         <Card className="p-4">
-          <p className="text-xs text-muted-foreground uppercase tracking-wider">Valor em propostas abertas</p>
+          <p className="text-xs text-muted-foreground uppercase tracking-wider">
+            Valor em propostas abertas
+          </p>
           <p className="text-2xl font-bold mt-1">
-            {brl(propostas.filter((p) => ["rascunho", "enviada"].includes(p.status)).reduce((a, p) => a + Number(p.valor_total), 0))}
+            {brl(
+              propostas
+                .filter((p) => ["rascunho", "enviada"].includes(p.status))
+                .reduce((a, p) => a + Number(p.valor_total), 0),
+            )}
           </p>
         </Card>
       </div>
 
       {clientes.length === 0 && (
         <Card className="p-4 bg-warning/10 border-warning/30">
-          <p className="text-sm">Cadastre um cliente em <strong>Clientes</strong> antes de criar propostas.</p>
+          <p className="text-sm">
+            Cadastre um cliente em <strong>Clientes</strong> antes de criar propostas.
+          </p>
         </Card>
       )}
 
       <Card className="p-4">
         {isLoading ? (
-          <div className="py-12 text-center"><Loader2 className="h-6 w-6 mx-auto animate-spin text-muted-foreground" /></div>
+          <div className="py-12 text-center">
+            <Loader2 className="h-6 w-6 mx-auto animate-spin text-muted-foreground" />
+          </div>
         ) : propostas.length === 0 ? (
           <div className="py-16 text-center">
             <FileText className="h-10 w-10 mx-auto text-muted-foreground/40" />
@@ -1109,53 +1403,108 @@ function PropostasPage() {
                   <TableRow key={p.id}>
                     <TableCell className="font-medium">{p.numero}</TableCell>
                     <TableCell>{p.clientes?.razao_social ?? "—"}</TableCell>
-                    <TableCell className="text-sm">{new Date(p.data_emissao).toLocaleDateString("pt-BR")}</TableCell>
-                    <TableCell className="text-sm">{p.validade ? new Date(p.validade).toLocaleDateString("pt-BR") : "—"}</TableCell>
+                    <TableCell className="text-sm">
+                      {new Date(p.data_emissao).toLocaleDateString("pt-BR")}
+                    </TableCell>
+                    <TableCell className="text-sm">
+                      {p.validade ? new Date(p.validade).toLocaleDateString("pt-BR") : "—"}
+                    </TableCell>
                     <TableCell className="font-medium">{brl(Number(p.valor_total))}</TableCell>
                     <TableCell>
-                      <Select value={p.status} onValueChange={(v) => updateStatus.mutate({ id: p.id, status: v })} disabled={p.status === "convertida"}>
+                      <Select
+                        value={p.status}
+                        onValueChange={(v) => updateStatus.mutate({ id: p.id, status: v })}
+                        disabled={p.status === "convertida"}
+                      >
                         <SelectTrigger className="w-32 h-8">
                           <Badge variant={s.variant}>{s.label}</Badge>
                         </SelectTrigger>
                         <SelectContent>
-                          {Object.entries(STATUS_MAP).filter(([k]) => k !== "convertida").map(([k, v]) => (
-                            <SelectItem key={k} value={k}>{v.label}</SelectItem>
-                          ))}
+                          {Object.entries(STATUS_MAP)
+                            .filter(([k]) => k !== "convertida")
+                            .map(([k, v]) => (
+                              <SelectItem key={k} value={k}>
+                                {v.label}
+                              </SelectItem>
+                            ))}
                         </SelectContent>
                       </Select>
                     </TableCell>
                     <TableCell className="text-right">
                       <div className="flex justify-end gap-1">
-                        <Button variant="ghost" size="icon" title="Visualizar PDF" onClick={() => previewPDF(p)}>
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          title="Visualizar PDF"
+                          onClick={() => previewPDF(p)}
+                        >
                           <Eye className="h-4 w-4" />
                         </Button>
-                        <Button variant="ghost" size="icon" title="Baixar PDF" onClick={() => downloadPDF(p)}>
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          title="Baixar PDF"
+                          onClick={() => downloadPDF(p)}
+                        >
                           <Download className="h-4 w-4" />
                         </Button>
-                        <Button variant="ghost" size="icon" title="Enviar por e-mail" onClick={() => openEmailDialog(p)}>
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          title="Enviar por e-mail"
+                          onClick={() => openEmailDialog(p)}
+                        >
                           <Mail className="h-4 w-4" />
                         </Button>
-                        <Button variant="ghost" size="icon" title="Enviar por WhatsApp" onClick={() => shareWhatsApp(p)}>
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          title="Enviar por WhatsApp"
+                          onClick={() => shareWhatsApp(p)}
+                        >
                           <Send className="h-4 w-4" />
                         </Button>
                         {p.status === "aceita" && (
                           <>
-                            <Button variant="ghost" size="icon" title="Converter em contrato (simples)" onClick={() => {
-                              if (confirm(`Criar contrato a partir da proposta ${p.numero}?`)) convertToContract.mutate(p);
-                            }}>
+                            <Button
+                              variant="ghost"
+                              size="icon"
+                              title="Converter em contrato (simples)"
+                              onClick={() => {
+                                if (confirm(`Criar contrato a partir da proposta ${p.numero}?`))
+                                  convertToContract.mutate(p);
+                              }}
+                            >
                               <FileSignature className="h-4 w-4 text-primary" />
                             </Button>
-                            <Button variant="ghost" size="icon" title="Gerar contrato a partir de modelo" onClick={() => abrirModeloDlg(p)}>
+                            <Button
+                              variant="ghost"
+                              size="icon"
+                              title="Gerar contrato a partir de modelo"
+                              onClick={() => abrirModeloDlg(p)}
+                            >
                               <Wand2 className="h-4 w-4 text-primary" />
                             </Button>
                           </>
                         )}
-                        <Button variant="ghost" size="icon" title="Editar" onClick={() => openEdit(p)} disabled={p.status === "convertida"}>
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          title="Editar"
+                          onClick={() => openEdit(p)}
+                          disabled={p.status === "convertida"}
+                        >
                           <Copy className="h-4 w-4" />
                         </Button>
-                        <Button variant="ghost" size="icon" title="Excluir" onClick={() => {
-                          if (confirm(`Excluir proposta ${p.numero}?`)) deleteMutation.mutate(p.id);
-                        }}>
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          title="Excluir"
+                          onClick={() => {
+                            if (confirm(`Excluir proposta ${p.numero}?`))
+                              deleteMutation.mutate(p.id);
+                          }}
+                        >
                           <Trash2 className="h-4 w-4 text-destructive" />
                         </Button>
                       </div>
@@ -1168,7 +1517,10 @@ function PropostasPage() {
         )}
       </Card>
 
-      <Dialog open={emailDialog.open} onOpenChange={(o) => !emailDialog.sending && setEmailDialog((s) => ({ ...s, open: o }))}>
+      <Dialog
+        open={emailDialog.open}
+        onOpenChange={(o) => !emailDialog.sending && setEmailDialog((s) => ({ ...s, open: o }))}
+      >
         <DialogContent>
           <DialogHeader>
             <DialogTitle>Enviar proposta {emailDialog.proposta?.numero} por e-mail</DialogTitle>
@@ -1176,18 +1528,41 @@ function PropostasPage() {
           <div className="space-y-4">
             <div className="space-y-2">
               <Label>E-mail do destinatário</Label>
-              <Input type="email" value={emailDialog.email} onChange={(e) => setEmailDialog((s) => ({ ...s, email: e.target.value }))} placeholder="cliente@empresa.com.br" />
+              <Input
+                type="email"
+                value={emailDialog.email}
+                onChange={(e) => setEmailDialog((s) => ({ ...s, email: e.target.value }))}
+                placeholder="cliente@empresa.com.br"
+              />
             </div>
             <div className="space-y-2">
               <Label>Mensagem personalizada (opcional)</Label>
-              <Textarea rows={4} value={emailDialog.mensagem} onChange={(e) => setEmailDialog((s) => ({ ...s, mensagem: e.target.value }))} placeholder="Substitui o texto padrão do e-mail." />
+              <Textarea
+                rows={4}
+                value={emailDialog.mensagem}
+                onChange={(e) => setEmailDialog((s) => ({ ...s, mensagem: e.target.value }))}
+                placeholder="Substitui o texto padrão do e-mail."
+              />
             </div>
-            <p className="text-xs text-muted-foreground">O PDF da proposta será gerado e enviado como link de download (válido por 30 dias). Status mudará para <strong>Enviada</strong>.</p>
+            <p className="text-xs text-muted-foreground">
+              O PDF da proposta será gerado e enviado como link de download (válido por 30 dias).
+              Status mudará para <strong>Enviada</strong>.
+            </p>
           </div>
           <DialogFooter>
-            <Button variant="ghost" onClick={() => setEmailDialog((s) => ({ ...s, open: false }))} disabled={emailDialog.sending}>Cancelar</Button>
+            <Button
+              variant="ghost"
+              onClick={() => setEmailDialog((s) => ({ ...s, open: false }))}
+              disabled={emailDialog.sending}
+            >
+              Cancelar
+            </Button>
             <Button onClick={sendByEmail} disabled={emailDialog.sending}>
-              {emailDialog.sending ? <Loader2 className="h-4 w-4 mr-2 animate-spin" /> : <Mail className="h-4 w-4 mr-2" />}
+              {emailDialog.sending ? (
+                <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+              ) : (
+                <Mail className="h-4 w-4 mr-2" />
+              )}
               Enviar
             </Button>
           </DialogFooter>
@@ -1197,39 +1572,98 @@ function PropostasPage() {
       <Dialog open={modeloDlg.open} onOpenChange={(o) => setModeloDlg((s) => ({ ...s, open: o }))}>
         <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
           <DialogHeader>
-            <DialogTitle>Gerar contrato a partir de modelo — Proposta {modeloDlg.proposta?.numero}</DialogTitle>
+            <DialogTitle>
+              Gerar contrato a partir de modelo — Proposta {modeloDlg.proposta?.numero}
+            </DialogTitle>
           </DialogHeader>
           <div className="space-y-4">
             <div className="grid grid-cols-2 gap-3">
               <div className="space-y-2 col-span-2">
                 <Label>Modelo *</Label>
-                <Select value={modeloDlg.modelo_id} onValueChange={(v) => setModeloDlg((s) => ({ ...s, modelo_id: v, previewHtml: "" }))}>
-                  <SelectTrigger><SelectValue placeholder="Selecione um modelo ativo" /></SelectTrigger>
+                <Select
+                  value={modeloDlg.modelo_id}
+                  onValueChange={(v) =>
+                    setModeloDlg((s) => ({ ...s, modelo_id: v, previewHtml: "" }))
+                  }
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="Selecione um modelo ativo" />
+                  </SelectTrigger>
                   <SelectContent>
-                    {(modelosAtivos as any[]).filter((m) => m.ativo).map((m) => (
-                      <SelectItem key={m.id} value={m.id}>{m.nome} (v{m.versao_atual})</SelectItem>
-                    ))}
+                    {(modelosAtivos as any[])
+                      .filter((m) => m.ativo)
+                      .map((m) => (
+                        <SelectItem key={m.id} value={m.id}>
+                          {m.nome} (v{m.versao_atual})
+                        </SelectItem>
+                      ))}
                   </SelectContent>
                 </Select>
               </div>
-              <div className="space-y-2"><Label>Nº do contrato</Label><Input value={modeloDlg.numero} onChange={(e) => setModeloDlg((s) => ({ ...s, numero: e.target.value }))} /></div>
-              <div className="space-y-2"><Label>Valor mensal (R$)</Label><Input type="number" step="0.01" value={modeloDlg.valor_mensal} onChange={(e) => setModeloDlg((s) => ({ ...s, valor_mensal: e.target.value }))} /></div>
-              <div className="space-y-2"><Label>Data início</Label><Input type="date" value={modeloDlg.data_inicio} onChange={(e) => setModeloDlg((s) => ({ ...s, data_inicio: e.target.value }))} /></div>
-              <div className="space-y-2"><Label>Data fim</Label><Input type="date" value={modeloDlg.data_fim} onChange={(e) => setModeloDlg((s) => ({ ...s, data_fim: e.target.value }))} /></div>
+              <div className="space-y-2">
+                <Label>Nº do contrato</Label>
+                <Input
+                  value={modeloDlg.numero}
+                  onChange={(e) => setModeloDlg((s) => ({ ...s, numero: e.target.value }))}
+                />
+              </div>
+              <div className="space-y-2">
+                <Label>Valor mensal (R$)</Label>
+                <Input
+                  type="number"
+                  step="0.01"
+                  value={modeloDlg.valor_mensal}
+                  onChange={(e) => setModeloDlg((s) => ({ ...s, valor_mensal: e.target.value }))}
+                />
+              </div>
+              <div className="space-y-2">
+                <Label>Data início</Label>
+                <Input
+                  type="date"
+                  value={modeloDlg.data_inicio}
+                  onChange={(e) => setModeloDlg((s) => ({ ...s, data_inicio: e.target.value }))}
+                />
+              </div>
+              <div className="space-y-2">
+                <Label>Data fim</Label>
+                <Input
+                  type="date"
+                  value={modeloDlg.data_fim}
+                  onChange={(e) => setModeloDlg((s) => ({ ...s, data_fim: e.target.value }))}
+                />
+              </div>
             </div>
             <div className="flex gap-2">
-              <Button variant="outline" onClick={gerarPreview} disabled={!modeloDlg.modelo_id || modeloDlg.loadingPreview}>
-                {modeloDlg.loadingPreview ? <Loader2 className="h-4 w-4 animate-spin" /> : <Eye className="h-4 w-4" />} Gerar prévia
+              <Button
+                variant="outline"
+                onClick={gerarPreview}
+                disabled={!modeloDlg.modelo_id || modeloDlg.loadingPreview}
+              >
+                {modeloDlg.loadingPreview ? (
+                  <Loader2 className="h-4 w-4 animate-spin" />
+                ) : (
+                  <Eye className="h-4 w-4" />
+                )}{" "}
+                Gerar prévia
               </Button>
             </div>
             {modeloDlg.previewHtml && (
-              <div className="border rounded p-4 max-h-[40vh] overflow-y-auto bg-background prose prose-sm max-w-none" dangerouslySetInnerHTML={{ __html: modeloDlg.previewHtml }} />
+              <div
+                className="border rounded p-4 max-h-[40vh] overflow-y-auto bg-background prose prose-sm max-w-none"
+                dangerouslySetInnerHTML={{ __html: modeloDlg.previewHtml }}
+              />
             )}
           </div>
           <DialogFooter>
-            <Button variant="ghost" onClick={() => setModeloDlg((s) => ({ ...s, open: false }))}>Cancelar</Button>
-            <Button onClick={() => gerarContratoModelo.mutate()} disabled={!modeloDlg.modelo_id || gerarContratoModelo.isPending}>
-              {gerarContratoModelo.isPending && <Loader2 className="h-4 w-4 animate-spin" />} Gerar contrato
+            <Button variant="ghost" onClick={() => setModeloDlg((s) => ({ ...s, open: false }))}>
+              Cancelar
+            </Button>
+            <Button
+              onClick={() => gerarContratoModelo.mutate()}
+              disabled={!modeloDlg.modelo_id || gerarContratoModelo.isPending}
+            >
+              {gerarContratoModelo.isPending && <Loader2 className="h-4 w-4 animate-spin" />} Gerar
+              contrato
             </Button>
           </DialogFooter>
         </DialogContent>
