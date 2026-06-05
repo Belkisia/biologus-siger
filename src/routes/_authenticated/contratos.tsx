@@ -11,9 +11,12 @@ import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogFooter } from "@/components/ui/dialog";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Plus, FileSignature, Loader2, Trash2, PenTool } from "lucide-react";
+import { Plus, FileSignature, Loader2, Trash2, PenTool, Eye, Mail } from "lucide-react";
 import { toast } from "sonner";
 import { AssinaturaDialog } from "@/components/AssinaturaDialog";
+import { useServerFn } from "@tanstack/react-start";
+import { visualizarContrato, enviarContratoEmail } from "@/lib/contrato.functions";
+
 
 export const Route = createFileRoute("/_authenticated/contratos")({
   component: ContratosPage,
