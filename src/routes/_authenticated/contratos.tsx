@@ -296,24 +296,16 @@ function ContratosPage() {
                   <Input id="valor_mensal" name="valor_mensal" type="number" step="0.01" />
                 </div>
                 <div className="space-y-2">
-                  <Label>Índice de reajuste</Label>
-                  <Select name="indice_reajuste">
-                    <SelectTrigger><SelectValue placeholder="Selecione" /></SelectTrigger>
-                    <SelectContent>
-                      {INDICES.map((i) => <SelectItem key={i} value={i}>{i}</SelectItem>)}
-                    </SelectContent>
-                  </Select>
-                </div>
-                <div className="space-y-2">
-                  <Label>Periodicidade reajuste</Label>
-                  <Select name="periodicidade_reajuste" value={periodicidade} onValueChange={onPeriodicidadeChange}>
+                  <Label>Vigência</Label>
+                  <Select value={periodicidade} onValueChange={onPeriodicidadeChange}>
                     <SelectTrigger><SelectValue /></SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="anual">Anual</SelectItem>
-                      <SelectItem value="semestral">Semestral</SelectItem>
-                      <SelectItem value="trimestral">Trimestral</SelectItem>
+                      <SelectItem value="anual">Anual (1 ano)</SelectItem>
+                      <SelectItem value="semestral">Semestral (6 meses)</SelectItem>
+                      <SelectItem value="trimestral">Trimestral (3 meses)</SelectItem>
                     </SelectContent>
                   </Select>
+                  <p className="text-xs text-muted-foreground">Calcula automaticamente a data de término.</p>
                 </div>
 
                 <div className="space-y-2">
@@ -322,16 +314,32 @@ function ContratosPage() {
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="forma_pagamento">Forma de pagamento</Label>
-                  <Input id="forma_pagamento" name="forma_pagamento" placeholder="Boleto, PIX..." />
+                  <Input id="forma_pagamento" name="forma_pagamento" placeholder="boleto bancário, PIX, depósito..." defaultValue="boleto bancário" />
                 </div>
-                <div className="space-y-2 md:col-span-2">
-                  <Label htmlFor="objeto">Objeto do contrato</Label>
-                  <Textarea id="objeto" name="objeto" rows={5} defaultValue={OBJETO_PADRAO} />
-                  <p className="text-xs text-muted-foreground">Texto padrão Bio Logus — edite conforme o escopo do contrato.</p>
+
+                <div className="space-y-2">
+                  <Label htmlFor="frequencia_coleta">Frequência da coleta</Label>
+                  <Input id="frequencia_coleta" name="frequencia_coleta" placeholder="mensal (1 vez ao mês)" defaultValue="mensal (1 vez ao mês)" />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="limite_kg">Pesagem — limite (kg/mês)</Label>
+                  <Input id="limite_kg" name="limite_kg" type="number" step="0.01" placeholder="Ex.: 20" />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="valor_excedente">Valor do kg excedente (R$)</Label>
+                  <Input id="valor_excedente" name="valor_excedente" type="number" step="0.01" placeholder="Ex.: 12,50" />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="grupos_residuos">Grupos de resíduos</Label>
+                  <Input id="grupos_residuos" name="grupos_residuos" placeholder="A, B e E" defaultValue="A, B e E" />
+                </div>
+
+                <div className="md:col-span-2 rounded-md border border-primary/30 bg-primary/5 p-3 text-xs text-muted-foreground">
+                  <strong className="text-foreground">Contrato Padrão Bio Logus 2026</strong> — o texto integral das 9 cláusulas será aplicado automaticamente, preenchendo os campos acima nos placeholders correspondentes. Sem alterações nas cláusulas.
                 </div>
 
                 <div className="space-y-2 md:col-span-2">
-                  <Label htmlFor="observacoes">Observações</Label>
+                  <Label htmlFor="observacoes">Observações internas</Label>
                   <Textarea id="observacoes" name="observacoes" rows={2} />
                 </div>
               </div>
