@@ -1,5 +1,5 @@
 // Geração e averbação de PDFs assinados (Worker-compatível via pdf-lib)
-import { PDFDocument, StandardFonts, rgb, PageSizes } from "pdf-lib";
+import { PDFDocument, StandardFonts, rgb, PageSizes, type Color, type PDFFont } from "pdf-lib";
 import QRCode from "qrcode";
 
 type SignatarioInfo = {
@@ -61,7 +61,7 @@ export async function gerarPDFContrato(args: {
 
   const drawText = (
     text: string,
-    opts: { size?: number; font?: any; color?: any; indent?: number } = {},
+    opts: { size?: number; font?: PDFFont; color?: Color; indent?: number } = {},
   ) => {
     const size = opts.size ?? 9.5;
     const f = opts.font ?? font;
