@@ -476,7 +476,7 @@ function PropostasPage() {
       doc.setTextColor(0);
       const lines = doc.splitTextToSize(it, colW - 8) as string[];
       doc.text(lines.slice(0, 1), M + 6, yi);
-      yi += 4.6;
+      yi += t.inclSpacing;
     }
 
     // Direita: observações
