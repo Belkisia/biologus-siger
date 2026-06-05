@@ -22,11 +22,12 @@ function dataBR(d: string | null | undefined) {
   return new Date(d + (d.length === 10 ? "T00:00:00" : "")).toLocaleDateString("pt-BR");
 }
 
-// Constrói o dicionário de variáveis a partir do cliente + opcionalmente contrato/proposta
+// Constrói o dicionário de variáveis a partir do cliente + opcionalmente contrato/proposta + itens
 function buildVars(args: {
   cliente: any;
   contrato?: any | null;
   proposta?: any | null;
+  itens?: Array<any> | null;
   empresa?: { razao_social: string; cnpj: string; endereco: string; email: string; telefone: string };
 }) {
   const e = args.empresa || {
@@ -38,6 +39,29 @@ function buildVars(args: {
   };
   const c = args.cliente || {};
   const ct = args.contrato || {};
+  const itens = args.itens || [];
+
+  // Agrupamento de resíduos
+  const grupos = Array.from(new Set(itens.map((i) => (i.grupo_residuo || "").trim()).filter(Boolean))).sort();
+  const gruposStr = grupos.length
+    ? grupos.length === 1
+      ? `Grupo ${grupos[0]}`
+      : `Grupos ${grupos.slice(0, -1).join(", ")} e ${grupos.slice(-1)}`
+    : "";
+  const limiteKg = itens.reduce((s, i) => s + (Number(i.franquia) || 0), 0);
+  const excedentes = itens.map((i) => Number(i.preco_excedente)).filter((v) => v > 0);
+  const excedenteMedio = excedentes.length ? excedentes.reduce((a, b) => a + b, 0) / excedentes.length : 0;
+  const tabelaItens = itens.length
+    ? `<table style="width:100%;border-collapse:collapse;margin:8px 0" border="1" cellpadding="6">
+<thead><tr><th>Descrição do resíduo</th><th>Grupo</th><th>Unidade</th><th>Franquia</th><th>Preço unitário</th><th>Excedente</th></tr></thead>
+<tbody>${itens.map((i) => `<tr><td>${i.descricao || ""}</td><td>${i.grupo_residuo || "—"}</td><td>${i.unidade || "kg"}</td><td>${i.franquia != null ? `${i.franquia} ${i.unidade || "kg"}` : "—"}</td><td>${brl(Number(i.preco_unitario))}</td><td>${i.preco_excedente ? brl(Number(i.preco_excedente)) : "—"}</td></tr>`).join("")}</tbody></table>`
+    : "";
+  const objetoDescricao = itens.length
+    ? itens.map((i) => i.descricao).filter(Boolean).join("; ")
+    : "resíduos de serviços de saúde";
+  const localColeta = [c.endereco, c.numero && `nº ${c.numero}`, c.bairro, c.cidade && `${c.cidade}/${c.estado || ""}`]
+    .filter(Boolean).join(", ");
+
   return {
     CONTRATO_NUMERO: ct.numero || "",
     DATA_CONTRATO: dataBR(new Date().toISOString().slice(0, 10)),
@@ -65,9 +89,14 @@ function buildVars(args: {
     RESPONSAVEL_FINANCEIRO: c.responsavel_financeiro || "",
     RESPONSAVEL_OPERACIONAL: c.responsavel_operacional || "",
     VALOR_MENSAL: brl(ct.valor_mensal),
-    LIMITE_KG: "",
-    VALOR_EXCEDENTE: "",
-    FREQUENCIA_COLETA: "",
+    LIMITE_KG: limiteKg ? `${limiteKg.toLocaleString("pt-BR")}` : "",
+    VALOR_EXCEDENTE: excedenteMedio ? brl(excedenteMedio) : "",
+    FREQUENCIA_COLETA: ct.periodicidade_reajuste === "mensal" ? "mensal" : "conforme cronograma operacional",
+    GRUPOS_RESIDUOS: gruposStr,
+    LOCAL_COLETA: localColeta,
+    OBJETO_DESCRICAO: objetoDescricao,
+    TABELA_RESIDUOS: tabelaItens,
+    TECNOLOGIA_TRATAMENTO: "autoclavagem, incineração ou aterro sanitário industrial, conforme classe e características do resíduo",
     VIGENCIA: ct.data_fim ? `${dataBR(ct.data_inicio)} a ${dataBR(ct.data_fim)}` : `a partir de ${dataBR(ct.data_inicio)}`,
     DATA_INICIO: dataBR(ct.data_inicio),
     DATA_FIM: dataBR(ct.data_fim),
