@@ -11,8 +11,9 @@ import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogFooter } from "@/components/ui/dialog";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Plus, FileSignature, Loader2, Trash2 } from "lucide-react";
+import { Plus, FileSignature, Loader2, Trash2, PenTool } from "lucide-react";
 import { toast } from "sonner";
+import { AssinaturaDialog } from "@/components/AssinaturaDialog";
 
 export const Route = createFileRoute("/_authenticated/contratos")({
   component: ContratosPage,
@@ -57,7 +58,7 @@ function ContratosPage() {
   const { data: clientes = [] } = useQuery({
     queryKey: ["clientes-select"],
     queryFn: async () => {
-      const { data } = await supabase.from("clientes").select("id, razao_social").order("razao_social");
+      const { data } = await supabase.from("clientes").select("id, razao_social, cnpj, email").order("razao_social");
       return data ?? [];
     },
   });
@@ -124,6 +125,9 @@ function ContratosPage() {
   const totalMensal = contratos
     .filter((c) => c.status === "ativo")
     .reduce((acc, c) => acc + (c.valor_mensal ?? 0), 0);
+
+  const [assinaturaContrato, setAssinaturaContrato] = useState<Contrato | null>(null);
+
 
   return (
     <div className="space-y-6">
@@ -287,11 +291,16 @@ function ContratosPage() {
                       </Select>
                     </TableCell>
                     <TableCell>
-                      <Button variant="ghost" size="icon" onClick={() => {
-                        if (confirm(`Remover contrato ${c.numero}?`)) deleteMutation.mutate(c.id);
-                      }}>
-                        <Trash2 className="h-4 w-4 text-destructive" />
-                      </Button>
+                      <div className="flex gap-1">
+                        <Button variant="ghost" size="icon" title="Enviar para assinatura" onClick={() => setAssinaturaContrato(c)}>
+                          <PenTool className="h-4 w-4 text-primary" />
+                        </Button>
+                        <Button variant="ghost" size="icon" title="Remover" onClick={() => {
+                          if (confirm(`Remover contrato ${c.numero}?`)) deleteMutation.mutate(c.id);
+                        }}>
+                          <Trash2 className="h-4 w-4 text-destructive" />
+                        </Button>
+                      </div>
                     </TableCell>
                   </TableRow>
                 );
@@ -300,6 +309,22 @@ function ContratosPage() {
           </Table>
         )}
       </Card>
+
+      <AssinaturaDialog
+        open={!!assinaturaContrato}
+        onOpenChange={(v) => !v && setAssinaturaContrato(null)}
+        documentoTipo="contrato"
+        documentoId={assinaturaContrato?.id ?? null}
+        clienteSugerido={
+          assinaturaContrato
+            ? {
+                nome: clientes.find((cl) => cl.id === assinaturaContrato.cliente_id)?.razao_social || "",
+                email: (clientes.find((cl) => cl.id === assinaturaContrato.cliente_id) as any)?.email || "",
+                cpf_cnpj: (clientes.find((cl) => cl.id === assinaturaContrato.cliente_id) as any)?.cnpj || "",
+              }
+            : null
+        }
+      />
     </div>
   );
 }

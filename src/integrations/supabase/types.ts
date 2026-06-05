@@ -373,6 +373,62 @@ export type Database = {
           },
         ]
       }
+      documento_assinaturas: {
+        Row: {
+          assinado_em: string
+          codigo_verificacao: string
+          created_at: string
+          documento_id: string
+          documento_tipo: Database["public"]["Enums"]["documento_tipo"]
+          geo: Json | null
+          hash_documento: string
+          id: string
+          ip: string | null
+          pdf_assinado_path: string | null
+          rubrica_base64: string | null
+          signatario_id: string
+          user_agent: string | null
+        }
+        Insert: {
+          assinado_em?: string
+          codigo_verificacao: string
+          created_at?: string
+          documento_id: string
+          documento_tipo: Database["public"]["Enums"]["documento_tipo"]
+          geo?: Json | null
+          hash_documento: string
+          id?: string
+          ip?: string | null
+          pdf_assinado_path?: string | null
+          rubrica_base64?: string | null
+          signatario_id: string
+          user_agent?: string | null
+        }
+        Update: {
+          assinado_em?: string
+          codigo_verificacao?: string
+          created_at?: string
+          documento_id?: string
+          documento_tipo?: Database["public"]["Enums"]["documento_tipo"]
+          geo?: Json | null
+          hash_documento?: string
+          id?: string
+          ip?: string | null
+          pdf_assinado_path?: string | null
+          rubrica_base64?: string | null
+          signatario_id?: string
+          user_agent?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "documento_assinaturas_signatario_id_fkey"
+            columns: ["signatario_id"]
+            isOneToOne: true
+            referencedRelation: "signatarios"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       email_send_log: {
         Row: {
           created_at: string
@@ -938,6 +994,139 @@ export type Database = {
           },
         ]
       }
+      signatario_eventos: {
+        Row: {
+          created_at: string
+          evento: string
+          id: string
+          ip: string | null
+          metadata: Json | null
+          signatario_id: string
+          user_agent: string | null
+        }
+        Insert: {
+          created_at?: string
+          evento: string
+          id?: string
+          ip?: string | null
+          metadata?: Json | null
+          signatario_id: string
+          user_agent?: string | null
+        }
+        Update: {
+          created_at?: string
+          evento?: string
+          id?: string
+          ip?: string | null
+          metadata?: Json | null
+          signatario_id?: string
+          user_agent?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "signatario_eventos_signatario_id_fkey"
+            columns: ["signatario_id"]
+            isOneToOne: false
+            referencedRelation: "signatarios"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      signatario_otps: {
+        Row: {
+          codigo_hash: string
+          created_at: string
+          expira_em: string
+          id: string
+          signatario_id: string
+          tentativas: number
+          usado_em: string | null
+        }
+        Insert: {
+          codigo_hash: string
+          created_at?: string
+          expira_em?: string
+          id?: string
+          signatario_id: string
+          tentativas?: number
+          usado_em?: string | null
+        }
+        Update: {
+          codigo_hash?: string
+          created_at?: string
+          expira_em?: string
+          id?: string
+          signatario_id?: string
+          tentativas?: number
+          usado_em?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "signatario_otps_signatario_id_fkey"
+            columns: ["signatario_id"]
+            isOneToOne: false
+            referencedRelation: "signatarios"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      signatarios: {
+        Row: {
+          assinado_em: string | null
+          cpf_cnpj: string | null
+          created_at: string
+          documento_id: string
+          documento_tipo: Database["public"]["Enums"]["documento_tipo"]
+          email: string
+          email_enviado_em: string | null
+          expira_em: string
+          id: string
+          nome: string
+          ordem: number
+          owner_id: string
+          papel: Database["public"]["Enums"]["signatario_papel"]
+          status: Database["public"]["Enums"]["signatario_status"]
+          token: string
+          updated_at: string
+        }
+        Insert: {
+          assinado_em?: string | null
+          cpf_cnpj?: string | null
+          created_at?: string
+          documento_id: string
+          documento_tipo: Database["public"]["Enums"]["documento_tipo"]
+          email: string
+          email_enviado_em?: string | null
+          expira_em?: string
+          id?: string
+          nome: string
+          ordem?: number
+          owner_id: string
+          papel?: Database["public"]["Enums"]["signatario_papel"]
+          status?: Database["public"]["Enums"]["signatario_status"]
+          token?: string
+          updated_at?: string
+        }
+        Update: {
+          assinado_em?: string | null
+          cpf_cnpj?: string | null
+          created_at?: string
+          documento_id?: string
+          documento_tipo?: Database["public"]["Enums"]["documento_tipo"]
+          email?: string
+          email_enviado_em?: string | null
+          expira_em?: string
+          id?: string
+          nome?: string
+          ordem?: number
+          owner_id?: string
+          papel?: Database["public"]["Enums"]["signatario_papel"]
+          status?: Database["public"]["Enums"]["signatario_status"]
+          token?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       suppressed_emails: {
         Row: {
           created_at: string
@@ -1032,6 +1221,14 @@ export type Database = {
         | "operacional"
         | "motorista"
         | "cliente"
+      documento_tipo: "contrato" | "proposta"
+      signatario_papel: "contratante" | "contratada" | "testemunha"
+      signatario_status:
+        | "pendente"
+        | "otp_enviado"
+        | "assinado"
+        | "recusado"
+        | "expirado"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -1167,6 +1364,15 @@ export const Constants = {
         "operacional",
         "motorista",
         "cliente",
+      ],
+      documento_tipo: ["contrato", "proposta"],
+      signatario_papel: ["contratante", "contratada", "testemunha"],
+      signatario_status: [
+        "pendente",
+        "otp_enviado",
+        "assinado",
+        "recusado",
+        "expirado",
       ],
     },
   },
