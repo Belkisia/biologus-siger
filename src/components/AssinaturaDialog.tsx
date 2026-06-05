@@ -81,10 +81,8 @@ export function AssinaturaDialog({
     }
   };
 
-  const baixarPDF = async () => {
-    if (!existing?.pdf_assinado_path) return;
-    const { data } = await supabase.storage.from("documentos").createSignedUrl(existing.pdf_assinado_path, 300);
-    if (data?.signedUrl) window.open(data.signedUrl, "_blank");
+  const baixarPDF = () => {
+    if (existing?.pdf_assinado_url) window.open(existing.pdf_assinado_url, "_blank");
   };
 
   const copyLink = (token: string) => {

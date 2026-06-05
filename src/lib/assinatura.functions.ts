@@ -457,6 +457,7 @@ export const listarSignatarios = createServerFn({ method: "POST" })
   )
   .handler(async ({ data, context }) => {
     const { supabase } = context;
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const { data: sigs } = await supabase
       .from("signatarios")
       .select("*")
@@ -473,5 +474,17 @@ export const listarSignatarios = createServerFn({ method: "POST" })
       .limit(1)
       .maybeSingle();
 
-    return { signatarios: sigs || [], pdf_assinado_path: pdfAssin?.pdf_assinado_path || null };
+    let pdf_assinado_url: string | null = null;
+    if (pdfAssin?.pdf_assinado_path) {
+      const { data: signed } = await supabaseAdmin.storage
+        .from("documentos")
+        .createSignedUrl(pdfAssin.pdf_assinado_path, 3600);
+      pdf_assinado_url = signed?.signedUrl || null;
+    }
+
+    return {
+      signatarios: sigs || [],
+      pdf_assinado_path: pdfAssin?.pdf_assinado_path || null,
+      pdf_assinado_url,
+    };
   });
