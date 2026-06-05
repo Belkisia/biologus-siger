@@ -36,8 +36,19 @@ type Contrato = {
   forma_pagamento: string | null;
   status: string;
   observacoes: string | null;
+  ultimo_email_status: string | null;
+  ultimo_email_em: string | null;
+  ultimo_email_destino: string | null;
+  ultimo_email_erro: string | null;
   clientes?: { razao_social: string } | null;
 };
+
+const EMAIL_STATUS_MAP: Record<string, { label: string; variant: "default" | "secondary" | "outline" | "destructive"; className?: string }> = {
+  processando: { label: "Em processamento", variant: "secondary" },
+  enviado: { label: "Enviado", variant: "default", className: "bg-emerald-600 hover:bg-emerald-600" },
+  falhou: { label: "Falhou", variant: "destructive" },
+};
+
 
 const STATUS_MAP: Record<string, { label: string; variant: "default" | "secondary" | "outline" | "destructive" }> = {
   ativo: { label: "Ativo", variant: "default" },
@@ -177,11 +188,16 @@ function ContratosPage() {
     },
     onSuccess: () => {
       toast.success("Contrato enviado por e-mail");
+      qc.invalidateQueries({ queryKey: ["contratos"] });
       setEmailContrato(null);
       setEmailDestino("");
       setEmailMensagem("");
     },
-    onError: (e: Error) => toast.error(e.message),
+    onError: (e: Error) => {
+      toast.error(e.message);
+      qc.invalidateQueries({ queryKey: ["contratos"] });
+    },
+
   });
 
   const openChange = (v: boolean) => {
@@ -351,7 +367,9 @@ function ContratosPage() {
                 <TableHead>Valor mensal</TableHead>
                 <TableHead>Reajuste</TableHead>
                 <TableHead>Status</TableHead>
+                <TableHead>Envio e-mail</TableHead>
                 <TableHead className="w-12"></TableHead>
+
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -382,7 +400,37 @@ function ContratosPage() {
                         </SelectContent>
                       </Select>
                     </TableCell>
+                    <TableCell className="text-sm">
+                      {c.ultimo_email_status ? (
+                        <div className="space-y-1">
+                          <Badge
+                            variant={EMAIL_STATUS_MAP[c.ultimo_email_status]?.variant ?? "secondary"}
+                            className={EMAIL_STATUS_MAP[c.ultimo_email_status]?.className}
+                          >
+                            {EMAIL_STATUS_MAP[c.ultimo_email_status]?.label ?? c.ultimo_email_status}
+                          </Badge>
+                          {c.ultimo_email_em && (
+                            <div className="text-xs text-muted-foreground">
+                              {new Date(c.ultimo_email_em).toLocaleString("pt-BR")}
+                            </div>
+                          )}
+                          {c.ultimo_email_destino && (
+                            <div className="text-xs text-muted-foreground truncate max-w-[180px]" title={c.ultimo_email_destino}>
+                              {c.ultimo_email_destino}
+                            </div>
+                          )}
+                          {c.ultimo_email_status === "falhou" && c.ultimo_email_erro && (
+                            <div className="text-xs text-destructive truncate max-w-[180px]" title={c.ultimo_email_erro}>
+                              {c.ultimo_email_erro}
+                            </div>
+                          )}
+                        </div>
+                      ) : (
+                        <span className="text-muted-foreground">—</span>
+                      )}
+                    </TableCell>
                     <TableCell>
+
                       <div className="flex gap-1">
                         <Button variant="ghost" size="icon" title="Visualizar PDF" onClick={() => handlePreview(c)} disabled={previewing === c.id}>
                           {previewing === c.id ? <Loader2 className="h-4 w-4 animate-spin" /> : <Eye className="h-4 w-4" />}

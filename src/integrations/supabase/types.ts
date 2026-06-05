@@ -324,6 +324,10 @@ export type Database = {
           owner_id: string
           periodicidade_reajuste: string | null
           status: string
+          ultimo_email_destino: string | null
+          ultimo_email_em: string | null
+          ultimo_email_erro: string | null
+          ultimo_email_status: string | null
           updated_at: string
           valor_mensal: number | null
         }
@@ -342,6 +346,10 @@ export type Database = {
           owner_id: string
           periodicidade_reajuste?: string | null
           status?: string
+          ultimo_email_destino?: string | null
+          ultimo_email_em?: string | null
+          ultimo_email_erro?: string | null
+          ultimo_email_status?: string | null
           updated_at?: string
           valor_mensal?: number | null
         }
@@ -360,6 +368,10 @@ export type Database = {
           owner_id?: string
           periodicidade_reajuste?: string | null
           status?: string
+          ultimo_email_destino?: string | null
+          ultimo_email_em?: string | null
+          ultimo_email_erro?: string | null
+          ultimo_email_status?: string | null
           updated_at?: string
           valor_mensal?: number | null
         }

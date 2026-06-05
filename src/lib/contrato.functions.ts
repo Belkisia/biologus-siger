@@ -83,15 +83,39 @@ export const enviarContratoEmail = createServerFn({ method: "POST" })
     }).parse(data)
   )
   .handler(async ({ data }) => {
-    const { pdfBytes, contrato } = await gerarPDFDoContrato(data.contrato_id);
-    const { enviarContratoInformativo } = await import("./assinatura-email.server");
-    const base64 = Buffer.from(pdfBytes).toString("base64");
-    await enviarContratoInformativo({
-      to: data.email,
-      nomeCliente: contrato.clientes?.razao_social || "Cliente",
-      numeroContrato: contrato.numero,
-      mensagem: data.mensagem,
-      pdfBase64: base64,
-    });
-    return { ok: true };
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+
+    await supabaseAdmin.from("contratos").update({
+      ultimo_email_status: "processando",
+      ultimo_email_em: new Date().toISOString(),
+      ultimo_email_destino: data.email,
+      ultimo_email_erro: null,
+    }).eq("id", data.contrato_id);
+
+    try {
+      const { pdfBytes, contrato } = await gerarPDFDoContrato(data.contrato_id);
+      const { enviarContratoInformativo } = await import("./assinatura-email.server");
+      const base64 = Buffer.from(pdfBytes).toString("base64");
+      await enviarContratoInformativo({
+        to: data.email,
+        nomeCliente: contrato.clientes?.razao_social || "Cliente",
+        numeroContrato: contrato.numero,
+        mensagem: data.mensagem,
+        pdfBase64: base64,
+      });
+      await supabaseAdmin.from("contratos").update({
+        ultimo_email_status: "enviado",
+        ultimo_email_em: new Date().toISOString(),
+        ultimo_email_erro: null,
+      }).eq("id", data.contrato_id);
+      return { ok: true };
+    } catch (e: any) {
+      await supabaseAdmin.from("contratos").update({
+        ultimo_email_status: "falhou",
+        ultimo_email_em: new Date().toISOString(),
+        ultimo_email_erro: String(e?.message || e).slice(0, 500),
+      }).eq("id", data.contrato_id);
+      throw e;
+    }
   });
+
