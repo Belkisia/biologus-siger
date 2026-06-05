@@ -854,6 +854,31 @@ function PropostasPage() {
                     </SelectContent>
                   </Select>
                 </div>
+                <div className="space-y-2 md:col-span-2">
+                  <Label>Importar do contrato (auto-preenche cliente, itens, R$/kg, máximos e cláusulas)</Label>
+                  <Select
+                    value={form.contrato_id || "none"}
+                    onValueChange={(v) => {
+                      if (v === "none") {
+                        setForm({ ...form, contrato_id: "" });
+                      } else {
+                        applyContrato(v);
+                      }
+                    }}
+                  >
+                    <SelectTrigger><SelectValue placeholder="Nenhum contrato vinculado" /></SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="none">— Sem contrato —</SelectItem>
+                      {contratos
+                        .filter((c) => !form.cliente_id || c.cliente_id === form.cliente_id)
+                        .map((c) => (
+                          <SelectItem key={c.id} value={c.id}>
+                            {c.numero} {c.objeto ? `· ${c.objeto.slice(0, 40)}` : ""}
+                          </SelectItem>
+                        ))}
+                    </SelectContent>
+                  </Select>
+                </div>
                 <div className="space-y-2">
                   <Label>Número *</Label>
                   <Input value={form.numero} onChange={(e) => setForm({ ...form, numero: e.target.value })} />
