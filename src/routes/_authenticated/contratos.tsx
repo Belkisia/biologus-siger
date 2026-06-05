@@ -337,12 +337,21 @@ function ContratosPage() {
               <div className="grid md:grid-cols-2 gap-4">
                 <div className="space-y-2 md:col-span-2">
                   <Label>Cliente *</Label>
-                  <Select name="cliente_id" required>
+                  <Select name="cliente_id" required value={selectedClienteId} onValueChange={setSelectedClienteId}>
                     <SelectTrigger><SelectValue placeholder="Selecione o cliente" /></SelectTrigger>
                     <SelectContent>
                       {clientes.map((c) => <SelectItem key={c.id} value={c.id}>{c.razao_social}</SelectItem>)}
                     </SelectContent>
                   </Select>
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="representante_nome">Representante no contrato *</Label>
+                  <Input id="representante_nome" name="representante_nome" required value={selectedCliente?.responsavel_financeiro || selectedCliente?.responsavel_tecnico || selectedCliente?.responsavel_operacional || ""} readOnly />
+                  <p className="text-xs text-muted-foreground">Vem do responsável cadastrado no cliente.</p>
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="representante_cpf">CPF do representante *</Label>
+                  <Input id="representante_cpf" name="representante_cpf" required placeholder="000.000.000-00" />
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="numero">Número *</Label>
@@ -402,7 +411,7 @@ function ContratosPage() {
                 </div>
 
                 <div className="md:col-span-2 rounded-md border border-primary/30 bg-primary/5 p-3 text-xs text-muted-foreground">
-                  <strong className="text-foreground">Contrato Padrão Bio Logus 2026</strong> — o texto integral das 9 cláusulas será aplicado automaticamente, preenchendo os campos acima nos placeholders correspondentes. Sem alterações nas cláusulas.
+                  <strong className="text-foreground">Contrato Padrão Bio Logus 2026</strong> — o texto integral das 9 cláusulas será aplicado automaticamente. Dados da contratante vêm do cadastro do cliente; aqui você informa apenas número, vigência, pagamento, pesagem, frequência e CPF do representante. Sem alterações nas cláusulas.
                 </div>
 
                 <div className="space-y-2 md:col-span-2">
