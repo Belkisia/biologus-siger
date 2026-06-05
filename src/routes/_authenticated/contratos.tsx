@@ -424,6 +424,33 @@ function ContratosPage() {
             : null
         }
       />
+
+      <Dialog open={!!emailContrato} onOpenChange={(v) => !v && setEmailContrato(null)}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Enviar contrato {emailContrato?.numero} por e-mail</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4">
+            <div className="space-y-2">
+              <Label>E-mail destinatário *</Label>
+              <Input type="email" value={emailDestino} onChange={(e) => setEmailDestino(e.target.value)} placeholder="cliente@empresa.com" />
+            </div>
+            <div className="space-y-2">
+              <Label>Mensagem (opcional)</Label>
+              <Textarea rows={4} value={emailMensagem} onChange={(e) => setEmailMensagem(e.target.value)} placeholder="Mensagem que acompanha o contrato..." />
+            </div>
+            <p className="text-xs text-muted-foreground">O contrato será gerado em PDF e enviado como anexo.</p>
+          </div>
+          <DialogFooter>
+            <Button variant="ghost" onClick={() => setEmailContrato(null)}>Cancelar</Button>
+            <Button onClick={() => emailMutation.mutate()} disabled={!emailDestino || emailMutation.isPending}>
+              {emailMutation.isPending ? <Loader2 className="h-4 w-4 mr-2 animate-spin" /> : <Mail className="h-4 w-4 mr-2" />}
+              Enviar
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
+
