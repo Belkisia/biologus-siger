@@ -280,6 +280,22 @@ function PropostasPage() {
       .eq("proposta_id", p.id)
       .order("ordem");
 
+    // ── MODO COMPACTAÇÃO AUTOMÁTICA ─────────────────────────────────────
+    // Tenta níveis progressivamente menores até caber em 1 página A4.
+    type Tier = {
+      bodyFont: number; bodyPad: number; headFont: number; headPad: number;
+      blockH: number; inclH: number; obsLines: number; inclSpacing: number;
+      sectionGap: number; nomeFont: number; condFont: number; destFont: number;
+    };
+    const tiers: Tier[] = [
+      { bodyFont: 8.0, bodyPad: 1.6, headFont: 8.0, headPad: 1.8, blockH: 36, inclH: 34, obsLines: 7, inclSpacing: 4.6, sectionGap: 4, nomeFont: 10.5, condFont: 8.0, destFont: 7.8 },
+      { bodyFont: 7.5, bodyPad: 1.3, headFont: 7.5, headPad: 1.5, blockH: 33, inclH: 31, obsLines: 7, inclSpacing: 4.2, sectionGap: 3, nomeFont: 10.0, condFont: 7.6, destFont: 7.5 },
+      { bodyFont: 7.0, bodyPad: 1.0, headFont: 7.0, headPad: 1.2, blockH: 30, inclH: 28, obsLines: 6, inclSpacing: 3.8, sectionGap: 2.5, nomeFont: 9.5,  condFont: 7.2, destFont: 7.2 },
+      { bodyFont: 6.5, bodyPad: 0.8, headFont: 6.5, headPad: 1.0, blockH: 27, inclH: 25, obsLines: 5, inclSpacing: 3.4, sectionGap: 2, nomeFont: 9.0,  condFont: 6.8, destFont: 6.8 },
+      { bodyFont: 6.0, bodyPad: 0.6, headFont: 6.2, headPad: 0.9, blockH: 25, inclH: 23, obsLines: 4, inclSpacing: 3.1, sectionGap: 1.5, nomeFont: 8.5, condFont: 6.4, destFont: 6.4 },
+    ];
+
+    const renderWithTier = (t: Tier) => {
     const doc = new jsPDF({ unit: "mm", format: "a4" });
     const cli = p.clientes;
     const PAGE_W = 210;
