@@ -248,12 +248,14 @@ function ContratosPage() {
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="data_inicio">Início *</Label>
-                  <Input id="data_inicio" name="data_inicio" type="date" required />
+                  <Input id="data_inicio" name="data_inicio" type="date" required value={dataInicio} onChange={(e) => onInicioChange(e.target.value)} />
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="data_fim">Término</Label>
-                  <Input id="data_fim" name="data_fim" type="date" />
+                  <Input id="data_fim" name="data_fim" type="date" value={dataFim} onChange={(e) => setDataFim(e.target.value)} />
+                  <p className="text-xs text-muted-foreground">Calculado automaticamente conforme periodicidade</p>
                 </div>
+
                 <div className="space-y-2">
                   <Label htmlFor="valor_mensal">Valor mensal (R$)</Label>
                   <Input id="valor_mensal" name="valor_mensal" type="number" step="0.01" />
