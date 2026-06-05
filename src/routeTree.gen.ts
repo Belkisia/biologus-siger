@@ -33,6 +33,7 @@ import { Route as AuthenticatedClientesRouteImport } from './routes/_authenticat
 import { Route as AuthenticatedCdfRouteImport } from './routes/_authenticated/cdf'
 import { Route as LovableEmailSuppressionRouteImport } from './routes/lovable/email/suppression'
 import { Route as AuthenticatedPropostasNovaRouteImport } from './routes/_authenticated/propostas.nova'
+import { Route as AuthenticatedClientesClienteIdRouteImport } from './routes/_authenticated/clientes.$clienteId'
 import { Route as LovableEmailTransactionalSendRouteImport } from './routes/lovable/email/transactional/send'
 import { Route as LovableEmailTransactionalPreviewRouteImport } from './routes/lovable/email/transactional/preview'
 import { Route as LovableEmailQueueProcessRouteImport } from './routes/lovable/email/queue/process'
@@ -161,6 +162,12 @@ const AuthenticatedPropostasNovaRoute =
     path: '/nova',
     getParentRoute: () => AuthenticatedPropostasRoute,
   } as any)
+const AuthenticatedClientesClienteIdRoute =
+  AuthenticatedClientesClienteIdRouteImport.update({
+    id: '/$clienteId',
+    path: '/$clienteId',
+    getParentRoute: () => AuthenticatedClientesRoute,
+  } as any)
 const LovableEmailTransactionalSendRoute =
   LovableEmailTransactionalSendRouteImport.update({
     id: '/lovable/email/transactional/send',
@@ -195,7 +202,7 @@ export interface FileRoutesByFullPath {
   '/auth': typeof AuthRoute
   '/unsubscribe': typeof UnsubscribeRoute
   '/cdf': typeof AuthenticatedCdfRoute
-  '/clientes': typeof AuthenticatedClientesRoute
+  '/clientes': typeof AuthenticatedClientesRouteWithChildren
   '/coletas': typeof AuthenticatedColetasRoute
   '/conciliacao': typeof AuthenticatedConciliacaoRoute
   '/contratos': typeof AuthenticatedContratosRoute
@@ -212,6 +219,7 @@ export interface FileRoutesByFullPath {
   '/assinar/$token': typeof AssinarTokenRoute
   '/email/unsubscribe': typeof EmailUnsubscribeRoute
   '/validar/$codigo': typeof ValidarCodigoRoute
+  '/clientes/$clienteId': typeof AuthenticatedClientesClienteIdRoute
   '/propostas/nova': typeof AuthenticatedPropostasNovaRoute
   '/lovable/email/suppression': typeof LovableEmailSuppressionRoute
   '/lovable/email/auth/preview': typeof LovableEmailAuthPreviewRoute
@@ -225,7 +233,7 @@ export interface FileRoutesByTo {
   '/auth': typeof AuthRoute
   '/unsubscribe': typeof UnsubscribeRoute
   '/cdf': typeof AuthenticatedCdfRoute
-  '/clientes': typeof AuthenticatedClientesRoute
+  '/clientes': typeof AuthenticatedClientesRouteWithChildren
   '/coletas': typeof AuthenticatedColetasRoute
   '/conciliacao': typeof AuthenticatedConciliacaoRoute
   '/contratos': typeof AuthenticatedContratosRoute
@@ -242,6 +250,7 @@ export interface FileRoutesByTo {
   '/assinar/$token': typeof AssinarTokenRoute
   '/email/unsubscribe': typeof EmailUnsubscribeRoute
   '/validar/$codigo': typeof ValidarCodigoRoute
+  '/clientes/$clienteId': typeof AuthenticatedClientesClienteIdRoute
   '/propostas/nova': typeof AuthenticatedPropostasNovaRoute
   '/lovable/email/suppression': typeof LovableEmailSuppressionRoute
   '/lovable/email/auth/preview': typeof LovableEmailAuthPreviewRoute
@@ -257,7 +266,7 @@ export interface FileRoutesById {
   '/auth': typeof AuthRoute
   '/unsubscribe': typeof UnsubscribeRoute
   '/_authenticated/cdf': typeof AuthenticatedCdfRoute
-  '/_authenticated/clientes': typeof AuthenticatedClientesRoute
+  '/_authenticated/clientes': typeof AuthenticatedClientesRouteWithChildren
   '/_authenticated/coletas': typeof AuthenticatedColetasRoute
   '/_authenticated/conciliacao': typeof AuthenticatedConciliacaoRoute
   '/_authenticated/contratos': typeof AuthenticatedContratosRoute
@@ -274,6 +283,7 @@ export interface FileRoutesById {
   '/assinar/$token': typeof AssinarTokenRoute
   '/email/unsubscribe': typeof EmailUnsubscribeRoute
   '/validar/$codigo': typeof ValidarCodigoRoute
+  '/_authenticated/clientes/$clienteId': typeof AuthenticatedClientesClienteIdRoute
   '/_authenticated/propostas/nova': typeof AuthenticatedPropostasNovaRoute
   '/lovable/email/suppression': typeof LovableEmailSuppressionRoute
   '/lovable/email/auth/preview': typeof LovableEmailAuthPreviewRoute
@@ -306,6 +316,7 @@ export interface FileRouteTypes {
     | '/assinar/$token'
     | '/email/unsubscribe'
     | '/validar/$codigo'
+    | '/clientes/$clienteId'
     | '/propostas/nova'
     | '/lovable/email/suppression'
     | '/lovable/email/auth/preview'
@@ -336,6 +347,7 @@ export interface FileRouteTypes {
     | '/assinar/$token'
     | '/email/unsubscribe'
     | '/validar/$codigo'
+    | '/clientes/$clienteId'
     | '/propostas/nova'
     | '/lovable/email/suppression'
     | '/lovable/email/auth/preview'
@@ -367,6 +379,7 @@ export interface FileRouteTypes {
     | '/assinar/$token'
     | '/email/unsubscribe'
     | '/validar/$codigo'
+    | '/_authenticated/clientes/$clienteId'
     | '/_authenticated/propostas/nova'
     | '/lovable/email/suppression'
     | '/lovable/email/auth/preview'
@@ -563,6 +576,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedPropostasNovaRouteImport
       parentRoute: typeof AuthenticatedPropostasRoute
     }
+    '/_authenticated/clientes/$clienteId': {
+      id: '/_authenticated/clientes/$clienteId'
+      path: '/$clienteId'
+      fullPath: '/clientes/$clienteId'
+      preLoaderRoute: typeof AuthenticatedClientesClienteIdRouteImport
+      parentRoute: typeof AuthenticatedClientesRoute
+    }
     '/lovable/email/transactional/send': {
       id: '/lovable/email/transactional/send'
       path: '/lovable/email/transactional/send'
@@ -601,6 +621,19 @@ declare module '@tanstack/react-router' {
   }
 }
 
+interface AuthenticatedClientesRouteChildren {
+  AuthenticatedClientesClienteIdRoute: typeof AuthenticatedClientesClienteIdRoute
+}
+
+const AuthenticatedClientesRouteChildren: AuthenticatedClientesRouteChildren = {
+  AuthenticatedClientesClienteIdRoute: AuthenticatedClientesClienteIdRoute,
+}
+
+const AuthenticatedClientesRouteWithChildren =
+  AuthenticatedClientesRoute._addFileChildren(
+    AuthenticatedClientesRouteChildren,
+  )
+
 interface AuthenticatedPropostasRouteChildren {
   AuthenticatedPropostasNovaRoute: typeof AuthenticatedPropostasNovaRoute
 }
@@ -617,7 +650,7 @@ const AuthenticatedPropostasRouteWithChildren =
 
 interface AuthenticatedRouteRouteChildren {
   AuthenticatedCdfRoute: typeof AuthenticatedCdfRoute
-  AuthenticatedClientesRoute: typeof AuthenticatedClientesRoute
+  AuthenticatedClientesRoute: typeof AuthenticatedClientesRouteWithChildren
   AuthenticatedColetasRoute: typeof AuthenticatedColetasRoute
   AuthenticatedConciliacaoRoute: typeof AuthenticatedConciliacaoRoute
   AuthenticatedContratosRoute: typeof AuthenticatedContratosRoute
@@ -634,7 +667,7 @@ interface AuthenticatedRouteRouteChildren {
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedCdfRoute: AuthenticatedCdfRoute,
-  AuthenticatedClientesRoute: AuthenticatedClientesRoute,
+  AuthenticatedClientesRoute: AuthenticatedClientesRouteWithChildren,
   AuthenticatedColetasRoute: AuthenticatedColetasRoute,
   AuthenticatedConciliacaoRoute: AuthenticatedConciliacaoRoute,
   AuthenticatedContratosRoute: AuthenticatedContratosRoute,
@@ -671,3 +704,13 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}
