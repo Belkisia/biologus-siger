@@ -96,11 +96,6 @@ export async function gerarPDFContrato(args: {
 
   const spacer = (h = 8) => { y -= h; };
 
-  // ── Cabeçalho ──
-  h1(`CONTRATO DE PRESTAÇÃO DE SERVIÇOS Nº ${args.numero}`);
-  drawText(`Data: ${args.data}`, { size: 9 });
-  spacer(6);
-
   if (args.conteudoHtml?.trim()) {
     for (const block of htmlToTextBlocks(args.conteudoHtml)) {
       if (block.kind === "heading") h2(block.text);
@@ -109,6 +104,11 @@ export async function gerarPDFContrato(args: {
     }
     return await doc.save();
   }
+
+  // ── Cabeçalho ──
+  h1(`CONTRATO DE PRESTAÇÃO DE SERVIÇOS Nº ${args.numero}`);
+  drawText(`Data: ${args.data}`, { size: 9 });
+  spacer(6);
 
   // ── Partes ──
   h2("DAS PARTES");
