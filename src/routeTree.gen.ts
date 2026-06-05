@@ -32,6 +32,7 @@ import { Route as AuthenticatedClientesRouteImport } from './routes/_authenticat
 import { Route as AuthenticatedCdfRouteImport } from './routes/_authenticated/cdf'
 import { Route as LovableEmailSuppressionRouteImport } from './routes/lovable/email/suppression'
 import { Route as AuthenticatedPropostasNovaRouteImport } from './routes/_authenticated/propostas.nova'
+import { Route as AuthenticatedContratosModelosRouteImport } from './routes/_authenticated/contratos.modelos'
 import { Route as LovableEmailTransactionalSendRouteImport } from './routes/lovable/email/transactional/send'
 import { Route as LovableEmailTransactionalPreviewRouteImport } from './routes/lovable/email/transactional/preview'
 import { Route as LovableEmailQueueProcessRouteImport } from './routes/lovable/email/queue/process'
@@ -154,6 +155,12 @@ const AuthenticatedPropostasNovaRoute =
     path: '/nova',
     getParentRoute: () => AuthenticatedPropostasRoute,
   } as any)
+const AuthenticatedContratosModelosRoute =
+  AuthenticatedContratosModelosRouteImport.update({
+    id: '/modelos',
+    path: '/modelos',
+    getParentRoute: () => AuthenticatedContratosRoute,
+  } as any)
 const LovableEmailTransactionalSendRoute =
   LovableEmailTransactionalSendRouteImport.update({
     id: '/lovable/email/transactional/send',
@@ -191,7 +198,7 @@ export interface FileRoutesByFullPath {
   '/clientes': typeof AuthenticatedClientesRoute
   '/coletas': typeof AuthenticatedColetasRoute
   '/conciliacao': typeof AuthenticatedConciliacaoRoute
-  '/contratos': typeof AuthenticatedContratosRoute
+  '/contratos': typeof AuthenticatedContratosRouteWithChildren
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/financeiro': typeof AuthenticatedFinanceiroRoute
   '/licencas': typeof AuthenticatedLicencasRoute
@@ -204,6 +211,7 @@ export interface FileRoutesByFullPath {
   '/assinar/$token': typeof AssinarTokenRoute
   '/email/unsubscribe': typeof EmailUnsubscribeRoute
   '/validar/$codigo': typeof ValidarCodigoRoute
+  '/contratos/modelos': typeof AuthenticatedContratosModelosRoute
   '/propostas/nova': typeof AuthenticatedPropostasNovaRoute
   '/lovable/email/suppression': typeof LovableEmailSuppressionRoute
   '/lovable/email/auth/preview': typeof LovableEmailAuthPreviewRoute
@@ -220,7 +228,7 @@ export interface FileRoutesByTo {
   '/clientes': typeof AuthenticatedClientesRoute
   '/coletas': typeof AuthenticatedColetasRoute
   '/conciliacao': typeof AuthenticatedConciliacaoRoute
-  '/contratos': typeof AuthenticatedContratosRoute
+  '/contratos': typeof AuthenticatedContratosRouteWithChildren
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/financeiro': typeof AuthenticatedFinanceiroRoute
   '/licencas': typeof AuthenticatedLicencasRoute
@@ -233,6 +241,7 @@ export interface FileRoutesByTo {
   '/assinar/$token': typeof AssinarTokenRoute
   '/email/unsubscribe': typeof EmailUnsubscribeRoute
   '/validar/$codigo': typeof ValidarCodigoRoute
+  '/contratos/modelos': typeof AuthenticatedContratosModelosRoute
   '/propostas/nova': typeof AuthenticatedPropostasNovaRoute
   '/lovable/email/suppression': typeof LovableEmailSuppressionRoute
   '/lovable/email/auth/preview': typeof LovableEmailAuthPreviewRoute
@@ -251,7 +260,7 @@ export interface FileRoutesById {
   '/_authenticated/clientes': typeof AuthenticatedClientesRoute
   '/_authenticated/coletas': typeof AuthenticatedColetasRoute
   '/_authenticated/conciliacao': typeof AuthenticatedConciliacaoRoute
-  '/_authenticated/contratos': typeof AuthenticatedContratosRoute
+  '/_authenticated/contratos': typeof AuthenticatedContratosRouteWithChildren
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
   '/_authenticated/financeiro': typeof AuthenticatedFinanceiroRoute
   '/_authenticated/licencas': typeof AuthenticatedLicencasRoute
@@ -264,6 +273,7 @@ export interface FileRoutesById {
   '/assinar/$token': typeof AssinarTokenRoute
   '/email/unsubscribe': typeof EmailUnsubscribeRoute
   '/validar/$codigo': typeof ValidarCodigoRoute
+  '/_authenticated/contratos/modelos': typeof AuthenticatedContratosModelosRoute
   '/_authenticated/propostas/nova': typeof AuthenticatedPropostasNovaRoute
   '/lovable/email/suppression': typeof LovableEmailSuppressionRoute
   '/lovable/email/auth/preview': typeof LovableEmailAuthPreviewRoute
@@ -295,6 +305,7 @@ export interface FileRouteTypes {
     | '/assinar/$token'
     | '/email/unsubscribe'
     | '/validar/$codigo'
+    | '/contratos/modelos'
     | '/propostas/nova'
     | '/lovable/email/suppression'
     | '/lovable/email/auth/preview'
@@ -324,6 +335,7 @@ export interface FileRouteTypes {
     | '/assinar/$token'
     | '/email/unsubscribe'
     | '/validar/$codigo'
+    | '/contratos/modelos'
     | '/propostas/nova'
     | '/lovable/email/suppression'
     | '/lovable/email/auth/preview'
@@ -354,6 +366,7 @@ export interface FileRouteTypes {
     | '/assinar/$token'
     | '/email/unsubscribe'
     | '/validar/$codigo'
+    | '/_authenticated/contratos/modelos'
     | '/_authenticated/propostas/nova'
     | '/lovable/email/suppression'
     | '/lovable/email/auth/preview'
@@ -543,6 +556,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedPropostasNovaRouteImport
       parentRoute: typeof AuthenticatedPropostasRoute
     }
+    '/_authenticated/contratos/modelos': {
+      id: '/_authenticated/contratos/modelos'
+      path: '/modelos'
+      fullPath: '/contratos/modelos'
+      preLoaderRoute: typeof AuthenticatedContratosModelosRouteImport
+      parentRoute: typeof AuthenticatedContratosRoute
+    }
     '/lovable/email/transactional/send': {
       id: '/lovable/email/transactional/send'
       path: '/lovable/email/transactional/send'
@@ -581,6 +601,20 @@ declare module '@tanstack/react-router' {
   }
 }
 
+interface AuthenticatedContratosRouteChildren {
+  AuthenticatedContratosModelosRoute: typeof AuthenticatedContratosModelosRoute
+}
+
+const AuthenticatedContratosRouteChildren: AuthenticatedContratosRouteChildren =
+  {
+    AuthenticatedContratosModelosRoute: AuthenticatedContratosModelosRoute,
+  }
+
+const AuthenticatedContratosRouteWithChildren =
+  AuthenticatedContratosRoute._addFileChildren(
+    AuthenticatedContratosRouteChildren,
+  )
+
 interface AuthenticatedPropostasRouteChildren {
   AuthenticatedPropostasNovaRoute: typeof AuthenticatedPropostasNovaRoute
 }
@@ -600,7 +634,7 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedClientesRoute: typeof AuthenticatedClientesRoute
   AuthenticatedColetasRoute: typeof AuthenticatedColetasRoute
   AuthenticatedConciliacaoRoute: typeof AuthenticatedConciliacaoRoute
-  AuthenticatedContratosRoute: typeof AuthenticatedContratosRoute
+  AuthenticatedContratosRoute: typeof AuthenticatedContratosRouteWithChildren
   AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
   AuthenticatedFinanceiroRoute: typeof AuthenticatedFinanceiroRoute
   AuthenticatedLicencasRoute: typeof AuthenticatedLicencasRoute
@@ -616,7 +650,7 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedClientesRoute: AuthenticatedClientesRoute,
   AuthenticatedColetasRoute: AuthenticatedColetasRoute,
   AuthenticatedConciliacaoRoute: AuthenticatedConciliacaoRoute,
-  AuthenticatedContratosRoute: AuthenticatedContratosRoute,
+  AuthenticatedContratosRoute: AuthenticatedContratosRouteWithChildren,
   AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
   AuthenticatedFinanceiroRoute: AuthenticatedFinanceiroRoute,
   AuthenticatedLicencasRoute: AuthenticatedLicencasRoute,
