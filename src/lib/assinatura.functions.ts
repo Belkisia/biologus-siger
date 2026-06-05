@@ -77,7 +77,7 @@ export const criarSolicitacaoAssinatura = createServerFn({ method: "POST" })
       },
       objeto: contrato.objeto || "",
       itens: ((itens || []) as ContratoItemPdf[]).map((i) => ({
-        descricao: i.descricao,
+        descricao: i.descricao || "",
         quantidade: Number(i.franquia || 0),
         unidade: i.unidade || "un",
         valor: Number(i.preco_unitario || 0),
