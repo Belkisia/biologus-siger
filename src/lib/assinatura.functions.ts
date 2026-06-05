@@ -10,6 +10,13 @@ const SignatarioInput = z.object({
   papel: z.enum(["contratante", "contratada", "testemunha"]),
 });
 
+type ContratoItemPdf = {
+  descricao: string | null;
+  franquia: number | string | null;
+  unidade: string | null;
+  preco_unitario: number | string | null;
+};
+
 // ============================================================
 // 1) Criar solicitação de assinatura (autenticado)
 // ============================================================
@@ -69,7 +76,7 @@ export const criarSolicitacaoAssinatura = createServerFn({ method: "POST" })
         email: "contato@biologus.com.br",
       },
       objeto: contrato.objeto || "",
-      itens: (itens || []).map((i: any) => ({
+      itens: ((itens || []) as ContratoItemPdf[]).map((i) => ({
         descricao: i.descricao,
         quantidade: Number(i.franquia || 0),
         unidade: i.unidade || "un",

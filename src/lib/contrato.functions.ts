@@ -2,6 +2,13 @@ import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 
+type ContratoItemPdf = {
+  descricao: string | null;
+  franquia: number | string | null;
+  unidade: string | null;
+  preco_unitario: number | string | null;
+};
+
 async function gerarPDFDoContrato(documento_id: string) {
   const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
   const { gerarPDFContrato } = await import("./assinatura-pdf.server");
@@ -34,7 +41,7 @@ async function gerarPDFDoContrato(documento_id: string) {
       email: "contato@biologus.com.br",
     },
     objeto: contrato.objeto || "",
-    itens: (itens || []).map((i: any) => ({
+    itens: ((itens || []) as ContratoItemPdf[]).map((i) => ({
       descricao: i.descricao,
       quantidade: Number(i.franquia || 0),
       unidade: i.unidade || "un",
@@ -118,13 +125,13 @@ export const enviarContratoEmail = createServerFn({ method: "POST" })
         })
         .eq("id", data.contrato_id);
       return { ok: true };
-    } catch (e: any) {
+    } catch (e: unknown) {
       await supabaseAdmin
         .from("contratos")
         .update({
           ultimo_email_status: "falhou",
           ultimo_email_em: new Date().toISOString(),
-          ultimo_email_erro: String(e?.message || e).slice(0, 500),
+          ultimo_email_erro: String(e instanceof Error ? e.message : e).slice(0, 500),
         })
         .eq("id", data.contrato_id);
       throw e;
