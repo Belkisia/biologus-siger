@@ -395,7 +395,37 @@ function ContratosPage() {
                         </SelectContent>
                       </Select>
                     </TableCell>
+                    <TableCell className="text-sm">
+                      {c.ultimo_email_status ? (
+                        <div className="space-y-1">
+                          <Badge
+                            variant={EMAIL_STATUS_MAP[c.ultimo_email_status]?.variant ?? "secondary"}
+                            className={EMAIL_STATUS_MAP[c.ultimo_email_status]?.className}
+                          >
+                            {EMAIL_STATUS_MAP[c.ultimo_email_status]?.label ?? c.ultimo_email_status}
+                          </Badge>
+                          {c.ultimo_email_em && (
+                            <div className="text-xs text-muted-foreground">
+                              {new Date(c.ultimo_email_em).toLocaleString("pt-BR")}
+                            </div>
+                          )}
+                          {c.ultimo_email_destino && (
+                            <div className="text-xs text-muted-foreground truncate max-w-[180px]" title={c.ultimo_email_destino}>
+                              {c.ultimo_email_destino}
+                            </div>
+                          )}
+                          {c.ultimo_email_status === "falhou" && c.ultimo_email_erro && (
+                            <div className="text-xs text-destructive truncate max-w-[180px]" title={c.ultimo_email_erro}>
+                              {c.ultimo_email_erro}
+                            </div>
+                          )}
+                        </div>
+                      ) : (
+                        <span className="text-muted-foreground">—</span>
+                      )}
+                    </TableCell>
                     <TableCell>
+
                       <div className="flex gap-1">
                         <Button variant="ghost" size="icon" title="Visualizar PDF" onClick={() => handlePreview(c)} disabled={previewing === c.id}>
                           {previewing === c.id ? <Loader2 className="h-4 w-4 animate-spin" /> : <Eye className="h-4 w-4" />}
