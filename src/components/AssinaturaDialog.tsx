@@ -11,7 +11,6 @@ import { Card } from "@/components/ui/card";
 import { Trash2, Plus, Send, Loader2, CheckCircle2, Clock, Mail, Download, Copy } from "lucide-react";
 import { toast } from "sonner";
 import { criarSolicitacaoAssinatura, listarSignatarios } from "@/lib/assinatura.functions";
-import { supabase } from "@/integrations/supabase/client";
 
 type Sig = {
   nome: string;
