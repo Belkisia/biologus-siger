@@ -1,0 +1,238 @@
+import { createFileRoute } from "@tanstack/react-router";
+import { useState } from "react";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useServerFn } from "@tanstack/react-start";
+import { Card } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import { Badge } from "@/components/ui/badge";
+import { Switch } from "@/components/ui/switch";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { Plus, FileText, Loader2, Trash2, Copy, History, Eye } from "lucide-react";
+import { toast } from "sonner";
+import { RichTextEditor } from "@/components/RichTextEditor";
+import {
+  listarModelos, obterModelo, criarModelo, atualizarModelo, duplicarModelo,
+  alternarAtivoModelo, excluirModelo, listarVersoes,
+} from "@/lib/contrato-modelo.functions";
+
+export const Route = createFileRoute("/_authenticated/modelos-contrato")({
+  component: ModelosPage,
+});
+
+type ModeloRow = {
+  id: string; nome: string; descricao: string | null;
+  ativo: boolean; versao_atual: number; owner_id: string | null; updated_at: string;
+};
+
+function ModelosPage() {
+  const qc = useQueryClient();
+  const fnList = useServerFn(listarModelos);
+  const fnGet = useServerFn(obterModelo);
+  const fnCreate = useServerFn(criarModelo);
+  const fnUpdate = useServerFn(atualizarModelo);
+  const fnDup = useServerFn(duplicarModelo);
+  const fnToggle = useServerFn(alternarAtivoModelo);
+  const fnDel = useServerFn(excluirModelo);
+  const fnVers = useServerFn(listarVersoes);
+
+  const { data: modelos = [], isLoading } = useQuery({
+    queryKey: ["contrato_modelos"],
+    queryFn: () => fnList(),
+  });
+
+  const [editor, setEditor] = useState<{
+    open: boolean; id?: string;
+    nome: string; descricao: string; conteudo_html: string; motivo: string;
+  }>({ open: false, nome: "", descricao: "", conteudo_html: "", motivo: "" });
+
+  const [versHistorico, setVersHistorico] = useState<{ open: boolean; modelo?: ModeloRow }>({ open: false });
+  const { data: versoes = [] } = useQuery({
+    queryKey: ["modelo_versoes", versHistorico.modelo?.id],
+    queryFn: () => fnVers({ data: { modelo_id: versHistorico.modelo!.id } }),
+    enabled: !!versHistorico.modelo?.id,
+  });
+
+  function novoModelo() {
+    setEditor({
+      open: true, nome: "", descricao: "",
+      conteudo_html: "<h1>Novo modelo de contrato</h1><p>Digite aqui o conteúdo. Use o seletor de variáveis para inserir campos dinâmicos como {{CLIENTE_RAZAO_SOCIAL}}.</p>",
+      motivo: "",
+    });
+  }
+
+  async function editarModelo(id: string) {
+    const m = await fnGet({ data: { id } });
+    setEditor({
+      open: true, id: m.id, nome: m.nome, descricao: m.descricao || "",
+      conteudo_html: m.conteudo_html, motivo: "",
+    });
+  }
+
+  const salvar = useMutation({
+    mutationFn: async () => {
+      if (!editor.nome.trim()) throw new Error("Nome é obrigatório");
+      if (editor.id) {
+        return fnUpdate({ data: { id: editor.id, nome: editor.nome, descricao: editor.descricao, conteudo_html: editor.conteudo_html, motivo: editor.motivo } });
+      } else {
+        return fnCreate({ data: { nome: editor.nome, descricao: editor.descricao, conteudo_html: editor.conteudo_html } });
+      }
+    },
+    onSuccess: () => {
+      toast.success("Modelo salvo");
+      setEditor((s) => ({ ...s, open: false }));
+      qc.invalidateQueries({ queryKey: ["contrato_modelos"] });
+    },
+    onError: (e: any) => toast.error(e?.message || "Erro ao salvar"),
+  });
+
+  const duplicar = useMutation({
+    mutationFn: (id: string) => fnDup({ data: { id } }),
+    onSuccess: () => { toast.success("Modelo duplicado"); qc.invalidateQueries({ queryKey: ["contrato_modelos"] }); },
+    onError: (e: any) => toast.error(e?.message || "Erro"),
+  });
+
+  const toggle = useMutation({
+    mutationFn: ({ id, ativo }: { id: string; ativo: boolean }) => fnToggle({ data: { id, ativo } }),
+    onSuccess: () => qc.invalidateQueries({ queryKey: ["contrato_modelos"] }),
+  });
+
+  const excluir = useMutation({
+    mutationFn: (id: string) => fnDel({ data: { id } }),
+    onSuccess: () => { toast.success("Modelo excluído"); qc.invalidateQueries({ queryKey: ["contrato_modelos"] }); },
+    onError: (e: any) => toast.error(e?.message || "Erro"),
+  });
+
+  return (
+    <div className="space-y-6 p-6">
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-2xl font-bold flex items-center gap-2"><FileText className="h-6 w-6 text-primary" /> Modelos de Contrato</h1>
+          <p className="text-sm text-muted-foreground">Crie modelos reutilizáveis com variáveis dinâmicas que serão preenchidas automaticamente.</p>
+        </div>
+        <Button onClick={novoModelo}><Plus className="h-4 w-4" /> Novo modelo</Button>
+      </div>
+
+      <Card className="p-4">
+        {isLoading ? (
+          <div className="py-8 flex justify-center"><Loader2 className="h-5 w-5 animate-spin" /></div>
+        ) : modelos.length === 0 ? (
+          <div className="py-12 text-center text-muted-foreground">
+            Nenhum modelo cadastrado. Clique em "Novo modelo" para começar.
+          </div>
+        ) : (
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead>Nome</TableHead>
+                <TableHead>Versão</TableHead>
+                <TableHead>Ativo</TableHead>
+                <TableHead>Atualizado</TableHead>
+                <TableHead className="text-right">Ações</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {(modelos as ModeloRow[]).map((m) => (
+                <TableRow key={m.id}>
+                  <TableCell>
+                    <div className="font-medium">{m.nome}</div>
+                    {m.descricao && <div className="text-xs text-muted-foreground">{m.descricao}</div>}
+                    {!m.owner_id && <Badge variant="outline" className="mt-1">Sistema</Badge>}
+                  </TableCell>
+                  <TableCell>v{m.versao_atual}</TableCell>
+                  <TableCell>
+                    <Switch checked={m.ativo} onCheckedChange={(v) => toggle.mutate({ id: m.id, ativo: v })} disabled={!m.owner_id} />
+                  </TableCell>
+                  <TableCell className="text-xs text-muted-foreground">{new Date(m.updated_at).toLocaleString("pt-BR")}</TableCell>
+                  <TableCell className="text-right">
+                    <div className="flex justify-end gap-1">
+                      <Button variant="ghost" size="icon" title="Editar" onClick={() => editarModelo(m.id)}><Eye className="h-4 w-4" /></Button>
+                      <Button variant="ghost" size="icon" title="Histórico" onClick={() => setVersHistorico({ open: true, modelo: m })}><History className="h-4 w-4" /></Button>
+                      <Button variant="ghost" size="icon" title="Duplicar" onClick={() => duplicar.mutate(m.id)}><Copy className="h-4 w-4" /></Button>
+                      <Button variant="ghost" size="icon" title="Excluir" disabled={!m.owner_id}
+                        onClick={() => { if (confirm(`Excluir modelo "${m.nome}"?`)) excluir.mutate(m.id); }}>
+                        <Trash2 className="h-4 w-4 text-destructive" />
+                      </Button>
+                    </div>
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        )}
+      </Card>
+
+      <Dialog open={editor.open} onOpenChange={(o) => setEditor((s) => ({ ...s, open: o }))}>
+        <DialogContent className="max-w-5xl max-h-[90vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle>{editor.id ? "Editar modelo" : "Novo modelo"}</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4">
+            <div className="grid grid-cols-2 gap-3">
+              <div className="space-y-2">
+                <Label>Nome *</Label>
+                <Input value={editor.nome} onChange={(e) => setEditor((s) => ({ ...s, nome: e.target.value }))} />
+              </div>
+              <div className="space-y-2">
+                <Label>Descrição</Label>
+                <Input value={editor.descricao} onChange={(e) => setEditor((s) => ({ ...s, descricao: e.target.value }))} />
+              </div>
+            </div>
+            <div className="space-y-2">
+              <Label>Conteúdo do contrato</Label>
+              <RichTextEditor
+                value={editor.conteudo_html}
+                onChange={(html) => setEditor((s) => ({ ...s, conteudo_html: html }))}
+                minHeight={420}
+              />
+              <p className="text-xs text-muted-foreground">
+                Use {`{{VARIAVEL}}`} para campos dinâmicos. O seletor na barra inferior do editor lista todas as variáveis disponíveis.
+              </p>
+            </div>
+            {editor.id && (
+              <div className="space-y-2">
+                <Label>Motivo da alteração (opcional)</Label>
+                <Textarea rows={2} value={editor.motivo} onChange={(e) => setEditor((s) => ({ ...s, motivo: e.target.value }))} />
+              </div>
+            )}
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setEditor((s) => ({ ...s, open: false }))}>Cancelar</Button>
+            <Button onClick={() => salvar.mutate()} disabled={salvar.isPending}>
+              {salvar.isPending && <Loader2 className="h-4 w-4 animate-spin" />} Salvar
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      <Dialog open={versHistorico.open} onOpenChange={(o) => setVersHistorico({ open: o, modelo: o ? versHistorico.modelo : undefined })}>
+        <DialogContent className="max-w-2xl">
+          <DialogHeader>
+            <DialogTitle>Histórico — {versHistorico.modelo?.nome}</DialogTitle>
+          </DialogHeader>
+          {versoes.length === 0 ? (
+            <p className="text-sm text-muted-foreground py-4">Nenhuma versão registrada.</p>
+          ) : (
+            <Table>
+              <TableHeader>
+                <TableRow><TableHead>Versão</TableHead><TableHead>Data</TableHead><TableHead>Motivo</TableHead></TableRow>
+              </TableHeader>
+              <TableBody>
+                {(versoes as any[]).map((v) => (
+                  <TableRow key={v.id}>
+                    <TableCell>v{v.versao}</TableCell>
+                    <TableCell className="text-xs">{new Date(v.created_at).toLocaleString("pt-BR")}</TableCell>
+                    <TableCell className="text-xs">{v.motivo || "—"}</TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          )}
+        </DialogContent>
+      </Dialog>
+    </div>
+  );
+}

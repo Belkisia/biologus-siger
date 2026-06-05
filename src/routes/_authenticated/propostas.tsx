@@ -11,8 +11,10 @@ import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogFooter } from "@/components/ui/dialog";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Plus, FileText, Loader2, Trash2, Download, Send, FileSignature, Copy, Mail, Eye } from "lucide-react";
+import { Plus, FileText, Loader2, Trash2, Download, Send, FileSignature, Copy, Mail, Eye, Wand2 } from "lucide-react";
 import { toast } from "sonner";
+import { useServerFn } from "@tanstack/react-start";
+import { listarModelos, renderizarModelo, gerarContratoDeModelo } from "@/lib/contrato-modelo.functions";
 
 export const Route = createFileRoute("/_authenticated/propostas")({
   component: PropostasPage,
@@ -323,6 +325,67 @@ function PropostasPage() {
       toast.success("Proposta convertida em contrato");
     },
     onError: (e: Error) => toast.error(e.message),
+  });
+
+  // ===== Gerar contrato a partir de modelo =====
+  const fnListModelos = useServerFn(listarModelos);
+  const fnRender = useServerFn(renderizarModelo);
+  const fnGerar = useServerFn(gerarContratoDeModelo);
+  const [modeloDlg, setModeloDlg] = useState<{
+    open: boolean; proposta?: Proposta; modelo_id: string;
+    numero: string; data_inicio: string; data_fim: string; valor_mensal: string;
+    previewHtml: string; loadingPreview: boolean;
+  }>({ open: false, modelo_id: "", numero: "", data_inicio: new Date().toISOString().slice(0,10), data_fim: "", valor_mensal: "", previewHtml: "", loadingPreview: false });
+
+  const { data: modelosAtivos = [] } = useQuery({
+    queryKey: ["contrato_modelos_ativos"],
+    queryFn: () => fnListModelos(),
+  });
+
+  async function abrirModeloDlg(p: Proposta) {
+    setModeloDlg({
+      open: true, proposta: p, modelo_id: "",
+      numero: `CTR-${new Date().getFullYear()}-${String(Date.now()).slice(-4)}`,
+      data_inicio: new Date().toISOString().slice(0,10),
+      data_fim: "",
+      valor_mensal: String(p.valor_total || ""),
+      previewHtml: "", loadingPreview: false,
+    });
+  }
+
+  async function gerarPreview() {
+    if (!modeloDlg.modelo_id || !modeloDlg.proposta) return;
+    setModeloDlg((s) => ({ ...s, loadingPreview: true }));
+    try {
+      const r = await fnRender({ data: { modelo_id: modeloDlg.modelo_id, cliente_id: modeloDlg.proposta.cliente_id, proposta_id: modeloDlg.proposta.id } });
+      setModeloDlg((s) => ({ ...s, previewHtml: r.html, loadingPreview: false }));
+    } catch (e: any) {
+      toast.error(e?.message || "Erro ao gerar prévia");
+      setModeloDlg((s) => ({ ...s, loadingPreview: false }));
+    }
+  }
+
+  const gerarContratoModelo = useMutation({
+    mutationFn: async () => {
+      if (!modeloDlg.modelo_id || !modeloDlg.proposta) throw new Error("Selecione um modelo");
+      return fnGerar({ data: {
+        modelo_id: modeloDlg.modelo_id,
+        cliente_id: modeloDlg.proposta.cliente_id,
+        proposta_id: modeloDlg.proposta.id,
+        numero: modeloDlg.numero,
+        data_inicio: modeloDlg.data_inicio,
+        data_fim: modeloDlg.data_fim || null,
+        valor_mensal: modeloDlg.valor_mensal ? Number(modeloDlg.valor_mensal) : null,
+        conteudo_html_editado: modeloDlg.previewHtml || null,
+      } });
+    },
+    onSuccess: () => {
+      toast.success("Contrato gerado a partir do modelo");
+      setModeloDlg((s) => ({ ...s, open: false }));
+      qc.invalidateQueries({ queryKey: ["propostas"] });
+      qc.invalidateQueries({ queryKey: ["contratos"] });
+    },
+    onError: (e: any) => toast.error(e?.message || "Erro ao gerar"),
   });
 
   const setItem = (idx: number, patch: Partial<Item>) => {
@@ -1076,11 +1139,16 @@ function PropostasPage() {
                           <Send className="h-4 w-4" />
                         </Button>
                         {p.status === "aceita" && (
-                          <Button variant="ghost" size="icon" title="Converter em contrato" onClick={() => {
-                            if (confirm(`Criar contrato a partir da proposta ${p.numero}?`)) convertToContract.mutate(p);
-                          }}>
-                            <FileSignature className="h-4 w-4 text-primary" />
-                          </Button>
+                          <>
+                            <Button variant="ghost" size="icon" title="Converter em contrato (simples)" onClick={() => {
+                              if (confirm(`Criar contrato a partir da proposta ${p.numero}?`)) convertToContract.mutate(p);
+                            }}>
+                              <FileSignature className="h-4 w-4 text-primary" />
+                            </Button>
+                            <Button variant="ghost" size="icon" title="Gerar contrato a partir de modelo" onClick={() => abrirModeloDlg(p)}>
+                              <Wand2 className="h-4 w-4 text-primary" />
+                            </Button>
+                          </>
                         )}
                         <Button variant="ghost" size="icon" title="Editar" onClick={() => openEdit(p)} disabled={p.status === "convertida"}>
                           <Copy className="h-4 w-4" />
@@ -1121,6 +1189,47 @@ function PropostasPage() {
             <Button onClick={sendByEmail} disabled={emailDialog.sending}>
               {emailDialog.sending ? <Loader2 className="h-4 w-4 mr-2 animate-spin" /> : <Mail className="h-4 w-4 mr-2" />}
               Enviar
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      <Dialog open={modeloDlg.open} onOpenChange={(o) => setModeloDlg((s) => ({ ...s, open: o }))}>
+        <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle>Gerar contrato a partir de modelo — Proposta {modeloDlg.proposta?.numero}</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4">
+            <div className="grid grid-cols-2 gap-3">
+              <div className="space-y-2 col-span-2">
+                <Label>Modelo *</Label>
+                <Select value={modeloDlg.modelo_id} onValueChange={(v) => setModeloDlg((s) => ({ ...s, modelo_id: v, previewHtml: "" }))}>
+                  <SelectTrigger><SelectValue placeholder="Selecione um modelo ativo" /></SelectTrigger>
+                  <SelectContent>
+                    {(modelosAtivos as any[]).filter((m) => m.ativo).map((m) => (
+                      <SelectItem key={m.id} value={m.id}>{m.nome} (v{m.versao_atual})</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+              <div className="space-y-2"><Label>Nº do contrato</Label><Input value={modeloDlg.numero} onChange={(e) => setModeloDlg((s) => ({ ...s, numero: e.target.value }))} /></div>
+              <div className="space-y-2"><Label>Valor mensal (R$)</Label><Input type="number" step="0.01" value={modeloDlg.valor_mensal} onChange={(e) => setModeloDlg((s) => ({ ...s, valor_mensal: e.target.value }))} /></div>
+              <div className="space-y-2"><Label>Data início</Label><Input type="date" value={modeloDlg.data_inicio} onChange={(e) => setModeloDlg((s) => ({ ...s, data_inicio: e.target.value }))} /></div>
+              <div className="space-y-2"><Label>Data fim</Label><Input type="date" value={modeloDlg.data_fim} onChange={(e) => setModeloDlg((s) => ({ ...s, data_fim: e.target.value }))} /></div>
+            </div>
+            <div className="flex gap-2">
+              <Button variant="outline" onClick={gerarPreview} disabled={!modeloDlg.modelo_id || modeloDlg.loadingPreview}>
+                {modeloDlg.loadingPreview ? <Loader2 className="h-4 w-4 animate-spin" /> : <Eye className="h-4 w-4" />} Gerar prévia
+              </Button>
+            </div>
+            {modeloDlg.previewHtml && (
+              <div className="border rounded p-4 max-h-[40vh] overflow-y-auto bg-background prose prose-sm max-w-none" dangerouslySetInnerHTML={{ __html: modeloDlg.previewHtml }} />
+            )}
+          </div>
+          <DialogFooter>
+            <Button variant="ghost" onClick={() => setModeloDlg((s) => ({ ...s, open: false }))}>Cancelar</Button>
+            <Button onClick={() => gerarContratoModelo.mutate()} disabled={!modeloDlg.modelo_id || gerarContratoModelo.isPending}>
+              {gerarContratoModelo.isPending && <Loader2 className="h-4 w-4 animate-spin" />} Gerar contrato
             </Button>
           </DialogFooter>
         </DialogContent>

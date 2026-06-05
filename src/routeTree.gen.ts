@@ -22,6 +22,7 @@ import { Route as AuthenticatedRelatoriosRouteImport } from './routes/_authentic
 import { Route as AuthenticatedPropostasRouteImport } from './routes/_authenticated/propostas'
 import { Route as AuthenticatedPortalRouteImport } from './routes/_authenticated/portal'
 import { Route as AuthenticatedMtrRouteImport } from './routes/_authenticated/mtr'
+import { Route as AuthenticatedModelosContratoRouteImport } from './routes/_authenticated/modelos-contrato'
 import { Route as AuthenticatedLicencasRouteImport } from './routes/_authenticated/licencas'
 import { Route as AuthenticatedFinanceiroRouteImport } from './routes/_authenticated/financeiro'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
@@ -102,6 +103,12 @@ const AuthenticatedMtrRoute = AuthenticatedMtrRouteImport.update({
   path: '/mtr',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedModelosContratoRoute =
+  AuthenticatedModelosContratoRouteImport.update({
+    id: '/modelos-contrato',
+    path: '/modelos-contrato',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 const AuthenticatedLicencasRoute = AuthenticatedLicencasRouteImport.update({
   id: '/licencas',
   path: '/licencas',
@@ -195,6 +202,7 @@ export interface FileRoutesByFullPath {
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/financeiro': typeof AuthenticatedFinanceiroRoute
   '/licencas': typeof AuthenticatedLicencasRoute
+  '/modelos-contrato': typeof AuthenticatedModelosContratoRoute
   '/mtr': typeof AuthenticatedMtrRoute
   '/portal': typeof AuthenticatedPortalRoute
   '/propostas': typeof AuthenticatedPropostasRouteWithChildren
@@ -224,6 +232,7 @@ export interface FileRoutesByTo {
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/financeiro': typeof AuthenticatedFinanceiroRoute
   '/licencas': typeof AuthenticatedLicencasRoute
+  '/modelos-contrato': typeof AuthenticatedModelosContratoRoute
   '/mtr': typeof AuthenticatedMtrRoute
   '/portal': typeof AuthenticatedPortalRoute
   '/propostas': typeof AuthenticatedPropostasRouteWithChildren
@@ -255,6 +264,7 @@ export interface FileRoutesById {
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
   '/_authenticated/financeiro': typeof AuthenticatedFinanceiroRoute
   '/_authenticated/licencas': typeof AuthenticatedLicencasRoute
+  '/_authenticated/modelos-contrato': typeof AuthenticatedModelosContratoRoute
   '/_authenticated/mtr': typeof AuthenticatedMtrRoute
   '/_authenticated/portal': typeof AuthenticatedPortalRoute
   '/_authenticated/propostas': typeof AuthenticatedPropostasRouteWithChildren
@@ -286,6 +296,7 @@ export interface FileRouteTypes {
     | '/dashboard'
     | '/financeiro'
     | '/licencas'
+    | '/modelos-contrato'
     | '/mtr'
     | '/portal'
     | '/propostas'
@@ -315,6 +326,7 @@ export interface FileRouteTypes {
     | '/dashboard'
     | '/financeiro'
     | '/licencas'
+    | '/modelos-contrato'
     | '/mtr'
     | '/portal'
     | '/propostas'
@@ -345,6 +357,7 @@ export interface FileRouteTypes {
     | '/_authenticated/dashboard'
     | '/_authenticated/financeiro'
     | '/_authenticated/licencas'
+    | '/_authenticated/modelos-contrato'
     | '/_authenticated/mtr'
     | '/_authenticated/portal'
     | '/_authenticated/propostas'
@@ -471,6 +484,13 @@ declare module '@tanstack/react-router' {
       path: '/mtr'
       fullPath: '/mtr'
       preLoaderRoute: typeof AuthenticatedMtrRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/modelos-contrato': {
+      id: '/_authenticated/modelos-contrato'
+      path: '/modelos-contrato'
+      fullPath: '/modelos-contrato'
+      preLoaderRoute: typeof AuthenticatedModelosContratoRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/licencas': {
@@ -604,6 +624,7 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
   AuthenticatedFinanceiroRoute: typeof AuthenticatedFinanceiroRoute
   AuthenticatedLicencasRoute: typeof AuthenticatedLicencasRoute
+  AuthenticatedModelosContratoRoute: typeof AuthenticatedModelosContratoRoute
   AuthenticatedMtrRoute: typeof AuthenticatedMtrRoute
   AuthenticatedPortalRoute: typeof AuthenticatedPortalRoute
   AuthenticatedPropostasRoute: typeof AuthenticatedPropostasRouteWithChildren
@@ -620,6 +641,7 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
   AuthenticatedFinanceiroRoute: AuthenticatedFinanceiroRoute,
   AuthenticatedLicencasRoute: AuthenticatedLicencasRoute,
+  AuthenticatedModelosContratoRoute: AuthenticatedModelosContratoRoute,
   AuthenticatedMtrRoute: AuthenticatedMtrRoute,
   AuthenticatedPortalRoute: AuthenticatedPortalRoute,
   AuthenticatedPropostasRoute: AuthenticatedPropostasRouteWithChildren,
