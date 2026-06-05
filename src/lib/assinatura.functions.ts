@@ -10,20 +10,47 @@ const SignatarioInput = z.object({
   papel: z.enum(["contratante", "contratada", "testemunha"]),
 });
 
+type ContratoItemPdf = {
+  descricao: string | null;
+  franquia: number | string | null;
+  unidade: string | null;
+  preco_unitario: number | string | null;
+};
+
+type DocumentoResumo = { numero?: string | null; objeto?: string | null } | null;
+type SignatarioSerializado = {
+  id?: string;
+  nome?: string | null;
+  email?: string | null;
+  cpf_cnpj?: string | null;
+  papel?: string | null;
+};
+type AssinaturaComSignatario = { signatarios?: SignatarioSerializado | null };
+
 // ============================================================
 // 1) Criar solicitação de assinatura (autenticado)
 // ============================================================
 export const criarSolicitacaoAssinatura = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((data: {
-    documento_tipo: "contrato" | "proposta";
-    documento_id: string;
-    signatarios: Array<{ nome: string; email: string; cpf_cnpj?: string | null; papel: "contratante" | "contratada" | "testemunha" }>;
-  }) => z.object({
-    documento_tipo: z.enum(["contrato", "proposta"]),
-    documento_id: z.string().uuid(),
-    signatarios: z.array(SignatarioInput).min(1).max(10),
-  }).parse(data))
+  .inputValidator(
+    (data: {
+      documento_tipo: "contrato" | "proposta";
+      documento_id: string;
+      signatarios: Array<{
+        nome: string;
+        email: string;
+        cpf_cnpj?: string | null;
+        papel: "contratante" | "contratada" | "testemunha";
+      }>;
+    }) =>
+      z
+        .object({
+          documento_tipo: z.enum(["contrato", "proposta"]),
+          documento_id: z.string().uuid(),
+          signatarios: z.array(SignatarioInput).min(1).max(10),
+        })
+        .parse(data),
+  )
   .handler(async ({ data, context }) => {
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const { gerarPDFContrato } = await import("./assinatura-pdf.server");
@@ -46,6 +73,7 @@ export const criarSolicitacaoAssinatura = createServerFn({ method: "POST" })
     const pdfBytes = await gerarPDFContrato({
       numero: contrato.numero,
       data: new Date().toLocaleDateString("pt-BR"),
+      conteudoHtml: contrato.conteudo_html,
       contratante: {
         nome: contrato.clientes?.razao_social || "Cliente",
         cnpj: contrato.clientes?.cnpj || "",
@@ -58,8 +86,8 @@ export const criarSolicitacaoAssinatura = createServerFn({ method: "POST" })
         email: "contato@biologus.com.br",
       },
       objeto: contrato.objeto || "",
-      itens: (itens || []).map((i: any) => ({
-        descricao: i.descricao,
+      itens: ((itens || []) as ContratoItemPdf[]).map((i) => ({
+        descricao: i.descricao || "",
         quantidade: Number(i.franquia || 0),
         unidade: i.unidade || "un",
         valor: Number(i.preco_unitario || 0),
@@ -68,7 +96,9 @@ export const criarSolicitacaoAssinatura = createServerFn({ method: "POST" })
       formaPagamento: contrato.forma_pagamento || "boleto bancário",
       diaVencimento: contrato.dia_vencimento,
       vigenciaInicio: new Date(contrato.data_inicio).toLocaleDateString("pt-BR"),
-      vigenciaFim: contrato.data_fim ? new Date(contrato.data_fim).toLocaleDateString("pt-BR") : null,
+      vigenciaFim: contrato.data_fim
+        ? new Date(contrato.data_fim).toLocaleDateString("pt-BR")
+        : null,
       indiceReajuste: contrato.indice_reajuste,
       periodicidadeReajuste: contrato.periodicidade_reajuste,
       observacoes: contrato.observacoes,
@@ -142,7 +172,9 @@ export const obterSignatarioPorToken = createServerFn({ method: "POST" })
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const { data: sig, error } = await supabaseAdmin
       .from("signatarios")
-      .select("id, nome, email, cpf_cnpj, papel, status, documento_tipo, documento_id, expira_em, assinado_em")
+      .select(
+        "id, nome, email, cpf_cnpj, papel, status, documento_tipo, documento_id, expira_em, assinado_em",
+      )
       .eq("token", data.token)
       .single();
     if (error || !sig) throw new Error("Link inválido ou expirado");
@@ -178,7 +210,10 @@ export const obterSignatarioPorToken = createServerFn({ method: "POST" })
     return {
       signatario: sig,
       pdfUrl: signed?.signedUrl || null,
-      documento: { numero: (doc as any)?.numero, objeto: (doc as any)?.objeto || null },
+      documento: {
+        numero: (doc as DocumentoResumo)?.numero,
+        objeto: (doc as DocumentoResumo)?.objeto || null,
+      },
     };
   });
 
@@ -187,7 +222,9 @@ export const obterSignatarioPorToken = createServerFn({ method: "POST" })
 // ============================================================
 async function sha256Hex(s: string) {
   const buf = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(s));
-  return Array.from(new Uint8Array(buf)).map((b) => b.toString(16).padStart(2, "0")).join("");
+  return Array.from(new Uint8Array(buf))
+    .map((b) => b.toString(16).padStart(2, "0"))
+    .join("");
 }
 
 export const solicitarOTP = createServerFn({ method: "POST" })
@@ -225,10 +262,7 @@ export const solicitarOTP = createServerFn({ method: "POST" })
 
     await enviarCodigoOTP({ to: sig.email, nome: sig.nome, codigo });
 
-    await supabaseAdmin
-      .from("signatarios")
-      .update({ status: "otp_enviado" })
-      .eq("id", sig.id);
+    await supabaseAdmin.from("signatarios").update({ status: "otp_enviado" }).eq("id", sig.id);
 
     const ip = getRequestIP({ xForwardedFor: true }) || null;
     await supabaseAdmin.from("signatario_eventos").insert({
@@ -249,17 +283,17 @@ function maskEmail(e: string) {
 // 4) Confirmar assinatura (PÚBLICO) — valida OTP + assina
 // ============================================================
 export const confirmarAssinatura = createServerFn({ method: "POST" })
-  .inputValidator((data: {
-    token: string;
-    codigo: string;
-    rubrica_base64?: string | null;
-    aceite: boolean;
-  }) => z.object({
-    token: z.string().uuid(),
-    codigo: z.string().regex(/^\d{6}$/),
-    rubrica_base64: z.string().max(500_000).optional().nullable(),
-    aceite: z.literal(true),
-  }).parse(data))
+  .inputValidator(
+    (data: { token: string; codigo: string; rubrica_base64?: string | null; aceite: boolean }) =>
+      z
+        .object({
+          token: z.string().uuid(),
+          codigo: z.string().regex(/^\d{6}$/),
+          rubrica_base64: z.string().max(500_000).optional().nullable(),
+          aceite: z.literal(true),
+        })
+        .parse(data),
+  )
   .handler(async ({ data }) => {
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const { anexarManifestoAssinatura, sha256 } = await import("./assinatura-pdf.server");
@@ -407,7 +441,9 @@ function randomCode(len: number) {
 // 5) Validar código público (PÚBLICO) — para /validar/:codigo
 // ============================================================
 export const validarCodigoAssinatura = createServerFn({ method: "POST" })
-  .inputValidator((data: { codigo: string }) => z.object({ codigo: z.string().trim().min(4).max(20) }).parse(data))
+  .inputValidator((data: { codigo: string }) =>
+    z.object({ codigo: z.string().trim().min(4).max(20) }).parse(data),
+  )
   .handler(async ({ data }) => {
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const { data: assin } = await supabaseAdmin
@@ -438,7 +474,7 @@ export const validarCodigoAssinatura = createServerFn({ method: "POST" })
       hash_documento: assin.hash_documento,
       assinado_em: assin.assinado_em,
       documento_tipo: assin.documento_tipo,
-      signatario_principal: (assin as any).signatarios,
+      signatario_principal: (assin as AssinaturaComSignatario).signatarios,
       todos_signatarios: todos || [],
       pdf_url: pdfUrl,
     };
@@ -450,10 +486,12 @@ export const validarCodigoAssinatura = createServerFn({ method: "POST" })
 export const listarSignatarios = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((data: { documento_tipo: "contrato" | "proposta"; documento_id: string }) =>
-    z.object({
-      documento_tipo: z.enum(["contrato", "proposta"]),
-      documento_id: z.string().uuid(),
-    }).parse(data)
+    z
+      .object({
+        documento_tipo: z.enum(["contrato", "proposta"]),
+        documento_id: z.string().uuid(),
+      })
+      .parse(data),
   )
   .handler(async ({ data, context }) => {
     const { supabase } = context;
