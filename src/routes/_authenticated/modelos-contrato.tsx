@@ -201,7 +201,7 @@ function ModelosPage() {
       </Card>
 
       <Dialog open={editor.open} onOpenChange={(o) => setEditor((s) => ({ ...s, open: o }))}>
-        <DialogContent className="max-w-5xl max-h-[90vh] overflow-y-auto">
+        <DialogContent className="max-w-[95vw] max-h-[92vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle>{editor.id ? "Editar modelo" : "Novo modelo"}</DialogTitle>
           </DialogHeader>
@@ -216,16 +216,19 @@ function ModelosPage() {
                 <Input value={editor.descricao} onChange={(e) => setEditor((s) => ({ ...s, descricao: e.target.value }))} />
               </div>
             </div>
-            <div className="space-y-2">
-              <Label>Conteúdo do contrato</Label>
-              <RichTextEditor
-                value={editor.conteudo_html}
-                onChange={(html) => setEditor((s) => ({ ...s, conteudo_html: html }))}
-                minHeight={420}
-              />
-              <p className="text-xs text-muted-foreground">
-                Use {`{{VARIAVEL}}`} para campos dinâmicos. O seletor na barra inferior do editor lista todas as variáveis disponíveis.
-              </p>
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label>Conteúdo do contrato</Label>
+                <RichTextEditor
+                  value={editor.conteudo_html}
+                  onChange={(html) => setEditor((s) => ({ ...s, conteudo_html: html }))}
+                  minHeight={520}
+                />
+                <p className="text-xs text-muted-foreground">
+                  Use {`{{VARIAVEL}}`} para campos dinâmicos. O painel ao lado mostra como ficará com dados reais.
+                </p>
+              </div>
+              <PreviewPane html={editor.conteudo_html} />
             </div>
             {editor.id && (
               <div className="space-y-2">
