@@ -11,9 +11,12 @@ import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogFooter } from "@/components/ui/dialog";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Plus, FileSignature, Loader2, Trash2, PenTool } from "lucide-react";
+import { Plus, FileSignature, Loader2, Trash2, PenTool, Eye, Mail } from "lucide-react";
 import { toast } from "sonner";
 import { AssinaturaDialog } from "@/components/AssinaturaDialog";
+import { useServerFn } from "@tanstack/react-start";
+import { visualizarContrato, enviarContratoEmail } from "@/lib/contrato.functions";
+
 
 export const Route = createFileRoute("/_authenticated/contratos")({
   component: ContratosPage,
@@ -44,6 +47,22 @@ const STATUS_MAP: Record<string, { label: string; variant: "default" | "secondar
 };
 
 const INDICES = ["IPCA", "IGP-M", "INPC", "IPC-FIPE", "Personalizado"];
+
+const OBJETO_PADRAO = `Prestação de serviços de gerenciamento de resíduos sólidos, compreendendo coleta, transporte, armazenamento temporário, tratamento e destinação final ambientalmente adequada dos resíduos gerados pela CONTRATANTE, em conformidade com a Lei nº 12.305/2010 (Política Nacional de Resíduos Sólidos), bem como a emissão dos respectivos Manifestos de Transporte de Resíduos (MTR) e Certificados de Destinação Final (CDF).`;
+
+function addMonthsISO(dataInicio: string, meses: number): string {
+  const d = new Date(dataInicio + "T00:00:00");
+  d.setMonth(d.getMonth() + meses);
+  d.setDate(d.getDate() - 1);
+  return d.toISOString().slice(0, 10);
+}
+
+const PERIODICIDADE_MESES: Record<string, number> = {
+  trimestral: 3,
+  semestral: 6,
+  anual: 12,
+};
+
 
 function formatBRL(v: number | null) {
   if (v == null) return "—";
@@ -127,6 +146,74 @@ function ContratosPage() {
     .reduce((acc, c) => acc + (c.valor_mensal ?? 0), 0);
 
   const [assinaturaContrato, setAssinaturaContrato] = useState<Contrato | null>(null);
+  const [emailContrato, setEmailContrato] = useState<Contrato | null>(null);
+  const [emailDestino, setEmailDestino] = useState("");
+  const [emailMensagem, setEmailMensagem] = useState("");
+  const [previewing, setPreviewing] = useState<string | null>(null);
+
+  const [dataInicio, setDataInicio] = useState("");
+  const [periodicidade, setPeriodicidade] = useState("anual");
+  const [dataFim, setDataFim] = useState("");
+
+  const visualizar = useServerFn(visualizarContrato);
+  const enviarEmail = useServerFn(enviarContratoEmail);
+
+  const handlePreview = async (c: Contrato) => {
+    setPreviewing(c.id);
+    try {
+      const r = await visualizar({ data: { contrato_id: c.id } });
+      if (r.url) window.open(r.url, "_blank");
+    } catch (e: any) {
+      toast.error(e.message || "Falha ao gerar PDF");
+    } finally {
+      setPreviewing(null);
+    }
+  };
+
+  const emailMutation = useMutation({
+    mutationFn: async () => {
+      if (!emailContrato) return;
+      await enviarEmail({ data: { contrato_id: emailContrato.id, email: emailDestino, mensagem: emailMensagem || undefined } });
+    },
+    onSuccess: () => {
+      toast.success("Contrato enviado por e-mail");
+      setEmailContrato(null);
+      setEmailDestino("");
+      setEmailMensagem("");
+    },
+    onError: (e: Error) => toast.error(e.message),
+  });
+
+  const openChange = (v: boolean) => {
+    setOpen(v);
+    if (v) {
+      setDataInicio("");
+      setPeriodicidade("anual");
+      setDataFim("");
+    }
+  };
+
+  const onInicioChange = (v: string) => {
+    setDataInicio(v);
+    if (v && periodicidade && PERIODICIDADE_MESES[periodicidade]) {
+      setDataFim(addMonthsISO(v, PERIODICIDADE_MESES[periodicidade]));
+    }
+  };
+  const onPeriodicidadeChange = (v: string) => {
+    setPeriodicidade(v);
+    if (dataInicio && PERIODICIDADE_MESES[v]) {
+      setDataFim(addMonthsISO(dataInicio, PERIODICIDADE_MESES[v]));
+    }
+  };
+
+  const openEmailDialog = (c: Contrato) => {
+    const cli = clientes.find((cl) => cl.id === c.cliente_id);
+    setEmailDestino((cli as any)?.email || "");
+    setEmailMensagem("");
+    setEmailContrato(c);
+  };
+
+
 
 
   return (
@@ -136,7 +223,7 @@ function ContratosPage() {
           <h1 className="text-2xl font-bold text-foreground">Contratos</h1>
           <p className="text-sm text-muted-foreground">Gestão de contratos comerciais, vigências e reajustes.</p>
         </div>
-        <Dialog open={open} onOpenChange={setOpen}>
+        <Dialog open={open} onOpenChange={openChange}>
           <DialogTrigger asChild>
             <Button disabled={clientes.length === 0}>
               <Plus className="h-4 w-4 mr-2" />Novo contrato
@@ -161,12 +248,14 @@ function ContratosPage() {
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="data_inicio">Início *</Label>
-                  <Input id="data_inicio" name="data_inicio" type="date" required />
+                  <Input id="data_inicio" name="data_inicio" type="date" required value={dataInicio} onChange={(e) => onInicioChange(e.target.value)} />
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="data_fim">Término</Label>
-                  <Input id="data_fim" name="data_fim" type="date" />
+                  <Input id="data_fim" name="data_fim" type="date" value={dataFim} onChange={(e) => setDataFim(e.target.value)} />
+                  <p className="text-xs text-muted-foreground">Calculado automaticamente conforme periodicidade</p>
                 </div>
+
                 <div className="space-y-2">
                   <Label htmlFor="valor_mensal">Valor mensal (R$)</Label>
                   <Input id="valor_mensal" name="valor_mensal" type="number" step="0.01" />
@@ -182,7 +271,7 @@ function ContratosPage() {
                 </div>
                 <div className="space-y-2">
                   <Label>Periodicidade reajuste</Label>
-                  <Select name="periodicidade_reajuste" defaultValue="anual">
+                  <Select name="periodicidade_reajuste" value={periodicidade} onValueChange={onPeriodicidadeChange}>
                     <SelectTrigger><SelectValue /></SelectTrigger>
                     <SelectContent>
                       <SelectItem value="anual">Anual</SelectItem>
@@ -191,6 +280,7 @@ function ContratosPage() {
                     </SelectContent>
                   </Select>
                 </div>
+
                 <div className="space-y-2">
                   <Label htmlFor="dia_vencimento">Dia vencimento</Label>
                   <Input id="dia_vencimento" name="dia_vencimento" type="number" min="1" max="31" />
@@ -201,8 +291,10 @@ function ContratosPage() {
                 </div>
                 <div className="space-y-2 md:col-span-2">
                   <Label htmlFor="objeto">Objeto do contrato</Label>
-                  <Textarea id="objeto" name="objeto" rows={2} placeholder="Coleta, transporte e destinação final..." />
+                  <Textarea id="objeto" name="objeto" rows={5} defaultValue={OBJETO_PADRAO} />
+                  <p className="text-xs text-muted-foreground">Texto padrão Bio Logus — edite conforme o escopo do contrato.</p>
                 </div>
+
                 <div className="space-y-2 md:col-span-2">
                   <Label htmlFor="observacoes">Observações</Label>
                   <Textarea id="observacoes" name="observacoes" rows={2} />
@@ -292,6 +384,12 @@ function ContratosPage() {
                     </TableCell>
                     <TableCell>
                       <div className="flex gap-1">
+                        <Button variant="ghost" size="icon" title="Visualizar PDF" onClick={() => handlePreview(c)} disabled={previewing === c.id}>
+                          {previewing === c.id ? <Loader2 className="h-4 w-4 animate-spin" /> : <Eye className="h-4 w-4" />}
+                        </Button>
+                        <Button variant="ghost" size="icon" title="Enviar por e-mail" onClick={() => openEmailDialog(c)}>
+                          <Mail className="h-4 w-4 text-primary" />
+                        </Button>
                         <Button variant="ghost" size="icon" title="Enviar para assinatura" onClick={() => setAssinaturaContrato(c)}>
                           <PenTool className="h-4 w-4 text-primary" />
                         </Button>
@@ -302,6 +400,7 @@ function ContratosPage() {
                         </Button>
                       </div>
                     </TableCell>
+
                   </TableRow>
                 );
               })}
@@ -325,6 +424,33 @@ function ContratosPage() {
             : null
         }
       />
+
+      <Dialog open={!!emailContrato} onOpenChange={(v) => !v && setEmailContrato(null)}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Enviar contrato {emailContrato?.numero} por e-mail</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4">
+            <div className="space-y-2">
+              <Label>E-mail destinatário *</Label>
+              <Input type="email" value={emailDestino} onChange={(e) => setEmailDestino(e.target.value)} placeholder="cliente@empresa.com" />
+            </div>
+            <div className="space-y-2">
+              <Label>Mensagem (opcional)</Label>
+              <Textarea rows={4} value={emailMensagem} onChange={(e) => setEmailMensagem(e.target.value)} placeholder="Mensagem que acompanha o contrato..." />
+            </div>
+            <p className="text-xs text-muted-foreground">O contrato será gerado em PDF e enviado como anexo.</p>
+          </div>
+          <DialogFooter>
+            <Button variant="ghost" onClick={() => setEmailContrato(null)}>Cancelar</Button>
+            <Button onClick={() => emailMutation.mutate()} disabled={!emailDestino || emailMutation.isPending}>
+              {emailMutation.isPending ? <Loader2 className="h-4 w-4 mr-2 animate-spin" /> : <Mail className="h-4 w-4 mr-2" />}
+              Enviar
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
+

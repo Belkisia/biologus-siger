@@ -12,14 +12,16 @@ function getKey() {
 // Em produção, troque por um domínio verificado no Resend (ex: assinaturas@biologus.com.br)
 const FROM = "Bio Logus Ambiental <onboarding@resend.dev>";
 
-async function send(to: string, subject: string, html: string) {
+async function send(to: string, subject: string, html: string, attachments?: Array<{ filename: string; content: string }>) {
+  const body: any = { from: FROM, to: [to], subject, html };
+  if (attachments?.length) body.attachments = attachments;
   const res = await fetch(RESEND_URL, {
     method: "POST",
     headers: {
       Authorization: `Bearer ${getKey()}`,
       "Content-Type": "application/json",
     },
-    body: JSON.stringify({ from: FROM, to: [to], subject, html }),
+    body: JSON.stringify(body),
   });
   if (!res.ok) {
     const txt = await res.text();
@@ -27,6 +29,7 @@ async function send(to: string, subject: string, html: string) {
   }
   return res.json();
 }
+
 
 const baseStyle = `font-family:-apple-system,Segoe UI,Roboto,sans-serif;max-width:560px;margin:0 auto;padding:32px 24px;color:#1a1a1a`;
 const greenHeader = `background:linear-gradient(135deg,#1a5d3f,#2d8a5f);color:#fff;padding:24px;border-radius:8px 8px 0 0;text-align:center`;
@@ -78,6 +81,33 @@ export async function enviarCodigoOTP(args: { to: string; nome: string; codigo: 
   return send(args.to, `Código de assinatura: ${args.codigo}`, html);
 }
 
+export async function enviarContratoInformativo(args: {
+  to: string;
+  nomeCliente: string;
+  numeroContrato: string;
+  mensagem?: string;
+  pdfBase64: string;
+}) {
+  const html = `
+<div style="${baseStyle}">
+  <div style="${greenHeader}">
+    <h1 style="margin:0;font-size:20px;font-weight:600">Bio Logus Ambiental</h1>
+    <p style="margin:4px 0 0;font-size:13px;opacity:.85">Soluções em Gestão de Resíduos</p>
+  </div>
+  <div style="${card}">
+    <h2 style="margin:0 0 12px;font-size:18px;color:#1a5d3f">Contrato ${escape(args.numeroContrato)}</h2>
+    <p style="margin:0 0 8px">Olá, <strong>${escape(args.nomeCliente)}</strong>.</p>
+    <p style="margin:0 0 12px">Segue em anexo o contrato <strong>${escape(args.numeroContrato)}</strong> para sua análise.</p>
+    ${args.mensagem ? `<p style="margin:12px 0;padding:12px;background:#fff;border-left:3px solid #2d8a5f;white-space:pre-wrap">${escape(args.mensagem)}</p>` : ""}
+    <p style="margin:24px 0 0;font-size:12px;color:#666">Em caso de dúvidas, responda este e-mail.</p>
+  </div>
+</div>`;
+  return send(args.to, `Contrato ${args.numeroContrato} - Bio Logus`, html, [
+    { filename: `contrato-${args.numeroContrato}.pdf`, content: args.pdfBase64 },
+  ]);
+}
+
 function escape(s: string) {
   return String(s).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]!));
 }
+
