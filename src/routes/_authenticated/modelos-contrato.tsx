@@ -111,7 +111,7 @@ function ModelosPage() {
   const validation = useMemo(() => {
     const html = editor.conteudo_html || "";
     const used = Array.from(new Set(Array.from(html.matchAll(/\{\{\s*([A-Z0-9_]+)\s*\}\}/g)).map((m) => m[1])));
-    const sampleVars = buildVars({ cliente: SAMPLE_CLIENTE, contrato: SAMPLE_CONTRATO, itens: SAMPLE_ITENS });
+    const sampleVars = buildVars({ cliente: SAMPLE_CLIENTE, contrato: SAMPLE_CONTRATO, itens: SAMPLE_ITENS }) as Record<string, string>;
     const known = new Set(Object.keys(sampleVars));
     const unknown = used.filter((k) => !known.has(k));
     const emptyWithSample = used.filter((k) => known.has(k) && (sampleVars[k] === "" || sampleVars[k] == null));
