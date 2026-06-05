@@ -57,9 +57,7 @@ const STATUS_MAP: Record<string, { label: string; variant: "default" | "secondar
   cancelado: { label: "Cancelado", variant: "destructive" },
 };
 
-const INDICES = ["IPCA", "IGP-M", "INPC", "IPC-FIPE", "Personalizado"];
-
-const OBJETO_PADRAO = `Prestação de serviços de gerenciamento de resíduos sólidos, compreendendo coleta, transporte, armazenamento temporário, tratamento e destinação final ambientalmente adequada dos resíduos gerados pela CONTRATANTE, em conformidade com a Lei nº 12.305/2010 (Política Nacional de Resíduos Sólidos), bem como a emissão dos respectivos Manifestos de Transporte de Resíduos (MTR) e Certificados de Destinação Final (CDF).`;
+import { buildVars, renderTemplate } from "@/lib/contrato-modelo.functions";
 
 function addMonthsISO(dataInicio: string, meses: number): string {
   const d = new Date(dataInicio + "T00:00:00");
@@ -107,13 +105,57 @@ function ContratosPage() {
 
   const createMutation = useMutation({
     mutationFn: async (payload: Record<string, unknown>) => {
-      const row = { ...payload, owner_id: user.id } as never;
+      // 1) Buscar modelo padrão ativo + cliente
+      const [{ data: modelo }, { data: cliente }] = await Promise.all([
+        supabase.from("contrato_modelos").select("id, conteudo_html").eq("ativo", true).order("updated_at", { ascending: false }).limit(1).maybeSingle(),
+        supabase.from("clientes").select("*").eq("id", payload.cliente_id as string).single(),
+      ]);
+
+      // 2) Renderizar HTML integral do contrato com placeholders preenchidos
+      let conteudo_html: string | null = null;
+      let modelo_id: string | null = null;
+      if (modelo?.conteudo_html && cliente) {
+        const limite = Number(payload.limite_kg) || 0;
+        const excedente = Number(payload.valor_excedente) || 0;
+        const itens = limite > 0
+          ? [{
+              descricao: "Resíduos de serviços de saúde",
+              grupo_residuo: (payload.grupos_residuos as string) || "A, B e E",
+              unidade: "kg",
+              franquia: limite,
+              preco_unitario: 0,
+              preco_excedente: excedente,
+            }]
+          : [];
+        const vars = buildVars({
+          cliente,
+          contrato: {
+            numero: payload.numero,
+            data_inicio: payload.data_inicio,
+            data_fim: payload.data_fim,
+            valor_mensal: payload.valor_mensal,
+            forma_pagamento: payload.forma_pagamento,
+            dia_vencimento: payload.dia_vencimento,
+            frequencia_coleta: payload.frequencia_coleta,
+            vigencia_anos: periodicidade === "anual" ? "01 (um)" : periodicidade === "semestral" ? "0,5 (meio)" : "0,25 (três meses)",
+          },
+          itens,
+        });
+        // grupos override
+        if (payload.grupos_residuos) (vars as Record<string, string>).GRUPOS_RESIDUOS = String(payload.grupos_residuos);
+        conteudo_html = renderTemplate(modelo.conteudo_html, vars);
+        modelo_id = modelo.id;
+      }
+
+      // 3) Limpar campos auxiliares antes do insert
+      const { limite_kg: _lk, valor_excedente: _ve, grupos_residuos: _gr, frequencia_coleta: _fc, ...dbPayload } = payload as any;
+      const row = { ...dbPayload, owner_id: user.id, conteudo_html, modelo_id } as never;
       const { error } = await supabase.from("contratos").insert(row);
       if (error) throw error;
     },
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["contratos"] });
-      toast.success("Contrato cadastrado");
+      toast.success("Contrato cadastrado com o modelo Padrão 2026 aplicado");
       setOpen(false);
     },
     onError: (e: Error) => toast.error(e.message),
@@ -258,7 +300,7 @@ function ContratosPage() {
       <div className="flex items-start justify-between flex-wrap gap-4">
         <div>
           <h1 className="text-2xl font-bold text-foreground">Contratos</h1>
-          <p className="text-sm text-muted-foreground">Gestão de contratos comerciais, vigências e reajustes.</p>
+          <p className="text-sm text-muted-foreground">Gestão de contratos comerciais e vigências — modelo Padrão Bio Logus 2026 aplicado automaticamente.</p>
         </div>
         <Dialog open={open} onOpenChange={openChange}>
           <DialogTrigger asChild>
@@ -298,24 +340,16 @@ function ContratosPage() {
                   <Input id="valor_mensal" name="valor_mensal" type="number" step="0.01" />
                 </div>
                 <div className="space-y-2">
-                  <Label>Índice de reajuste</Label>
-                  <Select name="indice_reajuste">
-                    <SelectTrigger><SelectValue placeholder="Selecione" /></SelectTrigger>
-                    <SelectContent>
-                      {INDICES.map((i) => <SelectItem key={i} value={i}>{i}</SelectItem>)}
-                    </SelectContent>
-                  </Select>
-                </div>
-                <div className="space-y-2">
-                  <Label>Periodicidade reajuste</Label>
-                  <Select name="periodicidade_reajuste" value={periodicidade} onValueChange={onPeriodicidadeChange}>
+                  <Label>Vigência</Label>
+                  <Select value={periodicidade} onValueChange={onPeriodicidadeChange}>
                     <SelectTrigger><SelectValue /></SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="anual">Anual</SelectItem>
-                      <SelectItem value="semestral">Semestral</SelectItem>
-                      <SelectItem value="trimestral">Trimestral</SelectItem>
+                      <SelectItem value="anual">Anual (1 ano)</SelectItem>
+                      <SelectItem value="semestral">Semestral (6 meses)</SelectItem>
+                      <SelectItem value="trimestral">Trimestral (3 meses)</SelectItem>
                     </SelectContent>
                   </Select>
+                  <p className="text-xs text-muted-foreground">Calcula automaticamente a data de término.</p>
                 </div>
 
                 <div className="space-y-2">
@@ -324,16 +358,32 @@ function ContratosPage() {
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="forma_pagamento">Forma de pagamento</Label>
-                  <Input id="forma_pagamento" name="forma_pagamento" placeholder="Boleto, PIX..." />
+                  <Input id="forma_pagamento" name="forma_pagamento" placeholder="boleto bancário, PIX, depósito..." defaultValue="boleto bancário" />
                 </div>
-                <div className="space-y-2 md:col-span-2">
-                  <Label htmlFor="objeto">Objeto do contrato</Label>
-                  <Textarea id="objeto" name="objeto" rows={5} defaultValue={OBJETO_PADRAO} />
-                  <p className="text-xs text-muted-foreground">Texto padrão Bio Logus — edite conforme o escopo do contrato.</p>
+
+                <div className="space-y-2">
+                  <Label htmlFor="frequencia_coleta">Frequência da coleta</Label>
+                  <Input id="frequencia_coleta" name="frequencia_coleta" placeholder="mensal (1 vez ao mês)" defaultValue="mensal (1 vez ao mês)" />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="limite_kg">Pesagem — limite (kg/mês)</Label>
+                  <Input id="limite_kg" name="limite_kg" type="number" step="0.01" placeholder="Ex.: 20" />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="valor_excedente">Valor do kg excedente (R$)</Label>
+                  <Input id="valor_excedente" name="valor_excedente" type="number" step="0.01" placeholder="Ex.: 12,50" />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="grupos_residuos">Grupos de resíduos</Label>
+                  <Input id="grupos_residuos" name="grupos_residuos" placeholder="A, B e E" defaultValue="A, B e E" />
+                </div>
+
+                <div className="md:col-span-2 rounded-md border border-primary/30 bg-primary/5 p-3 text-xs text-muted-foreground">
+                  <strong className="text-foreground">Contrato Padrão Bio Logus 2026</strong> — o texto integral das 9 cláusulas será aplicado automaticamente, preenchendo os campos acima nos placeholders correspondentes. Sem alterações nas cláusulas.
                 </div>
 
                 <div className="space-y-2 md:col-span-2">
-                  <Label htmlFor="observacoes">Observações</Label>
+                  <Label htmlFor="observacoes">Observações internas</Label>
                   <Textarea id="observacoes" name="observacoes" rows={2} />
                 </div>
               </div>
