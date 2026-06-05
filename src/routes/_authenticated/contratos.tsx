@@ -188,11 +188,16 @@ function ContratosPage() {
     },
     onSuccess: () => {
       toast.success("Contrato enviado por e-mail");
+      qc.invalidateQueries({ queryKey: ["contratos"] });
       setEmailContrato(null);
       setEmailDestino("");
       setEmailMensagem("");
     },
-    onError: (e: Error) => toast.error(e.message),
+    onError: (e: Error) => {
+      toast.error(e.message);
+      qc.invalidateQueries({ queryKey: ["contratos"] });
+    },
+
   });
 
   const openChange = (v: boolean) => {
