@@ -291,11 +291,16 @@ function ContratosPage() {
                       </Select>
                     </TableCell>
                     <TableCell>
-                      <Button variant="ghost" size="icon" onClick={() => {
-                        if (confirm(`Remover contrato ${c.numero}?`)) deleteMutation.mutate(c.id);
-                      }}>
-                        <Trash2 className="h-4 w-4 text-destructive" />
-                      </Button>
+                      <div className="flex gap-1">
+                        <Button variant="ghost" size="icon" title="Enviar para assinatura" onClick={() => setAssinaturaContrato(c)}>
+                          <PenTool className="h-4 w-4 text-primary" />
+                        </Button>
+                        <Button variant="ghost" size="icon" title="Remover" onClick={() => {
+                          if (confirm(`Remover contrato ${c.numero}?`)) deleteMutation.mutate(c.id);
+                        }}>
+                          <Trash2 className="h-4 w-4 text-destructive" />
+                        </Button>
+                      </div>
                     </TableCell>
                   </TableRow>
                 );
@@ -304,6 +309,22 @@ function ContratosPage() {
           </Table>
         )}
       </Card>
+
+      <AssinaturaDialog
+        open={!!assinaturaContrato}
+        onOpenChange={(v) => !v && setAssinaturaContrato(null)}
+        documentoTipo="contrato"
+        documentoId={assinaturaContrato?.id ?? null}
+        clienteSugerido={
+          assinaturaContrato
+            ? {
+                nome: clientes.find((cl) => cl.id === assinaturaContrato.cliente_id)?.razao_social || "",
+                email: (clientes.find((cl) => cl.id === assinaturaContrato.cliente_id) as any)?.email || "",
+                cpf_cnpj: (clientes.find((cl) => cl.id === assinaturaContrato.cliente_id) as any)?.cnpj || "",
+              }
+            : null
+        }
+      />
     </div>
   );
 }
