@@ -379,7 +379,7 @@ function PropostasPage() {
       ["Pagamento", p.condicoes_pagamento || "a combinar"],
     ];
     doc.setTextColor(0);
-    doc.setFontSize(8);
+    doc.setFontSize(t.condFont);
     let yR = y + 9;
     for (const [k, v] of rows) {
       doc.setFont("helvetica", "bold");
@@ -390,7 +390,7 @@ function PropostasPage() {
       yR += Math.max(4.6, vLines.slice(0, 2).length * 4.2);
     }
 
-    y += blockH + 4;
+    y += blockH + t.sectionGap;
 
     // ── BLOCO 3 — TABELA DE SERVIÇOS ────────────────────────────────────
     autoTable(doc, {
