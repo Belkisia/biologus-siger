@@ -48,6 +48,22 @@ const STATUS_MAP: Record<string, { label: string; variant: "default" | "secondar
 
 const INDICES = ["IPCA", "IGP-M", "INPC", "IPC-FIPE", "Personalizado"];
 
+const OBJETO_PADRAO = `Prestação de serviços de gerenciamento de resíduos sólidos, compreendendo coleta, transporte, armazenamento temporário, tratamento e destinação final ambientalmente adequada dos resíduos gerados pela CONTRATANTE, em conformidade com a Lei nº 12.305/2010 (Política Nacional de Resíduos Sólidos), bem como a emissão dos respectivos Manifestos de Transporte de Resíduos (MTR) e Certificados de Destinação Final (CDF).`;
+
+function addMonthsISO(dataInicio: string, meses: number): string {
+  const d = new Date(dataInicio + "T00:00:00");
+  d.setMonth(d.getMonth() + meses);
+  d.setDate(d.getDate() - 1);
+  return d.toISOString().slice(0, 10);
+}
+
+const PERIODICIDADE_MESES: Record<string, number> = {
+  trimestral: 3,
+  semestral: 6,
+  anual: 12,
+};
+
+
 function formatBRL(v: number | null) {
   if (v == null) return "—";
   return v.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
