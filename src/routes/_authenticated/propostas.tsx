@@ -80,6 +80,7 @@ function PropostasPage() {
   const { user } = Route.useRouteContext();
   const [open, setOpen] = useState(false);
   const [editing, setEditing] = useState<Proposta | null>(null);
+  const [showContratoImport, setShowContratoImport] = useState(false);
 
   const [form, setForm] = useState({
     cliente_id: "",
