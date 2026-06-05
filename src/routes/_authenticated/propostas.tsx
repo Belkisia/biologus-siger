@@ -11,7 +11,7 @@ import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogFooter } from "@/components/ui/dialog";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Plus, FileText, Loader2, Trash2, Download, Send, FileSignature, Copy, Mail } from "lucide-react";
+import { Plus, FileText, Loader2, Trash2, Download, Send, FileSignature, Copy, Mail, Eye } from "lucide-react";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/_authenticated/propostas")({
@@ -610,6 +610,23 @@ function PropostasPage() {
     doc.save(`Proposta-${p.numero}.pdf`);
   };
 
+  const previewPDF = async (p: Proposta) => {
+    try {
+      const doc = await buildPDF(p);
+      const blob = doc.output("blob");
+      const url = URL.createObjectURL(blob);
+      const win = window.open(url, "_blank");
+      if (!win) {
+        // fallback se popup bloqueado: força download
+        doc.save(`Proposta-${p.numero}.pdf`);
+      }
+      setTimeout(() => URL.revokeObjectURL(url), 60_000);
+    } catch (e) {
+      console.error("Erro ao gerar PDF:", e);
+      alert("Não foi possível gerar o PDF. Veja o console para detalhes.");
+    }
+  };
+
   const [emailDialog, setEmailDialog] = useState<{ open: boolean; proposta: Proposta | null; email: string; mensagem: string; sending: boolean }>({
     open: false, proposta: null, email: "", mensagem: "", sending: false,
   });
@@ -875,6 +892,9 @@ function PropostasPage() {
                     </TableCell>
                     <TableCell className="text-right">
                       <div className="flex justify-end gap-1">
+                        <Button variant="ghost" size="icon" title="Visualizar PDF" onClick={() => previewPDF(p)}>
+                          <Eye className="h-4 w-4" />
+                        </Button>
                         <Button variant="ghost" size="icon" title="Baixar PDF" onClick={() => downloadPDF(p)}>
                           <Download className="h-4 w-4" />
                         </Button>
