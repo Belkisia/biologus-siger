@@ -279,7 +279,7 @@ ${form.obs ? `\nOBSERVAÇÕES ESPECIAIS: ${form.obs}` : ""}
 LEMBRE: apenas os 6 blocos. Sem seções numeradas. Sem apresentação. Sem encerramento. 1 folha A4.`;
 
     try {
-      const res = await fetch("https://api.anthropic.com/v1/messages", {
+      const res = await fetch("/api/anthropic-proxy", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
