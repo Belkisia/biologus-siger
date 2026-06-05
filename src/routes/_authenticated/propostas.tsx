@@ -199,6 +199,7 @@ function PropostasPage() {
     setEditing(p);
     setForm({
       cliente_id: p.cliente_id,
+      contrato_id: p.contrato_id ?? "",
       numero: p.numero,
       data_emissao: p.data_emissao,
       validade: p.validade ?? "",
