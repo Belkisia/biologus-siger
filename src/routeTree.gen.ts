@@ -14,6 +14,7 @@ import { Route as AuthRouteImport } from './routes/auth'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as EmailUnsubscribeRouteImport } from './routes/email/unsubscribe'
+import { Route as ApiAnthropicProxyRouteImport } from './routes/api/anthropic-proxy'
 import { Route as AuthenticatedUsuariosRouteImport } from './routes/_authenticated/usuarios'
 import { Route as AuthenticatedRelatoriosRouteImport } from './routes/_authenticated/relatorios'
 import { Route as AuthenticatedPropostasRouteImport } from './routes/_authenticated/propostas'
@@ -57,6 +58,11 @@ const IndexRoute = IndexRouteImport.update({
 const EmailUnsubscribeRoute = EmailUnsubscribeRouteImport.update({
   id: '/email/unsubscribe',
   path: '/email/unsubscribe',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiAnthropicProxyRoute = ApiAnthropicProxyRouteImport.update({
+  id: '/api/anthropic-proxy',
+  path: '/api/anthropic-proxy',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AuthenticatedUsuariosRoute = AuthenticatedUsuariosRouteImport.update({
@@ -182,6 +188,7 @@ export interface FileRoutesByFullPath {
   '/propostas': typeof AuthenticatedPropostasRouteWithChildren
   '/relatorios': typeof AuthenticatedRelatoriosRoute
   '/usuarios': typeof AuthenticatedUsuariosRoute
+  '/api/anthropic-proxy': typeof ApiAnthropicProxyRoute
   '/email/unsubscribe': typeof EmailUnsubscribeRoute
   '/propostas/nova': typeof AuthenticatedPropostasNovaRoute
   '/lovable/email/suppression': typeof LovableEmailSuppressionRoute
@@ -208,6 +215,7 @@ export interface FileRoutesByTo {
   '/propostas': typeof AuthenticatedPropostasRouteWithChildren
   '/relatorios': typeof AuthenticatedRelatoriosRoute
   '/usuarios': typeof AuthenticatedUsuariosRoute
+  '/api/anthropic-proxy': typeof ApiAnthropicProxyRoute
   '/email/unsubscribe': typeof EmailUnsubscribeRoute
   '/propostas/nova': typeof AuthenticatedPropostasNovaRoute
   '/lovable/email/suppression': typeof LovableEmailSuppressionRoute
@@ -236,6 +244,7 @@ export interface FileRoutesById {
   '/_authenticated/propostas': typeof AuthenticatedPropostasRouteWithChildren
   '/_authenticated/relatorios': typeof AuthenticatedRelatoriosRoute
   '/_authenticated/usuarios': typeof AuthenticatedUsuariosRoute
+  '/api/anthropic-proxy': typeof ApiAnthropicProxyRoute
   '/email/unsubscribe': typeof EmailUnsubscribeRoute
   '/_authenticated/propostas/nova': typeof AuthenticatedPropostasNovaRoute
   '/lovable/email/suppression': typeof LovableEmailSuppressionRoute
@@ -264,6 +273,7 @@ export interface FileRouteTypes {
     | '/propostas'
     | '/relatorios'
     | '/usuarios'
+    | '/api/anthropic-proxy'
     | '/email/unsubscribe'
     | '/propostas/nova'
     | '/lovable/email/suppression'
@@ -290,6 +300,7 @@ export interface FileRouteTypes {
     | '/propostas'
     | '/relatorios'
     | '/usuarios'
+    | '/api/anthropic-proxy'
     | '/email/unsubscribe'
     | '/propostas/nova'
     | '/lovable/email/suppression'
@@ -317,6 +328,7 @@ export interface FileRouteTypes {
     | '/_authenticated/propostas'
     | '/_authenticated/relatorios'
     | '/_authenticated/usuarios'
+    | '/api/anthropic-proxy'
     | '/email/unsubscribe'
     | '/_authenticated/propostas/nova'
     | '/lovable/email/suppression'
@@ -332,6 +344,7 @@ export interface RootRouteChildren {
   AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
   AuthRoute: typeof AuthRoute
   UnsubscribeRoute: typeof UnsubscribeRoute
+  ApiAnthropicProxyRoute: typeof ApiAnthropicProxyRoute
   EmailUnsubscribeRoute: typeof EmailUnsubscribeRoute
   LovableEmailSuppressionRoute: typeof LovableEmailSuppressionRoute
   LovableEmailAuthPreviewRoute: typeof LovableEmailAuthPreviewRoute
@@ -376,6 +389,13 @@ declare module '@tanstack/react-router' {
       path: '/email/unsubscribe'
       fullPath: '/email/unsubscribe'
       preLoaderRoute: typeof EmailUnsubscribeRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/anthropic-proxy': {
+      id: '/api/anthropic-proxy'
+      path: '/api/anthropic-proxy'
+      fullPath: '/api/anthropic-proxy'
+      preLoaderRoute: typeof ApiAnthropicProxyRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/_authenticated/usuarios': {
@@ -575,6 +595,7 @@ const rootRouteChildren: RootRouteChildren = {
   AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
   AuthRoute: AuthRoute,
   UnsubscribeRoute: UnsubscribeRoute,
+  ApiAnthropicProxyRoute: ApiAnthropicProxyRoute,
   EmailUnsubscribeRoute: EmailUnsubscribeRoute,
   LovableEmailSuppressionRoute: LovableEmailSuppressionRoute,
   LovableEmailAuthPreviewRoute: LovableEmailAuthPreviewRoute,
