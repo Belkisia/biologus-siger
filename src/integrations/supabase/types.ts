@@ -225,6 +225,45 @@ export type Database = {
           },
         ]
       }
+      contas_bancarias: {
+        Row: {
+          agencia: string | null
+          ativa: boolean
+          banco: string | null
+          created_at: string
+          id: string
+          nome: string
+          numero_conta: string | null
+          owner_id: string
+          saldo_inicial: number
+          updated_at: string
+        }
+        Insert: {
+          agencia?: string | null
+          ativa?: boolean
+          banco?: string | null
+          created_at?: string
+          id?: string
+          nome: string
+          numero_conta?: string | null
+          owner_id: string
+          saldo_inicial?: number
+          updated_at?: string
+        }
+        Update: {
+          agencia?: string | null
+          ativa?: boolean
+          banco?: string | null
+          created_at?: string
+          id?: string
+          nome?: string
+          numero_conta?: string | null
+          owner_id?: string
+          saldo_inicial?: number
+          updated_at?: string
+        }
+        Relationships: []
+      }
       contrato_itens: {
         Row: {
           contrato_id: string
@@ -420,6 +459,72 @@ export type Database = {
           used_at?: string | null
         }
         Relationships: []
+      }
+      extrato_lancamentos: {
+        Row: {
+          conciliado_em: string | null
+          conta_id: string
+          created_at: string
+          data_lancamento: string
+          descricao: string | null
+          fatura_id: string | null
+          fit_id: string | null
+          id: string
+          memo: string | null
+          owner_id: string
+          status: string
+          tipo: string
+          updated_at: string
+          valor: number
+        }
+        Insert: {
+          conciliado_em?: string | null
+          conta_id: string
+          created_at?: string
+          data_lancamento: string
+          descricao?: string | null
+          fatura_id?: string | null
+          fit_id?: string | null
+          id?: string
+          memo?: string | null
+          owner_id: string
+          status?: string
+          tipo: string
+          updated_at?: string
+          valor: number
+        }
+        Update: {
+          conciliado_em?: string | null
+          conta_id?: string
+          created_at?: string
+          data_lancamento?: string
+          descricao?: string | null
+          fatura_id?: string | null
+          fit_id?: string | null
+          id?: string
+          memo?: string | null
+          owner_id?: string
+          status?: string
+          tipo?: string
+          updated_at?: string
+          valor?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "extrato_lancamentos_conta_id_fkey"
+            columns: ["conta_id"]
+            isOneToOne: false
+            referencedRelation: "contas_bancarias"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "extrato_lancamentos_fatura_id_fkey"
+            columns: ["fatura_id"]
+            isOneToOne: false
+            referencedRelation: "faturas"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       faturas: {
         Row: {
