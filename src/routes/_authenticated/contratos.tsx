@@ -105,13 +105,57 @@ function ContratosPage() {
 
   const createMutation = useMutation({
     mutationFn: async (payload: Record<string, unknown>) => {
-      const row = { ...payload, owner_id: user.id } as never;
+      // 1) Buscar modelo padrão ativo + cliente
+      const [{ data: modelo }, { data: cliente }] = await Promise.all([
+        supabase.from("contrato_modelos").select("id, conteudo_html").eq("ativo", true).order("updated_at", { ascending: false }).limit(1).maybeSingle(),
+        supabase.from("clientes").select("*").eq("id", payload.cliente_id as string).single(),
+      ]);
+
+      // 2) Renderizar HTML integral do contrato com placeholders preenchidos
+      let conteudo_html: string | null = null;
+      let modelo_id: string | null = null;
+      if (modelo?.conteudo_html && cliente) {
+        const limite = Number(payload.limite_kg) || 0;
+        const excedente = Number(payload.valor_excedente) || 0;
+        const itens = limite > 0
+          ? [{
+              descricao: "Resíduos de serviços de saúde",
+              grupo_residuo: (payload.grupos_residuos as string) || "A, B e E",
+              unidade: "kg",
+              franquia: limite,
+              preco_unitario: 0,
+              preco_excedente: excedente,
+            }]
+          : [];
+        const vars = buildVars({
+          cliente,
+          contrato: {
+            numero: payload.numero,
+            data_inicio: payload.data_inicio,
+            data_fim: payload.data_fim,
+            valor_mensal: payload.valor_mensal,
+            forma_pagamento: payload.forma_pagamento,
+            dia_vencimento: payload.dia_vencimento,
+            frequencia_coleta: payload.frequencia_coleta,
+            vigencia_anos: periodicidade === "anual" ? "01 (um)" : periodicidade === "semestral" ? "0,5 (meio)" : "0,25 (três meses)",
+          },
+          itens,
+        });
+        // grupos override
+        if (payload.grupos_residuos) (vars as Record<string, string>).GRUPOS_RESIDUOS = String(payload.grupos_residuos);
+        conteudo_html = renderTemplate(modelo.conteudo_html, vars);
+        modelo_id = modelo.id;
+      }
+
+      // 3) Limpar campos auxiliares antes do insert
+      const { limite_kg: _lk, valor_excedente: _ve, grupos_residuos: _gr, frequencia_coleta: _fc, ...dbPayload } = payload as any;
+      const row = { ...dbPayload, owner_id: user.id, conteudo_html, modelo_id } as never;
       const { error } = await supabase.from("contratos").insert(row);
       if (error) throw error;
     },
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["contratos"] });
-      toast.success("Contrato cadastrado");
+      toast.success("Contrato cadastrado com o modelo Padrão 2026 aplicado");
       setOpen(false);
     },
     onError: (e: Error) => toast.error(e.message),
