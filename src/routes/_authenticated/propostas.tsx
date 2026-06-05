@@ -1139,11 +1139,16 @@ function PropostasPage() {
                           <Send className="h-4 w-4" />
                         </Button>
                         {p.status === "aceita" && (
-                          <Button variant="ghost" size="icon" title="Converter em contrato" onClick={() => {
-                            if (confirm(`Criar contrato a partir da proposta ${p.numero}?`)) convertToContract.mutate(p);
-                          }}>
-                            <FileSignature className="h-4 w-4 text-primary" />
-                          </Button>
+                          <>
+                            <Button variant="ghost" size="icon" title="Converter em contrato (simples)" onClick={() => {
+                              if (confirm(`Criar contrato a partir da proposta ${p.numero}?`)) convertToContract.mutate(p);
+                            }}>
+                              <FileSignature className="h-4 w-4 text-primary" />
+                            </Button>
+                            <Button variant="ghost" size="icon" title="Gerar contrato a partir de modelo" onClick={() => abrirModeloDlg(p)}>
+                              <Wand2 className="h-4 w-4 text-primary" />
+                            </Button>
+                          </>
                         )}
                         <Button variant="ghost" size="icon" title="Editar" onClick={() => openEdit(p)} disabled={p.status === "convertida"}>
                           <Copy className="h-4 w-4" />
@@ -1184,6 +1189,47 @@ function PropostasPage() {
             <Button onClick={sendByEmail} disabled={emailDialog.sending}>
               {emailDialog.sending ? <Loader2 className="h-4 w-4 mr-2 animate-spin" /> : <Mail className="h-4 w-4 mr-2" />}
               Enviar
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      <Dialog open={modeloDlg.open} onOpenChange={(o) => setModeloDlg((s) => ({ ...s, open: o }))}>
+        <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle>Gerar contrato a partir de modelo — Proposta {modeloDlg.proposta?.numero}</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4">
+            <div className="grid grid-cols-2 gap-3">
+              <div className="space-y-2 col-span-2">
+                <Label>Modelo *</Label>
+                <Select value={modeloDlg.modelo_id} onValueChange={(v) => setModeloDlg((s) => ({ ...s, modelo_id: v, previewHtml: "" }))}>
+                  <SelectTrigger><SelectValue placeholder="Selecione um modelo ativo" /></SelectTrigger>
+                  <SelectContent>
+                    {(modelosAtivos as any[]).filter((m) => m.ativo).map((m) => (
+                      <SelectItem key={m.id} value={m.id}>{m.nome} (v{m.versao_atual})</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+              <div className="space-y-2"><Label>Nº do contrato</Label><Input value={modeloDlg.numero} onChange={(e) => setModeloDlg((s) => ({ ...s, numero: e.target.value }))} /></div>
+              <div className="space-y-2"><Label>Valor mensal (R$)</Label><Input type="number" step="0.01" value={modeloDlg.valor_mensal} onChange={(e) => setModeloDlg((s) => ({ ...s, valor_mensal: e.target.value }))} /></div>
+              <div className="space-y-2"><Label>Data início</Label><Input type="date" value={modeloDlg.data_inicio} onChange={(e) => setModeloDlg((s) => ({ ...s, data_inicio: e.target.value }))} /></div>
+              <div className="space-y-2"><Label>Data fim</Label><Input type="date" value={modeloDlg.data_fim} onChange={(e) => setModeloDlg((s) => ({ ...s, data_fim: e.target.value }))} /></div>
+            </div>
+            <div className="flex gap-2">
+              <Button variant="outline" onClick={gerarPreview} disabled={!modeloDlg.modelo_id || modeloDlg.loadingPreview}>
+                {modeloDlg.loadingPreview ? <Loader2 className="h-4 w-4 animate-spin" /> : <Eye className="h-4 w-4" />} Gerar prévia
+              </Button>
+            </div>
+            {modeloDlg.previewHtml && (
+              <div className="border rounded p-4 max-h-[40vh] overflow-y-auto bg-background prose prose-sm max-w-none" dangerouslySetInnerHTML={{ __html: modeloDlg.previewHtml }} />
+            )}
+          </div>
+          <DialogFooter>
+            <Button variant="ghost" onClick={() => setModeloDlg((s) => ({ ...s, open: false }))}>Cancelar</Button>
+            <Button onClick={() => gerarContratoModelo.mutate()} disabled={!modeloDlg.modelo_id || gerarContratoModelo.isPending}>
+              {gerarContratoModelo.isPending && <Loader2 className="h-4 w-4 animate-spin" />} Gerar contrato
             </Button>
           </DialogFooter>
         </DialogContent>
