@@ -23,6 +23,7 @@ import { Route as AuthenticatedLicencasRouteImport } from './routes/_authenticat
 import { Route as AuthenticatedFinanceiroRouteImport } from './routes/_authenticated/financeiro'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
 import { Route as AuthenticatedContratosRouteImport } from './routes/_authenticated/contratos'
+import { Route as AuthenticatedConciliacaoRouteImport } from './routes/_authenticated/conciliacao'
 import { Route as AuthenticatedColetasRouteImport } from './routes/_authenticated/coletas'
 import { Route as AuthenticatedClientesRouteImport } from './routes/_authenticated/clientes'
 import { Route as AuthenticatedCdfRouteImport } from './routes/_authenticated/cdf'
@@ -102,6 +103,12 @@ const AuthenticatedContratosRoute = AuthenticatedContratosRouteImport.update({
   path: '/contratos',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedConciliacaoRoute =
+  AuthenticatedConciliacaoRouteImport.update({
+    id: '/conciliacao',
+    path: '/conciliacao',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 const AuthenticatedColetasRoute = AuthenticatedColetasRouteImport.update({
   id: '/coletas',
   path: '/coletas',
@@ -158,6 +165,7 @@ export interface FileRoutesByFullPath {
   '/cdf': typeof AuthenticatedCdfRoute
   '/clientes': typeof AuthenticatedClientesRoute
   '/coletas': typeof AuthenticatedColetasRoute
+  '/conciliacao': typeof AuthenticatedConciliacaoRoute
   '/contratos': typeof AuthenticatedContratosRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/financeiro': typeof AuthenticatedFinanceiroRoute
@@ -182,6 +190,7 @@ export interface FileRoutesByTo {
   '/cdf': typeof AuthenticatedCdfRoute
   '/clientes': typeof AuthenticatedClientesRoute
   '/coletas': typeof AuthenticatedColetasRoute
+  '/conciliacao': typeof AuthenticatedConciliacaoRoute
   '/contratos': typeof AuthenticatedContratosRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/financeiro': typeof AuthenticatedFinanceiroRoute
@@ -208,6 +217,7 @@ export interface FileRoutesById {
   '/_authenticated/cdf': typeof AuthenticatedCdfRoute
   '/_authenticated/clientes': typeof AuthenticatedClientesRoute
   '/_authenticated/coletas': typeof AuthenticatedColetasRoute
+  '/_authenticated/conciliacao': typeof AuthenticatedConciliacaoRoute
   '/_authenticated/contratos': typeof AuthenticatedContratosRoute
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
   '/_authenticated/financeiro': typeof AuthenticatedFinanceiroRoute
@@ -234,6 +244,7 @@ export interface FileRouteTypes {
     | '/cdf'
     | '/clientes'
     | '/coletas'
+    | '/conciliacao'
     | '/contratos'
     | '/dashboard'
     | '/financeiro'
@@ -258,6 +269,7 @@ export interface FileRouteTypes {
     | '/cdf'
     | '/clientes'
     | '/coletas'
+    | '/conciliacao'
     | '/contratos'
     | '/dashboard'
     | '/financeiro'
@@ -283,6 +295,7 @@ export interface FileRouteTypes {
     | '/_authenticated/cdf'
     | '/_authenticated/clientes'
     | '/_authenticated/coletas'
+    | '/_authenticated/conciliacao'
     | '/_authenticated/contratos'
     | '/_authenticated/dashboard'
     | '/_authenticated/financeiro'
@@ -415,6 +428,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedContratosRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/conciliacao': {
+      id: '/_authenticated/conciliacao'
+      path: '/conciliacao'
+      fullPath: '/conciliacao'
+      preLoaderRoute: typeof AuthenticatedConciliacaoRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/coletas': {
       id: '/_authenticated/coletas'
       path: '/coletas'
@@ -485,6 +505,7 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedCdfRoute: typeof AuthenticatedCdfRoute
   AuthenticatedClientesRoute: typeof AuthenticatedClientesRoute
   AuthenticatedColetasRoute: typeof AuthenticatedColetasRoute
+  AuthenticatedConciliacaoRoute: typeof AuthenticatedConciliacaoRoute
   AuthenticatedContratosRoute: typeof AuthenticatedContratosRoute
   AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
   AuthenticatedFinanceiroRoute: typeof AuthenticatedFinanceiroRoute
@@ -500,6 +521,7 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedCdfRoute: AuthenticatedCdfRoute,
   AuthenticatedClientesRoute: AuthenticatedClientesRoute,
   AuthenticatedColetasRoute: AuthenticatedColetasRoute,
+  AuthenticatedConciliacaoRoute: AuthenticatedConciliacaoRoute,
   AuthenticatedContratosRoute: AuthenticatedContratosRoute,
   AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
   AuthenticatedFinanceiroRoute: AuthenticatedFinanceiroRoute,
@@ -530,13 +552,3 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}
