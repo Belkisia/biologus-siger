@@ -329,6 +329,15 @@ export const gerarContratoDeModelo = createServerFn({ method: "POST" })
     if (em || !m) throw new Error("Modelo não encontrado");
     const { data: cliente } = await supabaseAdmin.from("clientes").select("*").eq("id", data.cliente_id).single();
 
+    let itens: any[] = [];
+    if (data.proposta_id) {
+      const { data: pis } = await supabaseAdmin.from("proposta_itens").select("*").eq("proposta_id", data.proposta_id).order("ordem");
+      itens = (pis || []).map((i: any) => ({
+        descricao: i.descricao, grupo_residuo: i.tipo_residuo, unidade: i.unidade,
+        preco_unitario: i.valor_unitario, franquia: i.quantidade, preco_excedente: i.valor_unitario,
+      }));
+    }
+
     const contratoStub = {
       numero: data.numero,
       data_inicio: data.data_inicio,
@@ -337,7 +346,7 @@ export const gerarContratoDeModelo = createServerFn({ method: "POST" })
     };
     const html = data.conteudo_html_editado
       ? data.conteudo_html_editado
-      : renderTemplate(m.conteudo_html, buildVars({ cliente, contrato: contratoStub }));
+      : renderTemplate(m.conteudo_html, buildVars({ cliente, contrato: contratoStub, itens }));
 
     const { data: novo, error } = await supabaseAdmin
       .from("contratos")
