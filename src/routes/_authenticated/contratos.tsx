@@ -126,6 +126,9 @@ function ContratosPage() {
     .filter((c) => c.status === "ativo")
     .reduce((acc, c) => acc + (c.valor_mensal ?? 0), 0);
 
+  const [assinaturaContrato, setAssinaturaContrato] = useState<Contrato | null>(null);
+
+
   return (
     <div className="space-y-6">
       <div className="flex items-start justify-between flex-wrap gap-4">
