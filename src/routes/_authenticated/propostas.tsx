@@ -273,288 +273,392 @@ function PropostasPage() {
 
   const buildPDF = async (p: Proposta) => {
     const { jsPDF } = await import("jspdf");
-    const autoTable = (await import("jspdf-autotable")).default;
     const { data: itens } = await supabase
       .from("proposta_itens")
       .select("*")
       .eq("proposta_id", p.id)
       .order("ordem");
 
-    // ── MODO COMPACTAÇÃO AUTOMÁTICA ─────────────────────────────────────
-    // Tenta níveis progressivamente menores até caber em 1 página A4.
-    type Tier = {
-      bodyFont: number; bodyPad: number; headFont: number; headPad: number;
-      blockH: number; inclH: number; obsLines: number; inclSpacing: number;
-      sectionGap: number; nomeFont: number; condFont: number; destFont: number;
-    };
-    const tiers: Tier[] = [
-      { bodyFont: 8.0, bodyPad: 1.6, headFont: 8.0, headPad: 1.8, blockH: 36, inclH: 34, obsLines: 7, inclSpacing: 4.6, sectionGap: 4, nomeFont: 10.5, condFont: 8.0, destFont: 7.8 },
-      { bodyFont: 7.5, bodyPad: 1.3, headFont: 7.5, headPad: 1.5, blockH: 33, inclH: 31, obsLines: 7, inclSpacing: 4.2, sectionGap: 3, nomeFont: 10.0, condFont: 7.6, destFont: 7.5 },
-      { bodyFont: 7.0, bodyPad: 1.0, headFont: 7.0, headPad: 1.2, blockH: 30, inclH: 28, obsLines: 6, inclSpacing: 3.8, sectionGap: 2.5, nomeFont: 9.5,  condFont: 7.2, destFont: 7.2 },
-      { bodyFont: 6.5, bodyPad: 0.8, headFont: 6.5, headPad: 1.0, blockH: 27, inclH: 25, obsLines: 5, inclSpacing: 3.4, sectionGap: 2, nomeFont: 9.0,  condFont: 6.8, destFont: 6.8 },
-      { bodyFont: 6.0, bodyPad: 0.6, headFont: 6.2, headPad: 0.9, blockH: 25, inclH: 23, obsLines: 4, inclSpacing: 3.1, sectionGap: 1.5, nomeFont: 8.5, condFont: 6.4, destFont: 6.4 },
-    ];
-
-    const renderWithTier = (t: Tier) => {
-    const doc = new jsPDF({ unit: "mm", format: "a4" });
-    const cli = p.clientes;
     const PAGE_W = 210;
     const PAGE_H = 297;
-    const M = 12; // margem
-    const BRAND: [number, number, number] = [14, 61, 26];   // #0E3D1A
-    const BRAND2: [number, number, number] = [46, 139, 71]; // #2E8B47
-    const SOFT: [number, number, number] = [234, 244, 237]; // #EAF4ED
+    const M = 10;
+    const BRAND: [number, number, number] = [14, 61, 26];    // #0E3D1A
+    const BRAND2: [number, number, number] = [26, 107, 46];  // #1A6B2E
+    const ACC: [number, number, number] = [46, 139, 71];     // #2E8B47
+    const SOFT: [number, number, number] = [234, 244, 237];  // #EAF4ED
     const MUTED: [number, number, number] = [102, 102, 102];
+    const BORDER: [number, number, number] = [210, 215, 212];
 
-    // ── BLOCO 1 — CABEÇALHO (faixa verde) ────────────────────────────────
-    doc.setFillColor(...BRAND);
-    doc.rect(0, 0, PAGE_W, 14, "F");
-    doc.setTextColor(255);
-    doc.setFont("helvetica", "bold");
-    doc.setFontSize(11);
-    doc.text("BIO LOGUS AMBIENTAL", PAGE_W / 2, 6.5, { align: "center" });
-    doc.setFont("helvetica", "normal");
-    doc.setFontSize(7.5);
-    doc.text("Gestão Inteligente de Resíduos · Goiânia – GO", PAGE_W / 2, 10.5, { align: "center" });
-    // sub-faixa CNPJ / Nº / Data
-    doc.setFillColor(...BRAND2);
-    doc.rect(0, 14, PAGE_W, 5, "F");
-    doc.setFontSize(7);
-    doc.setTextColor(255);
+    const cli = p.clientes;
     const dataEmissao = new Date(p.data_emissao).toLocaleDateString("pt-BR");
-    doc.text(
-      `CNPJ 26.484.921/0001-60   ·   Nº ${p.numero}   ·   Emitida em ${dataEmissao}`,
-      PAGE_W / 2,
-      17.7,
-      { align: "center" },
-    );
+    const ano = new Date(p.data_emissao).getFullYear();
+    const cidadeCli = cli?.cidade ? `${cli.cidade}${cli.estado ? ` – ${cli.estado}` : ""}` : "";
 
-    let y = 23;
+    // Derivações de serviço
+    const itensList = (itens ?? []) as Array<{
+      descricao: string; tipo_residuo: string | null;
+      quantidade: number; unidade: string;
+      valor_unitario: number; valor_total: number;
+    }>;
+    const totalQtd = itensList.reduce((s, i) => s + Number(i.quantidade || 0), 0);
+    const totalKg = itensList
+      .filter((i) => (i.unidade || "").toLowerCase() === "kg")
+      .reduce((s, i) => s + Number(i.quantidade || 0), 0);
+    const valorTotal = Number(p.valor_total || 0);
+    const precoKg = totalKg > 0 ? valorTotal / totalKg : 0;
+    const volMax = totalKg > 0 ? totalKg : totalQtd;
+    const volMin = Math.max(0, Math.round(volMax * 0.4));
 
-    // ── BLOCO 2 — DESTINATÁRIO + CONDIÇÕES (2 colunas) ──────────────────
-    const colW = (PAGE_W - M * 2 - 4) / 2;
-    const blockH = t.blockH;
-    // Esquerda: destinatário
-    doc.setFillColor(...SOFT);
-    doc.rect(M, y, colW, blockH, "F");
-    doc.setFillColor(...BRAND);
-    doc.rect(M, y, 1.2, blockH, "F");
-    doc.setTextColor(...MUTED);
-    doc.setFont("helvetica", "bold");
-    doc.setFontSize(6.8);
-    doc.text("DESTINATÁRIO", M + 3, y + 4);
-    doc.setTextColor(0);
-    doc.setFontSize(t.nomeFont);
-    const nome = cli?.razao_social ?? "—";
-    const nomeLines = doc.splitTextToSize(nome, colW - 6) as string[];
-    doc.text(nomeLines.slice(0, 2), M + 3, y + 9);
-    doc.setFont("helvetica", "normal");
-    doc.setFontSize(t.destFont);
-    let yL = y + 9 + Math.min(nomeLines.length, 2) * 4.2;
-    if (cli?.cnpj) { doc.text(`CNPJ: ${cli.cnpj}`, M + 3, yL); yL += 3.6; }
-    if (cli?.cidade) { doc.text(`${cli.cidade}${cli.estado ? ` – ${cli.estado}` : ""}`, M + 3, yL); yL += 3.6; }
-    if (cli?.endereco) {
-      const end = `${cli.endereco}${cli.numero ? `, ${cli.numero}` : ""}${cli.bairro ? ` – ${cli.bairro}` : ""}`;
-      const endLines = doc.splitTextToSize(end, colW - 6) as string[];
-      doc.text(endLines.slice(0, 2), M + 3, yL); yL += endLines.slice(0, 2).length * 3.4;
-    }
-    if (cli?.email) { doc.text(cli.email, M + 3, yL); yL += 3.4; }
-    if (cli?.telefone || cli?.whatsapp) doc.text(String(cli.telefone ?? cli.whatsapp), M + 3, yL);
-
-    // Direita: condições (tabela 2 colunas sem borda)
-    const xR = M + colW + 4;
-    doc.setDrawColor(220);
-    doc.setLineWidth(0.15);
-    doc.rect(xR, y, colW, blockH);
-    doc.setTextColor(...MUTED);
-    doc.setFont("helvetica", "bold");
-    doc.setFontSize(6.8);
-    doc.text("CONDIÇÕES COMERCIAIS", xR + 3, y + 4);
-    const validade = p.validade
-      ? `até ${new Date(p.validade).toLocaleDateString("pt-BR")}`
-      : "30 dias";
-    const rows: [string, string][] = [
-      ["Validade", validade],
-      ["Início", p.prazo_coleta || "5 dias úteis após assinatura"],
-      ["Pagamento", p.condicoes_pagamento || "a combinar"],
+    type Tier = {
+      h2: number; h3: number; h5: number; h6: number;
+      fNome: number; fBody: number; fSmall: number; fXs: number;
+      bulletGap: number;
+    };
+    const tiers: Tier[] = [
+      { h2: 30, h3: 62, h5: 48, h6: 30, fNome: 13, fBody: 8.2, fSmall: 7.4, fXs: 6.6, bulletGap: 4.4 },
+      { h2: 28, h3: 58, h5: 42, h6: 28, fNome: 12, fBody: 7.8, fSmall: 7.0, fXs: 6.3, bulletGap: 4.0 },
+      { h2: 26, h3: 54, h5: 38, h6: 26, fNome: 11, fBody: 7.4, fSmall: 6.6, fXs: 6.0, bulletGap: 3.7 },
+      { h2: 24, h3: 50, h5: 34, h6: 24, fNome: 10.5, fBody: 7.0, fSmall: 6.3, fXs: 5.8, bulletGap: 3.4 },
     ];
-    doc.setTextColor(0);
-    doc.setFontSize(t.condFont);
-    let yR = y + 9;
-    for (const [k, v] of rows) {
+
+    // Normas — apenas as aplicáveis (deduz dos tipos de resíduo)
+    const tipos = itensList.map((i) => (i.tipo_residuo || "").toLowerCase()).join(" ");
+    const isRSS = /grupo\s*[abe]|biolog|qu[ií]mico|perfuro/.test(tipos);
+    const isClasseI = /classe\s*i\b|perigos|industrial/.test(tipos);
+    const isClasseII = /classe\s*ii|n[aã]o[-\s]?perigos/.test(tipos);
+    const isGrupoD = /grupo\s*d|domiciliar|comum/.test(tipos);
+    const normas: string[] = [];
+    if (isRSS) normas.push("RDC ANVISA 222/2018", "CONAMA 358/2005");
+    if (isClasseI || isClasseII) normas.push("ABNT NBR 10.004:2004");
+    if (isClasseI) normas.push("Lei GO 14.248/2002");
+    if (normas.length === 0 || isGrupoD) normas.unshift("PNRS Lei 12.305/2010");
+    else normas.push("PNRS Lei 12.305/2010");
+    const normasTxt = Array.from(new Set(normas)).join(" · ");
+
+    // Acondicionamento por tipo
+    const acond: string[] = [];
+    if (/grupo\s*a|biolog/i.test(tipos)) acond.push("Grupo A em bombonas brancas leitosas");
+    if (/grupo\s*b|qu[ií]mico/i.test(tipos)) acond.push("Grupo B em recipiente compatível identificado");
+    if (/grupo\s*e|perfuro/i.test(tipos)) acond.push("Grupo E em coletor descartex rígido");
+    if (/grupo\s*d|domiciliar|comum/i.test(tipos)) acond.push("Grupo D em saco preto reforçado");
+    if (/classe\s*i\b|perigos|industrial/i.test(tipos)) acond.push("Classe I em embalagem homologada com rótulo de risco");
+    if (/classe\s*ii/i.test(tipos)) acond.push("Classe II em big bag ou tambor lacrado");
+    if (acond.length === 0) acond.push("Conforme orientação técnica fornecida na visita inicial");
+
+    const render = (t: Tier) => {
+      const doc = new jsPDF({ unit: "mm", format: "a4" });
+
+      // ── BLOCO 1 — CABEÇALHO ─────────────────────────────────────────
+      doc.setFillColor(...BRAND);
+      doc.rect(0, 0, PAGE_W, 13, "F");
+      doc.setTextColor(255);
       doc.setFont("helvetica", "bold");
-      doc.text(k, xR + 3, yR);
+      doc.setFontSize(11.5);
+      doc.text("BIO LOGUS AMBIENTAL", PAGE_W / 2, 6, { align: "center" });
       doc.setFont("helvetica", "normal");
-      const vLines = doc.splitTextToSize(v, colW - 30) as string[];
-      doc.text(vLines.slice(0, 2), xR + 28, yR);
-      yR += Math.max(4.6, vLines.slice(0, 2).length * 4.2);
-    }
+      doc.setFontSize(7.6);
+      doc.text("Gestão Inteligente de Resíduos  ·  Goiânia – GO", PAGE_W / 2, 10.3, { align: "center" });
+      doc.setFillColor(...BRAND2);
+      doc.rect(0, 13, PAGE_W, 4.6, "F");
+      doc.setFontSize(7);
+      doc.text(
+        `CNPJ 26.484.921/0001-60   ·   Nº ${p.numero}   ·   Emitida em ${dataEmissao}`,
+        PAGE_W / 2, 16.4, { align: "center" },
+      );
 
-    y += blockH + t.sectionGap;
+      let y = 20.5;
+      const colW = (PAGE_W - M * 2 - 3) / 2;
+      const xR = M + colW + 3;
 
-    // ── BLOCO 3 — TABELA DE SERVIÇOS ────────────────────────────────────
-    autoTable(doc, {
-      startY: y,
-      head: [["Serviço / Descrição", "Resíduo", "Qtd.", "Un.", "Vlr. Unit.", "Total"]],
-      body: (itens ?? []).map((i) => [
-        i.descricao,
-        i.tipo_residuo ?? "—",
-        Number(i.quantidade).toLocaleString("pt-BR"),
-        i.unidade,
-        brl(Number(i.valor_unitario)),
-        brl(Number(i.valor_total)),
-      ]),
-      theme: "grid",
-      headStyles: {
-        fillColor: BRAND,
-        textColor: 255,
-        fontStyle: "bold",
-        fontSize: t.headFont,
-        cellPadding: t.headPad,
-        halign: "center",
-      },
-      bodyStyles: { fontSize: t.bodyFont, textColor: 30, cellPadding: t.bodyPad },
-      alternateRowStyles: { fillColor: [248, 251, 248] },
-      styles: { lineColor: [220, 220, 220], lineWidth: 0.1, overflow: "linebreak" },
-      columnStyles: {
-        0: { cellWidth: 70 },
-        1: { cellWidth: 32 },
-        2: { halign: "right", cellWidth: 14 },
-        3: { halign: "center", cellWidth: 10 },
-        4: { halign: "right", cellWidth: 26 },
-        5: { halign: "right", cellWidth: 34, fontStyle: "bold" },
-      },
-      margin: { left: M, right: M },
-    });
+      // ── BLOCO 2 — DESTINATÁRIO + CONDIÇÕES ──────────────────────────
+      const h2 = t.h2;
+      doc.setFillColor(...SOFT);
+      doc.rect(M, y, colW, h2, "F");
+      doc.setFillColor(...BRAND);
+      doc.rect(M, y, 1.2, h2, "F");
+      doc.setTextColor(...MUTED);
+      doc.setFont("helvetica", "bold");
+      doc.setFontSize(6.6);
+      doc.text("DESTINATÁRIO", M + 3, y + 3.6);
+      doc.setTextColor(20);
+      doc.setFontSize(t.fNome);
+      const nome = cli?.razao_social ?? "—";
+      const nomeLines = doc.splitTextToSize(nome, colW - 6) as string[];
+      doc.text(nomeLines.slice(0, 2), M + 3, y + 8.2);
+      let yL = y + 8.2 + Math.min(nomeLines.length, 2) * (t.fNome * 0.4);
+      doc.setFont("helvetica", "normal");
+      doc.setFontSize(t.fSmall);
+      if (cidadeCli) { doc.text(cidadeCli, M + 3, yL); yL += 3.6; }
+      if (cli?.cnpj) { doc.text(`CNPJ ${cli.cnpj}`, M + 3, yL); yL += 3.6; }
+      if (cli?.endereco) {
+        const end = `${cli.endereco}${cli.numero ? `, ${cli.numero}` : ""}${cli.bairro ? ` – ${cli.bairro}` : ""}`;
+        const endLines = doc.splitTextToSize(end, colW - 6) as string[];
+        doc.text(endLines.slice(0, 2), M + 3, yL); yL += endLines.slice(0, 2).length * 3.4;
+      }
+      doc.setFont("helvetica", "italic");
+      doc.setFontSize(t.fXs);
+      doc.setTextColor(...MUTED);
+      const descServ = itensList[0]?.descricao || "Coleta, transporte e destinação final de resíduos";
+      const descLines = doc.splitTextToSize(descServ, colW - 6) as string[];
+      doc.text(descLines.slice(0, 2), M + 3, y + h2 - 2.5);
 
-    let finalY =
-      (doc as unknown as { lastAutoTable?: { finalY: number } }).lastAutoTable?.finalY ?? y + 20;
+      // Condições (direita)
+      doc.setDrawColor(...BORDER);
+      doc.setLineWidth(0.2);
+      doc.rect(xR, y, colW, h2);
+      doc.setTextColor(...MUTED);
+      doc.setFont("helvetica", "bold");
+      doc.setFontSize(6.6);
+      doc.text("CONDIÇÕES COMERCIAIS", xR + 3, y + 3.6);
+      const cond: [string, string][] = [
+        ["Validade", p.validade ? `até ${new Date(p.validade).toLocaleDateString("pt-BR")}` : "60 dias corridos"],
+        ["Início", p.prazo_coleta || "7 dias úteis após assinatura"],
+        ["Pagamento", p.condicoes_pagamento || "30 dias após cada coleta"],
+        ["Frequência", "Mensal"],
+        ["Volume", `${volMin} a ${Math.round(volMax)} kg/coleta`],
+      ];
+      doc.setTextColor(25);
+      doc.setFontSize(t.fSmall);
+      const rowH = (h2 - 6) / cond.length;
+      let yR = y + 7;
+      for (const [k, v] of cond) {
+        doc.setFont("helvetica", "bold");
+        doc.text(k, xR + 3, yR);
+        doc.setFont("helvetica", "normal");
+        const vLines = doc.splitTextToSize(v, colW - 26) as string[];
+        doc.text(vLines.slice(0, 1), xR + 24, yR);
+        yR += rowH;
+      }
 
-    // ── BLOCO 4 — TOTAL ─────────────────────────────────────────────────
-    finalY += 2;
-    const totalBoxW = 80;
-    doc.setFillColor(...BRAND);
-    doc.rect(PAGE_W - M - totalBoxW, finalY, totalBoxW, 9, "F");
-    doc.setTextColor(255);
-    doc.setFont("helvetica", "bold");
-    doc.setFontSize(10);
-    doc.text(
-      `VALOR TOTAL:  ${brl(Number(p.valor_total))}`,
-      PAGE_W - M - 3,
-      finalY + 6,
-      { align: "right" },
-    );
-    doc.setTextColor(0);
-    y = finalY + 13;
+      y += h2 + 3;
 
-    // ── BLOCO 5 — INCLUSO + OBSERVAÇÕES (2 colunas compactas) ───────────
-    const incl = [
-      "Coleta no local indicado",
-      "Transporte com veículos licenciados",
-      "Tratamento e destinação final",
-      "Emissão de MTR e CDF",
-      "Conformidade com a PNRS (Lei 12.305/2010)",
-    ];
-    const inclH = t.inclH;
-    // Esquerda: incluso
-    doc.setDrawColor(...BRAND2);
-    doc.setLineWidth(0.2);
-    doc.rect(M, y, colW, inclH);
-    doc.setFillColor(...BRAND);
-    doc.rect(M, y, colW, 5, "F");
-    doc.setTextColor(255);
-    doc.setFont("helvetica", "bold");
-    doc.setFontSize(7.8);
-    doc.text("INCLUSO NO SERVIÇO", M + 2, y + 3.6);
-    doc.setTextColor(0);
-    doc.setFont("helvetica", "normal");
-    doc.setFontSize(7.8);
-    let yi = y + 9;
-    for (const it of incl) {
-      doc.setTextColor(...BRAND2);
-      doc.text("✓", M + 2, yi);
-      doc.setTextColor(0);
-      const lines = doc.splitTextToSize(it, colW - 8) as string[];
-      doc.text(lines.slice(0, 1), M + 6, yi);
-      yi += t.inclSpacing;
-    }
+      // ── BLOCO 3 — SERVIÇO + INCLUSO + PREÇO (3 colunas) ────────────
+      const h3 = t.h3;
+      const w3 = (PAGE_W - M * 2 - 4) / 3;
+      const x3a = M;
+      const x3b = M + w3 + 2;
+      const x3c = M + (w3 + 2) * 2;
 
-    // Direita: observações
-    doc.setDrawColor(220);
-    doc.setLineWidth(0.15);
-    doc.rect(xR, y, colW, inclH);
-    doc.setFillColor(...BRAND);
-    doc.rect(xR, y, colW, 5, "F");
-    doc.setTextColor(255);
-    doc.setFont("helvetica", "bold");
-    doc.setFontSize(7.8);
-    doc.text("OBSERVAÇÕES", xR + 2, y + 3.6);
-    doc.setTextColor(0);
-    doc.setFont("helvetica", "normal");
-    doc.setFontSize(7.5);
-    const obs = (p.observacoes && p.observacoes.trim()) ||
-      "Valores válidos para as quantidades estimadas. Reajuste anual por IPCA. MTR/CDF emitidos a cada coleta.";
-    const obsLines = doc.splitTextToSize(obs, colW - 4) as string[];
-    doc.text(obsLines.slice(0, t.obsLines), xR + 2, y + 9);
+      const drawHeader = (x: number, w: number, label: string, dark = true) => {
+        doc.setFillColor(...(dark ? BRAND : BRAND2));
+        doc.rect(x, y, w, 5, "F");
+        doc.setTextColor(255);
+        doc.setFont("helvetica", "bold");
+        doc.setFontSize(7);
+        doc.text(label, x + 2.5, y + 3.5);
+      };
 
-    y += inclH + t.sectionGap;
+      // Col 1: SERVIÇO PRESTADO
+      doc.setDrawColor(...BORDER);
+      doc.rect(x3a, y, w3, h3);
+      drawHeader(x3a, w3, "SERVIÇO PRESTADO");
+      doc.setTextColor(25);
+      doc.setFont("helvetica", "normal");
+      doc.setFontSize(t.fSmall);
+      doc.text("Coleta, transporte e destinação final de:", x3a + 2.5, y + 9);
+      let ys = y + 12.5;
+      const bullets1: string[] = [];
+      for (const i of itensList.slice(0, 5)) {
+        const tipoLab = i.tipo_residuo ? `${i.tipo_residuo}` : i.descricao;
+        bullets1.push(tipoLab);
+      }
+      if (bullets1.length === 0) bullets1.push("Resíduos conforme especificação técnica");
+      for (const b of bullets1) {
+        doc.setTextColor(...ACC); doc.text("▸", x3a + 2.5, ys);
+        doc.setTextColor(25);
+        const lines = doc.splitTextToSize(b, w3 - 7) as string[];
+        doc.text(lines.slice(0, 2), x3a + 5.5, ys);
+        ys += lines.slice(0, 2).length * 3.3 + 0.6;
+      }
+      doc.setFont("helvetica", "italic");
+      doc.setFontSize(t.fXs);
+      doc.setTextColor(...MUTED);
+      const acondTxt = "Acondicionamento: " + acond.join("; ") + ".";
+      const acondLines = doc.splitTextToSize(acondTxt, w3 - 5) as string[];
+      doc.text(acondLines.slice(0, 4), x3a + 2.5, y + h3 - acondLines.slice(0, 4).length * 3 - 0.5);
 
-    // ── BLOCO 6 — ASSINATURA + CONTATO (rodapé) ─────────────────────────
-    // Posiciona próximo do fim mas usa o y atual se já estiver alto
-    const footerTop = Math.max(y, PAGE_H - 38);
-    doc.setDrawColor(...BRAND);
-    doc.setLineWidth(0.3);
-    doc.line(M, footerTop, PAGE_W - M, footerTop);
+      // Col 2: INCLUSO NO VALOR
+      doc.setDrawColor(...BORDER);
+      doc.rect(x3b, y, w3, h3);
+      drawHeader(x3b, w3, "INCLUSO NO VALOR");
+      doc.setFont("helvetica", "normal");
+      doc.setFontSize(t.fSmall);
+      const incl = [
+        "Pesagem + comprovante assinado",
+        "MTR (Manifesto de Transp.)",
+        "CDF (Cert. de Dest. Final) em 15 dias",
+        "Nota Fiscal por grupo e peso",
+        "Veículo licenciado SEMARH-GO",
+        "Equipe treinada com EPIs completos",
+      ];
+      let yi = y + 9;
+      for (const it of incl) {
+        doc.setTextColor(...ACC); doc.text("✓", x3b + 2.5, yi);
+        doc.setTextColor(25);
+        const lines = doc.splitTextToSize(it, w3 - 7) as string[];
+        doc.text(lines.slice(0, 1), x3b + 5.5, yi);
+        yi += t.bulletGap;
+      }
 
-    // Coluna esquerda: assinatura cliente
-    doc.setDrawColor(120);
-    doc.setLineWidth(0.3);
-    doc.line(M, footerTop + 18, M + 75, footerTop + 18);
-    doc.setFont("helvetica", "normal");
-    doc.setFontSize(7.5);
-    doc.setTextColor(...MUTED);
-    doc.text("De acordo — Cliente / Responsável", M, footerTop + 22);
-    doc.text("Data: ____/____/______", M, footerTop + 26);
+      // Col 3: PREÇO POR KG COLETADO (fundo verde escuro)
+      doc.setFillColor(...BRAND);
+      doc.rect(x3c, y, w3, h3, "F");
+      doc.setTextColor(255);
+      doc.setFont("helvetica", "bold");
+      doc.setFontSize(7);
+      doc.text("PREÇO POR KG COLETADO", x3c + w3 / 2, y + 4, { align: "center" });
+      doc.setFontSize(precoKg > 0 ? 22 : 14);
+      const precoStr = precoKg > 0 ? `R$ ${brl(precoKg).replace("R$\u00A0", "")}` : "Sob consulta";
+      doc.text(precoStr, x3c + w3 / 2, y + 16, { align: "center" });
+      doc.setFont("helvetica", "italic");
+      doc.setFontSize(7);
+      doc.text("por quilo coletado", x3c + w3 / 2, y + 20, { align: "center" });
+      doc.setDrawColor(255);
+      doc.setLineWidth(0.2);
+      doc.line(x3c + 4, y + 23.5, x3c + w3 - 4, y + 23.5);
+      doc.setFont("helvetica", "normal");
+      doc.setFontSize(7.2);
+      doc.text("Máximo estimado", x3c + w3 / 2, y + 28, { align: "center" });
+      doc.setFont("helvetica", "bold");
+      doc.setFontSize(12);
+      doc.text(brl(valorTotal), x3c + w3 / 2, y + 34, { align: "center" });
+      doc.setFont("helvetica", "normal");
+      doc.setFontSize(6.6);
+      if (precoKg > 0 && volMax > 0) {
+        doc.text(`(${Math.round(volMax)} kg × ${brl(precoKg)})`, x3c + w3 / 2, y + 38, { align: "center" });
+      }
 
-    // Coluna direita: dados Bio Logus
-    doc.setTextColor(0);
-    doc.setFont("helvetica", "bold");
-    doc.setFontSize(8.5);
-    doc.text("Belkisia P. Santana", PAGE_W - M, footerTop + 6, { align: "right" });
-    doc.setFont("helvetica", "normal");
-    doc.setFontSize(7.5);
-    doc.setTextColor(...MUTED);
-    doc.text("Departamento Comercial", PAGE_W - M, footerTop + 10, { align: "right" });
-    doc.setTextColor(0);
-    doc.text("Tel.: (62) 3558-2791  ·  (62) 98423-6682", PAGE_W - M, footerTop + 15, { align: "right" });
-    doc.text("comercial@biologusambiental.com.br", PAGE_W - M, footerTop + 19, { align: "right" });
+      y += h3 + 3;
 
-    // Rodapé extremo
-    doc.setFillColor(...BRAND);
-    doc.rect(0, PAGE_H - 6, PAGE_W, 6, "F");
-    doc.setTextColor(255);
-    doc.setFontSize(6.5);
-    doc.text(
-      "Bio Logus Ambiental  ·  Gestão de Resíduos com rastreabilidade total  ·  Goiânia/GO",
-      PAGE_W / 2,
-      PAGE_H - 2.2,
-      { align: "center" },
-    );
+      // ── BLOCO 4 — NOTA DE FATURAMENTO ──────────────────────────────
+      const h4 = 11;
+      doc.setFillColor(248, 251, 248);
+      doc.rect(M, y, PAGE_W - M * 2, h4, "F");
+      doc.setFillColor(...ACC);
+      doc.rect(M, y, 1.2, h4, "F");
+      doc.setTextColor(20);
+      doc.setFont("helvetica", "normal");
+      doc.setFontSize(t.fSmall);
+      const nota = `Faturamento cobrado pelo peso efetivamente coletado, com base em comprovante assinado pelo responsável. Sem cobrança mínima. Conformidade: ${normasTxt}.`;
+      const notaLines = doc.splitTextToSize(nota, PAGE_W - M * 2 - 5) as string[];
+      doc.text(notaLines.slice(0, 2), M + 3, y + 4);
+      doc.setFont("helvetica", "italic");
+      doc.setFontSize(t.fXs);
+      doc.setTextColor(...MUTED);
+      const extra = "Sujeito à emissão de empenho pelo órgão contratante. / Multa de 2% + juros 1%/mês sobre valores em atraso.";
+      doc.text(extra, M + 3, y + h4 - 1.8);
 
-    return doc;
+      y += h4 + 3;
+
+      // ── BLOCO 5 — OBRIGAÇÕES ────────────────────────────────────────
+      const h5 = t.h5;
+      doc.setDrawColor(...BORDER);
+      doc.rect(M, y, colW, h5);
+      doc.rect(xR, y, colW, h5);
+      drawHeader(M, colW, "OBRIGAÇÕES DA CONTRATADA");
+      drawHeader(xR, colW, "OBRIGAÇÕES DO CONTRATANTE");
+
+      const obrL = [
+        "Coletar resíduos com equipe treinada e EPIs completos.",
+        "Pesar e emitir comprovante no ato da coleta.",
+        "Transportar em veículo licenciado com monitoramento de rota.",
+        "Emitir MTR e CDF em até 15 dias após destinação final.",
+        "Apresentar Nota Fiscal discriminada por grupo e peso.",
+      ];
+      const obrR = [
+        `Acondicionar resíduos: ${acond[0] || "conforme grupo selecionado"}.`,
+        "Designar responsável para acompanhar e assinar a coleta.",
+        "Garantir acesso às instalações nos dias acordados.",
+        "Efetuar pagamento no prazo mediante nota fiscal.",
+        "Comunicar alterações de volume com 72h de antecedência.",
+      ];
+      const drawBullets = (x: number, w: number, arr: string[]) => {
+        doc.setFont("helvetica", "normal");
+        doc.setFontSize(t.fSmall);
+        let yy = y + 9;
+        const gap = (h5 - 11) / arr.length;
+        for (const s of arr) {
+          doc.setTextColor(...ACC); doc.text("▸", x + 2.5, yy);
+          doc.setTextColor(25);
+          const lines = doc.splitTextToSize(s, w - 7) as string[];
+          doc.text(lines.slice(0, 2), x + 5.5, yy);
+          yy += Math.max(gap, lines.slice(0, 2).length * 3.3 + 0.6);
+        }
+      };
+      drawBullets(M, colW, obrL);
+      drawBullets(xR, colW, obrR);
+
+      y += h5 + 3;
+
+      // ── BLOCO 6 — ASSINATURA ────────────────────────────────────────
+      const h6 = t.h6;
+      // Esquerda: Contratada
+      doc.setFillColor(...SOFT);
+      doc.rect(M, y, colW, h6, "F");
+      doc.setFillColor(...BRAND);
+      doc.rect(M, y, 1.2, h6, "F");
+      doc.setTextColor(...MUTED);
+      doc.setFont("helvetica", "bold");
+      doc.setFontSize(6.6);
+      doc.text("CONTRATADA", M + 3, y + 4);
+      doc.setTextColor(20);
+      doc.setFontSize(9);
+      doc.text("Bio Logus Ambiental", M + 3, y + 9);
+      doc.setDrawColor(120);
+      doc.setLineWidth(0.3);
+      doc.line(M + 3, y + h6 - 9, M + colW - 3, y + h6 - 9);
+      doc.setFont("helvetica", "normal");
+      doc.setFontSize(t.fXs);
+      doc.setTextColor(...MUTED);
+      doc.text("Belkisia P. Santana — Comercial", M + 3, y + h6 - 5.5);
+      doc.text(`Goiânia, ${dataEmissao}`, M + 3, y + h6 - 2);
+
+      // Direita: Contratante
+      doc.setDrawColor(...BORDER);
+      doc.setLineWidth(0.2);
+      doc.rect(xR, y, colW, h6);
+      doc.setTextColor(...MUTED);
+      doc.setFont("helvetica", "bold");
+      doc.setFontSize(6.6);
+      doc.text("CONTRATANTE", xR + 3, y + 4);
+      doc.setTextColor(20);
+      doc.setFontSize(9);
+      const cName = cli?.razao_social || "—";
+      doc.text(doc.splitTextToSize(cName, colW - 6).slice(0, 1) as string[], xR + 3, y + 9);
+      doc.setDrawColor(120);
+      doc.setLineWidth(0.3);
+      doc.line(xR + 3, y + h6 - 9, xR + colW - 3, y + h6 - 9);
+      doc.setFont("helvetica", "normal");
+      doc.setFontSize(t.fXs);
+      doc.setTextColor(...MUTED);
+      doc.text("Nome / Cargo: __________________________", xR + 3, y + h6 - 5.5);
+      doc.text(`Data: ____/____/${ano}`, xR + 3, y + h6 - 2);
+
+      // ── RODAPÉ ──────────────────────────────────────────────────────
+      doc.setFillColor(...BRAND);
+      doc.rect(0, PAGE_H - 6, PAGE_W, 6, "F");
+      doc.setTextColor(255);
+      doc.setFont("helvetica", "normal");
+      doc.setFontSize(6.8);
+      doc.text(
+        "(62) 3558-2791  ·  (62) 9 8423-6682  ·  comercial@biologusambiental.com.br",
+        M, PAGE_H - 2.2,
+      );
+      doc.text("Página 1", PAGE_W - M, PAGE_H - 2.2, { align: "right" });
+
+      return doc;
     };
 
-    // Tenta cada tier; retorna o primeiro que couber em 1 página A4
-    let doc = renderWithTier(tiers[0]);
+    // Auto-compactação: tenta cada tier até caber em 1 página
+    let doc = render(tiers[0]);
     for (let i = 1; i < tiers.length; i++) {
       const pages = (doc.internal as unknown as { getNumberOfPages: () => number }).getNumberOfPages();
       if (pages <= 1) break;
-      doc = renderWithTier(tiers[i]);
+      doc = render(tiers[i]);
     }
-    // Força 1 página: descarta páginas extras do último tier se ainda houver overflow
     const finalPages = (doc.internal as unknown as { getNumberOfPages: () => number }).getNumberOfPages();
     if (finalPages > 1) {
-      for (let p = finalPages; p > 1; p--) doc.deletePage(p);
+      for (let pg = finalPages; pg > 1; pg--) doc.deletePage(pg);
     }
     return doc;
   };
