@@ -15,7 +15,9 @@ type SignatarioInfo = {
 
 export async function sha256(bytes: Uint8Array): Promise<string> {
   const buf = await crypto.subtle.digest("SHA-256", bytes as unknown as BufferSource);
-  return Array.from(new Uint8Array(buf)).map((b) => b.toString(16).padStart(2, "0")).join("");
+  return Array.from(new Uint8Array(buf))
+    .map((b) => b.toString(16).padStart(2, "0"))
+    .join("");
 }
 
 /**
@@ -52,9 +54,15 @@ export async function gerarPDFContrato(args: {
   let y = A4[1] - M;
   const W = A4[0] - M * 2;
 
-  const newPage = () => { page = doc.addPage(A4); y = A4[1] - M; };
+  const newPage = () => {
+    page = doc.addPage(A4);
+    y = A4[1] - M;
+  };
 
-  const drawText = (text: string, opts: { size?: number; font?: any; color?: any; indent?: number } = {}) => {
+  const drawText = (
+    text: string,
+    opts: { size?: number; font?: any; color?: any; indent?: number } = {},
+  ) => {
     const size = opts.size ?? 9.5;
     const f = opts.font ?? font;
     const color = opts.color ?? rgb(0.1, 0.1, 0.1);
@@ -94,7 +102,9 @@ export async function gerarPDFContrato(args: {
     y -= 16;
   };
 
-  const spacer = (h = 8) => { y -= h; };
+  const spacer = (h = 8) => {
+    y -= h;
+  };
 
   if (args.conteudoHtml?.trim()) {
     for (const block of htmlToTextBlocks(args.conteudoHtml)) {
@@ -112,19 +122,28 @@ export async function gerarPDFContrato(args: {
 
   // ── Partes ──
   h2("DAS PARTES");
-  drawText(`CONTRATANTE: ${args.contratante.nome}, CNPJ ${args.contratante.cnpj}, com sede em ${args.contratante.endereco}.`);
+  drawText(
+    `CONTRATANTE: ${args.contratante.nome}, CNPJ ${args.contratante.cnpj}, com sede em ${args.contratante.endereco}.`,
+  );
   spacer(4);
-  drawText(`CONTRATADA: ${args.contratada.nome}${args.contratada.cnpj ? `, CNPJ ${args.contratada.cnpj}` : ""}${args.contratada.endereco ? `, com sede em ${args.contratada.endereco}` : ""}.`);
+  drawText(
+    `CONTRATADA: ${args.contratada.nome}${args.contratada.cnpj ? `, CNPJ ${args.contratada.cnpj}` : ""}${args.contratada.endereco ? `, com sede em ${args.contratada.endereco}` : ""}.`,
+  );
 
   // ── Cláusulas ──
   h2("CLÁUSULA 1ª — OBJETO");
-  drawText(args.objeto || "Prestação de serviços de coleta, transporte, tratamento e destinação final ambientalmente adequada de resíduos, conforme legislação vigente (Lei 12.305/2010 — PNRS, Resolução CONAMA 313/2002 e normas correlatas).");
+  drawText(
+    args.objeto ||
+      "Prestação de serviços de coleta, transporte, tratamento e destinação final ambientalmente adequada de resíduos, conforme legislação vigente (Lei 12.305/2010 — PNRS, Resolução CONAMA 313/2002 e normas correlatas).",
+  );
 
   if (args.itens.length > 0) {
     spacer(4);
     drawText("Compreende os seguintes itens:", { font: bold, size: 9.5 });
     for (const it of args.itens) {
-      drawText(`• ${it.descricao} — ${it.quantidade} ${it.unidade} — ${brl(it.valor)}`, { indent: 12 });
+      drawText(`• ${it.descricao} — ${it.quantidade} ${it.unidade} — ${brl(it.valor)}`, {
+        indent: 12,
+      });
     }
   }
 
@@ -135,27 +154,41 @@ export async function gerarPDFContrato(args: {
   drawText(vig);
 
   h2("CLÁUSULA 3ª — PREÇO E PAGAMENTO");
-  drawText(`O valor mensal contratado é de ${brl(args.valorMensal)}, a ser pago via ${args.formaPagamento}${args.diaVencimento ? `, com vencimento todo dia ${args.diaVencimento}` : ""}.`);
+  drawText(
+    `O valor mensal contratado é de ${brl(args.valorMensal)}, a ser pago via ${args.formaPagamento}${args.diaVencimento ? `, com vencimento todo dia ${args.diaVencimento}` : ""}.`,
+  );
 
   if (args.indiceReajuste) {
     h2("CLÁUSULA 4ª — REAJUSTE");
-    drawText(`Os valores serão reajustados pelo índice ${args.indiceReajuste}${args.periodicidadeReajuste ? ` em periodicidade ${args.periodicidadeReajuste}` : " anualmente"}.`);
+    drawText(
+      `Os valores serão reajustados pelo índice ${args.indiceReajuste}${args.periodicidadeReajuste ? ` em periodicidade ${args.periodicidadeReajuste}` : " anualmente"}.`,
+    );
   }
 
   h2("CLÁUSULA 5ª — OBRIGAÇÕES DA CONTRATADA");
-  drawText("Emitir MTR (Manifesto de Transporte de Resíduos) e CDF (Certificado de Destinação Final) conforme legislação; manter licenças ambientais válidas; transportar e destinar os resíduos exclusivamente para empresas licenciadas; cumprir prazos acordados; comunicar prontamente qualquer não-conformidade.");
+  drawText(
+    "Emitir MTR (Manifesto de Transporte de Resíduos) e CDF (Certificado de Destinação Final) conforme legislação; manter licenças ambientais válidas; transportar e destinar os resíduos exclusivamente para empresas licenciadas; cumprir prazos acordados; comunicar prontamente qualquer não-conformidade.",
+  );
 
   h2("CLÁUSULA 6ª — OBRIGAÇÕES DA CONTRATANTE");
-  drawText("Segregar e acondicionar adequadamente os resíduos; disponibilizar local seguro para coleta; efetuar pagamento nas datas pactuadas; fornecer informações necessárias para emissão dos documentos legais.");
+  drawText(
+    "Segregar e acondicionar adequadamente os resíduos; disponibilizar local seguro para coleta; efetuar pagamento nas datas pactuadas; fornecer informações necessárias para emissão dos documentos legais.",
+  );
 
   h2("CLÁUSULA 7ª — RESCISÃO");
-  drawText("O contrato poderá ser rescindido por inadimplemento, descumprimento de obrigações, ou por conveniência das partes mediante aviso prévio de 30 dias, sem prejuízo das obrigações já vencidas.");
+  drawText(
+    "O contrato poderá ser rescindido por inadimplemento, descumprimento de obrigações, ou por conveniência das partes mediante aviso prévio de 30 dias, sem prejuízo das obrigações já vencidas.",
+  );
 
   h2("CLÁUSULA 8ª — PROTEÇÃO DE DADOS (LGPD)");
-  drawText("As partes comprometem-se a tratar os dados pessoais eventualmente compartilhados em estrita observância à Lei 13.709/2018 (LGPD), utilizando-os apenas para a execução deste contrato.");
+  drawText(
+    "As partes comprometem-se a tratar os dados pessoais eventualmente compartilhados em estrita observância à Lei 13.709/2018 (LGPD), utilizando-os apenas para a execução deste contrato.",
+  );
 
   h2("CLÁUSULA 9ª — FORO");
-  drawText("Fica eleito o foro da comarca da sede da CONTRATADA para dirimir quaisquer questões oriundas deste contrato, com renúncia expressa a qualquer outro.");
+  drawText(
+    "Fica eleito o foro da comarca da sede da CONTRATADA para dirimir quaisquer questões oriundas deste contrato, com renúncia expressa a qualquer outro.",
+  );
 
   if (args.observacoes) {
     h2("CLÁUSULA 10ª — DISPOSIÇÕES GERAIS");
@@ -165,11 +198,21 @@ export async function gerarPDFContrato(args: {
   // ── Assinaturas ──
   spacer(20);
   if (y < M + 100) newPage();
-  drawText("E por estarem assim justas e contratadas, as partes assinam o presente eletronicamente, conforme a MP 2.200-2/2001, art. 10, §2º.", { size: 9 });
+  drawText(
+    "E por estarem assim justas e contratadas, as partes assinam o presente eletronicamente, conforme a MP 2.200-2/2001, art. 10, §2º.",
+    { size: 9 },
+  );
   spacer(40);
-  drawText("___________________________________     ___________________________________", { size: 9 });
-  drawText(`${args.contratante.nome}                                                       ${args.contratada.nome}`, { size: 8 });
-  drawText("CONTRATANTE                                                          CONTRATADA", { size: 8 });
+  drawText("___________________________________     ___________________________________", {
+    size: 9,
+  });
+  drawText(
+    `${args.contratante.nome}                                                       ${args.contratada.nome}`,
+    { size: 8 },
+  );
+  drawText("CONTRATANTE                                                          CONTRATADA", {
+    size: 8,
+  });
 
   return await doc.save();
 }
@@ -196,28 +239,76 @@ export async function anexarManifestoAssinatura(args: {
 
   // Header
   page.drawRectangle({ x: 0, y: y - 6, width: A4[0], height: 36, color: green });
-  page.drawText("MANIFESTO DE ASSINATURA ELETRÔNICA", { x: M, y: y + 8, size: 13, font: bold, color: rgb(1, 1, 1) });
-  page.drawText("MP 2.200-2/2001, art. 10, §2º", { x: M, y: y - 2, size: 8, font, color: rgb(1, 1, 1) });
+  page.drawText("MANIFESTO DE ASSINATURA ELETRÔNICA", {
+    x: M,
+    y: y + 8,
+    size: 13,
+    font: bold,
+    color: rgb(1, 1, 1),
+  });
+  page.drawText("MP 2.200-2/2001, art. 10, §2º", {
+    x: M,
+    y: y - 2,
+    size: 8,
+    font,
+    color: rgb(1, 1, 1),
+  });
   y -= 50;
 
   // QR Code
   const qrDataUrl = await QRCode.toDataURL(args.urlValidacao, { margin: 1, width: 200 });
   const qrPng = await doc.embedPng(qrDataUrl);
   page.drawImage(qrPng, { x: A4[0] - M - 90, y: y - 90, width: 90, height: 90 });
-  page.drawText("Valide em:", { x: A4[0] - M - 90, y: y - 100, size: 7, font, color: rgb(0.3, 0.3, 0.3) });
-  page.drawText(args.urlValidacao.replace(/^https?:\/\//, ""), { x: A4[0] - M - 90, y: y - 110, size: 6.5, font, color: rgb(0.3, 0.3, 0.3), maxWidth: 90 });
+  page.drawText("Valide em:", {
+    x: A4[0] - M - 90,
+    y: y - 100,
+    size: 7,
+    font,
+    color: rgb(0.3, 0.3, 0.3),
+  });
+  page.drawText(args.urlValidacao.replace(/^https?:\/\//, ""), {
+    x: A4[0] - M - 90,
+    y: y - 110,
+    size: 6.5,
+    font,
+    color: rgb(0.3, 0.3, 0.3),
+    maxWidth: 90,
+  });
 
   // Hash
-  page.drawText("Hash SHA-256 do documento original:", { x: M, y, size: 9, font: bold, color: rgb(0.1, 0.1, 0.1) });
+  page.drawText("Hash SHA-256 do documento original:", {
+    x: M,
+    y,
+    size: 9,
+    font: bold,
+    color: rgb(0.1, 0.1, 0.1),
+  });
   y -= 12;
   // hash em 2 linhas
-  page.drawText(args.hashDocumentoOriginal.slice(0, 32), { x: M, y, size: 8, font, color: rgb(0.2, 0.2, 0.2) });
+  page.drawText(args.hashDocumentoOriginal.slice(0, 32), {
+    x: M,
+    y,
+    size: 8,
+    font,
+    color: rgb(0.2, 0.2, 0.2),
+  });
   y -= 10;
-  page.drawText(args.hashDocumentoOriginal.slice(32), { x: M, y, size: 8, font, color: rgb(0.2, 0.2, 0.2) });
+  page.drawText(args.hashDocumentoOriginal.slice(32), {
+    x: M,
+    y,
+    size: 8,
+    font,
+    color: rgb(0.2, 0.2, 0.2),
+  });
   y -= 20;
 
   // Linha
-  page.drawLine({ start: { x: M, y }, end: { x: A4[0] - M, y }, thickness: 0.5, color: rgb(0.7, 0.7, 0.7) });
+  page.drawLine({
+    start: { x: M, y },
+    end: { x: A4[0] - M, y },
+    thickness: 0.5,
+    color: rgb(0.7, 0.7, 0.7),
+  });
   y -= 18;
 
   // Signatários
@@ -225,21 +316,45 @@ export async function anexarManifestoAssinatura(args: {
   y -= 18;
 
   for (const s of args.signatarios) {
-    if (y < M + 120) { page = doc.addPage(A4); y = A4[1] - M; }
+    if (y < M + 120) {
+      page = doc.addPage(A4);
+      y = A4[1] - M;
+    }
 
     page.drawText(s.nome, { x: M, y, size: 10, font: bold, color: rgb(0.1, 0.1, 0.1) });
     y -= 12;
-    page.drawText(`${s.email}${s.cpf_cnpj ? ` • CPF/CNPJ: ${s.cpf_cnpj}` : ""}`, { x: M, y, size: 8.5, font, color: rgb(0.3, 0.3, 0.3) });
+    page.drawText(`${s.email}${s.cpf_cnpj ? ` • CPF/CNPJ: ${s.cpf_cnpj}` : ""}`, {
+      x: M,
+      y,
+      size: 8.5,
+      font,
+      color: rgb(0.3, 0.3, 0.3),
+    });
     y -= 11;
-    page.drawText(`Papel: ${s.papel.toUpperCase()}`, { x: M, y, size: 8.5, font, color: rgb(0.3, 0.3, 0.3) });
+    page.drawText(`Papel: ${s.papel.toUpperCase()}`, {
+      x: M,
+      y,
+      size: 8.5,
+      font,
+      color: rgb(0.3, 0.3, 0.3),
+    });
     y -= 11;
-    page.drawText(`Assinado em: ${new Date(s.assinado_em).toLocaleString("pt-BR", { timeZone: "America/Sao_Paulo" })} (BRT)`, { x: M, y, size: 8.5, font, color: rgb(0.3, 0.3, 0.3) });
+    page.drawText(
+      `Assinado em: ${new Date(s.assinado_em).toLocaleString("pt-BR", { timeZone: "America/Sao_Paulo" })} (BRT)`,
+      { x: M, y, size: 8.5, font, color: rgb(0.3, 0.3, 0.3) },
+    );
     y -= 11;
     if (s.ip) {
       page.drawText(`IP: ${s.ip}`, { x: M, y, size: 8.5, font, color: rgb(0.3, 0.3, 0.3) });
       y -= 11;
     }
-    page.drawText(`Código de verificação: ${s.codigo_verificacao}`, { x: M, y, size: 8.5, font: bold, color: green });
+    page.drawText(`Código de verificação: ${s.codigo_verificacao}`, {
+      x: M,
+      y,
+      size: 8.5,
+      font: bold,
+      color: green,
+    });
     y -= 14;
 
     // Rubrica desenhada
@@ -251,19 +366,35 @@ export async function anexarManifestoAssinatura(args: {
         const scale = 50 / img.height;
         page.drawImage(img, { x: M, y: y - 50, width: img.width * scale, height: 50 });
         y -= 56;
-      } catch { /* ignore */ }
+      } catch {
+        /* ignore */
+      }
     }
 
-    page.drawLine({ start: { x: M, y }, end: { x: A4[0] - M, y }, thickness: 0.3, color: rgb(0.85, 0.85, 0.85) });
+    page.drawLine({
+      start: { x: M, y },
+      end: { x: A4[0] - M, y },
+      thickness: 0.3,
+      color: rgb(0.85, 0.85, 0.85),
+    });
     y -= 16;
   }
 
   // Rodapé legal
-  if (y < M + 60) { page = doc.addPage(A4); y = A4[1] - M; }
+  if (y < M + 60) {
+    page = doc.addPage(A4);
+    y = A4[1] - M;
+  }
   y = Math.max(y, M + 40);
-  page.drawText("Documento assinado eletronicamente. A autenticidade pode ser verificada acessando a URL acima e", { x: M, y, size: 8, font, color: rgb(0.4, 0.4, 0.4) });
+  page.drawText(
+    "Documento assinado eletronicamente. A autenticidade pode ser verificada acessando a URL acima e",
+    { x: M, y, size: 8, font, color: rgb(0.4, 0.4, 0.4) },
+  );
   y -= 10;
-  page.drawText("informando o código de verificação. O hash SHA-256 garante que o conteúdo não foi alterado após a assinatura.", { x: M, y, size: 8, font, color: rgb(0.4, 0.4, 0.4) });
+  page.drawText(
+    "informando o código de verificação. O hash SHA-256 garante que o conteúdo não foi alterado após a assinatura.",
+    { x: M, y, size: 8, font, color: rgb(0.4, 0.4, 0.4) },
+  );
 
   return await doc.save();
 }
@@ -284,11 +415,22 @@ function htmlToTextBlocks(html: string) {
   const matches = normalized.matchAll(/<(h[1-6]|p|li|tr)[^>]*>([\s\S]*?)<\/(?:h[1-6]|p|li|tr)>/gi);
   for (const m of matches) {
     const kind = m[1].toLowerCase().startsWith("h") ? "heading" : "text";
-    const text = decodeHtml(m[2].replace(/<[^>]+>/g, " ").replace(/\s+/g, " ").replace(/\s+\|/g, " |").trim());
+    const text = decodeHtml(
+      m[2]
+        .replace(/<[^>]+>/g, " ")
+        .replace(/\s+/g, " ")
+        .replace(/\s+\|/g, " |")
+        .trim(),
+    );
     if (text) blocks.push({ kind, text });
   }
   if (blocks.length) return blocks;
-  const text = decodeHtml(normalized.replace(/<[^>]+>/g, " ").replace(/\s+/g, " ").trim());
+  const text = decodeHtml(
+    normalized
+      .replace(/<[^>]+>/g, " ")
+      .replace(/\s+/g, " ")
+      .trim(),
+  );
   return text ? [{ kind: "text" as const, text }] : [];
 }
 

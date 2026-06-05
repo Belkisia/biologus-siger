@@ -57,7 +57,7 @@ async function gerarPDFDoContrato(documento_id: string) {
 export const visualizarContrato = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((data: { contrato_id: string }) =>
-    z.object({ contrato_id: z.string().uuid() }).parse(data)
+    z.object({ contrato_id: z.string().uuid() }).parse(data),
   )
   .handler(async ({ data }) => {
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
@@ -77,21 +77,26 @@ export const visualizarContrato = createServerFn({ method: "POST" })
 export const enviarContratoEmail = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((data: { contrato_id: string; email: string; mensagem?: string }) =>
-    z.object({
-      contrato_id: z.string().uuid(),
-      email: z.string().email().max(255),
-      mensagem: z.string().max(2000).optional(),
-    }).parse(data)
+    z
+      .object({
+        contrato_id: z.string().uuid(),
+        email: z.string().email().max(255),
+        mensagem: z.string().max(2000).optional(),
+      })
+      .parse(data),
   )
   .handler(async ({ data }) => {
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
 
-    await supabaseAdmin.from("contratos").update({
-      ultimo_email_status: "processando",
-      ultimo_email_em: new Date().toISOString(),
-      ultimo_email_destino: data.email,
-      ultimo_email_erro: null,
-    }).eq("id", data.contrato_id);
+    await supabaseAdmin
+      .from("contratos")
+      .update({
+        ultimo_email_status: "processando",
+        ultimo_email_em: new Date().toISOString(),
+        ultimo_email_destino: data.email,
+        ultimo_email_erro: null,
+      })
+      .eq("id", data.contrato_id);
 
     try {
       const { pdfBytes, contrato } = await gerarPDFDoContrato(data.contrato_id);
@@ -104,19 +109,24 @@ export const enviarContratoEmail = createServerFn({ method: "POST" })
         mensagem: data.mensagem,
         pdfBase64: base64,
       });
-      await supabaseAdmin.from("contratos").update({
-        ultimo_email_status: "enviado",
-        ultimo_email_em: new Date().toISOString(),
-        ultimo_email_erro: null,
-      }).eq("id", data.contrato_id);
+      await supabaseAdmin
+        .from("contratos")
+        .update({
+          ultimo_email_status: "enviado",
+          ultimo_email_em: new Date().toISOString(),
+          ultimo_email_erro: null,
+        })
+        .eq("id", data.contrato_id);
       return { ok: true };
     } catch (e: any) {
-      await supabaseAdmin.from("contratos").update({
-        ultimo_email_status: "falhou",
-        ultimo_email_em: new Date().toISOString(),
-        ultimo_email_erro: String(e?.message || e).slice(0, 500),
-      }).eq("id", data.contrato_id);
+      await supabaseAdmin
+        .from("contratos")
+        .update({
+          ultimo_email_status: "falhou",
+          ultimo_email_em: new Date().toISOString(),
+          ultimo_email_erro: String(e?.message || e).slice(0, 500),
+        })
+        .eq("id", data.contrato_id);
       throw e;
     }
   });
-
