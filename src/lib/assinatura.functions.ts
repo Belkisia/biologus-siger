@@ -39,7 +39,7 @@ export const criarSolicitacaoAssinatura = createServerFn({ method: "POST" })
 
     const { data: itens } = await supabaseAdmin
       .from("contrato_itens")
-      .select("descricao, quantidade, unidade, preco_unitario")
+      .select("descricao, franquia, unidade, preco_unitario")
       .eq("contrato_id", data.documento_id);
 
     // 2. Gerar PDF do contrato
@@ -58,9 +58,9 @@ export const criarSolicitacaoAssinatura = createServerFn({ method: "POST" })
         email: "contato@biologus.com.br",
       },
       objeto: contrato.objeto || "",
-      itens: (itens || []).map((i) => ({
+      itens: (itens || []).map((i: any) => ({
         descricao: i.descricao,
-        quantidade: Number(i.quantidade || 0),
+        quantidade: Number(i.franquia || 0),
         unidade: i.unidade || "un",
         valor: Number(i.preco_unitario || 0),
       })),
@@ -156,11 +156,12 @@ export const obterSignatarioPorToken = createServerFn({ method: "POST" })
       .from("documentos")
       .createSignedUrl(pdfPath, 3600);
 
-    // Buscar info do documento
+    // Buscar info do documento (só contratos tem 'objeto'; propostas tem só numero)
     const tabela = sig.documento_tipo === "contrato" ? "contratos" : "propostas";
+    const selectCols = sig.documento_tipo === "contrato" ? "numero, objeto" : "numero";
     const { data: doc } = await supabaseAdmin
       .from(tabela)
-      .select("numero, objeto")
+      .select(selectCols)
       .eq("id", sig.documento_id)
       .single();
 
