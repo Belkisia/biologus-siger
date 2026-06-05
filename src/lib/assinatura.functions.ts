@@ -46,6 +46,7 @@ export const criarSolicitacaoAssinatura = createServerFn({ method: "POST" })
     const pdfBytes = await gerarPDFContrato({
       numero: contrato.numero,
       data: new Date().toLocaleDateString("pt-BR"),
+      conteudoHtml: contrato.conteudo_html,
       contratante: {
         nome: contrato.clientes?.razao_social || "Cliente",
         cnpj: contrato.clientes?.cnpj || "",
