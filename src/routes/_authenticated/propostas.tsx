@@ -333,7 +333,7 @@ function PropostasPage() {
 
     // ── BLOCO 2 — DESTINATÁRIO + CONDIÇÕES (2 colunas) ──────────────────
     const colW = (PAGE_W - M * 2 - 4) / 2;
-    const blockH = 36;
+    const blockH = t.blockH;
     // Esquerda: destinatário
     doc.setFillColor(...SOFT);
     doc.rect(M, y, colW, blockH, "F");
