@@ -94,6 +94,13 @@ type Proposta = {
   } | null;
 };
 
+type ModeloContratoAtivo = {
+  id: string;
+  nome: string;
+  ativo: boolean;
+  versao_atual: number;
+};
+
 const STATUS_MAP: Record<
   string,
   { label: string; variant: "default" | "secondary" | "outline" | "destructive" }
@@ -110,6 +117,10 @@ const UNIDADES = ["kg", "L", "m³", "ton", "unid", "tambor", "bombona"];
 
 function brl(v: number) {
   return v.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
+}
+
+function getErrorMessage(error: unknown, fallback: string) {
+  return error instanceof Error ? error.message : fallback;
 }
 
 function emptyItem(): Item {
@@ -446,8 +457,8 @@ function PropostasPage() {
         },
       });
       setModeloDlg((s) => ({ ...s, previewHtml: r.html, loadingPreview: false }));
-    } catch (e: any) {
-      toast.error(e?.message || "Erro ao gerar prévia");
+    } catch (e: unknown) {
+      toast.error(getErrorMessage(e, "Erro ao gerar prévia"));
       setModeloDlg((s) => ({ ...s, loadingPreview: false }));
     }
   }
@@ -474,7 +485,7 @@ function PropostasPage() {
       qc.invalidateQueries({ queryKey: ["propostas"] });
       qc.invalidateQueries({ queryKey: ["contratos"] });
     },
-    onError: (e: any) => toast.error(e?.message || "Erro ao gerar"),
+    onError: (e: unknown) => toast.error(getErrorMessage(e, "Erro ao gerar")),
   });
 
   const setItem = (idx: number, patch: Partial<Item>) => {
@@ -1590,7 +1601,7 @@ function PropostasPage() {
                     <SelectValue placeholder="Selecione um modelo ativo" />
                   </SelectTrigger>
                   <SelectContent>
-                    {(modelosAtivos as any[])
+                    {(modelosAtivos as ModeloContratoAtivo[])
                       .filter((m) => m.ativo)
                       .map((m) => (
                         <SelectItem key={m.id} value={m.id}>
