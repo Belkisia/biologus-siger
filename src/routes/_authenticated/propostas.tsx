@@ -83,6 +83,7 @@ function PropostasPage() {
 
   const [form, setForm] = useState({
     cliente_id: "",
+    contrato_id: "",
     numero: "",
     data_emissao: new Date().toISOString().slice(0, 10),
     validade: "",
@@ -96,6 +97,17 @@ function PropostasPage() {
     queryKey: ["clientes-select"],
     queryFn: async () => {
       const { data } = await supabase.from("clientes").select("id, razao_social").order("razao_social");
+      return data ?? [];
+    },
+  });
+
+  const { data: contratos = [] } = useQuery({
+    queryKey: ["contratos-select"],
+    queryFn: async () => {
+      const { data } = await supabase
+        .from("contratos")
+        .select("id, numero, cliente_id, objeto, valor_mensal, forma_pagamento, observacoes, indice_reajuste, periodicidade_reajuste, dia_vencimento, data_inicio, data_fim, status")
+        .order("created_at", { ascending: false });
       return data ?? [];
     },
   });
@@ -121,6 +133,7 @@ function PropostasPage() {
     setEditing(null);
     setForm({
       cliente_id: "",
+      contrato_id: "",
       numero: `PROP-${new Date().getFullYear()}-${String((propostas.length || 0) + 1).padStart(4, "0")}`,
       data_emissao: new Date().toISOString().slice(0, 10),
       validade: "",
@@ -130,6 +143,55 @@ function PropostasPage() {
     });
     setItems([emptyItem()]);
   };
+
+  // ── Mapeamento automático a partir do contrato ───────────────────────
+  const applyContrato = async (contratoId: string) => {
+    if (!contratoId) return;
+    const c = contratos.find((x) => x.id === contratoId);
+    if (!c) return;
+    const { data: citens } = await supabase
+      .from("contrato_itens")
+      .select("descricao, grupo_residuo, unidade, preco_unitario, franquia, preco_excedente")
+      .eq("contrato_id", contratoId);
+
+    // Cláusulas derivadas do contrato — sem texto genérico
+    const clausulas: string[] = [];
+    if (c.periodicidade_reajuste && c.indice_reajuste)
+      clausulas.push(`Reajuste ${c.periodicidade_reajuste} pelo índice ${c.indice_reajuste}.`);
+    if (c.dia_vencimento)
+      clausulas.push(`Faturamento mensal com vencimento todo dia ${c.dia_vencimento}.`);
+    if (c.data_fim)
+      clausulas.push(`Vigência até ${new Date(c.data_fim).toLocaleDateString("pt-BR")}.`);
+    (citens ?? []).forEach((it) => {
+      if (it.franquia && it.preco_excedente)
+        clausulas.push(`${it.grupo_residuo ?? it.descricao}: franquia ${it.franquia} ${it.unidade ?? "kg"}/mês, excedente R$ ${Number(it.preco_excedente).toFixed(2).replace(".", ",")}/${it.unidade ?? "kg"}.`);
+    });
+    if (c.observacoes) clausulas.push(c.observacoes);
+
+    setForm((f) => ({
+      ...f,
+      cliente_id: c.cliente_id,
+      contrato_id: contratoId,
+      condicoes_pagamento: c.forma_pagamento || f.condicoes_pagamento,
+      observacoes: clausulas.join(" "),
+    }));
+
+    const mapped: Item[] = (citens ?? []).map((it) => {
+      const qtd = Number(it.franquia ?? 1);
+      const vu = Number(it.preco_unitario ?? 0);
+      return {
+        descricao: it.descricao || `Coleta, transporte e destinação final — ${it.grupo_residuo ?? ""}`.trim(),
+        tipo_residuo: it.grupo_residuo ?? "",
+        quantidade: qtd,
+        unidade: it.unidade ?? "kg",
+        valor_unitario: vu,
+        valor_total: qtd * vu,
+      };
+    });
+    if (mapped.length > 0) setItems(mapped);
+    toast.success(`Dados do contrato ${c.numero} aplicados`);
+  };
+
 
   const openNew = () => { resetForm(); setOpen(true); };
 
