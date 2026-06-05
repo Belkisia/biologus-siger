@@ -80,6 +80,7 @@ function PropostasPage() {
   const { user } = Route.useRouteContext();
   const [open, setOpen] = useState(false);
   const [editing, setEditing] = useState<Proposta | null>(null);
+  const [showContratoImport, setShowContratoImport] = useState(false);
 
   const [form, setForm] = useState({
     cliente_id: "",
@@ -855,29 +856,50 @@ function PropostasPage() {
                   </Select>
                 </div>
                 <div className="space-y-2 md:col-span-2">
-                  <Label>Importar do contrato (auto-preenche cliente, itens, R$/kg, máximos e cláusulas)</Label>
-                  <Select
-                    value={form.contrato_id || "none"}
-                    onValueChange={(v) => {
-                      if (v === "none") {
-                        setForm({ ...form, contrato_id: "" });
-                      } else {
-                        applyContrato(v);
-                      }
-                    }}
-                  >
-                    <SelectTrigger><SelectValue placeholder="Nenhum contrato vinculado" /></SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="none">— Sem contrato —</SelectItem>
-                      {contratos
-                        .filter((c) => !form.cliente_id || c.cliente_id === form.cliente_id)
-                        .map((c) => (
-                          <SelectItem key={c.id} value={c.id}>
-                            {c.numero} {c.objeto ? `· ${c.objeto.slice(0, 40)}` : ""}
-                          </SelectItem>
-                        ))}
-                    </SelectContent>
-                  </Select>
+                  {!showContratoImport ? (
+                    <button
+                      type="button"
+                      onClick={() => setShowContratoImport(true)}
+                      className="text-xs text-muted-foreground hover:text-foreground underline underline-offset-2"
+                    >
+                      Já é cliente com contrato? Importar dados de um contrato existente
+                    </button>
+                  ) : (
+                    <>
+                      <div className="flex items-center justify-between">
+                        <Label>Importar do contrato (opcional)</Label>
+                        <button
+                          type="button"
+                          onClick={() => { setShowContratoImport(false); setForm((f) => ({ ...f, contrato_id: "" })); }}
+                          className="text-xs text-muted-foreground hover:text-foreground"
+                        >
+                          Ocultar
+                        </button>
+                      </div>
+                      <Select
+                        value={form.contrato_id || "none"}
+                        onValueChange={(v) => {
+                          if (v === "none") {
+                            setForm({ ...form, contrato_id: "" });
+                          } else {
+                            applyContrato(v);
+                          }
+                        }}
+                      >
+                        <SelectTrigger><SelectValue placeholder="Nenhum contrato vinculado" /></SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="none">— Sem contrato —</SelectItem>
+                          {contratos
+                            .filter((c) => !form.cliente_id || c.cliente_id === form.cliente_id)
+                            .map((c) => (
+                              <SelectItem key={c.id} value={c.id}>
+                                {c.numero} {c.objeto ? `· ${c.objeto.slice(0, 40)}` : ""}
+                              </SelectItem>
+                            ))}
+                        </SelectContent>
+                      </Select>
+                    </>
+                  )}
                 </div>
                 <div className="space-y-2">
                   <Label>Número *</Label>
