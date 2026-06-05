@@ -67,6 +67,112 @@ export type Database = {
           },
         ]
       }
+      cliente_documento_versoes: {
+        Row: {
+          acao: string
+          created_at: string
+          documento_id: string
+          id: string
+          mime_type: string | null
+          nome_arquivo: string | null
+          nota: string | null
+          owner_id: string
+          storage_path: string
+          tamanho_bytes: number | null
+          uploaded_by: string | null
+          versao: number
+        }
+        Insert: {
+          acao?: string
+          created_at?: string
+          documento_id: string
+          id?: string
+          mime_type?: string | null
+          nome_arquivo?: string | null
+          nota?: string | null
+          owner_id: string
+          storage_path: string
+          tamanho_bytes?: number | null
+          uploaded_by?: string | null
+          versao: number
+        }
+        Update: {
+          acao?: string
+          created_at?: string
+          documento_id?: string
+          id?: string
+          mime_type?: string | null
+          nome_arquivo?: string | null
+          nota?: string | null
+          owner_id?: string
+          storage_path?: string
+          tamanho_bytes?: number | null
+          uploaded_by?: string | null
+          versao?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "cliente_documento_versoes_documento_id_fkey"
+            columns: ["documento_id"]
+            isOneToOne: false
+            referencedRelation: "cliente_documentos"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      cliente_documentos: {
+        Row: {
+          categoria: string
+          cliente_id: string
+          created_at: string
+          descricao: string | null
+          id: string
+          mime_type: string | null
+          nome: string
+          owner_id: string
+          storage_path: string
+          tamanho_bytes: number | null
+          updated_at: string
+          versao_atual: number
+        }
+        Insert: {
+          categoria?: string
+          cliente_id: string
+          created_at?: string
+          descricao?: string | null
+          id?: string
+          mime_type?: string | null
+          nome: string
+          owner_id: string
+          storage_path: string
+          tamanho_bytes?: number | null
+          updated_at?: string
+          versao_atual?: number
+        }
+        Update: {
+          categoria?: string
+          cliente_id?: string
+          created_at?: string
+          descricao?: string | null
+          id?: string
+          mime_type?: string | null
+          nome?: string
+          owner_id?: string
+          storage_path?: string
+          tamanho_bytes?: number | null
+          updated_at?: string
+          versao_atual?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "cliente_documentos_cliente_id_fkey"
+            columns: ["cliente_id"]
+            isOneToOne: false
+            referencedRelation: "clientes"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       clientes: {
         Row: {
           bairro: string | null
