@@ -157,6 +157,27 @@ function ContratosPage() {
     .reduce((acc, c) => acc + (c.valor_mensal ?? 0), 0);
 
   const [assinaturaContrato, setAssinaturaContrato] = useState<Contrato | null>(null);
+  const [filtroEmail, setFiltroEmail] = useState<string>("todos");
+  const [ordemEmail, setOrdemEmail] = useState<string>("recente");
+
+  const contratosFiltrados = (() => {
+    let list = contratos;
+    if (filtroEmail === "nunca") {
+      list = list.filter((c) => !c.ultimo_email_status);
+    } else if (filtroEmail !== "todos") {
+      list = list.filter((c) => c.ultimo_email_status === filtroEmail);
+    }
+    if (ordemEmail !== "nenhum") {
+      list = [...list].sort((a, b) => {
+        const ta = a.ultimo_email_em ? new Date(a.ultimo_email_em).getTime() : 0;
+        const tb = b.ultimo_email_em ? new Date(b.ultimo_email_em).getTime() : 0;
+        return ordemEmail === "recente" ? tb - ta : ta - tb;
+      });
+    }
+    return list;
+  })();
+
+
   const [emailContrato, setEmailContrato] = useState<Contrato | null>(null);
   const [emailDestino, setEmailDestino] = useState("");
   const [emailMensagem, setEmailMensagem] = useState("");
@@ -349,13 +370,52 @@ function ContratosPage() {
         </Card>
       )}
 
-      <Card className="p-4">
+      <Card className="p-4 space-y-4">
+        <div className="flex flex-wrap items-end gap-3">
+          <div className="space-y-1">
+            <Label className="text-xs text-muted-foreground">Filtrar por envio de e-mail</Label>
+            <Select value={filtroEmail} onValueChange={setFiltroEmail}>
+              <SelectTrigger className="w-52 h-9"><SelectValue /></SelectTrigger>
+              <SelectContent>
+                <SelectItem value="todos">Todos</SelectItem>
+                <SelectItem value="processando">Em processamento</SelectItem>
+                <SelectItem value="enviado">Enviado</SelectItem>
+                <SelectItem value="falhou">Falhou</SelectItem>
+                <SelectItem value="nunca">Não enviado</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+          <div className="space-y-1">
+            <Label className="text-xs text-muted-foreground">Ordenar por data de envio</Label>
+            <Select value={ordemEmail} onValueChange={setOrdemEmail}>
+              <SelectTrigger className="w-52 h-9"><SelectValue /></SelectTrigger>
+              <SelectContent>
+                <SelectItem value="recente">Mais recente primeiro</SelectItem>
+                <SelectItem value="antigo">Mais antigo primeiro</SelectItem>
+                <SelectItem value="nenhum">Sem ordenação</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+          {(filtroEmail !== "todos" || ordemEmail !== "recente") && (
+            <Button variant="ghost" size="sm" onClick={() => { setFiltroEmail("todos"); setOrdemEmail("recente"); }}>
+              Limpar
+            </Button>
+          )}
+          <div className="ml-auto text-xs text-muted-foreground">
+            {contratosFiltrados.length} de {contratos.length} contrato(s)
+          </div>
+        </div>
+
         {isLoading ? (
           <div className="py-12 text-center"><Loader2 className="h-6 w-6 mx-auto animate-spin text-muted-foreground" /></div>
         ) : contratos.length === 0 ? (
           <div className="py-16 text-center">
             <FileSignature className="h-10 w-10 mx-auto text-muted-foreground/40" />
             <p className="mt-3 text-sm text-muted-foreground">Nenhum contrato cadastrado.</p>
+          </div>
+        ) : contratosFiltrados.length === 0 ? (
+          <div className="py-12 text-center text-sm text-muted-foreground">
+            Nenhum contrato corresponde aos filtros selecionados.
           </div>
         ) : (
           <Table>
@@ -369,12 +429,12 @@ function ContratosPage() {
                 <TableHead>Status</TableHead>
                 <TableHead>Envio e-mail</TableHead>
                 <TableHead className="w-12"></TableHead>
-
               </TableRow>
             </TableHeader>
             <TableBody>
-              {contratos.map((c) => {
+              {contratosFiltrados.map((c) => {
                 const s = STATUS_MAP[c.status] ?? STATUS_MAP.ativo;
+
                 return (
                   <TableRow key={c.id}>
                     <TableCell className="font-medium">{c.numero}</TableCell>
