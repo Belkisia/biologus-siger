@@ -377,8 +377,8 @@ export const renderizarModelo = createServerFn({ method: "POST" })
       .select("*")
       .eq("id", data.cliente_id)
       .single();
-    let itens: any[] = [];
-    let proposta: any = null;
+    let itens: ItemVars[] = [];
+    let proposta: PropostaVars | null = null;
     if (data.proposta_id) {
       proposta = (
         await supabaseAdmin.from("propostas").select("*").eq("id", data.proposta_id).single()
@@ -388,7 +388,7 @@ export const renderizarModelo = createServerFn({ method: "POST" })
         .select("*")
         .eq("proposta_id", data.proposta_id)
         .order("ordem");
-      itens = (pis || []).map((i: any) => ({
+      itens = ((pis || []) as PropostaItemRow[]).map((i) => ({
         descricao: i.descricao,
         grupo_residuo: i.tipo_residuo,
         unidade: i.unidade,
@@ -444,14 +444,14 @@ export const gerarContratoDeModelo = createServerFn({ method: "POST" })
       .eq("id", data.cliente_id)
       .single();
 
-    let itens: any[] = [];
+    let itens: ItemVars[] = [];
     if (data.proposta_id) {
       const { data: pis } = await supabaseAdmin
         .from("proposta_itens")
         .select("*")
         .eq("proposta_id", data.proposta_id)
         .order("ordem");
-      itens = (pis || []).map((i: any) => ({
+      itens = ((pis || []) as PropostaItemRow[]).map((i) => ({
         descricao: i.descricao,
         grupo_residuo: i.tipo_residuo,
         unidade: i.unidade,
