@@ -85,6 +85,7 @@ function ContratosPage() {
   const qc = useQueryClient();
   const [open, setOpen] = useState(false);
   const { user } = Route.useRouteContext();
+  const [selectedClienteId, setSelectedClienteId] = useState("");
 
   const { data: clientes = [] } = useQuery({
     queryKey: ["clientes-select"],
@@ -106,20 +107,32 @@ function ContratosPage() {
     },
   });
 
+  const selectedCliente = clientes.find((c) => c.id === selectedClienteId) as any;
+
   const createMutation = useMutation({
     mutationFn: async (payload: Record<string, unknown>) => {
       // 1) Buscar modelo padrão ativo + cliente
-      const [{ data: modelo }, { data: cliente }] = await Promise.all([
-        supabase.from("contrato_modelos").select("id, conteudo_html").eq("ativo", true).order("updated_at", { ascending: false }).limit(1).maybeSingle(),
+      const [{ data: modelos }, { data: cliente }] = await Promise.all([
+        supabase.from("contrato_modelos").select("id, nome, conteudo_html, owner_id").eq("ativo", true).order("updated_at", { ascending: false }),
         supabase.from("clientes").select("*").eq("id", payload.cliente_id as string).single(),
       ]);
+      const modelo = (modelos || []).find((m) => m.nome?.toLowerCase().includes("padrão 2026") && (m.conteudo_html?.length || 0) > 5000)
+        || (modelos || []).find((m) => m.owner_id === null && (m.conteudo_html?.length || 0) > 5000)
+        || null;
+      if (!modelo?.conteudo_html) throw new Error("Modelo padrão integral não encontrado. Ative o modelo Padrão Bio Logus 2026.");
+      if (!cliente) throw new Error("Cliente não encontrado.");
 
       // 2) Renderizar HTML integral do contrato com placeholders preenchidos
       let conteudo_html: string | null = null;
       let modelo_id: string | null = null;
-      if (modelo?.conteudo_html && cliente) {
+      if (modelo.conteudo_html && cliente) {
         const limite = Number(payload.limite_kg) || 0;
         const excedente = Number(payload.valor_excedente) || 0;
+        const clienteContrato = {
+          ...cliente,
+          responsavel_financeiro: payload.representante_nome || cliente.responsavel_financeiro,
+          representante_cpf: payload.representante_cpf,
+        };
         const itens = limite > 0
           ? [{
               descricao: "Resíduos de serviços de saúde",
@@ -131,7 +144,7 @@ function ContratosPage() {
             }]
           : [];
         const vars = buildVars({
-          cliente,
+          cliente: clienteContrato,
           contrato: {
             numero: payload.numero,
             data_inicio: payload.data_inicio,
@@ -146,12 +159,19 @@ function ContratosPage() {
         });
         // grupos override
         if (payload.grupos_residuos) (vars as Record<string, string>).GRUPOS_RESIDUOS = String(payload.grupos_residuos);
+        const missing = extractPlaceholders(modelo.conteudo_html).filter((key) => {
+          const value = (vars as Record<string, unknown>)[key];
+          return value === null || value === undefined || value === "";
+        });
+        if (missing.length > 0) {
+          throw new Error(`Preencha os dados obrigatórios antes de salvar: ${missing.map((v) => `{{${v}}}`).join(", ")}`);
+        }
         conteudo_html = renderTemplate(modelo.conteudo_html, vars);
         modelo_id = modelo.id;
       }
 
       // 3) Limpar campos auxiliares antes do insert
-      const { limite_kg: _lk, valor_excedente: _ve, grupos_residuos: _gr, frequencia_coleta: _fc, ...dbPayload } = payload as any;
+      const { limite_kg: _lk, valor_excedente: _ve, grupos_residuos: _gr, frequencia_coleta: _fc, representante_nome: _rn, representante_cpf: _rc, ...dbPayload } = payload as any;
       const row = { ...dbPayload, owner_id: user.id, conteudo_html, modelo_id } as never;
       const { error } = await supabase.from("contratos").insert(row);
       if (error) throw error;
