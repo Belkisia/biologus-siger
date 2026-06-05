@@ -17,7 +17,42 @@ import { RichTextEditor } from "@/components/RichTextEditor";
 import {
   listarModelos, obterModelo, criarModelo, atualizarModelo, duplicarModelo,
   alternarAtivoModelo, excluirModelo, listarVersoes,
+  renderTemplate, buildVars,
 } from "@/lib/contrato-modelo.functions";
+
+// Dados de exemplo para a pré-visualização (não persistidos)
+const SAMPLE_CLIENTE = {
+  razao_social: "MV. OROFACI ODONTOLOGIA LTDA",
+  nome_fantasia: "MV. OROFACI ODONTOLOGIA",
+  cnpj: "18.526.332/0001-70",
+  inscricao_estadual: "ISENTO",
+  inscricao_municipal: "123456",
+  cnae: "8630-5/04 - Atividade odontológica",
+  endereco: "Avenida Presidente Vargas, Quadra 23, Lote 01",
+  numero: "S/N",
+  bairro: "Jardim Marista",
+  cidade: "Trindade",
+  estado: "GO",
+  cep: "75.388-408",
+  email: "contato@orofaci.com.br",
+  telefone: "(62) 98257-1491",
+  whatsapp: "(62) 98257-1491",
+  responsavel_tecnico: "Márcia Vieira da Silva",
+  responsavel_financeiro: "Márcia Vieira da Silva",
+  responsavel_operacional: "Márcia Vieira da Silva",
+};
+const SAMPLE_ITENS = [
+  { descricao: "Resíduo infectante perfurocortante", grupo_residuo: "E", unidade: "kg", franquia: 20, preco_unitario: 9.5, preco_excedente: 11 },
+  { descricao: "Resíduo químico (amálgama, reveladores)", grupo_residuo: "B", unidade: "kg", franquia: 5, preco_unitario: 18, preco_excedente: 22 },
+  { descricao: "Resíduo biológico", grupo_residuo: "A", unidade: "kg", franquia: 15, preco_unitario: 8, preco_excedente: 10 },
+];
+const SAMPLE_CONTRATO = {
+  numero: "CTR-2026-0001",
+  data_inicio: new Date().toISOString().slice(0, 10),
+  data_fim: null,
+  valor_mensal: 1850,
+  periodicidade_reajuste: "mensal",
+};
 
 export const Route = createFileRoute("/_authenticated/modelos-contrato")({
   component: ModelosPage,
