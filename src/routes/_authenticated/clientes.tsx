@@ -11,7 +11,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogFooter } from "@/components/ui/dialog";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Plus, Search, Building2, Trash2, Loader2, UserPlus, UserMinus, CheckCircle2 } from "lucide-react";
+import { Plus, Search, Building2, Trash2, Loader2, UserPlus, UserMinus, CheckCircle2, FolderOpen } from "lucide-react";
 import { toast } from "sonner";
 import { vincularClienteUsuario, desvincularClienteUsuario } from "@/lib/clientes.functions";
 
