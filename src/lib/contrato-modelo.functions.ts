@@ -41,6 +41,14 @@ type ItemVars = {
   valor_unitario?: string | number | null;
 };
 
+type PropostaItemRow = {
+  descricao?: string | null;
+  tipo_residuo?: string | null;
+  unidade?: string | null;
+  valor_unitario?: string | number | null;
+  quantidade?: string | number | null;
+};
+
 // Constrói o dicionário de variáveis a partir do cliente + opcionalmente contrato/proposta + itens
 export function buildVars(args: {
   cliente: ClienteVars | null;
@@ -130,7 +138,7 @@ export function buildVars(args: {
     RESPONSAVEL_TECNICO: c.responsavel_tecnico || "",
     RESPONSAVEL_FINANCEIRO: c.responsavel_financeiro || "",
     RESPONSAVEL_OPERACIONAL: c.responsavel_operacional || "",
-    VALOR_MENSAL: brl(ct.valor_mensal),
+    VALOR_MENSAL: brl(ct.valor_mensal == null ? null : Number(ct.valor_mensal)),
     LIMITE_KG: limiteKg ? `${limiteKg.toLocaleString("pt-BR")}` : "",
     VALOR_EXCEDENTE: excedenteMedio ? brl(excedenteMedio) : "",
     FREQUENCIA_COLETA:
@@ -147,10 +155,10 @@ export function buildVars(args: {
     TECNOLOGIA_TRATAMENTO:
       "autoclavagem, incineração ou aterro sanitário industrial, conforme classe e características do resíduo",
     VIGENCIA: ct.data_fim
-      ? `${dataBR(ct.data_inicio)} a ${dataBR(ct.data_fim)}`
-      : `a partir de ${dataBR(ct.data_inicio)}`,
-    DATA_INICIO: dataBR(ct.data_inicio),
-    DATA_FIM: dataBR(ct.data_fim),
+      ? `${dataBR(String(ct.data_inicio || ""))} a ${dataBR(String(ct.data_fim || ""))}`
+      : `a partir de ${dataBR(String(ct.data_inicio || ""))}`,
+    DATA_INICIO: dataBR(String(ct.data_inicio || "")),
+    DATA_FIM: dataBR(String(ct.data_fim || "")),
     EMPRESA_RAZAO_SOCIAL: e.razao_social,
     EMPRESA_CNPJ: e.cnpj,
     EMPRESA_ENDERECO: e.endereco,

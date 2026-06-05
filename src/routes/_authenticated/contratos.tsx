@@ -192,8 +192,9 @@ function ContratosPage() {
         const excedente = Number(payload.valor_excedente) || 0;
         const clienteContrato = {
           ...cliente,
-          responsavel_financeiro: payload.representante_nome || cliente.responsavel_financeiro,
-          representante_cpf: payload.representante_cpf,
+          responsavel_financeiro:
+            String(payload.representante_nome || cliente.responsavel_financeiro || "") || null,
+          representante_cpf: String(payload.representante_cpf || ""),
         };
         const itens =
           limite > 0
@@ -211,13 +212,13 @@ function ContratosPage() {
         const vars = buildVars({
           cliente: clienteContrato,
           contrato: {
-            numero: payload.numero,
-            data_inicio: payload.data_inicio,
-            data_fim: payload.data_fim,
-            valor_mensal: payload.valor_mensal,
-            forma_pagamento: payload.forma_pagamento,
-            dia_vencimento: payload.dia_vencimento,
-            frequencia_coleta: payload.frequencia_coleta,
+            numero: String(payload.numero || ""),
+            data_inicio: String(payload.data_inicio || ""),
+            data_fim: payload.data_fim ? String(payload.data_fim) : null,
+            valor_mensal: payload.valor_mensal ? Number(payload.valor_mensal) : null,
+            forma_pagamento: String(payload.forma_pagamento || ""),
+            dia_vencimento: payload.dia_vencimento ? Number(payload.dia_vencimento) : null,
+            frequencia_coleta: String(payload.frequencia_coleta || ""),
             vigencia_anos:
               periodicidade === "anual"
                 ? "01 (um)"
