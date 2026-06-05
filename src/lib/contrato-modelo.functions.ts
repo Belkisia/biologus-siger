@@ -285,10 +285,17 @@ export const renderizarModelo = createServerFn({ method: "POST" })
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const { data: m } = await supabaseAdmin.from("contrato_modelos").select("conteudo_html, nome").eq("id", data.modelo_id).single();
     const { data: cliente } = await supabaseAdmin.from("clientes").select("*").eq("id", data.cliente_id).single();
-    const proposta = data.proposta_id
-      ? (await supabaseAdmin.from("propostas").select("*").eq("id", data.proposta_id).single()).data
-      : null;
-    const html = renderTemplate(m!.conteudo_html, buildVars({ cliente, proposta }));
+    let itens: any[] = [];
+    let proposta: any = null;
+    if (data.proposta_id) {
+      proposta = (await supabaseAdmin.from("propostas").select("*").eq("id", data.proposta_id).single()).data;
+      const { data: pis } = await supabaseAdmin.from("proposta_itens").select("*").eq("proposta_id", data.proposta_id).order("ordem");
+      itens = (pis || []).map((i: any) => ({
+        descricao: i.descricao, grupo_residuo: i.tipo_residuo, unidade: i.unidade,
+        preco_unitario: i.valor_unitario, franquia: i.quantidade, preco_excedente: i.valor_unitario,
+      }));
+    }
+    const html = renderTemplate(m!.conteudo_html, buildVars({ cliente, proposta, itens }));
     return { html, nome: m!.nome };
   });
 
