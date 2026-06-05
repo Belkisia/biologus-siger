@@ -26,12 +26,27 @@ function dataBR(d: string | null | undefined) {
   return new Date(d + (d.length === 10 ? "T00:00:00" : "")).toLocaleDateString("pt-BR");
 }
 
+type ClienteVars = Record<string, string | number | null | undefined>;
+type ContratoVars = Record<string, string | number | null | undefined>;
+type PropostaVars = Record<string, string | number | boolean | null | undefined>;
+type ItemVars = {
+  descricao?: string | null;
+  grupo_residuo?: string | null;
+  tipo_residuo?: string | null;
+  unidade?: string | null;
+  franquia?: string | number | null;
+  quantidade?: string | number | null;
+  preco_unitario?: string | number | null;
+  preco_excedente?: string | number | null;
+  valor_unitario?: string | number | null;
+};
+
 // Constrói o dicionário de variáveis a partir do cliente + opcionalmente contrato/proposta + itens
 export function buildVars(args: {
-  cliente: any;
-  contrato?: any | null;
-  proposta?: any | null;
-  itens?: Array<any> | null;
+  cliente: ClienteVars | null;
+  contrato?: ContratoVars | null;
+  proposta?: PropostaVars | null;
+  itens?: Array<ItemVars> | null;
   empresa?: {
     razao_social: string;
     cnpj: string;
