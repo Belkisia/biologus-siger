@@ -146,6 +146,74 @@ function ContratosPage() {
     .reduce((acc, c) => acc + (c.valor_mensal ?? 0), 0);
 
   const [assinaturaContrato, setAssinaturaContrato] = useState<Contrato | null>(null);
+  const [emailContrato, setEmailContrato] = useState<Contrato | null>(null);
+  const [emailDestino, setEmailDestino] = useState("");
+  const [emailMensagem, setEmailMensagem] = useState("");
+  const [previewing, setPreviewing] = useState<string | null>(null);
+
+  const [dataInicio, setDataInicio] = useState("");
+  const [periodicidade, setPeriodicidade] = useState("anual");
+  const [dataFim, setDataFim] = useState("");
+
+  const visualizar = useServerFn(visualizarContrato);
+  const enviarEmail = useServerFn(enviarContratoEmail);
+
+  const handlePreview = async (c: Contrato) => {
+    setPreviewing(c.id);
+    try {
+      const r = await visualizar({ data: { contrato_id: c.id } });
+      if (r.url) window.open(r.url, "_blank");
+    } catch (e: any) {
+      toast.error(e.message || "Falha ao gerar PDF");
+    } finally {
+      setPreviewing(null);
+    }
+  };
+
+  const emailMutation = useMutation({
+    mutationFn: async () => {
+      if (!emailContrato) return;
+      await enviarEmail({ data: { contrato_id: emailContrato.id, email: emailDestino, mensagem: emailMensagem || undefined } });
+    },
+    onSuccess: () => {
+      toast.success("Contrato enviado por e-mail");
+      setEmailContrato(null);
+      setEmailDestino("");
+      setEmailMensagem("");
+    },
+    onError: (e: Error) => toast.error(e.message),
+  });
+
+  const openChange = (v: boolean) => {
+    setOpen(v);
+    if (v) {
+      setDataInicio("");
+      setPeriodicidade("anual");
+      setDataFim("");
+    }
+  };
+
+  const onInicioChange = (v: string) => {
+    setDataInicio(v);
+    if (v && periodicidade && PERIODICIDADE_MESES[periodicidade]) {
+      setDataFim(addMonthsISO(v, PERIODICIDADE_MESES[periodicidade]));
+    }
+  };
+  const onPeriodicidadeChange = (v: string) => {
+    setPeriodicidade(v);
+    if (dataInicio && PERIODICIDADE_MESES[v]) {
+      setDataFim(addMonthsISO(dataInicio, PERIODICIDADE_MESES[v]));
+    }
+  };
+
+  const openEmailDialog = (c: Contrato) => {
+    const cli = clientes.find((cl) => cl.id === c.cliente_id);
+    setEmailDestino((cli as any)?.email || "");
+    setEmailMensagem("");
+    setEmailContrato(c);
+  };
+
+
 
 
   return (
