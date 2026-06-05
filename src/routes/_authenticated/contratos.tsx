@@ -16,6 +16,7 @@ import { toast } from "sonner";
 import { AssinaturaDialog } from "@/components/AssinaturaDialog";
 import { useServerFn } from "@tanstack/react-start";
 import { visualizarContrato, enviarContratoEmail } from "@/lib/contrato.functions";
+import { buildVars, renderTemplate } from "@/lib/contrato-modelo.functions";
 
 
 export const Route = createFileRoute("/_authenticated/contratos")({
@@ -57,7 +58,9 @@ const STATUS_MAP: Record<string, { label: string; variant: "default" | "secondar
   cancelado: { label: "Cancelado", variant: "destructive" },
 };
 
-import { buildVars, renderTemplate } from "@/lib/contrato-modelo.functions";
+function extractPlaceholders(html: string) {
+  return Array.from(new Set(Array.from(html.matchAll(/\{\{\s*([A-Z0-9_]+)\s*\}\}/g)).map((m) => m[1])));
+}
 
 function addMonthsISO(dataInicio: string, meses: number): string {
   const d = new Date(dataInicio + "T00:00:00");
