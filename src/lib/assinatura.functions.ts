@@ -17,6 +17,9 @@ type ContratoItemPdf = {
   preco_unitario: number | string | null;
 };
 
+type DocumentoResumo = { numero?: string | null; objeto?: string | null } | null;
+type AssinaturaComSignatario = { signatarios?: unknown };
+
 // ============================================================
 // 1) Criar solicitação de assinatura (autenticado)
 // ============================================================
@@ -200,7 +203,10 @@ export const obterSignatarioPorToken = createServerFn({ method: "POST" })
     return {
       signatario: sig,
       pdfUrl: signed?.signedUrl || null,
-      documento: { numero: (doc as any)?.numero, objeto: (doc as any)?.objeto || null },
+      documento: {
+        numero: (doc as DocumentoResumo)?.numero,
+        objeto: (doc as DocumentoResumo)?.objeto || null,
+      },
     };
   });
 
@@ -461,7 +467,7 @@ export const validarCodigoAssinatura = createServerFn({ method: "POST" })
       hash_documento: assin.hash_documento,
       assinado_em: assin.assinado_em,
       documento_tipo: assin.documento_tipo,
-      signatario_principal: (assin as any).signatarios,
+      signatario_principal: (assin as AssinaturaComSignatario).signatarios,
       todos_signatarios: todos || [],
       pdf_url: pdfUrl,
     };
