@@ -124,6 +124,10 @@ function formatBRL(v: number | null) {
   return v.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
 }
 
+function errorMessage(error: unknown, fallback: string) {
+  return error instanceof Error ? error.message : fallback;
+}
+
 function ContratosPage() {
   const qc = useQueryClient();
   const [open, setOpen] = useState(false);
@@ -338,8 +342,8 @@ function ContratosPage() {
     try {
       const r = await visualizar({ data: { contrato_id: c.id } });
       if (r.url) window.open(r.url, "_blank");
-    } catch (e: any) {
-      toast.error(e.message || "Falha ao gerar PDF");
+    } catch (e: unknown) {
+      toast.error(errorMessage(e, "Falha ao gerar PDF"));
     } finally {
       setPreviewing(null);
     }
@@ -393,7 +397,7 @@ function ContratosPage() {
 
   const openEmailDialog = (c: Contrato) => {
     const cli = clientes.find((cl) => cl.id === c.cliente_id);
-    setEmailDestino((cli as any)?.email || "");
+    setEmailDestino(cli?.email || "");
     setEmailMensagem("");
     setEmailContrato(c);
   };
@@ -827,17 +831,16 @@ function ContratosPage() {
         documentoId={assinaturaContrato?.id ?? null}
         clienteSugerido={
           assinaturaContrato
-            ? {
-                nome:
-                  clientes.find((cl) => cl.id === assinaturaContrato.cliente_id)?.razao_social ||
-                  "",
-                email:
-                  (clientes.find((cl) => cl.id === assinaturaContrato.cliente_id) as any)?.email ||
-                  "",
-                cpf_cnpj:
-                  (clientes.find((cl) => cl.id === assinaturaContrato.cliente_id) as any)?.cnpj ||
-                  "",
-              }
+            ? (() => {
+                const clienteAssinatura = clientes.find(
+                  (cl) => cl.id === assinaturaContrato.cliente_id,
+                );
+                return {
+                  nome: clienteAssinatura?.razao_social || "",
+                  email: clienteAssinatura?.email || "",
+                  cpf_cnpj: clienteAssinatura?.cnpj || "",
+                };
+              })()
             : null
         }
       />
