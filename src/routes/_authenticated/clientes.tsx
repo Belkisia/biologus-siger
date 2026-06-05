@@ -216,6 +216,7 @@ function ClientesPage() {
                           <FolderOpen className="h-4 w-4" />
                         </Link>
                       </Button>
+                      {c.user_id ? (
                         <Button variant="ghost" size="icon" title="Desvincular usuário"
                           onClick={() => { if (confirm("Remover acesso do portal para este cliente?")) unlinkMutation.mutate(c.id); }}>
                           <UserMinus className="h-4 w-4" />
