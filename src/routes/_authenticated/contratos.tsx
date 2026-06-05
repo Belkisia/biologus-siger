@@ -291,8 +291,10 @@ function ContratosPage() {
                 </div>
                 <div className="space-y-2 md:col-span-2">
                   <Label htmlFor="objeto">Objeto do contrato</Label>
-                  <Textarea id="objeto" name="objeto" rows={2} placeholder="Coleta, transporte e destinação final..." />
+                  <Textarea id="objeto" name="objeto" rows={5} defaultValue={OBJETO_PADRAO} />
+                  <p className="text-xs text-muted-foreground">Texto padrão Bio Logus — edite conforme o escopo do contrato.</p>
                 </div>
+
                 <div className="space-y-2 md:col-span-2">
                   <Label htmlFor="observacoes">Observações</Label>
                   <Textarea id="observacoes" name="observacoes" rows={2} />
