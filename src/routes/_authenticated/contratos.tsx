@@ -223,7 +223,7 @@ function ContratosPage() {
           <h1 className="text-2xl font-bold text-foreground">Contratos</h1>
           <p className="text-sm text-muted-foreground">Gestão de contratos comerciais, vigências e reajustes.</p>
         </div>
-        <Dialog open={open} onOpenChange={setOpen}>
+        <Dialog open={open} onOpenChange={openChange}>
           <DialogTrigger asChild>
             <Button disabled={clientes.length === 0}>
               <Plus className="h-4 w-4 mr-2" />Novo contrato
