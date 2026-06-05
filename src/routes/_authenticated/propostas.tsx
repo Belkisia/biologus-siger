@@ -327,6 +327,67 @@ function PropostasPage() {
     onError: (e: Error) => toast.error(e.message),
   });
 
+  // ===== Gerar contrato a partir de modelo =====
+  const fnListModelos = useServerFn(listarModelos);
+  const fnRender = useServerFn(renderizarModelo);
+  const fnGerar = useServerFn(gerarContratoDeModelo);
+  const [modeloDlg, setModeloDlg] = useState<{
+    open: boolean; proposta?: Proposta; modelo_id: string;
+    numero: string; data_inicio: string; data_fim: string; valor_mensal: string;
+    previewHtml: string; loadingPreview: boolean;
+  }>({ open: false, modelo_id: "", numero: "", data_inicio: new Date().toISOString().slice(0,10), data_fim: "", valor_mensal: "", previewHtml: "", loadingPreview: false });
+
+  const { data: modelosAtivos = [] } = useQuery({
+    queryKey: ["contrato_modelos_ativos"],
+    queryFn: () => fnListModelos(),
+  });
+
+  async function abrirModeloDlg(p: Proposta) {
+    setModeloDlg({
+      open: true, proposta: p, modelo_id: "",
+      numero: `CTR-${new Date().getFullYear()}-${String(Date.now()).slice(-4)}`,
+      data_inicio: new Date().toISOString().slice(0,10),
+      data_fim: "",
+      valor_mensal: String(p.valor_total || ""),
+      previewHtml: "", loadingPreview: false,
+    });
+  }
+
+  async function gerarPreview() {
+    if (!modeloDlg.modelo_id || !modeloDlg.proposta) return;
+    setModeloDlg((s) => ({ ...s, loadingPreview: true }));
+    try {
+      const r = await fnRender({ data: { modelo_id: modeloDlg.modelo_id, cliente_id: modeloDlg.proposta.cliente_id, proposta_id: modeloDlg.proposta.id } });
+      setModeloDlg((s) => ({ ...s, previewHtml: r.html, loadingPreview: false }));
+    } catch (e: any) {
+      toast.error(e?.message || "Erro ao gerar prévia");
+      setModeloDlg((s) => ({ ...s, loadingPreview: false }));
+    }
+  }
+
+  const gerarContratoModelo = useMutation({
+    mutationFn: async () => {
+      if (!modeloDlg.modelo_id || !modeloDlg.proposta) throw new Error("Selecione um modelo");
+      return fnGerar({ data: {
+        modelo_id: modeloDlg.modelo_id,
+        cliente_id: modeloDlg.proposta.cliente_id,
+        proposta_id: modeloDlg.proposta.id,
+        numero: modeloDlg.numero,
+        data_inicio: modeloDlg.data_inicio,
+        data_fim: modeloDlg.data_fim || null,
+        valor_mensal: modeloDlg.valor_mensal ? Number(modeloDlg.valor_mensal) : null,
+        conteudo_html_editado: modeloDlg.previewHtml || null,
+      } });
+    },
+    onSuccess: () => {
+      toast.success("Contrato gerado a partir do modelo");
+      setModeloDlg((s) => ({ ...s, open: false }));
+      qc.invalidateQueries({ queryKey: ["propostas"] });
+      qc.invalidateQueries({ queryKey: ["contratos"] });
+    },
+    onError: (e: any) => toast.error(e?.message || "Erro ao gerar"),
+  });
+
   const setItem = (idx: number, patch: Partial<Item>) => {
     setItems((prev) =>
       prev.map((it, i) => {
