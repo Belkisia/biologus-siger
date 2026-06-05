@@ -300,7 +300,7 @@ function ContratosPage() {
       <div className="flex items-start justify-between flex-wrap gap-4">
         <div>
           <h1 className="text-2xl font-bold text-foreground">Contratos</h1>
-          <p className="text-sm text-muted-foreground">Gestão de contratos comerciais, vigências e reajustes.</p>
+          <p className="text-sm text-muted-foreground">Gestão de contratos comerciais e vigências — modelo Padrão Bio Logus 2026 aplicado automaticamente.</p>
         </div>
         <Dialog open={open} onOpenChange={openChange}>
           <DialogTrigger asChild>
