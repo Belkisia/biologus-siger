@@ -274,3 +274,40 @@ function ModelosPage() {
     </div>
   );
 }
+
+function PreviewPane({ html }: { html: string }) {
+  const [showRaw, setShowRaw] = useState(false);
+  const rendered = useMemo(() => {
+    try {
+      const vars = buildVars({
+        cliente: SAMPLE_CLIENTE,
+        contrato: SAMPLE_CONTRATO,
+        itens: SAMPLE_ITENS,
+      });
+      return renderTemplate(html || "", vars);
+    } catch {
+      return html;
+    }
+  }, [html]);
+
+  return (
+    <div className="space-y-2">
+      <div className="flex items-center justify-between">
+        <Label>Pré-visualização (dados de exemplo)</Label>
+        <div className="flex items-center gap-2">
+          <span className="text-xs text-muted-foreground">Modelo</span>
+          <Switch checked={!showRaw} onCheckedChange={(v) => setShowRaw(!v)} />
+          <span className="text-xs text-muted-foreground">Preenchido</span>
+        </div>
+      </div>
+      <div
+        className="prose prose-sm max-w-none border rounded-md p-4 bg-background overflow-y-auto"
+        style={{ minHeight: 520, maxHeight: 640 }}
+        dangerouslySetInnerHTML={{ __html: showRaw ? (html || "") : rendered }}
+      />
+      <p className="text-xs text-muted-foreground">
+        Placeholders sem dado aparecem em <span className="text-destructive font-mono">[VARIAVEL]</span>. Dados reais serão usados ao gerar o contrato a partir de um cliente/proposta.
+      </p>
+    </div>
+  );
+}
