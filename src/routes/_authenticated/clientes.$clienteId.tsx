@@ -214,7 +214,7 @@ function LicencasTab({ clienteId }: { clienteId: string }) {
               <TableCell>{fmtDate(l.data_emissao)}</TableCell>
               <TableCell>{fmtDate(l.data_validade)}</TableCell>
               <TableCell><Badge>{l.status}</Badge></TableCell>
-              <TableCell>{l.arquivo_url && <OpenFileBtn path={l.arquivo_url} />}</TableCell>
+              <TableCell>{l.arquivo_url && <OpenInline path={l.arquivo_url} />}</TableCell>
             </TableRow>
           ))}
         </TableBody>
@@ -248,7 +248,7 @@ function MtrTab({ clienteId }: { clienteId: string }) {
               <TableCell className="max-w-xs truncate">{m.descricao_residuo}</TableCell>
               <TableCell>{m.quantidade} {m.unidade}</TableCell>
               <TableCell><Badge variant="outline">{m.status}</Badge></TableCell>
-              <TableCell>{m.url_documento && <OpenFileBtn path={m.url_documento} />}</TableCell>
+              <TableCell>{m.url_documento && <OpenInline path={m.url_documento} />}</TableCell>
             </TableRow>
           ))}
         </TableBody>
@@ -286,7 +286,7 @@ function CdfTab({ clienteId }: { clienteId: string }) {
               <TableCell>{fmtDate(c.data_destinacao)}</TableCell>
               <TableCell>{c.tecnologia || "—"}</TableCell>
               <TableCell>{c.quantidade_destinada ?? "—"}</TableCell>
-              <TableCell>{c.url_documento && <OpenFileBtn path={c.url_documento} />}</TableCell>
+              <TableCell>{c.url_documento && <OpenInline path={c.url_documento} />}</TableCell>
             </TableRow>
           ))}
         </TableBody>
