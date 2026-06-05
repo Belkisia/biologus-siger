@@ -384,6 +384,12 @@ function ContratosPage() {
                     </TableCell>
                     <TableCell>
                       <div className="flex gap-1">
+                        <Button variant="ghost" size="icon" title="Visualizar PDF" onClick={() => handlePreview(c)} disabled={previewing === c.id}>
+                          {previewing === c.id ? <Loader2 className="h-4 w-4 animate-spin" /> : <Eye className="h-4 w-4" />}
+                        </Button>
+                        <Button variant="ghost" size="icon" title="Enviar por e-mail" onClick={() => openEmailDialog(c)}>
+                          <Mail className="h-4 w-4 text-primary" />
+                        </Button>
                         <Button variant="ghost" size="icon" title="Enviar para assinatura" onClick={() => setAssinaturaContrato(c)}>
                           <PenTool className="h-4 w-4 text-primary" />
                         </Button>
@@ -394,6 +400,7 @@ function ContratosPage() {
                         </Button>
                       </div>
                     </TableCell>
+
                   </TableRow>
                 );
               })}
