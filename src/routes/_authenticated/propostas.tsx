@@ -376,7 +376,7 @@ function PropostasPage() {
         data_inicio: modeloDlg.data_inicio,
         data_fim: modeloDlg.data_fim || null,
         valor_mensal: modeloDlg.valor_mensal ? Number(modeloDlg.valor_mensal) : null,
-        conteudo_html_editado: modeloDlg.previewHtml || null,
+        conteudo_html_editado: null,
       } });
     },
     onSuccess: () => {
