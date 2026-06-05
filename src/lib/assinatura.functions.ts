@@ -18,7 +18,14 @@ type ContratoItemPdf = {
 };
 
 type DocumentoResumo = { numero?: string | null; objeto?: string | null } | null;
-type AssinaturaComSignatario = { signatarios?: unknown };
+type SignatarioSerializado = {
+  id?: string;
+  nome?: string | null;
+  email?: string | null;
+  cpf_cnpj?: string | null;
+  papel?: string | null;
+};
+type AssinaturaComSignatario = { signatarios?: SignatarioSerializado | null };
 
 // ============================================================
 // 1) Criar solicitação de assinatura (autenticado)
