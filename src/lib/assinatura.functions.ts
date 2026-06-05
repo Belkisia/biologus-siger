@@ -178,7 +178,7 @@ export const obterSignatarioPorToken = createServerFn({ method: "POST" })
     return {
       signatario: sig,
       pdfUrl: signed?.signedUrl || null,
-      documento: { numero: doc?.numero, objeto: (doc as any)?.objeto || null },
+      documento: { numero: (doc as any)?.numero, objeto: (doc as any)?.objeto || null },
     };
   });
 
