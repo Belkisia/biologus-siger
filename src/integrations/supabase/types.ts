@@ -308,6 +308,80 @@ export type Database = {
           },
         ]
       }
+      contrato_modelo_versoes: {
+        Row: {
+          alterado_por: string | null
+          conteudo_html: string
+          created_at: string
+          id: string
+          modelo_id: string
+          motivo: string | null
+          versao: number
+        }
+        Insert: {
+          alterado_por?: string | null
+          conteudo_html: string
+          created_at?: string
+          id?: string
+          modelo_id: string
+          motivo?: string | null
+          versao: number
+        }
+        Update: {
+          alterado_por?: string | null
+          conteudo_html?: string
+          created_at?: string
+          id?: string
+          modelo_id?: string
+          motivo?: string | null
+          versao?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "contrato_modelo_versoes_modelo_id_fkey"
+            columns: ["modelo_id"]
+            isOneToOne: false
+            referencedRelation: "contrato_modelos"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      contrato_modelos: {
+        Row: {
+          ativo: boolean
+          conteudo_html: string
+          created_at: string
+          descricao: string | null
+          id: string
+          nome: string
+          owner_id: string | null
+          updated_at: string
+          versao_atual: number
+        }
+        Insert: {
+          ativo?: boolean
+          conteudo_html?: string
+          created_at?: string
+          descricao?: string | null
+          id?: string
+          nome: string
+          owner_id?: string | null
+          updated_at?: string
+          versao_atual?: number
+        }
+        Update: {
+          ativo?: boolean
+          conteudo_html?: string
+          created_at?: string
+          descricao?: string | null
+          id?: string
+          nome?: string
+          owner_id?: string | null
+          updated_at?: string
+          versao_atual?: number
+        }
+        Relationships: []
+      }
       contratos: {
         Row: {
           cliente_id: string
