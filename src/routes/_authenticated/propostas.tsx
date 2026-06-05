@@ -455,7 +455,7 @@ function PropostasPage() {
       "Emissão de MTR e CDF",
       "Conformidade com a PNRS (Lei 12.305/2010)",
     ];
-    const inclH = 34;
+    const inclH = t.inclH;
     // Esquerda: incluso
     doc.setDrawColor(...BRAND2);
     doc.setLineWidth(0.2);
