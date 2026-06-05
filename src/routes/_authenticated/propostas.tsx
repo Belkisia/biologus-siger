@@ -280,222 +280,106 @@ function PropostasPage() {
       .eq("proposta_id", p.id)
       .order("ordem");
 
-    const doc = new jsPDF();
+    const doc = new jsPDF({ unit: "mm", format: "a4" });
     const cli = p.clientes;
     const PAGE_W = 210;
     const PAGE_H = 297;
-    const MARGIN_X = 16;
-    const BRAND: [number, number, number] = [40, 100, 60];
-    const MUTED: [number, number, number] = [110, 110, 110];
+    const M = 12; // margem
+    const BRAND: [number, number, number] = [14, 61, 26];   // #0E3D1A
+    const BRAND2: [number, number, number] = [46, 139, 71]; // #2E8B47
+    const SOFT: [number, number, number] = [234, 244, 237]; // #EAF4ED
+    const MUTED: [number, number, number] = [102, 102, 102];
 
-    // ---------- Helpers ----------
-    const ensureSpace = (y: number, needed = 20): number => {
-      if (y + needed > PAGE_H - 22) {
-        addFooter();
-        doc.addPage();
-        addHeader();
-        return 38;
-      }
-      return y;
-    };
-
-    const addHeader = () => {
-      doc.setFillColor(...BRAND);
-      doc.rect(0, 0, PAGE_W, 22, "F");
-      doc.setTextColor(255, 255, 255);
-      doc.setFont("helvetica", "bold");
-      doc.setFontSize(14);
-      doc.text("BIO LOGUS AMBIENTAL", MARGIN_X, 11);
-      doc.setFont("helvetica", "normal");
-      doc.setFontSize(8);
-      doc.text("Gestão, Coleta, Transporte e Destinação Final de Resíduos", MARGIN_X, 17);
-      doc.setFontSize(8);
-      doc.text(`Proposta Nº ${p.numero}`, PAGE_W - MARGIN_X, 11, { align: "right" });
-      doc.text(new Date(p.data_emissao).toLocaleDateString("pt-BR"), PAGE_W - MARGIN_X, 17, { align: "right" });
-      doc.setTextColor(0);
-    };
-
-    const addFooter = () => {
-      const pageNum = doc.getNumberOfPages();
-      doc.setDrawColor(...BRAND);
-      doc.setLineWidth(0.4);
-      doc.line(MARGIN_X, PAGE_H - 16, PAGE_W - MARGIN_X, PAGE_H - 16);
-      doc.setFontSize(7.5);
-      doc.setTextColor(...MUTED);
-      doc.setFont("helvetica", "normal");
-      doc.text("Bio Logus Ambiental  •  comercial@biologusambiental.com.br", MARGIN_X, PAGE_H - 10);
-      doc.text(
-        `Proposta ${p.numero}  •  Página ${pageNum}`,
-        PAGE_W - MARGIN_X,
-        PAGE_H - 10,
-        { align: "right" },
-      );
-      doc.setTextColor(0);
-    };
-
-    const section = (title: string, y: number): number => {
-      y = ensureSpace(y, 14);
-      doc.setFillColor(...BRAND);
-      doc.rect(MARGIN_X, y, 3, 6, "F");
-      doc.setFont("helvetica", "bold");
-      doc.setFontSize(11);
-      doc.setTextColor(...BRAND);
-      doc.text(title.toUpperCase(), MARGIN_X + 6, y + 5);
-      doc.setDrawColor(220, 220, 220);
-      doc.setLineWidth(0.2);
-      doc.line(MARGIN_X, y + 8, PAGE_W - MARGIN_X, y + 8);
-      doc.setTextColor(0);
-      return y + 13;
-    };
-
-    const paragraph = (text: string, y: number, opts: { size?: number; bold?: boolean } = {}): number => {
-      doc.setFont("helvetica", opts.bold ? "bold" : "normal");
-      doc.setFontSize(opts.size ?? 9.5);
-      const lines = doc.splitTextToSize(text, PAGE_W - MARGIN_X * 2) as string[];
-      for (const ln of lines) {
-        y = ensureSpace(y, 6);
-        doc.text(ln, MARGIN_X, y);
-        y += 4.6;
-      }
-      return y + 1;
-    };
-
-    const bullets = (lines: string[], y: number): number => {
-      doc.setFont("helvetica", "normal");
-      doc.setFontSize(9.5);
-      for (const ln of lines) {
-        y = ensureSpace(y, 6);
-        doc.setTextColor(...BRAND);
-        doc.text("•", MARGIN_X + 1, y);
-        doc.setTextColor(0);
-        const wrapped = doc.splitTextToSize(ln, PAGE_W - MARGIN_X * 2 - 6) as string[];
-        wrapped.forEach((w, i) => {
-          if (i > 0) y = ensureSpace(y, 6);
-          doc.text(w, MARGIN_X + 6, y);
-          if (i < wrapped.length - 1) y += 4.6;
-        });
-        y += 5;
-      }
-      return y;
-    };
-
-    // ---------- Page 1: Capa institucional ----------
-    addHeader();
-    doc.setFillColor(248, 250, 248);
-    doc.rect(0, 22, PAGE_W, PAGE_H - 22, "F");
-
-    doc.setTextColor(...MUTED);
-    doc.setFont("helvetica", "normal");
-    doc.setFontSize(9);
-    doc.text("PROPOSTA COMERCIAL EXECUTIVA", MARGIN_X, 60);
-
-    doc.setTextColor(...BRAND);
+    // ── BLOCO 1 — CABEÇALHO (faixa verde) ────────────────────────────────
+    doc.setFillColor(...BRAND);
+    doc.rect(0, 0, PAGE_W, 14, "F");
+    doc.setTextColor(255);
     doc.setFont("helvetica", "bold");
-    doc.setFontSize(26);
-    doc.text("Gestão Ambientalmente", MARGIN_X, 78);
-    doc.text("Adequada de Resíduos", MARGIN_X, 90);
-
-    doc.setDrawColor(...BRAND);
-    doc.setLineWidth(1.2);
-    doc.line(MARGIN_X, 96, MARGIN_X + 40, 96);
-
-    doc.setTextColor(60, 60, 60);
+    doc.setFontSize(11);
+    doc.text("BIO LOGUS AMBIENTAL", PAGE_W / 2, 6.5, { align: "center" });
     doc.setFont("helvetica", "normal");
+    doc.setFontSize(7.5);
+    doc.text("Gestão Inteligente de Resíduos · Goiânia – GO", PAGE_W / 2, 10.5, { align: "center" });
+    // sub-faixa CNPJ / Nº / Data
+    doc.setFillColor(...BRAND2);
+    doc.rect(0, 14, PAGE_W, 5, "F");
+    doc.setFontSize(7);
+    doc.setTextColor(255);
+    const dataEmissao = new Date(p.data_emissao).toLocaleDateString("pt-BR");
+    doc.text(
+      `CNPJ 26.484.921/0001-60   ·   Nº ${p.numero}   ·   Emitida em ${dataEmissao}`,
+      PAGE_W / 2,
+      17.7,
+      { align: "center" },
+    );
+
+    let y = 23;
+
+    // ── BLOCO 2 — DESTINATÁRIO + CONDIÇÕES (2 colunas) ──────────────────
+    const colW = (PAGE_W - M * 2 - 4) / 2;
+    const blockH = 36;
+    // Esquerda: destinatário
+    doc.setFillColor(...SOFT);
+    doc.rect(M, y, colW, blockH, "F");
+    doc.setFillColor(...BRAND);
+    doc.rect(M, y, 1.2, blockH, "F");
+    doc.setTextColor(...MUTED);
+    doc.setFont("helvetica", "bold");
+    doc.setFontSize(6.8);
+    doc.text("DESTINATÁRIO", M + 3, y + 4);
+    doc.setTextColor(0);
     doc.setFontSize(10.5);
-    const subtitle =
-      "Coleta, transporte, tratamento e destinação final de resíduos com rastreabilidade completa, conformidade legal e excelência operacional.";
-    doc.text(doc.splitTextToSize(subtitle, 170) as string[], MARGIN_X, 108);
-
-    // Bloco de dados
-    doc.setFillColor(255, 255, 255);
-    doc.setDrawColor(...BRAND);
-    doc.setLineWidth(0.3);
-    doc.roundedRect(MARGIN_X, 138, PAGE_W - MARGIN_X * 2, 70, 2, 2, "FD");
-
-    doc.setFont("helvetica", "bold");
-    doc.setFontSize(9);
-    doc.setTextColor(...MUTED);
-    doc.text("APRESENTADA A", MARGIN_X + 6, 147);
-    doc.setTextColor(0);
-    doc.setFontSize(12);
-    doc.text(cli?.razao_social ?? "—", MARGIN_X + 6, 154);
+    const nome = cli?.razao_social ?? "—";
+    const nomeLines = doc.splitTextToSize(nome, colW - 6) as string[];
+    doc.text(nomeLines.slice(0, 2), M + 3, y + 9);
     doc.setFont("helvetica", "normal");
-    doc.setFontSize(9);
-    if (cli?.nome_fantasia) doc.text(cli.nome_fantasia, MARGIN_X + 6, 159);
-    doc.text(`CNPJ: ${cli?.cnpj ?? "—"}`, MARGIN_X + 6, 165);
+    doc.setFontSize(7.8);
+    let yL = y + 9 + Math.min(nomeLines.length, 2) * 4.2;
+    if (cli?.cnpj) { doc.text(`CNPJ: ${cli.cnpj}`, M + 3, yL); yL += 3.6; }
+    if (cli?.cidade) { doc.text(`${cli.cidade}${cli.estado ? ` – ${cli.estado}` : ""}`, M + 3, yL); yL += 3.6; }
     if (cli?.endereco) {
-      const end = `${cli.endereco}${cli.numero ? `, ${cli.numero}` : ""} - ${cli.bairro ?? ""} - ${cli.cidade ?? ""}/${cli.estado ?? ""}`;
-      doc.text(doc.splitTextToSize(end, 170) as string[], MARGIN_X + 6, 170);
+      const end = `${cli.endereco}${cli.numero ? `, ${cli.numero}` : ""}${cli.bairro ? ` – ${cli.bairro}` : ""}`;
+      const endLines = doc.splitTextToSize(end, colW - 6) as string[];
+      doc.text(endLines.slice(0, 2), M + 3, yL); yL += endLines.slice(0, 2).length * 3.4;
     }
-    if (cli?.email) doc.text(`E-mail: ${cli.email}`, MARGIN_X + 6, 180);
-    if (cli?.telefone || cli?.whatsapp) doc.text(`Telefone: ${cli.telefone ?? cli.whatsapp}`, MARGIN_X + 6, 185);
+    if (cli?.email) { doc.text(cli.email, M + 3, yL); yL += 3.4; }
+    if (cli?.telefone || cli?.whatsapp) doc.text(String(cli.telefone ?? cli.whatsapp), M + 3, yL);
 
-    doc.setDrawColor(230, 230, 230);
-    doc.line(MARGIN_X + 6, 192, PAGE_W - MARGIN_X - 6, 192);
-
-    doc.setFont("helvetica", "bold");
-    doc.setFontSize(8);
+    // Direita: condições (tabela 2 colunas sem borda)
+    const xR = M + colW + 4;
+    doc.setDrawColor(220);
+    doc.setLineWidth(0.15);
+    doc.rect(xR, y, colW, blockH);
     doc.setTextColor(...MUTED);
-    doc.text("PROPOSTA Nº", MARGIN_X + 6, 199);
-    doc.text("EMISSÃO", MARGIN_X + 70, 199);
-    doc.text("VALIDADE", MARGIN_X + 130, 199);
+    doc.setFont("helvetica", "bold");
+    doc.setFontSize(6.8);
+    doc.text("CONDIÇÕES COMERCIAIS", xR + 3, y + 4);
+    const validade = p.validade
+      ? `até ${new Date(p.validade).toLocaleDateString("pt-BR")}`
+      : "30 dias";
+    const rows: [string, string][] = [
+      ["Validade", validade],
+      ["Início", p.prazo_coleta || "5 dias úteis após assinatura"],
+      ["Pagamento", p.condicoes_pagamento || "a combinar"],
+    ];
     doc.setTextColor(0);
-    doc.setFontSize(10);
-    doc.text(p.numero, MARGIN_X + 6, 204);
-    doc.text(new Date(p.data_emissao).toLocaleDateString("pt-BR"), MARGIN_X + 70, 204);
-    doc.text(p.validade ? new Date(p.validade).toLocaleDateString("pt-BR") : "—", MARGIN_X + 130, 204);
+    doc.setFontSize(8);
+    let yR = y + 9;
+    for (const [k, v] of rows) {
+      doc.setFont("helvetica", "bold");
+      doc.text(k, xR + 3, yR);
+      doc.setFont("helvetica", "normal");
+      const vLines = doc.splitTextToSize(v, colW - 30) as string[];
+      doc.text(vLines.slice(0, 2), xR + 28, yR);
+      yR += Math.max(4.6, vLines.slice(0, 2).length * 4.2);
+    }
 
-    addFooter();
+    y += blockH + 4;
 
-    // ---------- Page 2: Conteúdo institucional ----------
-    doc.addPage();
-    addHeader();
-    let y = 34;
-
-    y = section("1. Apresentação da Empresa", y);
-    y = paragraph(
-      "A Bio Logus Ambiental é uma empresa especializada no gerenciamento integrado de resíduos, atuando na coleta, transporte, tratamento e destinação final ambientalmente adequada. Reunimos experiência consolidada, regularidade ambiental, equipe técnica qualificada, rastreabilidade dos processos e absoluto compromisso com a legislação ambiental vigente — em especial a Política Nacional de Resíduos Sólidos (Lei nº 12.305/2010) e as normas técnicas correlatas.",
-      y,
-    );
-
-    y = section("2. Objeto da Contratação", y);
-    y = paragraph(
-      "Constitui objeto da presente proposta a prestação de serviços técnicos especializados em gerenciamento de resíduos, contemplando:",
-      y,
-    );
-    y = bullets(
-      [
-        "Coleta dos resíduos no(s) local(is) indicado(s) pela contratante;",
-        "Transporte realizado por veículos devidamente licenciados;",
-        "Tratamento e destinação final ambientalmente adequada;",
-        "Emissão de Manifesto de Transporte de Resíduos (MTR), quando aplicável;",
-        "Emissão de Certificado de Destinação Final (CDF);",
-        "Disponibilização de relatórios e documentos comprobatórios.",
-      ],
-      y,
-    );
-
-    y = section("3. Escopo Operacional", y);
-    y = bullets(
-      [
-        `Local de coleta: ${cli?.endereco ? `${cli.endereco}${cli.numero ? `, ${cli.numero}` : ""} - ${cli.cidade ?? ""}/${cli.estado ?? ""}` : "a ser definido com a contratante"}.`,
-        `Frequência de atendimento: ${p.prazo_coleta || "conforme demanda e cronograma alinhado com a contratante"}.`,
-        "Classificação dos resíduos: conforme NBR 10.004 e tipologias detalhadas no quadro de investimento.",
-        "Quantidade estimada: conforme volumes apresentados no quadro de investimento (passível de ajuste mediante medição).",
-        "Procedimentos de segurança e acondicionamento: utilização de embalagens, rótulos e EPIs em conformidade com as normas técnicas aplicáveis.",
-      ],
-      y,
-    );
-
-    y = section("4. Investimento", y);
-    y = paragraph(
-      "Os valores apresentados a seguir contemplam integralmente coleta, transporte, tratamento, destinação final ambientalmente adequada, emissão dos documentos ambientais (MTR e CDF) e suporte técnico durante toda a vigência do contrato.",
-      y,
-    );
-
+    // ── BLOCO 3 — TABELA DE SERVIÇOS ────────────────────────────────────
     autoTable(doc, {
       startY: y,
-      head: [["Descrição do Serviço", "Resíduo", "Qtd.", "Unid.", "Vlr. Unitário", "Valor Total"]],
+      head: [["Serviço / Descrição", "Resíduo", "Qtd.", "Un.", "Vlr. Unit.", "Total"]],
       body: (itens ?? []).map((i) => [
         i.descricao,
         i.tipo_residuo ?? "—",
@@ -504,106 +388,147 @@ function PropostasPage() {
         brl(Number(i.valor_unitario)),
         brl(Number(i.valor_total)),
       ]),
-      headStyles: { fillColor: BRAND, textColor: 255, fontStyle: "bold", fontSize: 9 },
-      bodyStyles: { fontSize: 9, textColor: 40 },
-      alternateRowStyles: { fillColor: [247, 250, 247] },
-      styles: { cellPadding: 3, lineColor: [220, 220, 220], lineWidth: 0.1 },
-      columnStyles: {
-        2: { halign: "right" },
-        4: { halign: "right" },
-        5: { halign: "right", fontStyle: "bold" },
+      theme: "grid",
+      headStyles: {
+        fillColor: BRAND,
+        textColor: 255,
+        fontStyle: "bold",
+        fontSize: 8,
+        cellPadding: 1.8,
+        halign: "center",
       },
-      margin: { left: MARGIN_X, right: MARGIN_X },
+      bodyStyles: { fontSize: 8, textColor: 30, cellPadding: 1.6 },
+      alternateRowStyles: { fillColor: [248, 251, 248] },
+      styles: { lineColor: [220, 220, 220], lineWidth: 0.1, overflow: "linebreak" },
+      columnStyles: {
+        0: { cellWidth: 70 },
+        1: { cellWidth: 32 },
+        2: { halign: "right", cellWidth: 14 },
+        3: { halign: "center", cellWidth: 10 },
+        4: { halign: "right", cellWidth: 26 },
+        5: { halign: "right", cellWidth: 34, fontStyle: "bold" },
+      },
+      margin: { left: M, right: M },
     });
 
     let finalY =
-      (doc as unknown as { lastAutoTable?: { finalY: number } }).lastAutoTable?.finalY ?? y + 30;
+      (doc as unknown as { lastAutoTable?: { finalY: number } }).lastAutoTable?.finalY ?? y + 20;
 
-    finalY = ensureSpace(finalY + 4, 14);
+    // ── BLOCO 4 — TOTAL ─────────────────────────────────────────────────
+    finalY += 2;
+    const totalBoxW = 80;
     doc.setFillColor(...BRAND);
-    doc.rect(PAGE_W - MARGIN_X - 80, finalY, 80, 11, "F");
+    doc.rect(PAGE_W - M - totalBoxW, finalY, totalBoxW, 9, "F");
     doc.setTextColor(255);
     doc.setFont("helvetica", "bold");
-    doc.setFontSize(11);
-    doc.text(`VALOR TOTAL: ${brl(Number(p.valor_total))}`, PAGE_W - MARGIN_X - 3, finalY + 7.5, {
-      align: "right",
-    });
+    doc.setFontSize(10);
+    doc.text(
+      `VALOR TOTAL:  ${brl(Number(p.valor_total))}`,
+      PAGE_W - M - 3,
+      finalY + 6,
+      { align: "right" },
+    );
     doc.setTextColor(0);
-    y = finalY + 18;
+    y = finalY + 13;
 
-    y = section("5. Diferenciais da Bio Logus Ambiental", y);
-    y = bullets(
-      [
-        "Atendimento personalizado e consultivo, alinhado à realidade de cada gerador.",
-        "Conformidade com as normas ambientais federais, estaduais e municipais aplicáveis.",
-        "Agilidade operacional e cumprimento rigoroso dos prazos contratados.",
-        "Equipe técnica especializada em gestão e logística de resíduos.",
-        "Rastreabilidade completa, com emissão de MTR e CDF para cada operação.",
-        "Segurança jurídica e ambiental ao contratante, reduzindo passivos e riscos regulatórios.",
-      ],
-      y,
-    );
-
-    y = section("6. Responsabilidades das Partes", y);
-    y = paragraph("Da Contratada (Bio Logus Ambiental):", y, { bold: true });
-    y = bullets(
-      [
-        "Executar os serviços em conformidade com a legislação ambiental vigente;",
-        "Manter veículos, equipamentos e equipe devidamente licenciados e qualificados;",
-        "Fornecer MTR, CDF e demais documentos comprobatórios;",
-        "Garantir a destinação final ambientalmente adequada dos resíduos.",
-      ],
-      y,
-    );
-    y = paragraph("Da Contratante:", y, { bold: true });
-    y = bullets(
-      [
-        "Disponibilizar os resíduos devidamente segregados e acondicionados para coleta;",
-        "Garantir acesso seguro à equipe e aos veículos no local de coleta;",
-        "Cumprir as condições comerciais e prazos pactuados;",
-        "Prestar as informações necessárias à correta classificação dos resíduos.",
-      ],
-      y,
-    );
-
-    y = section("7. Condições Comerciais", y);
-    y = bullets(
-      [
-        `Forma de pagamento: ${p.condicoes_pagamento || "a combinar entre as partes"}.`,
-        `Prazo para início dos serviços: ${p.prazo_coleta || "até 5 (cinco) dias úteis após o aceite formal da proposta"}.`,
-        `Vigência da proposta: ${p.validade ? `válida até ${new Date(p.validade).toLocaleDateString("pt-BR")}` : "30 (trinta) dias a contar da data de emissão"}.`,
-        "Reajustes: aplicáveis anualmente com base em índice oficial (IPCA/IGP-M) ou em caso de alteração relevante de custos operacionais, mediante prévia comunicação.",
-      ],
-      y,
-    );
-
-    if (p.observacoes) {
-      y = section("Observações", y);
-      y = paragraph(p.observacoes, y);
+    // ── BLOCO 5 — INCLUSO + OBSERVAÇÕES (2 colunas compactas) ───────────
+    const incl = [
+      "Coleta no local indicado",
+      "Transporte com veículos licenciados",
+      "Tratamento e destinação final",
+      "Emissão de MTR e CDF",
+      "Conformidade com a PNRS (Lei 12.305/2010)",
+    ];
+    const inclH = 34;
+    // Esquerda: incluso
+    doc.setDrawColor(...BRAND2);
+    doc.setLineWidth(0.2);
+    doc.rect(M, y, colW, inclH);
+    doc.setFillColor(...BRAND);
+    doc.rect(M, y, colW, 5, "F");
+    doc.setTextColor(255);
+    doc.setFont("helvetica", "bold");
+    doc.setFontSize(7.8);
+    doc.text("INCLUSO NO SERVIÇO", M + 2, y + 3.6);
+    doc.setTextColor(0);
+    doc.setFont("helvetica", "normal");
+    doc.setFontSize(7.8);
+    let yi = y + 9;
+    for (const it of incl) {
+      doc.setTextColor(...BRAND2);
+      doc.text("✓", M + 2, yi);
+      doc.setTextColor(0);
+      const lines = doc.splitTextToSize(it, colW - 8) as string[];
+      doc.text(lines.slice(0, 1), M + 6, yi);
+      yi += 4.6;
     }
 
-    y = section("8. Encerramento", y);
-    y = paragraph(
-      "A Bio Logus Ambiental coloca-se à disposição para esclarecimentos adicionais e agradece a oportunidade de submeter a presente proposta. Reafirmamos nosso compromisso com a excelência técnica, a segurança operacional, a sustentabilidade e o atendimento de qualidade — pilares que orientam nossa atuação junto a empresas, instituições e órgãos públicos comprometidos com a gestão ambiental responsável.",
-      y,
+    // Direita: observações
+    doc.setDrawColor(220);
+    doc.setLineWidth(0.15);
+    doc.rect(xR, y, colW, inclH);
+    doc.setFillColor(...BRAND);
+    doc.rect(xR, y, colW, 5, "F");
+    doc.setTextColor(255);
+    doc.setFont("helvetica", "bold");
+    doc.setFontSize(7.8);
+    doc.text("OBSERVAÇÕES", xR + 2, y + 3.6);
+    doc.setTextColor(0);
+    doc.setFont("helvetica", "normal");
+    doc.setFontSize(7.5);
+    const obs = (p.observacoes && p.observacoes.trim()) ||
+      "Valores válidos para as quantidades estimadas. Reajuste anual por IPCA. MTR/CDF emitidos a cada coleta.";
+    const obsLines = doc.splitTextToSize(obs, colW - 4) as string[];
+    doc.text(obsLines.slice(0, 7), xR + 2, y + 9);
+
+    y += inclH + 4;
+
+    // ── BLOCO 6 — ASSINATURA + CONTATO (rodapé) ─────────────────────────
+    // Posiciona próximo do fim mas usa o y atual se já estiver alto
+    const footerTop = Math.max(y, PAGE_H - 38);
+    doc.setDrawColor(...BRAND);
+    doc.setLineWidth(0.3);
+    doc.line(M, footerTop, PAGE_W - M, footerTop);
+
+    // Coluna esquerda: assinatura cliente
+    doc.setDrawColor(120);
+    doc.setLineWidth(0.3);
+    doc.line(M, footerTop + 18, M + 75, footerTop + 18);
+    doc.setFont("helvetica", "normal");
+    doc.setFontSize(7.5);
+    doc.setTextColor(...MUTED);
+    doc.text("De acordo — Cliente / Responsável", M, footerTop + 22);
+    doc.text("Data: ____/____/______", M, footerTop + 26);
+
+    // Coluna direita: dados Bio Logus
+    doc.setTextColor(0);
+    doc.setFont("helvetica", "bold");
+    doc.setFontSize(8.5);
+    doc.text("Belkisia P. Santana", PAGE_W - M, footerTop + 6, { align: "right" });
+    doc.setFont("helvetica", "normal");
+    doc.setFontSize(7.5);
+    doc.setTextColor(...MUTED);
+    doc.text("Departamento Comercial", PAGE_W - M, footerTop + 10, { align: "right" });
+    doc.setTextColor(0);
+    doc.text("Tel.: (62) 3558-2791  ·  (62) 98423-6682", PAGE_W - M, footerTop + 15, { align: "right" });
+    doc.text("comercial@biologusambiental.com.br", PAGE_W - M, footerTop + 19, { align: "right" });
+
+    // Rodapé extremo
+    doc.setFillColor(...BRAND);
+    doc.rect(0, PAGE_H - 6, PAGE_W, 6, "F");
+    doc.setTextColor(255);
+    doc.setFontSize(6.5);
+    doc.text(
+      "Bio Logus Ambiental  ·  Gestão de Resíduos com rastreabilidade total  ·  Goiânia/GO",
+      PAGE_W / 2,
+      PAGE_H - 2.2,
+      { align: "center" },
     );
 
-    y = ensureSpace(y + 8, 30);
-    doc.setDrawColor(...BRAND);
-    doc.setLineWidth(0.4);
-    doc.line(MARGIN_X, y, MARGIN_X + 70, y);
-    doc.setFont("helvetica", "bold");
-    doc.setFontSize(10);
-    doc.text("Bio Logus Ambiental", MARGIN_X, y + 5);
-    doc.setFont("helvetica", "normal");
-    doc.setFontSize(8.5);
-    doc.setTextColor(...MUTED);
-    doc.text("Departamento Comercial", MARGIN_X, y + 10);
-    doc.setTextColor(0);
-
-    addFooter();
     return doc;
   };
+
+
 
   const downloadPDF = async (p: Proposta) => {
     const doc = await buildPDF(p);
