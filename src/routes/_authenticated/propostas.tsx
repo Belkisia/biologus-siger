@@ -224,6 +224,7 @@ function PropostasPage() {
 
       const payload = {
         cliente_id: form.cliente_id,
+        contrato_id: form.contrato_id || null,
         numero: form.numero,
         data_emissao: form.data_emissao,
         validade: form.validade || null,
