@@ -339,6 +339,52 @@ function ContratosPage() {
 
   const visualizar = useServerFn(visualizarContrato);
   const enviarEmail = useServerFn(enviarContratoEmail);
+  const previewFn = useServerFn(previewContratoRascunho);
+
+  const formRef = useRef<HTMLFormElement>(null);
+  const [previewData, setPreviewData] = useState<{ html: string; pdfUrl: string; missing: string[] } | null>(null);
+  const [previewLoading, setPreviewLoading] = useState(false);
+
+  const handlePreviewRascunho = async () => {
+    const form = formRef.current;
+    if (!form) return;
+    const fd = new FormData(form);
+    const get = (k: string) => {
+      const v = fd.get(k);
+      return v == null ? "" : String(v);
+    };
+    if (!get("cliente_id") || !get("data_inicio")) {
+      return toast.error("Selecione o cliente e a data de início para pré-visualizar.");
+    }
+    setPreviewLoading(true);
+    try {
+      const r = await previewFn({
+        data: {
+          cliente_id: get("cliente_id"),
+          numero: get("numero") || null,
+          data_inicio: get("data_inicio"),
+          data_fim: get("data_fim") || null,
+          valor_mensal: get("valor_mensal") ? Number(get("valor_mensal")) : null,
+          forma_pagamento: get("forma_pagamento") || null,
+          dia_vencimento: get("dia_vencimento") ? Number(get("dia_vencimento")) : null,
+          frequencia_coleta: get("frequencia_coleta") || null,
+          limite_kg: get("limite_kg") ? Number(get("limite_kg")) : null,
+          valor_excedente: get("valor_excedente") ? Number(get("valor_excedente")) : null,
+          grupos_residuos: get("grupos_residuos") || null,
+          representante_nome: get("representante_nome") || null,
+          representante_cpf: get("representante_cpf") || null,
+          vigencia_anos:
+            periodicidade === "anual" ? "01 (um)" : periodicidade === "semestral" ? "0,5 (meio)" : "0,25 (três meses)",
+        },
+      });
+      setPreviewData({ html: r.html, pdfUrl: r.pdfUrl, missing: r.missing });
+    } catch (e: unknown) {
+      toast.error(errorMessage(e, "Falha ao gerar prévia"));
+    } finally {
+      setPreviewLoading(false);
+    }
+  };
+
 
   const handlePreview = async (c: Contrato) => {
     setPreviewing(c.id);
