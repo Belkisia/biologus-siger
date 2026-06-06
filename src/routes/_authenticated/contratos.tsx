@@ -636,9 +636,13 @@ function ContratosPage() {
                   <Textarea id="observacoes" name="observacoes" rows={2} />
                 </div>
               </div>
-              <DialogFooter>
+              <DialogFooter className="gap-2 sm:gap-2">
                 <Button type="button" variant="ghost" onClick={() => setOpen(false)}>
                   Cancelar
+                </Button>
+                <Button type="button" variant="outline" onClick={handlePreviewRascunho} disabled={previewLoading}>
+                  {previewLoading ? <Loader2 className="h-4 w-4 mr-2 animate-spin" /> : <Eye className="h-4 w-4 mr-2" />}
+                  Pré-visualizar (HTML + PDF)
                 </Button>
                 <Button type="submit" disabled={createMutation.isPending}>
                   {createMutation.isPending && <Loader2 className="h-4 w-4 mr-2 animate-spin" />}
