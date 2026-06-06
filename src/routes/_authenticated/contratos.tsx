@@ -35,8 +35,10 @@ import { Plus, FileSignature, Loader2, Trash2, PenTool, Eye, Mail } from "lucide
 import { toast } from "sonner";
 import { AssinaturaDialog } from "@/components/AssinaturaDialog";
 import { useServerFn } from "@tanstack/react-start";
-import { visualizarContrato, enviarContratoEmail } from "@/lib/contrato.functions";
+import { visualizarContrato, enviarContratoEmail, previewContratoRascunho } from "@/lib/contrato.functions";
 import { buildVars, renderTemplate } from "@/lib/contrato-modelo.functions";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+
 
 export const Route = createFileRoute("/_authenticated/contratos")({
   component: ContratosPage,
