@@ -472,7 +472,7 @@ function ContratosPage() {
             <DialogHeader>
               <DialogTitle>Novo contrato</DialogTitle>
             </DialogHeader>
-            <form onSubmit={handleSubmit} className="space-y-4">
+            <form ref={formRef} onSubmit={handleSubmit} className="space-y-4">
               <div className="grid md:grid-cols-2 gap-4">
                 <div className="space-y-2 md:col-span-2">
                   <Label>Cliente *</Label>
