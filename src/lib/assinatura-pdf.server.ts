@@ -405,18 +405,19 @@ function brl(v: number) {
 
 function htmlToTextBlocks(html: string) {
   const blocks: Array<{ kind: "heading" | "text"; text: string }> = [];
+  // Preserve original close tags so the matching regex can detect heading endings unambiguously.
   const normalized = html
     .replace(/<br\s*\/?\s*>/gi, "\n")
-    .replace(/<\/p>/gi, "</p>\n")
-    .replace(/<\/h[1-6]>/gi, "</h>\n")
-    .replace(/<\/li>/gi, "</li>\n")
-    .replace(/<\/tr>/gi, "</tr>\n")
     .replace(/<\/(td|th)>/gi, " | ");
-  const matches = normalized.matchAll(/<(h[1-6]|p|li|tr)[^>]*>([\s\S]*?)<\/(?:h[1-6]|p|li|tr)>/gi);
+  // Match block-level tags. Headings keep their level so we can close on the same tag.
+  const matches = normalized.matchAll(
+    /<(h[1-6]|p|li|tr)([^>]*)>([\s\S]*?)<\/\1>/gi,
+  );
   for (const m of matches) {
-    const kind = m[1].toLowerCase().startsWith("h") ? "heading" : "text";
+    const tag = m[1].toLowerCase();
+    const kind = tag.startsWith("h") ? "heading" : "text";
     const text = decodeHtml(
-      m[2]
+      m[3]
         .replace(/<[^>]+>/g, " ")
         .replace(/\s+/g, " ")
         .replace(/\s+\|/g, " |")
@@ -433,6 +434,7 @@ function htmlToTextBlocks(html: string) {
   );
   return text ? [{ kind: "text" as const, text }] : [];
 }
+
 
 function decodeHtml(text: string) {
   return text
