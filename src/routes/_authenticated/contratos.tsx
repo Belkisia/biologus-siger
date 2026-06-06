@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Card } from "@/components/ui/card";
@@ -35,8 +35,10 @@ import { Plus, FileSignature, Loader2, Trash2, PenTool, Eye, Mail } from "lucide
 import { toast } from "sonner";
 import { AssinaturaDialog } from "@/components/AssinaturaDialog";
 import { useServerFn } from "@tanstack/react-start";
-import { visualizarContrato, enviarContratoEmail } from "@/lib/contrato.functions";
+import { visualizarContrato, enviarContratoEmail, previewContratoRascunho } from "@/lib/contrato.functions";
 import { buildVars, renderTemplate } from "@/lib/contrato-modelo.functions";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+
 
 export const Route = createFileRoute("/_authenticated/contratos")({
   component: ContratosPage,
@@ -337,6 +339,52 @@ function ContratosPage() {
 
   const visualizar = useServerFn(visualizarContrato);
   const enviarEmail = useServerFn(enviarContratoEmail);
+  const previewFn = useServerFn(previewContratoRascunho);
+
+  const formRef = useRef<HTMLFormElement>(null);
+  const [previewData, setPreviewData] = useState<{ html: string; pdfUrl: string; missing: string[] } | null>(null);
+  const [previewLoading, setPreviewLoading] = useState(false);
+
+  const handlePreviewRascunho = async () => {
+    const form = formRef.current;
+    if (!form) return;
+    const fd = new FormData(form);
+    const get = (k: string) => {
+      const v = fd.get(k);
+      return v == null ? "" : String(v);
+    };
+    if (!get("cliente_id") || !get("data_inicio")) {
+      return toast.error("Selecione o cliente e a data de início para pré-visualizar.");
+    }
+    setPreviewLoading(true);
+    try {
+      const r = await previewFn({
+        data: {
+          cliente_id: get("cliente_id"),
+          numero: get("numero") || null,
+          data_inicio: get("data_inicio"),
+          data_fim: get("data_fim") || null,
+          valor_mensal: get("valor_mensal") ? Number(get("valor_mensal")) : null,
+          forma_pagamento: get("forma_pagamento") || null,
+          dia_vencimento: get("dia_vencimento") ? Number(get("dia_vencimento")) : null,
+          frequencia_coleta: get("frequencia_coleta") || null,
+          limite_kg: get("limite_kg") ? Number(get("limite_kg")) : null,
+          valor_excedente: get("valor_excedente") ? Number(get("valor_excedente")) : null,
+          grupos_residuos: get("grupos_residuos") || null,
+          representante_nome: get("representante_nome") || null,
+          representante_cpf: get("representante_cpf") || null,
+          vigencia_anos:
+            periodicidade === "anual" ? "01 (um)" : periodicidade === "semestral" ? "0,5 (meio)" : "0,25 (três meses)",
+        },
+      });
+      setPreviewData({ html: r.html, pdfUrl: r.pdfUrl, missing: r.missing });
+    } catch (e: unknown) {
+      toast.error(errorMessage(e, "Falha ao gerar prévia"));
+    } finally {
+      setPreviewLoading(false);
+    }
+  };
+
 
   const handlePreview = async (c: Contrato) => {
     setPreviewing(c.id);
@@ -424,7 +472,7 @@ function ContratosPage() {
             <DialogHeader>
               <DialogTitle>Novo contrato</DialogTitle>
             </DialogHeader>
-            <form onSubmit={handleSubmit} className="space-y-4">
+            <form ref={formRef} onSubmit={handleSubmit} className="space-y-4">
               <div className="grid md:grid-cols-2 gap-4">
                 <div className="space-y-2 md:col-span-2">
                   <Label>Cliente *</Label>
@@ -588,9 +636,13 @@ function ContratosPage() {
                   <Textarea id="observacoes" name="observacoes" rows={2} />
                 </div>
               </div>
-              <DialogFooter>
+              <DialogFooter className="gap-2 sm:gap-2">
                 <Button type="button" variant="ghost" onClick={() => setOpen(false)}>
                   Cancelar
+                </Button>
+                <Button type="button" variant="outline" onClick={handlePreviewRascunho} disabled={previewLoading}>
+                  {previewLoading ? <Loader2 className="h-4 w-4 mr-2 animate-spin" /> : <Eye className="h-4 w-4 mr-2" />}
+                  Pré-visualizar (HTML + PDF)
                 </Button>
                 <Button type="submit" disabled={createMutation.isPending}>
                   {createMutation.isPending && <Loader2 className="h-4 w-4 mr-2 animate-spin" />}
@@ -889,6 +941,50 @@ function ContratosPage() {
               )}
               Enviar
             </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      <Dialog open={!!previewData} onOpenChange={(v) => !v && setPreviewData(null)}>
+        <DialogContent className="max-w-[95vw] w-[1100px] max-h-[92vh] overflow-hidden flex flex-col">
+          <DialogHeader>
+            <DialogTitle>Prévia do contrato</DialogTitle>
+          </DialogHeader>
+          {previewData && (
+            <div className="flex-1 overflow-hidden flex flex-col">
+              {previewData.missing.length > 0 && (
+                <div className="rounded-md border border-destructive/40 bg-destructive/10 p-2 text-xs text-destructive mb-2">
+                  Campos ainda em aberto (aparecem em vermelho no texto): {previewData.missing.map((k) => `{{${k}}}`).join(", ")}
+                </div>
+              )}
+              <Tabs defaultValue="html" className="flex-1 flex flex-col overflow-hidden">
+                <TabsList className="w-fit">
+                  <TabsTrigger value="html">HTML renderizado</TabsTrigger>
+                  <TabsTrigger value="pdf">PDF final</TabsTrigger>
+                </TabsList>
+                <TabsContent value="html" className="flex-1 overflow-auto border rounded-md p-4 bg-background">
+                  <div
+                    className="prose prose-sm max-w-none"
+                    dangerouslySetInnerHTML={{ __html: previewData.html }}
+                  />
+                </TabsContent>
+                <TabsContent value="pdf" className="flex-1 overflow-hidden border rounded-md">
+                  {previewData.pdfUrl ? (
+                    <iframe src={previewData.pdfUrl} title="PDF" className="w-full h-[70vh]" />
+                  ) : (
+                    <p className="p-4 text-sm text-muted-foreground">PDF indisponível.</p>
+                  )}
+                </TabsContent>
+              </Tabs>
+            </div>
+          )}
+          <DialogFooter>
+            {previewData?.pdfUrl && (
+              <Button variant="outline" asChild>
+                <a href={previewData.pdfUrl} target="_blank" rel="noreferrer">Abrir PDF em nova aba</a>
+              </Button>
+            )}
+            <Button variant="ghost" onClick={() => setPreviewData(null)}>Fechar</Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
