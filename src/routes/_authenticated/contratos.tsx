@@ -944,6 +944,50 @@ function ContratosPage() {
           </DialogFooter>
         </DialogContent>
       </Dialog>
+
+      <Dialog open={!!previewData} onOpenChange={(v) => !v && setPreviewData(null)}>
+        <DialogContent className="max-w-[95vw] w-[1100px] max-h-[92vh] overflow-hidden flex flex-col">
+          <DialogHeader>
+            <DialogTitle>Prévia do contrato</DialogTitle>
+          </DialogHeader>
+          {previewData && (
+            <div className="flex-1 overflow-hidden flex flex-col">
+              {previewData.missing.length > 0 && (
+                <div className="rounded-md border border-destructive/40 bg-destructive/10 p-2 text-xs text-destructive mb-2">
+                  Campos ainda em aberto (aparecem em vermelho no texto): {previewData.missing.map((k) => `{{${k}}}`).join(", ")}
+                </div>
+              )}
+              <Tabs defaultValue="html" className="flex-1 flex flex-col overflow-hidden">
+                <TabsList className="w-fit">
+                  <TabsTrigger value="html">HTML renderizado</TabsTrigger>
+                  <TabsTrigger value="pdf">PDF final</TabsTrigger>
+                </TabsList>
+                <TabsContent value="html" className="flex-1 overflow-auto border rounded-md p-4 bg-background">
+                  <div
+                    className="prose prose-sm max-w-none"
+                    dangerouslySetInnerHTML={{ __html: previewData.html }}
+                  />
+                </TabsContent>
+                <TabsContent value="pdf" className="flex-1 overflow-hidden border rounded-md">
+                  {previewData.pdfUrl ? (
+                    <iframe src={previewData.pdfUrl} title="PDF" className="w-full h-[70vh]" />
+                  ) : (
+                    <p className="p-4 text-sm text-muted-foreground">PDF indisponível.</p>
+                  )}
+                </TabsContent>
+              </Tabs>
+            </div>
+          )}
+          <DialogFooter>
+            {previewData?.pdfUrl && (
+              <Button variant="outline" asChild>
+                <a href={previewData.pdfUrl} target="_blank" rel="noreferrer">Abrir PDF em nova aba</a>
+              </Button>
+            )}
+            <Button variant="ghost" onClick={() => setPreviewData(null)}>Fechar</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
