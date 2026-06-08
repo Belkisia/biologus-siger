@@ -358,7 +358,6 @@ function ContratosPage() {
     const erros: string[] = [];
     if (!get("cliente_id"))          erros.push("cliente_id");
     if (!get("representante_nome"))  erros.push("representante_nome");
-    if (!get("representante_cpf"))   erros.push("representante_cpf");
     if (!get("data_inicio"))         erros.push("data_inicio");
     if (!get("limite_kg"))           erros.push("limite_kg");
     if (!get("valor_mensal"))        erros.push("valor_mensal");
@@ -368,7 +367,6 @@ function ContratosPage() {
       const labels: Record<string, string> = {
         cliente_id:         "Cliente",
         representante_nome: "Nome do representante",
-        representante_cpf:  "CPF do representante",
         data_inicio:        "Data de início",
         limite_kg:          "Limite de peso (kg)",
         valor_mensal:       "Valor mensal",
@@ -536,20 +534,7 @@ function ContratosPage() {
                     Vem do responsável cadastrado no cliente.
                   </p>
                 </div>
-                <div className="space-y-2">
-                  <Label htmlFor="representante_cpf">CPF do representante *</Label>
-                  <Input
-                    id="representante_cpf"
-                    name="representante_cpf"
-                    required
-                    placeholder="000.000.000-00"
-                    className={camposErro.includes("representante_cpf") ? "border-destructive ring-1 ring-destructive" : ""}
-                    onChange={() => setCamposErro((e) => e.filter((x) => x !== "representante_cpf"))}
-                  />
-                  {camposErro.includes("representante_cpf") && (
-                    <p className="text-xs text-destructive mt-1">⚠ Obrigatório para gerar o contrato</p>
-                  )}
-                </div>
+
                 <div className="space-y-2">
                   <Label htmlFor="numero">Número *</Label>
                   <Input id="numero" name="numero" required placeholder="CTR-2026-0001" />
