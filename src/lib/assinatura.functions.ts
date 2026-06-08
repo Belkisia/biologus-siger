@@ -1,4 +1,4 @@
-import { createServerFn } from "@tanstack/react-start";
+ import { createServerFn } from "@tanstack/react-start";
 import { getRequestHeader, getRequestIP } from "@tanstack/react-start/server";
 import { z } from "zod";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
@@ -80,10 +80,10 @@ export const criarSolicitacaoAssinatura = createServerFn({ method: "POST" })
         endereco: contrato.clientes?.endereco || "",
       },
       contratada: {
-        nome: "Bio Logus Ambiental Ltda.",
-        cnpj: "00.000.000/0001-00",
-        endereco: "Endereço Bio Logus",
-        email: "contato@biologus.com.br",
+        nome: "BIO LOGUS AMBIENTAL LTDA - ME",
+        cnpj: "26.484.921/0001-60",
+        endereco: "Rua dos Ferroviários, Qd. 01, Lt. 05, Parque Industrial João Brás 2, Goiânia-GO, CEP 74.483-115",
+        email: "comercial@biologusambiental.com.br",
       },
       objeto: contrato.objeto || "",
       itens: ((itens || []) as ContratoItemPdf[]).map((i) => ({
