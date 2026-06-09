@@ -721,7 +721,7 @@ export const visualizarContrato = createServerFn({ method: "POST" })
     }
 
     const wrapped = `<!doctype html><html><head><meta charset="utf-8"><title>Contrato ${c.numero}</title><style>body{font-family:Arial,sans-serif;max-width:820px;margin:24px auto;padding:0 24px;color:#111;line-height:1.5}table{border-collapse:collapse;width:100%;margin:8px 0}td,th{border:1px solid #999;padding:6px;text-align:left}h1{font-size:20px}h3{margin-top:20px;color:#0D6B54}</style></head><body>${body}</body></html>`;
-    return { url: htmlToDataUrl(wrapped), html: wrapped };
+    return { html: wrapped };
   });
 
 
