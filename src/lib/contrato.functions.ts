@@ -688,6 +688,43 @@ export const previewContratoRascunho = createServerFn({ method: "POST" })
     return { url: htmlToDataUrl(wrapped), html };
   });
 
+export const visualizarContrato = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((d: { contrato_id: string }) =>
+    z.object({ contrato_id: z.string().uuid() }).parse(d),
+  )
+  .handler(async ({ data, context }) => {
+    const { data: c, error } = await context.supabase
+      .from("contratos")
+      .select("numero, conteudo_html, data_inicio, data_fim, valor_mensal, status, forma_pagamento, observacoes, clientes(razao_social, cnpj, endereco, numero, bairro, cidade, estado, cep)")
+      .eq("id", data.contrato_id)
+      .single();
+    if (error || !c) throw new Error("Contrato não encontrado");
+
+    let body = c.conteudo_html;
+    if (!body || body.trim().length < 20) {
+      const cli = (c as unknown as { clientes?: Record<string, string | null> }).clientes || {};
+      const end = [cli.endereco, cli.numero, cli.bairro, cli.cidade, cli.estado, cli.cep].filter(Boolean).join(", ");
+      body = `
+        <h1 style="text-align:center">CONTRATO Nº ${c.numero}</h1>
+        <h3>Contratante</h3>
+        <p><strong>${cli.razao_social || "—"}</strong><br/>CNPJ: ${cli.cnpj || "—"}<br/>${end || "—"}</p>
+        <h3>Dados do Contrato</h3>
+        <table>
+          <tr><td><strong>Início:</strong> ${dataBR(c.data_inicio)}</td><td><strong>Fim:</strong> ${dataBR(c.data_fim) || "Indeterminado"}</td></tr>
+          <tr><td><strong>Valor mensal:</strong> ${brl(c.valor_mensal)}</td><td><strong>Forma pgto:</strong> ${c.forma_pagamento || "—"}</td></tr>
+          <tr><td colspan="2"><strong>Status:</strong> ${c.status || "—"}</td></tr>
+        </table>
+        ${c.observacoes ? `<h3>Observações</h3><p>${c.observacoes}</p>` : ""}
+        <p style="margin-top:32px;color:#888;font-size:12px;font-style:italic">* Contrato gerado antes da implantação do conteúdo HTML automático. Exibindo dados do registro.</p>
+      `;
+    }
+
+    const wrapped = `<!doctype html><html><head><meta charset="utf-8"><title>Contrato ${c.numero}</title><style>body{font-family:Arial,sans-serif;max-width:820px;margin:24px auto;padding:0 24px;color:#111;line-height:1.5}table{border-collapse:collapse;width:100%;margin:8px 0}td,th{border:1px solid #999;padding:6px;text-align:left}h1{font-size:20px}h3{margin-top:20px;color:#0D6B54}</style></head><body>${body}</body></html>`;
+    return { url: htmlToDataUrl(wrapped), html: wrapped };
+  });
+
+
 export const enviarContratoEmail = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((d: { contrato_id: string; email: string; mensagem?: string | null }) =>
