@@ -747,7 +747,7 @@ function ContratosPage() {
                   </div>
                   <div className="space-y-1.5">
                     <Label className="text-xs">Frequência — Cláusula 2.1</Label>
-                    <Select name="frequencia_coleta" defaultValue="Mensal (1x ao mês)">
+                    <Select name="frequencia_coleta_texto" defaultValue="Mensal (1x ao mês)">
                       <SelectTrigger><SelectValue /></SelectTrigger>
                       <SelectContent>
                         <SelectItem value="Mensal (1x ao mês)">Mensal — 1x ao mês</SelectItem>
