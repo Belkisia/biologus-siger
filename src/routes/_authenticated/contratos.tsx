@@ -144,8 +144,32 @@ function ContratoViewer({
           {contrato.conteudo_html ? (
             <div dangerouslySetInnerHTML={{ __html: contrato.conteudo_html }} />
           ) : (
-            <div className="p-10 text-center text-muted-foreground">
-              Contrato sem conteúdo HTML gerado.
+            <div className="space-y-4">
+              <div className="p-4 bg-yellow-50 border border-yellow-200 rounded text-sm text-yellow-900">
+                Contrato sem conteúdo HTML gerado. Exibindo dados básicos:
+              </div>
+              <h2 className="text-xl font-bold text-center">CONTRATO Nº {contrato.numero}</h2>
+              <table className="w-full border-collapse">
+                <tbody>
+                  <tr>
+                    <td className="border p-2"><strong>Cliente:</strong> {contrato.clientes?.razao_social || "—"}</td>
+                  </tr>
+                  <tr>
+                    <td className="border p-2">
+                      <strong>Início:</strong> {new Date(contrato.data_inicio).toLocaleDateString("pt-BR")}
+                      {" — "}
+                      <strong>Fim:</strong> {contrato.data_fim ? new Date(contrato.data_fim).toLocaleDateString("pt-BR") : "—"}
+                    </td>
+                  </tr>
+                  <tr>
+                    <td className="border p-2">
+                      <strong>Valor mensal:</strong>{" "}
+                      {contrato.valor_mensal?.toLocaleString("pt-BR", { style: "currency", currency: "BRL" }) || "—"}
+                      {contrato.forma_pagamento ? <> — <strong>Pagamento:</strong> {contrato.forma_pagamento}</> : null}
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
             </div>
           )}
         </div>
