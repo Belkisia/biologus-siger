@@ -220,7 +220,7 @@ function NovaPgrssSimples() {
           valor_total: valorNum,
         },
       });
-      toast.success("Proposta salva!");
+      toast.success("✅ Proposta PGRSS salva com sucesso!");
       navigate({ to: "/propostas/pgrss/$id", params: { id: res.id } });
     } catch (e: any) {
       toast.error(e.message ?? "Erro ao salvar");
