@@ -123,7 +123,7 @@ type Contrato = {
 };
 
 function ContratoViewer({ contrato, onClose, onAssinar }: { contrato: Contrato; onClose: () => void; onAssinar: () => void; }) {
-  const iframeRef = useRef<HTMLIFrameElement>(null);
+  const printId = "contrato-print-area";
 
   const htmlContent = contrato.conteudo_html && contrato.conteudo_html.trim().length > 20
     ? contrato.conteudo_html
@@ -133,23 +133,26 @@ function ContratoViewer({ contrato, onClose, onAssinar }: { contrato: Contrato; 
         <p><strong>Valor mensal:</strong> ${contrato.valor_mensal?.toLocaleString("pt-BR",{style:"currency",currency:"BRL"}) || "—"}</p>
       </div>`;
 
-  const srcDoc = `<!doctype html><html><head><meta charset="utf-8"><style>body{font-family:Arial,sans-serif;max-width:820px;margin:24px auto;padding:24px;line-height:1.6;color:#111}@media print{body{margin:0;padding:16px}}</style></head><body>${htmlContent}</body></html>`;
-
   const handlePrint = () => {
-    const iframe = iframeRef.current;
-    if (!iframe?.contentWindow) {
-      toast.error("Aguarde o contrato carregar antes de imprimir");
-      return;
-    }
-    iframe.contentWindow.focus();
-    iframe.contentWindow.print();
+    const el = document.getElementById(printId);
+    if (!el) return;
+    const style = document.createElement("style");
+    style.id = "__print_style__";
+    style.textContent = `@media print { body > *:not(#__print_wrapper__) { display: none !important; } #__print_wrapper__ { display: block !important; position: fixed; inset: 0; background: white; z-index: 99999; padding: 24px; } }`;
+    document.head.appendChild(style);
+    const wrapper = document.createElement("div");
+    wrapper.id = "__print_wrapper__";
+    wrapper.innerHTML = el.innerHTML;
+    document.body.appendChild(wrapper);
+    window.print();
+    document.body.removeChild(wrapper);
+    document.head.removeChild(style);
   };
 
   return (
     <div style={{ position: "fixed", inset: 0, zIndex: 9999, background: "rgba(0,0,0,.6)", display: "flex", alignItems: "center", justifyContent: "center", padding: "20px" }}>
       <div style={{ background: "#fff", borderRadius: "12px", width: "min(900px,100%)", height: "90vh", display: "flex", flexDirection: "column", boxShadow: "0 24px 80px rgba(0,0,0,.3)" }}>
-        {/* Header */}
-        <div style={{ padding: "14px 20px", borderBottom: "1px solid #E2E8E5", display: "flex", alignItems: "center", gap: "12px" }}>
+        <div style={{ padding: "14px 20px", borderBottom: "1px solid #E2E8E5", display: "flex", alignItems: "center", gap: "12px", flexShrink: 0 }}>
           <span style={{ fontWeight: 600, fontSize: "14px", flex: 1, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
             {contrato.numero} — {contrato.clientes?.razao_social}
           </span>
@@ -163,12 +166,8 @@ function ContratoViewer({ contrato, onClose, onAssinar }: { contrato: Contrato; 
             Fechar
           </button>
         </div>
-        {/* Iframe com srcDoc — não usa data: URL nem window.open */}
-        <iframe
-          ref={iframeRef}
-          srcDoc={srcDoc}
-          style={{ flex: 1, border: "none", borderRadius: "0 0 12px 12px" }}
-          title={`Contrato ${contrato.numero}`}
+        <div id={printId} style={{ flex: 1, overflowY: "auto", padding: "32px", fontFamily: "Arial, sans-serif", fontSize: "13px", lineHeight: 1.8 }}
+          dangerouslySetInnerHTML={{ __html: htmlContent }}
         />
       </div>
     </div>
