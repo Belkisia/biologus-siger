@@ -134,7 +134,7 @@ export function buildVars(args: {
     CLIENTE_WHATSAPP: c.whatsapp || "",
     REPRESENTANTE_NOME:
       c.responsavel_financeiro || c.responsavel_tecnico || c.responsavel_operacional || "",
-    REPRESENTANTE_CPF: (c as any).representante_cpf || c.cnpj || "",
+    REPRESENTANTE_CPF: c.representante_cpf || c.cnpj || "",
     RESPONSAVEL_TECNICO: c.responsavel_tecnico || "",
     RESPONSAVEL_FINANCEIRO: c.responsavel_financeiro || "",
     RESPONSAVEL_OPERACIONAL: c.responsavel_operacional || "",
