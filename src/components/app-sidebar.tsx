@@ -45,6 +45,8 @@ const comercial: NavItem[] = [
   { title: "Clientes", url: "/clientes", icon: Users },
   { title: "Propostas", url: "/propostas", icon: FileBarChart },
   { title: "Nova Proposta (IA)", url: "/propostas/nova", icon: Sparkles },
+  { title: "Proposta PGRSS (IA)", url: "/propostas/pgrss/nova", icon: Sparkles },
+  { title: "Preços PGRSS", url: "/precos-pgrss", icon: DollarSign },
   { title: "Contratos", url: "/contratos", icon: FileSignature },
   { title: "Modelos de Contrato", url: "/modelos-contrato", icon: FileText },
   { title: "Financeiro", url: "/financeiro", icon: DollarSign },
