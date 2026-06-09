@@ -145,7 +145,7 @@ function AuthPage() {
                 </div>
                 <button
                   type="button"
-                  onClick={() => { setAuthTab("reset"); setMessage(null); }}
+                  onClick={() => router.navigate({ to: "/reset-password" })}
                   className="text-sm font-medium text-primary hover:underline"
                 >
                   Esqueci minha senha

@@ -21,12 +21,15 @@ export const Route = createFileRoute("/reset-password")({
 
 function ResetPasswordPage() {
   const router = useRouter();
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [loading, setLoading] = useState(false);
+  const [emailLoading, setEmailLoading] = useState(false);
   const [ready, setReady] = useState(false);
   const [canReset, setCanReset] = useState(false);
   const [message, setMessage] = useState<string | null>(null);
+  const [messageType, setMessageType] = useState<"error" | "success">("error");
 
   useEffect(() => {
     const initRecovery = async () => {
@@ -71,6 +74,38 @@ function ResetPasswordPage() {
     router.navigate({ to: "/auth", replace: true });
   };
 
+  const onSendRecoveryEmail = async (e: React.FormEvent) => {
+    e.preventDefault();
+    const trimmedEmail = email.trim();
+    if (!trimmedEmail) {
+      setMessageType("error");
+      setMessage("Digite seu e-mail para receber o link de redefinição.");
+      return;
+    }
+
+    setEmailLoading(true);
+    setMessage(null);
+    const { error } = await supabase.auth.resetPasswordForEmail(trimmedEmail, {
+      redirectTo: `${window.location.origin}/reset-password`,
+    });
+    setEmailLoading(false);
+
+    if (error) {
+      const text = error.message.includes("58 seconds") || error.message.includes("security purposes")
+        ? "Aguarde cerca de 1 minuto antes de pedir outro link. O primeiro link já foi enviado."
+        : error.message;
+      setMessageType("error");
+      setMessage(text);
+      toast.error(text);
+      return;
+    }
+
+    const text = "Link enviado. Verifique seu e-mail e abra o link para cadastrar a nova senha.";
+    setMessageType("success");
+    setMessage(text);
+    toast.success(text);
+  };
+
   return (
     <div className="min-h-screen flex items-center justify-center p-4" style={{ background: "var(--gradient-subtle)" }}>
       <div className="w-full max-w-md">
@@ -84,12 +119,24 @@ function ResetPasswordPage() {
 
         <Card className="p-6">
           {!canReset && ready ? (
-            <div className="space-y-4 text-center">
-              <p className="text-sm text-muted-foreground">{message || "Abra esta tela pelo link enviado ao seu e-mail."}</p>
-              <Button type="button" className="w-full" onClick={() => router.navigate({ to: "/auth" })}>
+            <form onSubmit={onSendRecoveryEmail} className="space-y-4">
+              {message && (
+                <div className={`rounded-md border px-3 py-2 text-sm ${messageType === "error" ? "border-destructive/30 bg-destructive/10 text-destructive" : "border-primary/30 bg-primary/10 text-primary"}`}>
+                  {message}
+                </div>
+              )}
+              <div className="space-y-2">
+                <Label htmlFor="recovery-email">E-mail</Label>
+                <Input id="recovery-email" type="email" required value={email} onChange={(e) => setEmail(e.target.value)} autoComplete="email" />
+              </div>
+              <Button type="submit" className="w-full" disabled={emailLoading}>
+                {emailLoading && <Loader2 className="h-4 w-4 mr-2 animate-spin" />}
+                Enviar link de redefinição
+              </Button>
+              <Button type="button" variant="outline" className="w-full" onClick={() => router.navigate({ to: "/auth" })}>
                 Voltar para login
               </Button>
-            </div>
+            </form>
           ) : (
             <form onSubmit={onSubmit} className="space-y-4">
               <div className="space-y-2">
