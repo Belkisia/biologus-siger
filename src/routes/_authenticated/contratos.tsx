@@ -16,7 +16,7 @@ import {
 import { Loader2, Plus, Eye, Mail, PenTool, Trash2, FileSignature } from "lucide-react";
 import { toast } from "sonner";
 import { useServerFn } from "@tanstack/react-start";
-import { enviarContratoEmail, gerarContratoPadraoBioLogus } from "@/lib/contrato.functions";
+import { enviarContratoEmail, gerarContratoPadraoBioLogus, visualizarContrato } from "@/lib/contrato.functions";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 export const Route = createFileRoute("/_authenticated/contratos")({
