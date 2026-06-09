@@ -987,20 +987,27 @@ function PropostasPage() {
     doc.save(`Proposta-${p.numero}.pdf`);
   };
 
+  const closePdfPreview = () => {
+    setPdfPreview((current) => {
+      if (current.url) URL.revokeObjectURL(current.url);
+      return { open: false, url: "", numero: "", loading: false };
+    });
+  };
+
   const previewPDF = async (p: Proposta) => {
+    setPdfPreview((current) => {
+      if (current.url) URL.revokeObjectURL(current.url);
+      return { open: true, url: "", numero: p.numero, loading: true };
+    });
     try {
       const doc = await buildPDF(p);
       const blob = doc.output("blob");
       const url = URL.createObjectURL(blob);
-      const win = window.open(url, "_blank");
-      if (!win) {
-        // fallback se popup bloqueado: força download
-        doc.save(`Proposta-${p.numero}.pdf`);
-      }
-      setTimeout(() => URL.revokeObjectURL(url), 60_000);
-    } catch (e) {
+      setPdfPreview({ open: true, url, numero: p.numero, loading: false });
+    } catch (e: unknown) {
       console.error("Erro ao gerar PDF:", e);
-      alert("Não foi possível gerar o PDF. Veja o console para detalhes.");
+      closePdfPreview();
+      toast.error(getErrorMessage(e, "Não foi possível gerar o PDF"));
     }
   };
 
