@@ -449,7 +449,7 @@ function ContratosPage() {
           valor_mensal: payload.valor_mensal ? Number(payload.valor_mensal) : null,
           forma_pagamento: String(payload.forma_pagamento || ""),
           dia_vencimento: payload.dia_vencimento ? Number(payload.dia_vencimento) : null,
-          frequencia_coleta: String(payload.frequencia_coleta || "mensal (1 vez ao mês)"),
+          frequencia_coleta: String(payload.frequencia_coleta_texto || "mensal (1 vez ao mês)"),
           vigencia_anos: periodicidade === "anual" ? "01 (um)" : periodicidade === "semestral" ? "0,5 (meio)" : "0,25 (três meses)",
         },
         itens: payload.limite_kg ? [{
@@ -460,11 +460,22 @@ function ContratosPage() {
         }] : [],
       });
       const conteudo_html = renderTemplate(modelo.conteudo_html, vars);
-      const COLS = ["cliente_id","numero","objeto","data_inicio","data_fim","valor_mensal","indice_reajuste","periodicidade_reajuste","dia_vencimento","forma_pagamento","observacoes","status"];
-      const clean: Record<string, unknown> = {};
-      for (const k of COLS) if (payload[k] !== undefined && payload[k] !== "") clean[k] = payload[k];
       const { error } = await supabase.from("contratos").insert({
-        ...clean, owner_id: user.id, conteudo_html, modelo_id: modelo.id,
+        owner_id: user.id,
+        cliente_id: payload.cliente_id as string,
+        numero: String(payload.numero || ""),
+        objeto: payload.objeto ? String(payload.objeto) : null,
+        data_inicio: String(payload.data_inicio || ""),
+        data_fim: payload.data_fim ? String(payload.data_fim) : null,
+        valor_mensal: payload.valor_mensal ? Number(payload.valor_mensal) : null,
+        indice_reajuste: payload.indice_reajuste ? String(payload.indice_reajuste) : null,
+        periodicidade_reajuste: payload.periodicidade_reajuste ? String(payload.periodicidade_reajuste) : null,
+        dia_vencimento: payload.dia_vencimento ? Number(payload.dia_vencimento) : null,
+        forma_pagamento: payload.forma_pagamento ? String(payload.forma_pagamento) : null,
+        observacoes: payload.observacoes ? String(payload.observacoes) : null,
+        status: payload.status ? String(payload.status) : "ativo",
+        conteudo_html,
+        modelo_id: modelo.id,
       } as never);
       if (error) throw error;
     },
@@ -736,7 +747,7 @@ function ContratosPage() {
                   </div>
                   <div className="space-y-1.5">
                     <Label className="text-xs">Frequência — Cláusula 2.1</Label>
-                    <Select name="frequencia_coleta" defaultValue="Mensal (1x ao mês)">
+                    <Select name="frequencia_coleta_texto" defaultValue="Mensal (1x ao mês)">
                       <SelectTrigger><SelectValue /></SelectTrigger>
                       <SelectContent>
                         <SelectItem value="Mensal (1x ao mês)">Mensal — 1x ao mês</SelectItem>
