@@ -644,17 +644,26 @@ function HistoricoDialog({ doc, onOpenChange, onChanged, ownerId }: {
 
 function OpenInline({ path }: { path: string }) {
   const [loading, setLoading] = useState(false);
+  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const open = async () => {
     if (!path || path === "pending") return;
     setLoading(true);
     const { data, error } = await supabase.storage.from(BUCKET).createSignedUrl(path, 3600);
     setLoading(false);
     if (error || !data?.signedUrl) { toast.error("Falha ao abrir"); return; }
-    window.open(data.signedUrl, "_blank");
+    setPreviewUrl(data.signedUrl);
   };
   return (
-    <Button variant="ghost" size="icon" onClick={open} disabled={loading} title="Abrir">
-      {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : <ExternalLink className="h-4 w-4" />}
-    </Button>
+    <>
+      <Button variant="ghost" size="icon" onClick={open} disabled={loading} title="Abrir">
+        {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : <ExternalLink className="h-4 w-4" />}
+      </Button>
+      <Dialog open={!!previewUrl} onOpenChange={(open) => !open && setPreviewUrl(null)}>
+        <DialogContent className="max-w-5xl h-[90vh] p-0 overflow-hidden flex flex-col">
+          <DialogHeader><DialogTitle className="px-4 py-3">Documento</DialogTitle></DialogHeader>
+          {previewUrl && <iframe src={previewUrl} title="Documento" className="w-full flex-1 border-0" />}
+        </DialogContent>
+      </Dialog>
+    </>
   );
 }
