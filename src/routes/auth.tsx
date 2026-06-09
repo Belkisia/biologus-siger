@@ -24,6 +24,7 @@ export const Route = createFileRoute("/auth")({
 function AuthPage() {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
+  const [resetLoading, setResetLoading] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [fullName, setFullName] = useState("");
@@ -71,6 +72,23 @@ function AuthPage() {
     router.navigate({ to: "/dashboard" });
   };
 
+  const onResetPassword = async () => {
+    const trimmedEmail = email.trim();
+    if (!trimmedEmail) {
+      toast.error("Digite seu e-mail para redefinir a senha.");
+      return;
+    }
+
+    setResetLoading(true);
+    const { error } = await supabase.auth.resetPasswordForEmail(trimmedEmail, {
+      redirectTo: `${window.location.origin}/reset-password`,
+    });
+    setResetLoading(false);
+
+    if (error) return toast.error(error.message);
+    toast.success("Enviamos o link de redefinição para seu e-mail.");
+  };
+
   return (
     <div className="min-h-screen flex items-center justify-center p-4" style={{ background: "var(--gradient-subtle)" }}>
       <div className="w-full max-w-md">
@@ -92,6 +110,14 @@ function AuthPage() {
               <Label htmlFor="si-pass">Senha</Label>
               <Input id="si-pass" type="password" required value={password} onChange={(e) => setPassword(e.target.value)} />
             </div>
+            <button
+              type="button"
+              onClick={onResetPassword}
+              disabled={resetLoading || loading}
+              className="text-sm font-medium text-primary hover:underline disabled:pointer-events-none disabled:opacity-50"
+            >
+              {resetLoading ? "Enviando link..." : "Esqueci minha senha"}
+            </button>
             <Button type="submit" className="w-full" disabled={loading}>
               {loading && <Loader2 className="h-4 w-4 mr-2 animate-spin" />}
               Entrar
