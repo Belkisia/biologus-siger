@@ -1,4 +1,4 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useState, useMemo, useEffect } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -137,6 +137,7 @@ function emptyItem(): Item {
 function PropostasPage() {
   const qc = useQueryClient();
   const { user } = Route.useRouteContext();
+  const navigate = useNavigate();
   const [open, setOpen] = useState(false);
   const [editing, setEditing] = useState<Proposta | null>(null);
   const [showContratoImport, setShowContratoImport] = useState(false);
@@ -995,6 +996,11 @@ function PropostasPage() {
   };
 
   const previewPDF = async (p: Proposta) => {
+    // Propostas PGRSS têm número começando com PGRSS- — navega para rota dedicada
+    if (p.numero.startsWith("PGRSS-")) {
+      navigate({ to: "/propostas/pgrss/$id", params: { id: p.id } });
+      return;
+    }
     setPdfPreview((current) => {
       if (current.url) URL.revokeObjectURL(current.url);
       return { open: true, url: "", numero: p.numero, loading: true };
