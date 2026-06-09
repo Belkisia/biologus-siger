@@ -131,43 +131,36 @@ function ContratoViewer({
   onClose: () => void;
   onAssinar: () => void;
 }) {
-  useEffect(() => {
-    const onKeyDown = (event: KeyboardEvent) => {
-      if (event.key === "Escape") onClose();
-    };
-    document.body.style.overflow = "hidden";
-    window.addEventListener("keydown", onKeyDown);
-    return () => {
-      document.body.style.overflow = "";
-      window.removeEventListener("keydown", onKeyDown);
-    };
-  }, [onClose]);
-
   return (
-    <div className="eco-viewer-backdrop" role="dialog" aria-modal="true" aria-label="Visualização do contrato">
-      <div className="eco-viewer-shell">
-        <div className="eco-viewer-toolbar">
-          <div className="eco-viewer-title">{contrato.numero} — {contrato.clientes?.razao_social || "Cliente não informado"}</div>
-          <div className="eco-viewer-actions">
-            <button className="eco-btn eco-btn-g" type="button" onClick={() => window.print()}>Imprimir / PDF</button>
-            <button className="eco-btn eco-btn-p" type="button" onClick={onAssinar}>✏ Assinar digitalmente</button>
-            <button className="eco-btn eco-btn-g" type="button" onClick={onClose}>Fechar</button>
-          </div>
+    <Dialog open onOpenChange={(o) => { if (!o) onClose(); }}>
+      <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
+        <DialogHeader>
+          <DialogTitle>
+            {contrato.numero} — {contrato.clientes?.razao_social || "Cliente não informado"}
+          </DialogTitle>
+        </DialogHeader>
+        <div className="contrato-doc bg-white text-black p-6 border rounded">
+          {contrato.conteudo_html ? (
+            <div dangerouslySetInnerHTML={{ __html: contrato.conteudo_html }} />
+          ) : (
+            <div className="p-10 text-center text-muted-foreground">
+              Contrato sem conteúdo HTML gerado.
+            </div>
+          )}
         </div>
-        <div className="eco-viewer-document">
-          <div className="eco-viewer-paper contrato-doc">
-            {contrato.conteudo_html ? (
-              <div dangerouslySetInnerHTML={{ __html: contrato.conteudo_html }} />
-            ) : (
-              <div style={{ padding: "40px", textAlign: "center", color: "#6B7671" }}>Contrato sem conteúdo HTML gerado.</div>
-            )}
-          </div>
-        </div>
-        <div className="eco-viewer-footer">
-          <button className="eco-btn eco-btn-g" type="button" onClick={onClose}>Fechar</button>
-        </div>
-      </div>
-    </div>
+        <DialogFooter className="gap-2">
+          <Button variant="outline" type="button" onClick={() => window.print()}>
+            Imprimir / PDF
+          </Button>
+          <Button type="button" onClick={onAssinar}>
+            ✏ Assinar digitalmente
+          </Button>
+          <Button variant="secondary" type="button" onClick={onClose}>
+            Fechar
+          </Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
   );
 }
 
