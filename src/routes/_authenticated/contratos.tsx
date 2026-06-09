@@ -125,13 +125,6 @@ type Contrato = {
 function ContratoViewer({ contrato, onClose, onAssinar }: { contrato: Contrato; onClose: () => void; onAssinar: () => void; }) {
   const iframeRef = useRef<HTMLIFrameElement>(null);
 
-  const handlePrint = () => {
-    const iframe = iframeRef.current;
-    if (!iframe) return;
-    iframe.contentWindow?.focus();
-    iframe.contentWindow?.print();
-  };
-
   const htmlContent = contrato.conteudo_html && contrato.conteudo_html.trim().length > 20
     ? contrato.conteudo_html
     : `<div style="padding:40px;font-family:Arial;max-width:800px;margin:0 auto">
@@ -140,32 +133,45 @@ function ContratoViewer({ contrato, onClose, onAssinar }: { contrato: Contrato; 
         <p><strong>Valor mensal:</strong> ${contrato.valor_mensal?.toLocaleString("pt-BR",{style:"currency",currency:"BRL"}) || "—"}</p>
       </div>`;
 
-  const iframeSrc = `data:text/html;charset=utf-8,${encodeURIComponent(`<!doctype html><html><head><meta charset="utf-8"><style>body{font-family:Arial,sans-serif;max-width:820px;margin:24px auto;padding:24px;line-height:1.6;color:#111}@media print{body{margin:0;padding:16px}}</style></head><body>${htmlContent}</body></html>`)}`;
+  const srcDoc = `<!doctype html><html><head><meta charset="utf-8"><style>body{font-family:Arial,sans-serif;max-width:820px;margin:24px auto;padding:24px;line-height:1.6;color:#111}@media print{body{margin:0;padding:16px}}</style></head><body>${htmlContent}</body></html>`;
+
+  const handlePrint = () => {
+    const iframe = iframeRef.current;
+    if (!iframe?.contentWindow) {
+      toast.error("Aguarde o contrato carregar antes de imprimir");
+      return;
+    }
+    iframe.contentWindow.focus();
+    iframe.contentWindow.print();
+  };
 
   return (
-    <Dialog open={true} onOpenChange={(open) => { if (!open) onClose(); }}>
-      <DialogContent className="max-w-4xl max-h-[90vh] flex flex-col">
-        <DialogHeader>
-          <DialogTitle>{contrato.numero} — {contrato.clientes?.razao_social}</DialogTitle>
-        </DialogHeader>
-        <div className="flex-1 overflow-hidden rounded border">
-          <iframe
-            ref={iframeRef}
-            src={iframeSrc}
-            className="w-full h-full"
-            style={{ minHeight: "60vh", border: "none" }}
-            title={`Contrato ${contrato.numero}`}
-          />
+    <div style={{ position: "fixed", inset: 0, zIndex: 9999, background: "rgba(0,0,0,.6)", display: "flex", alignItems: "center", justifyContent: "center", padding: "20px" }}>
+      <div style={{ background: "#fff", borderRadius: "12px", width: "min(900px,100%)", height: "90vh", display: "flex", flexDirection: "column", boxShadow: "0 24px 80px rgba(0,0,0,.3)" }}>
+        {/* Header */}
+        <div style={{ padding: "14px 20px", borderBottom: "1px solid #E2E8E5", display: "flex", alignItems: "center", gap: "12px" }}>
+          <span style={{ fontWeight: 600, fontSize: "14px", flex: 1, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+            {contrato.numero} — {contrato.clientes?.razao_social}
+          </span>
+          <button onClick={handlePrint} style={{ padding: "7px 14px", borderRadius: "7px", border: "1px solid #E2E8E5", background: "#fff", cursor: "pointer", fontSize: "13px", fontFamily: "inherit" }}>
+            Imprimir / PDF
+          </button>
+          <button onClick={onAssinar} style={{ padding: "7px 14px", borderRadius: "7px", border: "none", background: "#0D6B54", color: "#fff", cursor: "pointer", fontSize: "13px", fontFamily: "inherit" }}>
+            ✏ Assinar digitalmente
+          </button>
+          <button onClick={onClose} style={{ padding: "7px 14px", borderRadius: "7px", border: "1px solid #E2E8E5", background: "#fff", cursor: "pointer", fontSize: "13px", fontFamily: "inherit" }}>
+            Fechar
+          </button>
         </div>
-        <div className="flex justify-end gap-2 pt-2">
-          <button onClick={() => {
-            handlePrint();
-          }} className="px-4 py-2 border rounded text-sm">Imprimir</button>
-          <button onClick={onAssinar} className="px-4 py-2 bg-green-700 text-white rounded text-sm">✏ Assinar</button>
-          <button onClick={onClose} className="px-4 py-2 border rounded text-sm">Fechar</button>
-        </div>
-      </DialogContent>
-    </Dialog>
+        {/* Iframe com srcDoc — não usa data: URL nem window.open */}
+        <iframe
+          ref={iframeRef}
+          srcDoc={srcDoc}
+          style={{ flex: 1, border: "none", borderRadius: "0 0 12px 12px" }}
+          title={`Contrato ${contrato.numero}`}
+        />
+      </div>
+    </div>
   );
 }
 
