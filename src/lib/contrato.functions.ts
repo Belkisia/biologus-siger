@@ -515,3 +515,140 @@ export const gerarContratoDeModelo = createServerFn({ method: "POST" })
     }
     return { id: novo!.id };
   });
+
+// =============================
+// Visualização / preview / e-mail
+// =============================
+
+function htmlToDataUrl(html: string) {
+  // btoa não trata UTF-8; usa encodeURIComponent + unescape
+  const b64 =
+    typeof btoa !== "undefined"
+      ? btoa(unescape(encodeURIComponent(html)))
+      : Buffer.from(html, "utf-8").toString("base64");
+  return `data:text/html;charset=utf-8;base64,${b64}`;
+}
+
+export const visualizarContrato = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((d: { contrato_id: string }) =>
+    z.object({ contrato_id: z.string().uuid() }).parse(d),
+  )
+  .handler(async ({ data, context }) => {
+    const { data: c, error } = await context.supabase
+      .from("contratos")
+      .select("conteudo_html, numero")
+      .eq("id", data.contrato_id)
+      .single();
+    if (error || !c) throw new Error("Contrato não encontrado");
+    const html = `<!doctype html><html><head><meta charset="utf-8"><title>Contrato ${c.numero || ""}</title><style>body{font-family:Arial,sans-serif;max-width:820px;margin:24px auto;padding:0 24px;color:#111;line-height:1.5}table{border-collapse:collapse;width:100%}td,th{border:1px solid #999;padding:6px}@media print{body{margin:0}}</style></head><body>${c.conteudo_html || ""}<script>setTimeout(()=>{},100)</script></body></html>`;
+    return { url: htmlToDataUrl(html) };
+  });
+
+export const previewContratoRascunho = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator(
+    (d: {
+      modelo_id: string;
+      cliente_id: string;
+      numero?: string | null;
+      data_inicio?: string | null;
+      data_fim?: string | null;
+      valor_mensal?: number | null;
+      conteudo_html_editado?: string | null;
+    }) =>
+      z
+        .object({
+          modelo_id: z.string().uuid(),
+          cliente_id: z.string().uuid(),
+          numero: z.string().optional().nullable(),
+          data_inicio: z.string().optional().nullable(),
+          data_fim: z.string().optional().nullable(),
+          valor_mensal: z.number().optional().nullable(),
+          conteudo_html_editado: z.string().max(200000).optional().nullable(),
+        })
+        .parse(d),
+  )
+  .handler(async ({ data, context }) => {
+    const { data: m } = await context.supabase
+      .from("contrato_modelos")
+      .select("conteudo_html")
+      .eq("id", data.modelo_id)
+      .single();
+    const { data: cliente } = await context.supabase
+      .from("clientes")
+      .select("*")
+      .eq("id", data.cliente_id)
+      .single();
+    const contratoStub = {
+      numero: data.numero || "RASCUNHO",
+      data_inicio: data.data_inicio || new Date().toISOString().slice(0, 10),
+      data_fim: data.data_fim,
+      valor_mensal: data.valor_mensal,
+    };
+    const html = renderTemplate(
+      data.conteudo_html_editado || m?.conteudo_html || "",
+      buildVars({ cliente, contrato: contratoStub, itens: [] }),
+    );
+    const wrapped = `<!doctype html><html><head><meta charset="utf-8"><title>Pré-visualização</title><style>body{font-family:Arial,sans-serif;max-width:820px;margin:24px auto;padding:0 24px;color:#111;line-height:1.5}table{border-collapse:collapse;width:100%}td,th{border:1px solid #999;padding:6px}</style></head><body>${html}</body></html>`;
+    return { url: htmlToDataUrl(wrapped), html };
+  });
+
+export const enviarContratoEmail = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((d: { contrato_id: string; email: string; mensagem?: string | null }) =>
+    z
+      .object({
+        contrato_id: z.string().uuid(),
+        email: z.string().trim().email().max(255),
+        mensagem: z.string().max(2000).optional().nullable(),
+      })
+      .parse(d),
+  )
+  .handler(async ({ data, context }) => {
+    const { data: c, error } = await context.supabase
+      .from("contratos")
+      .select("numero, conteudo_html, clientes(razao_social)")
+      .eq("id", data.contrato_id)
+      .single();
+    if (error || !c) throw new Error("Contrato não encontrado");
+
+    const apiKey = process.env.RESEND_API_KEY;
+    if (!apiKey) throw new Error("RESEND_API_KEY não configurado");
+    const FROM = "Bio Logus Ambiental <onboarding@resend.dev>";
+    const cliente = (c as unknown as { clientes?: { razao_social?: string } }).clientes;
+    const nome = cliente?.razao_social || "Cliente";
+    const numero = c.numero || "";
+    const corpo = `
+<div style="font-family:Arial,sans-serif;max-width:820px;margin:0 auto;padding:24px;color:#111">
+  <div style="background:linear-gradient(135deg,#1a5d3f,#2d8a5f);color:#fff;padding:20px;border-radius:8px 8px 0 0">
+    <h1 style="margin:0;font-size:20px">Bio Logus Ambiental</h1>
+    <p style="margin:4px 0 0;opacity:.85;font-size:13px">Contrato ${numero}</p>
+  </div>
+  <div style="background:#f7faf8;border:1px solid #d4e3d9;border-top:0;border-radius:0 0 8px 8px;padding:20px">
+    <p>Olá, <strong>${nome}</strong>.</p>
+    <p>Segue o contrato <strong>${numero}</strong> para sua análise.</p>
+    ${data.mensagem ? `<p style="padding:12px;background:#fff;border-left:3px solid #2d8a5f;white-space:pre-wrap">${data.mensagem}</p>` : ""}
+    <hr style="border:0;border-top:1px solid #d4e3d9;margin:16px 0"/>
+    <div>${c.conteudo_html || ""}</div>
+  </div>
+</div>`;
+    const res = await fetch("https://api.resend.com/emails", {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${apiKey}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        from: FROM,
+        to: [data.email],
+        subject: `Contrato ${numero} - Bio Logus Ambiental`,
+        html: corpo,
+      }),
+    });
+    if (!res.ok) {
+      const t = await res.text();
+      throw new Error(`Falha no envio: ${res.status} ${t}`);
+    }
+    return { ok: true };
+  });
