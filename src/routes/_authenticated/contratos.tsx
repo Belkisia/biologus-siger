@@ -162,7 +162,7 @@ function ModalAssinatura({
       const r = cv.getBoundingClientRect();
       const src = "touches" in e ? e.touches[0] : e;
       return [(src.clientX - r.left) * (cv.width / r.width), (src.clientY - r.top) * (cv.height / r.height)];
-    }
+    };
     cv.onmousedown = (e) => { drawingRef.current = true; const [x, y] = pos(e); ctx.beginPath(); ctx.moveTo(x, y); };
     cv.onmousemove = (e) => { if (!drawingRef.current) return; const [x, y] = pos(e); ctx.lineTo(x, y); ctx.stroke(); setSigned(true); };
     cv.onmouseup = cv.onmouseleave = () => { drawingRef.current = false; };
