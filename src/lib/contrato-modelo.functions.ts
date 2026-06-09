@@ -382,7 +382,7 @@ export const renderizarModelo = createServerFn({ method: "POST" })
     if (data.proposta_id) {
       proposta = (
         await supabaseAdmin.from("propostas").select("*").eq("id", data.proposta_id).single()
-      ).data;
+      ).data as unknown as PropostaVars | null;
       const { data: pis } = await supabaseAdmin
         .from("proposta_itens")
         .select("*")
