@@ -1,5 +1,5 @@
 import { createFileRoute, useRouter } from "@tanstack/react-router";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -25,14 +25,27 @@ function ResetPasswordPage() {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [ready, setReady] = useState(false);
-
-  const hasRecoveryToken = useMemo(() => {
-    if (typeof window === "undefined") return false;
-    return new URLSearchParams(window.location.hash.replace(/^#/, "")).get("type") === "recovery";
-  }, []);
+  const [canReset, setCanReset] = useState(false);
+  const [message, setMessage] = useState<string | null>(null);
 
   useEffect(() => {
-    supabase.auth.getSession().then(() => setReady(true));
+    const initRecovery = async () => {
+      const search = new URLSearchParams(window.location.search);
+      const hash = new URLSearchParams(window.location.hash.replace(/^#/, ""));
+      const code = search.get("code");
+      const isRecovery = search.get("type") === "recovery" || hash.get("type") === "recovery";
+
+      if (code) {
+        const { error } = await supabase.auth.exchangeCodeForSession(code);
+        if (error) setMessage(error.message);
+      }
+
+      const { data } = await supabase.auth.getSession();
+      setCanReset(Boolean(data.session) || isRecovery || Boolean(code));
+      setReady(true);
+    };
+
+    initRecovery();
   }, []);
 
   const onSubmit = async (e: React.FormEvent) => {
@@ -70,9 +83,9 @@ function ResetPasswordPage() {
         </div>
 
         <Card className="p-6">
-          {!hasRecoveryToken && ready ? (
+          {!canReset && ready ? (
             <div className="space-y-4 text-center">
-              <p className="text-sm text-muted-foreground">Abra esta tela pelo link enviado ao seu e-mail.</p>
+              <p className="text-sm text-muted-foreground">{message || "Abra esta tela pelo link enviado ao seu e-mail."}</p>
               <Button type="button" className="w-full" onClick={() => router.navigate({ to: "/auth" })}>
                 Voltar para login
               </Button>
