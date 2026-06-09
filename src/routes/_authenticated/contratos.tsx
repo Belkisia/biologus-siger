@@ -460,7 +460,7 @@ function ContratosPage() {
   };
 
   const handleVerPDF = (c: Contrato) => {
-    const url = `${window.location.origin}/contratos/${c.id}`;
+    const url = `${window.location.origin}/contrato-view/${c.id}`;
     const win = window.open(url, "_blank");
     if (!win) window.location.href = url;
   };
