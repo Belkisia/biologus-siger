@@ -25,7 +25,7 @@ type Cliente = {
 };
 
 const EMPRESA = {
-  nome: "Bio Logus Soluções Ambientais",
+  nome: "BIO LOGUS AMBIENTAL LTDA – ME",
   cnpj: "26.484.921/0001-60",
   endereco: "Rua dos Ferroviários Qd 01 Lt 05, Parque Industrial João Brás 2, Goiânia-GO, CEP 74.483-115",
 };
@@ -117,11 +117,16 @@ function NovaPgrssSimples() {
     <div style="font-size:10px;color:#374151">Data: ${dataBR}</div>
   </div>
 
-  <div style="margin-bottom:8px">
-    <div><b>À</b> ${cliente.razao_social}${cliente.nome_fantasia ? " (" + cliente.nome_fantasia + ")" : ""}</div>
-    <div><b>CNPJ:</b> ${cliente.cnpj} &nbsp; <b>End.:</b> ${enderecoCli || "—"}</div>
-    <div><b>A/C:</b> ${cliente.responsavel_tecnico || cliente.responsavel_financeiro || "Responsável"} &nbsp; <b>Contato:</b> ${cliente.email || "—"} · ${cliente.telefone || "—"}</div>
-    <div><b>Ref.:</b> Proposta Técnica para Elaboração de PGRSS (Plano de Gerenciamento de Resíduos de Serviços de Saúde)</div>
+  <!-- Bloco destinatário com destaque -->
+  <div style="margin-bottom:12px;padding:10px 14px;background:#f0faf4;border-left:4px solid #0E3D1A;border-radius:0 8px 8px 0">
+    <div style="font-size:10px;font-weight:700;color:#0E3D1A;text-transform:uppercase;letter-spacing:.05em;margin-bottom:5px">DESTINATÁRIO</div>
+    <div style="font-size:13px;font-weight:800;color:#0E3D1A;margin-bottom:4px">${cliente.razao_social}${cliente.nome_fantasia ? " — " + cliente.nome_fantasia : ""}</div>
+    <div style="font-size:10px;color:#374151;margin-bottom:2px"><b>CNPJ/CPF:</b> ${cliente.cnpj || "—"}</div>
+    ${enderecoCli ? `<div style="font-size:10px;color:#374151;margin-bottom:2px"><b>Endereço:</b> ${enderecoCli}</div>` : ""}
+    <div style="font-size:10px;color:#374151;margin-bottom:2px"><b>A/C:</b> ${cliente.responsavel_tecnico || cliente.responsavel_financeiro || "Responsável"}${cliente.email ? ` &nbsp;·&nbsp; ${cliente.email}` : ""}${cliente.telefone ? ` &nbsp;·&nbsp; ${cliente.telefone}` : ""}</div>
+  </div>
+  <div style="margin-bottom:10px;font-size:10px;color:#374151;padding:6px 10px;background:#f9fafb;border-radius:6px;border:1px solid #e5e7eb">
+    <b>Ref.:</b> Proposta Técnica para Elaboração de PGRSS (Plano de Gerenciamento de Resíduos de Serviços de Saúde) — conforme RDC ANVISA nº 222/2018 e CONAMA nº 358/2005
   </div>
 
   <div style="margin-bottom:4px"><b style="color:#0E3D1A">1. APRESENTAÇÃO</b></div>
