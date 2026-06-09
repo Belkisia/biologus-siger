@@ -164,6 +164,14 @@ const LEGISLACOES = [
   "ABNT NBR 12.808, 12.809, 12.810 e 13.853 — Resíduos de serviços de saúde",
 ];
 
+function valorPorExtenso(n: number): string {
+  const inteiro = Math.floor(n);
+  const cents = Math.round((n - inteiro) * 100);
+  const f = (x: number) => x.toLocaleString("pt-BR");
+  const reais = `${f(inteiro)} ${inteiro === 1 ? "real" : "reais"}`;
+  return cents > 0 ? `${reais} e ${cents} centavos` : reais;
+}
+
 export function montarHtmlProposta(args: {
   numero: string;
   data_emissao: string; // yyyy-mm-dd
@@ -184,128 +192,89 @@ export function montarHtmlProposta(args: {
   total: number;
   escopoIA?: string;
 }): string {
-  const { numero, data_emissao, validade, cliente, questionario: q, itens, total, escopoIA } = args;
-  const grupos = [
-    q.gera_grupo_a && "A (biológico/infectante)",
-    q.gera_grupo_b && "B (químico)",
-    q.gera_grupo_c && "C (rejeitos radioativos)",
-    q.gera_grupo_d && "D (comum)",
-    q.gera_grupo_e && "E (perfurocortante)",
-  ].filter(Boolean).join(" · ") || "—";
-
+  const { numero, data_emissao, validade, cliente, total } = args;
   const dataBR = new Date(data_emissao + "T00:00:00").toLocaleDateString("pt-BR");
-  const valBR = validade ? new Date(validade + "T00:00:00").toLocaleDateString("pt-BR") : "30 dias";
+  const diasValidade = validade
+    ? Math.max(
+        1,
+        Math.round(
+          (new Date(validade + "T00:00:00").getTime() -
+            new Date(data_emissao + "T00:00:00").getTime()) /
+            86400000,
+        ),
+      )
+    : 30;
+  const valorNum = fmtBRL(total);
+  const valorExt = valorPorExtenso(total);
+  const contato = cliente.responsavel_tecnico || "Responsável";
+  const enderecoCompleto = `${cliente.endereco || ""}${cliente.cidade ? " — " + cliente.cidade : ""}${cliente.estado ? "/" + cliente.estado : ""}`.trim();
 
-  const itensRows = itens
-    .map(
-      (i, idx) => `
-      <tr>
-        <td style="padding:8px;border-bottom:1px solid #e5e7eb">${idx + 1}</td>
-        <td style="padding:8px;border-bottom:1px solid #e5e7eb">${i.descricao}</td>
-        <td style="padding:8px;border-bottom:1px solid #e5e7eb;text-align:center">${i.quantidade} ${i.unidade}</td>
-        <td style="padding:8px;border-bottom:1px solid #e5e7eb;text-align:right">${fmtBRL(i.valor_unitario)}</td>
-        <td style="padding:8px;border-bottom:1px solid #e5e7eb;text-align:right"><b>${fmtBRL(i.valor_total)}</b></td>
-      </tr>`,
-    )
-    .join("");
-
-  const escopoSection = escopoIA
-    ? `<div style="white-space:pre-wrap;line-height:1.55">${escopoIA.replace(/</g, "&lt;")}</div>`
-    : `<ul style="line-height:1.7;padding-left:18px;margin:0">
-        <li>Diagnóstico ambiental e levantamento operacional</li>
-        <li>Classificação e quantificação dos resíduos gerados</li>
-        <li>Mapeamento dos pontos geradores e fluxograma interno</li>
-        <li>Procedimentos de segregação, acondicionamento e identificação</li>
-        <li>Coleta, transporte e armazenamento interno e externo</li>
-        <li>Destinação final ambientalmente adequada</li>
-        <li>Treinamento de colaboradores e plano de contingência</li>
-        <li>Monitoramento, indicadores e adequação à legislação vigente</li>
-      </ul>`;
+  // Legislações de referência (rodapé compacto)
+  const legendaLeis = LEGISLACOES.slice(0, 3).join(" · ");
 
   return `
-<div style="max-width:820px;margin:0 auto;color:#111827;font-family:Arial,Helvetica,sans-serif">
-  <!-- CAPA -->
-  <div style="background:linear-gradient(135deg,#0E3D1A,#1A6B2E);color:#fff;padding:36px 28px;border-radius:8px;margin-bottom:24px">
-    <div style="font-size:11px;letter-spacing:.2em;opacity:.85">PROPOSTA TÉCNICA E COMERCIAL</div>
-    <div style="font-size:28px;font-weight:800;margin-top:8px">Plano de Gerenciamento de Resíduos de Serviços de Saúde</div>
-    <div style="font-size:14px;margin-top:10px;opacity:.95">Elaboração de PGRSS conforme RDC ANVISA 222/2018</div>
-    <div style="margin-top:22px;display:flex;justify-content:space-between;font-size:12px">
-      <div><b>Nº ${numero}</b> · Emitida em ${dataBR}</div>
-      <div>Validade: ${valBR}</div>
-    </div>
+<div style="width:190mm;min-height:277mm;margin:0 auto;padding:10mm 12mm;color:#111;font-family:Arial,Helvetica,sans-serif;font-size:11px;line-height:1.45;box-sizing:border-box">
+  <div style="text-align:center;border-bottom:2px solid #0E3D1A;padding-bottom:6px;margin-bottom:10px">
+    <div style="font-size:16px;font-weight:800;color:#0E3D1A">PROPOSTA COMERCIAL Nº ${numero}</div>
+    <div style="font-size:10px;color:#374151">Data: ${dataBR}</div>
   </div>
 
-  <!-- DESTINATÁRIO -->
-  <h2 style="font-size:13px;color:#1A6B2E;text-transform:uppercase;letter-spacing:.1em;border-bottom:2px solid #1A6B2E;padding-bottom:6px">Destinatário</h2>
-  <table style="width:100%;font-size:13px;line-height:1.6;margin-bottom:18px">
-    <tr><td style="width:35%;color:#6b7280">Razão Social</td><td><b>${cliente.razao_social}</b></td></tr>
-    ${cliente.nome_fantasia ? `<tr><td style="color:#6b7280">Nome Fantasia</td><td>${cliente.nome_fantasia}</td></tr>` : ""}
-    <tr><td style="color:#6b7280">CNPJ</td><td>${cliente.cnpj}</td></tr>
-    <tr><td style="color:#6b7280">Endereço</td><td>${cliente.endereco || "—"} — ${cliente.cidade || ""}/${cliente.estado || ""}</td></tr>
-    <tr><td style="color:#6b7280">Contato</td><td>${cliente.email || "—"} · ${cliente.telefone || "—"}</td></tr>
-    ${cliente.responsavel_tecnico ? `<tr><td style="color:#6b7280">Responsável Técnico</td><td>${cliente.responsavel_tecnico}</td></tr>` : ""}
-  </table>
+  <div style="margin-bottom:8px">
+    <div><b>À</b> ${cliente.razao_social}${cliente.nome_fantasia ? " (" + cliente.nome_fantasia + ")" : ""}</div>
+    <div><b>CNPJ:</b> ${cliente.cnpj} &nbsp; <b>End.:</b> ${enderecoCompleto || "—"}</div>
+    <div><b>A/C:</b> ${contato} &nbsp; <b>Contato:</b> ${cliente.email || "—"} · ${cliente.telefone || "—"}</div>
+    <div><b>Ref.:</b> Proposta Técnica para Elaboração de PGRSS (Plano de Gerenciamento de Resíduos de Serviços de Saúde)</div>
+  </div>
 
-  <!-- PERFIL OPERACIONAL -->
-  <h2 style="font-size:13px;color:#1A6B2E;text-transform:uppercase;letter-spacing:.1em;border-bottom:2px solid #1A6B2E;padding-bottom:6px">Perfil operacional</h2>
-  <table style="width:100%;font-size:13px;line-height:1.6;margin-bottom:18px">
-    <tr><td style="width:35%;color:#6b7280">Tipo de estabelecimento</td><td>${q.tipo_estabelecimento}</td></tr>
-    <tr><td style="color:#6b7280">Área construída / Funcionários / Leitos / Salas</td>
-        <td>${q.area_construida || "—"} m² · ${q.qtd_funcionarios} func. · ${q.qtd_leitos} leitos · ${q.qtd_salas} salas</td></tr>
-    <tr><td style="color:#6b7280">Grupos de resíduos gerados</td><td><b>${grupos}</b></td></tr>
-    <tr><td style="color:#6b7280">Porte considerado</td><td>${q.porte.toUpperCase()}</td></tr>
-  </table>
+  <div style="margin-bottom:4px"><b style="color:#0E3D1A">1. APRESENTAÇÃO</b></div>
+  <p style="margin:0 0 8px 0;text-align:justify">
+    Somos especializados em consultoria ambiental e engenharia de saúde e segurança do trabalho. Apresentamos a seguir nossa proposta para a elaboração do PGRSS, atendendo à Resolução RDC ANVISA nº 222/2018 e demais legislações municipais e estaduais vigentes.
+  </p>
 
-  <!-- ESCOPO -->
-  <h2 style="font-size:13px;color:#1A6B2E;text-transform:uppercase;letter-spacing:.1em;border-bottom:2px solid #1A6B2E;padding-bottom:6px">Escopo dos serviços</h2>
-  <div style="font-size:13px;margin-bottom:18px">${escopoSection}</div>
-
-  <!-- INVESTIMENTO -->
-  <h2 style="font-size:13px;color:#1A6B2E;text-transform:uppercase;letter-spacing:.1em;border-bottom:2px solid #1A6B2E;padding-bottom:6px">Investimento</h2>
-  <table style="width:100%;font-size:12.5px;border-collapse:collapse;margin-bottom:8px">
-    <thead>
-      <tr style="background:#EAF4ED;color:#0E3D1A">
-        <th style="padding:8px;text-align:left;width:40px">#</th>
-        <th style="padding:8px;text-align:left">Descrição</th>
-        <th style="padding:8px;text-align:center;width:110px">Qtd.</th>
-        <th style="padding:8px;text-align:right;width:120px">Valor Unit.</th>
-        <th style="padding:8px;text-align:right;width:130px">Total</th>
-      </tr>
-    </thead>
-    <tbody>${itensRows}</tbody>
-    <tfoot>
-      <tr>
-        <td colspan="4" style="padding:10px;text-align:right;font-weight:700;background:#0E3D1A;color:#fff">VALOR TOTAL</td>
-        <td style="padding:10px;text-align:right;font-weight:800;background:#0E3D1A;color:#fff">${fmtBRL(total)}</td>
-      </tr>
-    </tfoot>
-  </table>
-
-  <!-- CONDIÇÕES -->
-  <h2 style="font-size:13px;color:#1A6B2E;text-transform:uppercase;letter-spacing:.1em;border-bottom:2px solid #1A6B2E;padding-bottom:6px;margin-top:20px">Condições</h2>
-  <table style="width:100%;font-size:13px;line-height:1.6;margin-bottom:18px">
-    <tr><td style="width:35%;color:#6b7280">Prazo de execução</td><td>30 a 45 dias após emissão da Ordem de Serviço</td></tr>
-    <tr><td style="color:#6b7280">Validade da proposta</td><td>${valBR}</td></tr>
-    <tr><td style="color:#6b7280">Forma de pagamento</td><td>50% na assinatura, 50% na entrega final · Boleto bancário</td></tr>
-  </table>
-
-  <!-- LEGISLAÇÃO -->
-  <h2 style="font-size:13px;color:#1A6B2E;text-transform:uppercase;letter-spacing:.1em;border-bottom:2px solid #1A6B2E;padding-bottom:6px">Base legal e normativa</h2>
-  <ul style="font-size:12px;line-height:1.6;padding-left:18px;color:#374151">
-    ${LEGISLACOES.map((l) => `<li>${l}</li>`).join("")}
+  <div style="margin-bottom:4px"><b style="color:#0E3D1A">2. ESCOPO DOS SERVIÇOS</b></div>
+  <ul style="margin:0 0 8px 16px;padding:0">
+    <li><b>Diagnóstico e Classificação:</b> identificação e quantificação dos resíduos (Grupos A, B, C, D e E) conforme a norma da ANVISA.</li>
+    <li><b>Elaboração do Documento (PGRSS):</b> redação do plano detalhando segregação, acondicionamento, identificação, transporte interno, armazenamento e destinação final.</li>
   </ul>
 
-  <!-- ACEITE -->
-  <div style="margin-top:36px;display:grid;grid-template-columns:1fr 1fr;gap:24px;font-size:12px">
-    <div style="border-top:1px solid #111;padding-top:6px;text-align:center">CONTRATADA</div>
-    <div style="border-top:1px solid #111;padding-top:6px;text-align:center">CONTRATANTE — ${cliente.razao_social}</div>
+  <div style="margin-bottom:4px"><b style="color:#0E3D1A">3. PRAZO DE EXECUÇÃO</b></div>
+  <p style="margin:0 0 8px 0;text-align:justify">
+    O prazo total para a entrega do documento final, impresso e em meio digital (PDF), será de <b>30 dias úteis</b>, contados a partir da aprovação desta proposta e da disponibilização das informações necessárias pela contratante.
+  </p>
+
+  <div style="margin-bottom:4px"><b style="color:#0E3D1A">4. INVESTIMENTO</b></div>
+  <p style="margin:0 0 8px 0">
+    O valor total para a prestação dos serviços descritos acima é de <b>${valorNum}</b> (${valorExt}).<br/>
+    <b>Condições de Pagamento:</b> 50% no aceite da proposta e 50% na entrega do documento final.<br/>
+    <b>Formas aceitas:</b> Boleto bancário, PIX ou transferência.
+  </p>
+
+  <div style="margin-bottom:4px"><b style="color:#0E3D1A">5. VALIDADE DA PROPOSTA</b></div>
+  <p style="margin:0 0 8px 0">Esta proposta é válida por <b>${diasValidade} dias</b> a partir da data de emissão.</p>
+
+  <div style="margin-bottom:4px"><b style="color:#0E3D1A">6. RESPONSABILIDADES TÉCNICAS E LEGAIS</b></div>
+  <p style="margin:0 0 8px 0;text-align:justify">
+    <b>Da Contratada:</b> emissão de ART (Anotação de Responsabilidade Técnica) e enquadramento às normas da RDC ANVISA nº 222/2018 e CONAMA nº 358/2005.<br/>
+    <b>Do Cliente:</b> fornecimento de plantas arquitetônicas (se houver), acesso às instalações e execução das melhorias estruturais propostas no plano.
+  </p>
+
+  <div style="margin-bottom:4px"><b style="color:#0E3D1A">7. DE ACORDO / ACEITE</b></div>
+  <p style="margin:0 0 10px 0">Para aprovação, por favor, assine este documento e devolva-o por e-mail ou WhatsApp.</p>
+
+  <div style="font-size:11px;line-height:1.9">
+    <div><b>De acordo:</b></div>
+    <div>Nome: ______________________________________________</div>
+    <div>Cargo: ______________________________________________</div>
+    <div>Data: ____ / ____ / ______</div>
+    <div style="margin-top:14px;border-top:1px solid #111;width:60%;text-align:center;padding-top:4px">Assinatura</div>
   </div>
 
-  <div style="margin-top:28px;text-align:center;font-size:10.5px;color:#6b7280">
-    Proposta gerada via SIGER PRO · ${dataBR}
+  <div style="position:relative;margin-top:10px;font-size:8.5px;color:#6b7280;text-align:center;border-top:1px solid #e5e7eb;padding-top:4px">
+    ${legendaLeis}
   </div>
 </div>`;
 }
+
 
 // ---------------------------------------------------------------------------
 // Salvar proposta PGRSS (cria registro em propostas + itens)
