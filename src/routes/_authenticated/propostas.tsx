@@ -998,7 +998,7 @@ function PropostasPage() {
   const previewPDF = async (p: Proposta) => {
     // Propostas PGRSS têm número começando com PGRSS- — navega para rota dedicada
     if (p.numero.startsWith("PGRSS-")) {
-      navigate({ to: "/propostas/pgrss/$id", params: { id: p.id } });
+      window.location.href = `/pgrss-ver/${p.id}`;
       return;
     }
     setPdfPreview((current) => {
