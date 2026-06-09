@@ -504,7 +504,9 @@ function ContratosPage() {
   };
 
   const handleVerPDF = (c: Contrato) => {
-    // Abre contrato em nova aba como HTML puro — sem Dialog, sem server function
+    // Abre janela IMEDIATAMENTE no clique do usuário (evita popup blocker)
+    const win = window.open("", "_blank");
+    if (!win) { toast.error("Habilite pop-ups para visualizar o contrato"); return; }
     const cli = clientes.find(cl => cl.id === c.cliente_id);
     const body = c.conteudo_html && c.conteudo_html.trim().length > 20
       ? c.conteudo_html
@@ -516,11 +518,8 @@ function ContratosPage() {
           <p><strong>Valor mensal:</strong> ${c.valor_mensal?.toLocaleString("pt-BR",{style:"currency",currency:"BRL"}) || "—"}</p>
           <p><strong>Forma de pagamento:</strong> ${c.forma_pagamento || "—"}</p>
         </div>`;
-    const win = window.open("", "_blank");
-    if (win) {
-      win.document.write(`<!doctype html><html><head><meta charset="utf-8"><title>Contrato ${c.numero}</title><style>body{margin:0;padding:0;font-family:Arial,sans-serif}@media print{.no-print{display:none}}</style></head><body><div class="no-print" style="background:#0D6B54;padding:12px 24px;display:flex;gap:12px;align-items:center"><span style="color:#fff;font-weight:600;flex:1">Contrato ${c.numero} — ${cli?.razao_social || ""}</span><button onclick="window.print()" style="background:#fff;color:#0D6B54;border:none;padding:6px 14px;border-radius:6px;cursor:pointer;font-weight:600">Imprimir / PDF</button><button onclick="window.close()" style="background:transparent;color:#fff;border:1px solid rgba(255,255,255,.5);padding:6px 14px;border-radius:6px;cursor:pointer">Fechar</button></div>${body}</body></html>`);
-      win.document.close();
-    }
+    win.document.write(`<!doctype html><html><head><meta charset="utf-8"><title>Contrato ${c.numero}</title><style>body{margin:0;font-family:Arial,sans-serif}@media print{.np{display:none}}</style></head><body><div class="np" style="background:#0D6B54;padding:12px 24px;display:flex;gap:12px;align-items:center"><span style="color:#fff;font-weight:600;flex:1">Contrato ${c.numero} — ${cli?.razao_social || ""}</span><button onclick="window.print()" style="background:#fff;color:#0D6B54;border:none;padding:6px 14px;border-radius:6px;cursor:pointer;font-weight:600">Imprimir / PDF</button><button onclick="window.close()" style="background:transparent;color:#fff;border:1px solid rgba(255,255,255,.5);padding:6px 14px;border-radius:6px;cursor:pointer">Fechar</button></div>${body}</body></html>`);
+    win.document.close();
   };
 
   const handleAssinaturaSalva = async (rubrica: string, foto: string | null) => {
