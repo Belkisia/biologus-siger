@@ -460,9 +460,7 @@ function ContratosPage() {
   };
 
   const handleVerPDF = (c: Contrato) => {
-    const url = `${window.location.origin}/contrato-view/${c.id}`;
-    const win = window.open(url, "_blank");
-    if (!win) window.location.href = url;
+    setVerContrato(c);
   };
 
   const handleAssinaturaSalva = async (rubrica: string, foto: string | null) => {
@@ -781,7 +779,7 @@ function ContratosPage() {
           <div style={{ padding: "14px 20px", borderBottom: "1px solid #E2E8E5", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
             <span style={{ fontWeight: 600, fontSize: "14px" }}>{verContrato?.numero} — {verContrato?.clientes?.razao_social}</span>
             <div style={{ display: "flex", gap: "8px" }}>
-              <button className="eco-btn eco-btn-g" style={{ fontSize: "12px" }} onClick={() => verContrato && handleVerPDF(verContrato)}>
+              <button className="eco-btn eco-btn-g" style={{ fontSize: "12px" }} onClick={() => window.print()}>
                 Imprimir / PDF
               </button>
               <button className="eco-btn eco-btn-p" style={{ fontSize: "12px" }} onClick={() => { setAssContrato(verContrato); setVerContrato(null); }}>
