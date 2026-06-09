@@ -25,6 +25,8 @@ function AuthPage() {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [resetLoading, setResetLoading] = useState(false);
+  const [authTab, setAuthTab] = useState("login");
+  const [message, setMessage] = useState<{ type: "error" | "success"; text: string } | null>(null);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [fullName, setFullName] = useState("");
@@ -37,12 +39,22 @@ function AuthPage() {
 
   const onSignIn = async (e: React.FormEvent) => {
     e.preventDefault();
+    setMessage(null);
     setLoading(true);
-    const { error } = await supabase.auth.signInWithPassword({ email, password });
+    const { data, error } = await supabase.auth.signInWithPassword({ email: email.trim(), password });
     setLoading(false);
-    if (error) return toast.error(error.message);
+    if (error) {
+      const text = error.message.toLowerCase().includes("invalid") ? "E-mail ou senha inválidos." : error.message;
+      setMessage({ type: "error", text });
+      return toast.error(text);
+    }
+    if (!data.session) {
+      setMessage({ type: "error", text: "Login não confirmou a sessão. Tente novamente." });
+      return;
+    }
     toast.success("Bem-vindo!");
-    router.navigate({ to: "/dashboard" });
+    await router.invalidate();
+    router.navigate({ to: "/dashboard", replace: true });
   };
 
   const onSignUp = async (e: React.FormEvent) => {
@@ -74,8 +86,11 @@ function AuthPage() {
 
   const onResetPassword = async () => {
     const trimmedEmail = email.trim();
+    setMessage(null);
     if (!trimmedEmail) {
-      toast.error("Digite seu e-mail para redefinir a senha.");
+      const text = "Digite seu e-mail para redefinir a senha.";
+      setMessage({ type: "error", text });
+      toast.error(text);
       return;
     }
 
@@ -85,8 +100,13 @@ function AuthPage() {
     });
     setResetLoading(false);
 
-    if (error) return toast.error(error.message);
-    toast.success("Enviamos o link de redefinição para seu e-mail.");
+    if (error) {
+      setMessage({ type: "error", text: error.message });
+      return toast.error(error.message);
+    }
+    const text = "Enviamos o link de redefinição para seu e-mail. Abra o e-mail e cadastre a nova senha.";
+    setMessage({ type: "success", text });
+    toast.success(text);
   };
 
   return (
@@ -101,28 +121,55 @@ function AuthPage() {
         </div>
 
         <Card className="p-6">
-          <form onSubmit={onSignIn} className="space-y-4">
-            <div className="space-y-2">
-              <Label htmlFor="si-email">E-mail</Label>
-              <Input id="si-email" type="email" required value={email} onChange={(e) => setEmail(e.target.value)} />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="si-pass">Senha</Label>
-              <Input id="si-pass" type="password" required value={password} onChange={(e) => setPassword(e.target.value)} />
-            </div>
-            <button
-              type="button"
-              onClick={onResetPassword}
-              disabled={resetLoading || loading}
-              className="text-sm font-medium text-primary hover:underline disabled:pointer-events-none disabled:opacity-50"
-            >
-              {resetLoading ? "Enviando link..." : "Esqueci minha senha"}
-            </button>
-            <Button type="submit" className="w-full" disabled={loading}>
-              {loading && <Loader2 className="h-4 w-4 mr-2 animate-spin" />}
-              Entrar
-            </Button>
-          </form>
+          <Tabs value={authTab} onValueChange={(value) => { setAuthTab(value); setMessage(null); }} className="w-full">
+            <TabsList className="grid w-full grid-cols-2 mb-5">
+              <TabsTrigger value="login">Entrar</TabsTrigger>
+              <TabsTrigger value="reset">Redefinir senha</TabsTrigger>
+            </TabsList>
+
+            {message && (
+              <div className={`mb-4 rounded-md border px-3 py-2 text-sm ${message.type === "error" ? "border-destructive/30 bg-destructive/10 text-destructive" : "border-primary/30 bg-primary/10 text-primary"}`}>
+                {message.text}
+              </div>
+            )}
+
+            <TabsContent value="login" className="mt-0">
+              <form onSubmit={onSignIn} className="space-y-4">
+                <div className="space-y-2">
+                  <Label htmlFor="si-email">E-mail</Label>
+                  <Input id="si-email" type="email" required value={email} onChange={(e) => setEmail(e.target.value)} autoComplete="email" />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="si-pass">Senha</Label>
+                  <Input id="si-pass" type="password" required value={password} onChange={(e) => setPassword(e.target.value)} autoComplete="current-password" />
+                </div>
+                <button
+                  type="button"
+                  onClick={() => { setAuthTab("reset"); setMessage(null); }}
+                  className="text-sm font-medium text-primary hover:underline"
+                >
+                  Esqueci minha senha
+                </button>
+                <Button type="submit" className="w-full" disabled={loading}>
+                  {loading && <Loader2 className="h-4 w-4 mr-2 animate-spin" />}
+                  Entrar
+                </Button>
+              </form>
+            </TabsContent>
+
+            <TabsContent value="reset" className="mt-0">
+              <div className="space-y-4">
+                <div className="space-y-2">
+                  <Label htmlFor="reset-email">E-mail</Label>
+                  <Input id="reset-email" type="email" required value={email} onChange={(e) => setEmail(e.target.value)} autoComplete="email" />
+                </div>
+                <Button type="button" className="w-full" onClick={onResetPassword} disabled={resetLoading || loading}>
+                  {resetLoading && <Loader2 className="h-4 w-4 mr-2 animate-spin" />}
+                  Enviar link de redefinição
+                </Button>
+              </div>
+            </TabsContent>
+          </Tabs>
 
           <div className="relative my-6">
             <div className="absolute inset-0 flex items-center"><span className="w-full border-t" /></div>
