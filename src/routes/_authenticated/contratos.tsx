@@ -530,7 +530,10 @@ function ContratosPage() {
     }
     try {
       const res = await visualizar({ data: { contrato_id: c.id } });
-      const win = window.open(res.url, "_blank");
+      const blob = new Blob([res.html], { type: "text/html" });
+      const url = URL.createObjectURL(blob);
+      const win = window.open(url, "_blank");
+      setTimeout(() => URL.revokeObjectURL(url), 10000);
       if (!win) toast.error("Pop-up bloqueado. Habilite pop-ups para visualizar.");
     } catch (e: unknown) {
       toast.error(e instanceof Error ? e.message : "Falha ao gerar visualização do contrato");
