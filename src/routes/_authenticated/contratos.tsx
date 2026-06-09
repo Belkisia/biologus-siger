@@ -118,6 +118,55 @@ type Contrato = {
   clientes?: { razao_social: string } | null;
 };
 
+function ContratoViewer({
+  contrato,
+  onClose,
+  onAssinar,
+}: {
+  contrato: Contrato;
+  onClose: () => void;
+  onAssinar: () => void;
+}) {
+  useEffect(() => {
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") onClose();
+    };
+    document.body.style.overflow = "hidden";
+    window.addEventListener("keydown", onKeyDown);
+    return () => {
+      document.body.style.overflow = "";
+      window.removeEventListener("keydown", onKeyDown);
+    };
+  }, [onClose]);
+
+  return (
+    <div className="eco-viewer-backdrop" role="dialog" aria-modal="true" aria-label="Visualização do contrato">
+      <div className="eco-viewer-shell">
+        <div className="eco-viewer-toolbar">
+          <div className="eco-viewer-title">{contrato.numero} — {contrato.clientes?.razao_social || "Cliente não informado"}</div>
+          <div className="eco-viewer-actions">
+            <button className="eco-btn eco-btn-g" type="button" onClick={() => window.print()}>Imprimir / PDF</button>
+            <button className="eco-btn eco-btn-p" type="button" onClick={onAssinar}>✏ Assinar digitalmente</button>
+            <button className="eco-btn eco-btn-g" type="button" onClick={onClose}>Fechar</button>
+          </div>
+        </div>
+        <div className="eco-viewer-document">
+          <div className="eco-viewer-paper contrato-doc">
+            {contrato.conteudo_html ? (
+              <div dangerouslySetInnerHTML={{ __html: contrato.conteudo_html }} />
+            ) : (
+              <div style={{ padding: "40px", textAlign: "center", color: "#6B7671" }}>Contrato sem conteúdo HTML gerado.</div>
+            )}
+          </div>
+        </div>
+        <div className="eco-viewer-footer">
+          <button className="eco-btn eco-btn-g" type="button" onClick={onClose}>Fechar</button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 // ── Modal assinatura EcoTrack ─────────────────────────────────────────────────
 function ModalAssinatura({
   open, contrato, cliente, onClose, onSalvo,
