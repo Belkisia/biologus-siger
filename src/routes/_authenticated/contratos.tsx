@@ -78,6 +78,16 @@ const ECO_CSS = `
 .assinatura-linha{border-top:1.5px solid #333;margin-bottom:8px;margin-top:60px}
 .assinatura-nome{font-weight:600;font-size:13px}
 .assinatura-cargo{font-size:12px;color:#6B7671}
+.eco-viewer-backdrop{position:fixed;inset:0;z-index:9999;background:rgba(10,18,15,.72);display:flex;align-items:stretch;justify-content:center;padding:18px}
+.eco-viewer-shell{width:min(1120px,100%);height:calc(100vh - 36px);background:#fff;border:1px solid #DDE7E1;border-radius:10px;box-shadow:0 24px 80px rgba(0,0,0,.28);display:flex;flex-direction:column;overflow:hidden}
+.eco-viewer-toolbar{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 16px;border-bottom:1px solid #E2E8E5;background:#fff;flex-wrap:wrap}
+.eco-viewer-title{min-width:0;font-size:14px;font-weight:600;color:#1A1F1D;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.eco-viewer-actions{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.eco-viewer-document{flex:1;overflow:auto;background:#F7F8F6;padding:24px}
+.eco-viewer-paper{width:min(880px,100%);min-height:calc(100% - 48px);margin:0 auto;background:#fff;border:1px solid #E2E8E5;box-shadow:0 4px 18px rgba(0,0,0,.08);padding:38px;color:#1a1a1a}
+.eco-viewer-footer{padding:10px 16px;border-top:1px solid #E2E8E5;background:#fff;display:flex;justify-content:flex-end}
+@media (max-width:640px){.eco-viewer-backdrop{padding:0}.eco-viewer-shell{height:100vh;border-radius:0;border:0}.eco-viewer-document{padding:12px}.eco-viewer-paper{padding:18px;font-size:12px}.eco-viewer-title{white-space:normal}}
+@media print{body *{visibility:hidden!important}.eco-viewer-backdrop,.eco-viewer-backdrop *{visibility:visible!important}.eco-viewer-backdrop{position:absolute!important;inset:0!important;background:#fff!important;padding:0!important}.eco-viewer-shell{height:auto!important;width:100%!important;border:0!important;box-shadow:none!important;border-radius:0!important;overflow:visible!important}.eco-viewer-toolbar,.eco-viewer-footer{display:none!important}.eco-viewer-document{overflow:visible!important;background:#fff!important;padding:0!important}.eco-viewer-paper{width:100%!important;max-width:none!important;min-height:0!important;margin:0!important;border:0!important;box-shadow:none!important;padding:0!important}}
 `;
 
 function injectCSS() {
