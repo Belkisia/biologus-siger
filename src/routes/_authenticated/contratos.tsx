@@ -533,7 +533,7 @@ function ContratosPage() {
     if (!emailContrato || !emailDest) return;
     setSendingEmail(true);
     try { await enviarEmail({ data: { contrato_id: emailContrato.id, email: emailDest } }); toast.success("Contrato enviado por e-mail"); setEmailContrato(null); }
-    catch (e: any) { toast.error(e.message); }
+    catch (e: unknown) { toast.error(e instanceof Error ? e.message : "Falha ao enviar contrato por e-mail"); }
     finally { setSendingEmail(false); }
   };
 
