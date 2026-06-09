@@ -172,24 +172,19 @@ function NovaPgrssSimples() {
     if (!cliente) return toast.error("Selecione um cliente");
     if (valorNum <= 0) return toast.error("Informe o valor");
     const html = gerarHtml(numeroAuto());
-    const wrapper = document.createElement("div");
-    wrapper.id = "pgrss-print-area";
-    wrapper.innerHTML = html;
-    const style = document.createElement("style");
-    style.id = "pgrss-print-style";
-    style.textContent = `@media print {
-      body > *:not(#pgrss-print-area) { display: none !important; }
-      #pgrss-print-area { display: block !important; }
-      @page { size: A4; margin: 0; }
-    }
-    @media screen { #pgrss-print-area { display: none; } }`;
-    document.head.appendChild(style);
-    document.body.appendChild(wrapper);
-    window.print();
+    const iframe = document.createElement("iframe");
+    iframe.style.cssText = "position:fixed;top:-9999px;left:-9999px;width:210mm;height:297mm;border:none;";
+    document.body.appendChild(iframe);
+    const doc = iframe.contentDocument || iframe.contentWindow?.document;
+    if (!doc) { document.body.removeChild(iframe); return; }
+    doc.open();
+    doc.write(`<!doctype html><html><head><meta charset="utf-8"><style>body{font-family:Arial,sans-serif;margin:0;padding:0;color:#111}@media print{@page{size:A4;margin:10mm}}</style></head><body>${html}</body></html>`);
+    doc.close();
     setTimeout(() => {
-      wrapper.remove();
-      style.remove();
-    }, 500);
+      iframe.contentWindow?.focus();
+      iframe.contentWindow?.print();
+      setTimeout(() => document.body.removeChild(iframe), 3000);
+    }, 600);
   }
 
   async function onSalvar() {
@@ -308,7 +303,7 @@ function NovaPgrssSimples() {
             <Select value={prazo} onValueChange={setPrazo}>
               <SelectTrigger><SelectValue /></SelectTrigger>
               <SelectContent>
-                {["15", "20", "30", "45", "60"].map((d) => (
+                {["5", "7", "15", "20", "30", "45", "60"].map((d) => (
                   <SelectItem key={d} value={d}>{d} dias úteis</SelectItem>
                 ))}
               </SelectContent>
