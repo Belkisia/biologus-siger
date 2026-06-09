@@ -30,6 +30,7 @@ function ResetPasswordPage() {
   const [canReset, setCanReset] = useState(false);
   const [message, setMessage] = useState<string | null>(null);
   const [messageType, setMessageType] = useState<"error" | "success">("error");
+  const [emailCooldown, setEmailCooldown] = useState(0);
 
   useEffect(() => {
     const initRecovery = async () => {
@@ -50,6 +51,12 @@ function ResetPasswordPage() {
 
     initRecovery();
   }, []);
+
+  useEffect(() => {
+    if (emailCooldown <= 0) return;
+    const timer = window.setTimeout(() => setEmailCooldown((seconds) => Math.max(0, seconds - 1)), 1000);
+    return () => window.clearTimeout(timer);
+  }, [emailCooldown]);
 
   const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -77,6 +84,11 @@ function ResetPasswordPage() {
   const onSendRecoveryEmail = async (e: React.FormEvent) => {
     e.preventDefault();
     const trimmedEmail = email.trim();
+    if (emailCooldown > 0) {
+      setMessageType("error");
+      setMessage(`Aguarde ${emailCooldown}s antes de solicitar outro link.`);
+      return;
+    }
     if (!trimmedEmail) {
       setMessageType("error");
       setMessage("Digite seu e-mail para receber o link de redefinição.");
@@ -94,6 +106,7 @@ function ResetPasswordPage() {
       const text = error.message.includes("58 seconds") || error.message.includes("security purposes")
         ? "Aguarde cerca de 1 minuto antes de pedir outro link. O primeiro link já foi enviado."
         : error.message;
+      if (text.includes("1 minuto")) setEmailCooldown(60);
       setMessageType("error");
       setMessage(text);
       toast.error(text);
@@ -101,6 +114,7 @@ function ResetPasswordPage() {
     }
 
     const text = "Link enviado. Verifique seu e-mail e abra o link para cadastrar a nova senha.";
+    setEmailCooldown(60);
     setMessageType("success");
     setMessage(text);
     toast.success(text);
@@ -129,9 +143,9 @@ function ResetPasswordPage() {
                 <Label htmlFor="recovery-email">E-mail</Label>
                 <Input id="recovery-email" type="email" required value={email} onChange={(e) => setEmail(e.target.value)} autoComplete="email" />
               </div>
-              <Button type="submit" className="w-full" disabled={emailLoading}>
+              <Button type="submit" className="w-full" disabled={emailLoading || emailCooldown > 0}>
                 {emailLoading && <Loader2 className="h-4 w-4 mr-2 animate-spin" />}
-                Enviar link de redefinição
+                {emailCooldown > 0 ? `Aguarde ${emailCooldown}s` : "Enviar link de redefinição"}
               </Button>
               <Button type="button" variant="outline" className="w-full" onClick={() => router.navigate({ to: "/auth" })}>
                 Voltar para login

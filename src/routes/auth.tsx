@@ -30,6 +30,7 @@ function AuthPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [fullName, setFullName] = useState("");
+  const [resetCooldown, setResetCooldown] = useState(0);
   const resetEmailInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
@@ -37,6 +38,12 @@ function AuthPage() {
       if (data.user) router.navigate({ to: "/dashboard" });
     });
   }, [router]);
+
+  useEffect(() => {
+    if (resetCooldown <= 0) return;
+    const timer = window.setTimeout(() => setResetCooldown((seconds) => Math.max(0, seconds - 1)), 1000);
+    return () => window.clearTimeout(timer);
+  }, [resetCooldown]);
 
   const onSignIn = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -88,6 +95,11 @@ function AuthPage() {
   const onResetPassword = async () => {
     const trimmedEmail = email.trim();
     setMessage(null);
+    if (resetCooldown > 0) {
+      const text = `Aguarde ${resetCooldown}s antes de solicitar outro link.`;
+      setMessage({ type: "error", text });
+      return;
+    }
     if (!trimmedEmail) {
       const text = "Digite seu e-mail para redefinir a senha.";
       setMessage({ type: "error", text });
@@ -105,9 +117,11 @@ function AuthPage() {
       const text = error.message.toLowerCase().includes("security purposes") || error.message.toLowerCase().includes("only request this")
         ? "O link já foi solicitado. Aguarde 1 minuto antes de tentar novamente e verifique sua caixa de entrada e spam."
         : error.message;
+      if (text.includes("Aguarde 1 minuto")) setResetCooldown(60);
       setMessage({ type: "error", text });
       return toast.error(text);
     }
+    setResetCooldown(60);
     const text = "Enviamos o link de redefinição para seu e-mail. Abra o e-mail e cadastre a nova senha.";
     setMessage({ type: "success", text });
     toast.success(text);
@@ -173,9 +187,9 @@ function AuthPage() {
                   <Label htmlFor="reset-email">E-mail</Label>
                   <Input ref={resetEmailInputRef} id="reset-email" type="email" required value={email} onChange={(e) => setEmail(e.target.value)} autoComplete="email" />
                 </div>
-                <Button type="button" className="w-full" onClick={onResetPassword} disabled={resetLoading || loading}>
+                <Button type="button" className="w-full" onClick={onResetPassword} disabled={resetLoading || loading || resetCooldown > 0}>
                   {resetLoading && <Loader2 className="h-4 w-4 mr-2 animate-spin" />}
-                  Enviar link de redefinição
+                  {resetCooldown > 0 ? `Aguarde ${resetCooldown}s` : "Enviar link de redefinição"}
                 </Button>
               </div>
             </TabsContent>
