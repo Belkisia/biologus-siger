@@ -16,7 +16,7 @@ import {
 import { Loader2, Plus, Eye, Mail, PenTool, Trash2, FileSignature } from "lucide-react";
 import { toast } from "sonner";
 import { useServerFn } from "@tanstack/react-start";
-import { visualizarContrato, enviarContratoEmail, previewContratoRascunho, gerarContratoPadraoBioLogus } from "@/lib/contrato.functions";
+import { visualizarContrato, enviarContratoEmail, gerarContratoPadraoBioLogus } from "@/lib/contrato.functions";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 export const Route = createFileRoute("/_authenticated/contratos")({
@@ -371,7 +371,6 @@ function ModalAssinatura({
 function ContratosPage() {
   injectCSS();
   const qc = useQueryClient();
-  const { user } = Route.useRouteContext();
 
   const [novoOpen, setNovoOpen] = useState(false);
   const [filtro, setFiltro] = useState("todos");
@@ -397,7 +396,6 @@ function ContratosPage() {
 
   const visualizar = useServerFn(visualizarContrato);
   const enviarEmail = useServerFn(enviarContratoEmail);
-  const previewFn = useServerFn(previewContratoRascunho);
   const gerarContratoPadrao = useServerFn(gerarContratoPadraoBioLogus);
 
   const { data: clientes = [] } = useQuery({
@@ -433,7 +431,13 @@ function ContratosPage() {
 
   const createMutation = useMutation({
     mutationFn: async (payload: Record<string, unknown>) => {
-      await gerarContratoPadrao({ data: payload as never });
+      await gerarContratoPadrao({
+        data: {
+          ...payload,
+          cliente_id: selectedClienteId,
+          periodicidade_vigencia: periodicidade,
+        } as never,
+      });
     },
     onSuccess: () => { qc.invalidateQueries({ queryKey: ["contratos"] }); toast.success("Contrato gerado!"); setNovoOpen(false); },
     onError: (e: Error) => toast.error(e.message),
