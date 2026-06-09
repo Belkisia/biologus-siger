@@ -11,7 +11,7 @@ type ContratoView = {
   clientes?: { razao_social: string | null } | null;
 };
 
-export const Route = createFileRoute("/_authenticated/contratos/$contratoId")({
+export const Route = createFileRoute("/_authenticated/contrato-view/$contratoId")({
   component: ContratoViewerPage,
 });
 
