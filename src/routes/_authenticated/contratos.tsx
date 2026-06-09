@@ -131,6 +131,7 @@ function ContratoViewer({
   onClose: () => void;
   onAssinar: () => void;
 }) {
+  console.log("ContratoViewer rendering, html:", contrato.conteudo_html?.substring(0, 50));
   return (
     <Dialog open onOpenChange={(o) => { if (!o) onClose(); }}>
       <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
@@ -518,6 +519,7 @@ function ContratosPage() {
 
   const handleVerPDF = async (c: Contrato) => {
     if (c.conteudo_html && c.conteudo_html.trim().length > 20) {
+      console.log("opening viewer, html length:", c.conteudo_html?.length, "preview:", c.conteudo_html?.substring(0, 100));
       setVerContrato(c);
       return;
     }
