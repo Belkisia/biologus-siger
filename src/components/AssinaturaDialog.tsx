@@ -134,11 +134,12 @@ export function AssinaturaDialog({
     ctx.lineJoin    = "round";
 
     function pos(e: MouseEvent | TouchEvent) {
-      const r = cv.getBoundingClientRect();
+      const cvEl = cv!;
+      const r = cvEl.getBoundingClientRect();
       const src = "touches" in e ? e.touches[0] : e;
       return [
-        (src.clientX - r.left) * (cv.width / r.width),
-        (src.clientY - r.top)  * (cv.height / r.height),
+        (src.clientX - r.left) * (cvEl.width / r.width),
+        (src.clientY - r.top)  * (cvEl.height / r.height),
       ];
     }
     cv.onmousedown = (e) => {
