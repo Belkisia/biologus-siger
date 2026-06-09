@@ -525,9 +525,14 @@ function ContratosPage() {
     const html = `<!doctype html><html><head><meta charset="utf-8"><title>Contrato ${c.numero}</title><style>body{font-family:Arial,sans-serif;max-width:820px;margin:24px auto;padding:24px;line-height:1.6}h1{text-align:center;font-size:18px}table{width:100%;border-collapse:collapse;margin:16px 0}td{border:1px solid #ccc;padding:8px}</style></head><body><h1>CONTRATO Nº ${c.numero}</h1><p><strong>Contratante:</strong> ${cli?.razao_social || "—"} — CNPJ: ${cli?.cnpj || "—"}</p><table><tr><td><strong>Início:</strong> ${new Date(c.data_inicio).toLocaleDateString("pt-BR")}</td><td><strong>Fim:</strong> ${c.data_fim ? new Date(c.data_fim).toLocaleDateString("pt-BR") : "—"}</td></tr><tr><td><strong>Valor mensal:</strong> ${c.valor_mensal?.toLocaleString("pt-BR", { style: "currency", currency: "BRL" }) || "—"}</td><td><strong>Pagamento:</strong> ${c.forma_pagamento || "—"}</td></tr></table></body></html>`;
     const blob = new Blob([html], { type: "text/html" });
     const url = URL.createObjectURL(blob);
-    const win = window.open(url, "_blank");
+    const a = document.createElement("a");
+    a.href = url;
+    a.target = "_blank";
+    a.rel = "noopener";
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
     setTimeout(() => URL.revokeObjectURL(url), 30000);
-    if (!win) toast.error("Pop-up bloqueado. Habilite pop-ups para visualizar.");
   };
 
   const handleAssinaturaSalva = async (rubrica: string, foto: string | null) => {
