@@ -460,29 +460,10 @@ function ContratosPage() {
     createMutation.mutate(payload);
   };
 
-  const handleVerPDF = async (c: Contrato) => {
-    setPreviewing(c.id);
-    // Abre a janela imediatamente (gesto do usuário) para não ser bloqueada
-    const win = window.open("about:blank", "_blank");
-    try {
-      const r = await visualizar({ data: { contrato_id: c.id } });
-      const html = (r as { html?: string; url?: string }).html;
-      if (!html) throw new Error("Contrato sem conteúdo");
-      // Blob URL funciona de forma confiável (desktop e mobile), ao contrário de document.write/data:
-      const blob = new Blob([html], { type: "text/html;charset=utf-8" });
-      const url = URL.createObjectURL(blob);
-      if (win && !win.closed) {
-        win.location.href = url;
-      } else {
-        // Pop-up bloqueado: navega na mesma aba como fallback
-        window.location.href = url;
-      }
-      // Libera o blob após algum tempo
-      setTimeout(() => URL.revokeObjectURL(url), 60_000);
-    } catch (e: any) {
-      if (win && !win.closed) win.close();
-      toast.error(e.message || "Erro ao abrir contrato");
-    } finally { setPreviewing(null); }
+  const handleVerPDF = (c: Contrato) => {
+    const url = `${window.location.origin}/contratos/${c.id}`;
+    const win = window.open(url, "_blank", "noopener,noreferrer");
+    if (!win) window.location.href = url;
   };
 
   const handleAssinaturaSalva = async (rubrica: string, foto: string | null) => {
@@ -607,7 +588,7 @@ function ContratosPage() {
                       <td>{statusBadge(c.status)}</td>
                       <td>
                         <div style={{ display: "flex", gap: "4px" }}>
-                          <button title="Visualizar PDF" onClick={() => handleVerPDF(c)} disabled={previewing === c.id}
+                          <button title="Visualizar contrato" onClick={() => handleVerPDF(c)} disabled={previewing === c.id}
                             style={{ padding: "5px", borderRadius: "6px", border: "1px solid #E2E8E5", background: "transparent", cursor: "pointer", display: "flex", alignItems: "center" }}>
                             {previewing === c.id ? <Loader2 size={14} className="animate-spin" /> : <Eye size={14} />}
                           </button>
