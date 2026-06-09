@@ -102,8 +102,11 @@ function AuthPage() {
     setResetLoading(false);
 
     if (error) {
-      setMessage({ type: "error", text: error.message });
-      return toast.error(error.message);
+      const text = error.message.toLowerCase().includes("security purposes") || error.message.toLowerCase().includes("only request this")
+        ? "O link já foi solicitado. Aguarde 1 minuto antes de tentar novamente e verifique sua caixa de entrada e spam."
+        : error.message;
+      setMessage({ type: "error", text });
+      return toast.error(text);
     }
     const text = "Enviamos o link de redefinição para seu e-mail. Abra o e-mail e cadastre a nova senha.";
     setMessage({ type: "success", text });
