@@ -1,4 +1,4 @@
-// SIGER-PRO-ECOTRACK-1781012780
+// ECOTRACK-SIGER-2026
 import { createFileRoute } from "@tanstack/react-router";
 import { useRef, useState, useCallback, useEffect } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
@@ -158,11 +158,11 @@ function ModalAssinatura({
     ctx.strokeStyle = corSel; ctx.lineWidth = Number(espSel);
     ctx.lineCap = "round"; ctx.lineJoin = "round";
 
-    function pos(e: MouseEvent | TouchEvent) {
+    const pos = (e: MouseEvent | TouchEvent) => {
       const r = cv.getBoundingClientRect();
       const src = "touches" in e ? e.touches[0] : e;
       return [(src.clientX - r.left) * (cv.width / r.width), (src.clientY - r.top) * (cv.height / r.height)];
-    }
+    };
     cv.onmousedown = (e) => { drawingRef.current = true; const [x, y] = pos(e); ctx.beginPath(); ctx.moveTo(x, y); };
     cv.onmousemove = (e) => { if (!drawingRef.current) return; const [x, y] = pos(e); ctx.lineTo(x, y); ctx.stroke(); setSigned(true); };
     cv.onmouseup = cv.onmouseleave = () => { drawingRef.current = false; };
