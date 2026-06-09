@@ -460,8 +460,11 @@ function ContratosPage() {
         }] : [],
       });
       const conteudo_html = renderTemplate(modelo.conteudo_html, vars);
+      const COLS = ["cliente_id","numero","objeto","data_inicio","data_fim","valor_mensal","indice_reajuste","periodicidade_reajuste","dia_vencimento","forma_pagamento","observacoes","status"];
+      const clean: Record<string, unknown> = {};
+      for (const k of COLS) if (payload[k] !== undefined && payload[k] !== "") clean[k] = payload[k];
       const { error } = await supabase.from("contratos").insert({
-        ...payload, owner_id: user.id, conteudo_html, modelo_id: modelo.id,
+        ...clean, owner_id: user.id, conteudo_html, modelo_id: modelo.id,
       } as never);
       if (error) throw error;
     },
