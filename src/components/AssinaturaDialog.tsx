@@ -399,8 +399,10 @@ export function AssinaturaDialog({
               </Card>
             ))}
             {todosAssinados && existing!.pdf_assinado_url && (
-              <Button className="w-full bg-emerald-700 hover:bg-emerald-800" onClick={() => window.open(existing!.pdf_assinado_url!, "_blank")}>
-                <Download className="h-4 w-4 mr-2" /> Baixar PDF assinado
+              <Button className="w-full bg-emerald-700 hover:bg-emerald-800" asChild>
+                <a href={existing!.pdf_assinado_url!} download>
+                  <Download className="h-4 w-4 mr-2" /> Baixar PDF assinado
+                </a>
               </Button>
             )}
             <div className="flex justify-end pt-2">
