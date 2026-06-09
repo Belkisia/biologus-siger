@@ -140,14 +140,13 @@ function ContratoViewer({ contrato, html, onClose, onAssinar }: { contrato: Cont
       iframeRef.current?.contentWindow?.print();
       return;
     }
+    const printScript = `<script>window.addEventListener('load',function(){setTimeout(function(){window.focus();window.print();window.onafterprint=function(){window.close();};},150);});<\/script>`;
+    const printDoc = srcDoc.includes("</body>")
+      ? srcDoc.replace("</body>", `${printScript}</body>`)
+      : `${srcDoc}${printScript}`;
     printWin.document.open();
-    printWin.document.write(srcDoc.replace("</head>", `<style>@media print{body{margin:0!important;padding:16px!important}}</style></head>`));
+    printWin.document.write(printDoc.replace("</head>", `<style>@media print{body{margin:0!important;padding:16px!important}}</style></head>`));
     printWin.document.close();
-    printWin.onload = () => {
-      printWin.focus();
-      printWin.print();
-      printWin.onafterprint = () => printWin.close();
-    };
   };
 
   return (
