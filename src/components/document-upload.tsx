@@ -1,6 +1,7 @@
 import { useState, useRef } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Upload, FileText, ExternalLink, Loader2, X } from "lucide-react";
 import { toast } from "sonner";
 
@@ -26,6 +27,7 @@ export function DocumentUpload({
 }: DocumentUploadProps) {
   const [uploading, setUploading] = useState(false);
   const [opening, setOpening] = useState(false);
+  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
   const handleUpload = async (file: File) => {
@@ -62,7 +64,7 @@ export function DocumentUpload({
     try {
       const { data, error } = await supabase.storage.from(BUCKET).createSignedUrl(value, 3600);
       if (error) throw error;
-      window.open(data.signedUrl, "_blank");
+      setPreviewUrl(data.signedUrl);
     } catch (e) {
       toast.error((e as Error).message);
     } finally {
@@ -79,6 +81,7 @@ export function DocumentUpload({
   };
 
   return (
+    <>
     <div className="space-y-1">
       {label && <p className="text-sm font-medium">{label}</p>}
       <div className="flex items-center gap-2 flex-wrap">
@@ -111,22 +114,32 @@ export function DocumentUpload({
       </div>
       <p className="text-xs text-muted-foreground">PDF ou imagem, até 10MB. Acesso restrito ao seu usuário.</p>
     </div>
+    <Dialog open={!!previewUrl} onOpenChange={(open) => !open && setPreviewUrl(null)}>
+      <DialogContent className="max-w-5xl h-[90vh] p-0 overflow-hidden flex flex-col">
+        <DialogHeader className="px-4 py-3 border-b">
+          <DialogTitle>{label}</DialogTitle>
+        </DialogHeader>
+        {previewUrl && <iframe src={previewUrl} title={label} className="w-full flex-1 border-0" />}
+      </DialogContent>
+    </Dialog>
+    </>
   );
 }
 
 export function OpenDocumentButton({ path }: { path: string | null }) {
   const [loading, setLoading] = useState(false);
+  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   if (!path) return null;
   const open = async () => {
     setLoading(true);
     try {
       // Backwards-compat: se for URL completa, abre direto
       if (/^https?:\/\//i.test(path)) {
-        window.open(path, "_blank");
+        setPreviewUrl(path);
       } else {
         const { data, error } = await supabase.storage.from(BUCKET).createSignedUrl(path, 3600);
         if (error) throw error;
-        window.open(data.signedUrl, "_blank");
+        setPreviewUrl(data.signedUrl);
       }
     } catch (e) {
       toast.error((e as Error).message);
@@ -135,8 +148,16 @@ export function OpenDocumentButton({ path }: { path: string | null }) {
     }
   };
   return (
-    <Button variant="ghost" size="icon" onClick={open} disabled={loading}>
-      {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : <ExternalLink className="h-4 w-4" />}
-    </Button>
+    <>
+      <Button variant="ghost" size="icon" onClick={open} disabled={loading}>
+        {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : <ExternalLink className="h-4 w-4" />}
+      </Button>
+      <Dialog open={!!previewUrl} onOpenChange={(isOpen) => !isOpen && setPreviewUrl(null)}>
+        <DialogContent className="max-w-5xl h-[90vh] p-0 overflow-hidden flex flex-col">
+          <DialogHeader className="px-4 py-3 border-b"><DialogTitle>Documento</DialogTitle></DialogHeader>
+          {previewUrl && <iframe src={previewUrl} title="Documento" className="w-full flex-1 border-0" />}
+        </DialogContent>
+      </Dialog>
+    </>
   );
 }
