@@ -131,6 +131,7 @@ function ContratoViewer({
   onClose: () => void;
   onAssinar: () => void;
 }) {
+  console.log("ContratoViewer rendering, html:", contrato.conteudo_html?.substring(0, 50));
   return (
     <Dialog open onOpenChange={(o) => { if (!o) onClose(); }}>
       <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
