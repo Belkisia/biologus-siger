@@ -45,8 +45,13 @@ function VerPgrssSimples() {
   };
 
   const handleWhatsApp = () => {
+    const linkProposta = window.location.href;
     const texto = encodeURIComponent(
-      `Olá! Segue a Proposta Comercial PGRSS nº ${numero} da Bio Logus Ambiental.\n\nPara visualizar e assinar a proposta, entre em contato conosco pelo e-mail comercial@biologusambiental.com.br ou pelo telefone (62) 3558-2791.`
+      `Olá! Segue a Proposta Comercial PGRSS nº ${numero} da Bio Logus Ambiental.\n\n` +
+      `Para visualizar a proposta acesse o link abaixo:\n${linkProposta}\n\n` +
+      `Dúvidas? Entre em contato:\n` +
+      `📧 comercial@biologusambiental.com.br\n` +
+      `📱 (62) 98423-6682`
     );
     window.open(`https://wa.me/?text=${texto}`, "_blank");
   };
@@ -58,7 +63,7 @@ function VerPgrssSimples() {
       // Envia via mailto como fallback confiável
       const assunto = encodeURIComponent(`Proposta PGRSS nº ${numero} — Bio Logus Ambiental`);
       const corpo = encodeURIComponent(
-        `Prezado(a),\n\nSegue em anexo a Proposta Comercial para Elaboração de PGRSS nº ${numero}.\n\n${emailMsg || "Para dúvidas, entre em contato conosco."}\n\nAtenciosamente,\nBio Logus Ambiental\ncomercial@biologusambiental.com.br\n(62) 3558-2791`
+        `Prezado(a),\n\nSegue em anexo a Proposta Comercial para Elaboração de PGRSS nº ${numero}.\n\n${emailMsg || "Para dúvidas, entre em contato conosco."}\n\nAtenciosamente,\nBio Logus Ambiental\ncomercial@biologusambiental.com.br\n(62) 98423-6682`
       );
       window.location.href = `mailto:${emailDest}?subject=${assunto}&body=${corpo}`;
       setEmailModal(false);
