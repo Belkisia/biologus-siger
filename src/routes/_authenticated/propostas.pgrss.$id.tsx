@@ -30,10 +30,20 @@ function VerPgrss() {
   </style></head><body>${html || `<p>Carregando…</p>`}</body></html>`;
 
   const handlePrint = () => {
-    const w = iframeRef.current?.contentWindow;
-    if (!w) return;
-    w.focus();
-    w.print();
+    if (!html) return;
+    const iframe = document.createElement("iframe");
+    iframe.style.cssText = "position:fixed;top:-9999px;left:-9999px;width:210mm;height:297mm;border:none;";
+    document.body.appendChild(iframe);
+    const doc = iframe.contentDocument || iframe.contentWindow?.document;
+    if (!doc) { document.body.removeChild(iframe); return; }
+    doc.open();
+    doc.write(`<!doctype html><html><head><meta charset="utf-8"><style>body{font-family:Arial,sans-serif;margin:0;padding:0}@media print{@page{size:A4;margin:10mm}}</style></head><body>${html}</body></html>`);
+    doc.close();
+    setTimeout(() => {
+      iframe.contentWindow?.focus();
+      iframe.contentWindow?.print();
+      setTimeout(() => document.body.removeChild(iframe), 3000);
+    }, 600);
   };
 
   return (
@@ -44,7 +54,7 @@ function VerPgrss() {
             <ArrowLeft className="h-4 w-4 mr-1" /> Voltar
           </Button>
         </Link>
-        <div className="text-sm text-muted-foreground">Proposta {numero}</div>
+        <div className="text-sm font-semibold text-emerald-700">📄 PGRSS — {numero}</div>
         <Button onClick={handlePrint}>
           <Printer className="h-4 w-4 mr-1" /> Imprimir / PDF
         </Button>
