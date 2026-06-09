@@ -16,7 +16,7 @@ import {
 import { Loader2, Plus, Eye, Mail, PenTool, Trash2, FileSignature } from "lucide-react";
 import { toast } from "sonner";
 import { useServerFn } from "@tanstack/react-start";
-import { visualizarContrato, enviarContratoEmail, gerarContratoPadraoBioLogus } from "@/lib/contrato.functions";
+import { enviarContratoEmail, gerarContratoPadraoBioLogus } from "@/lib/contrato.functions";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 export const Route = createFileRoute("/_authenticated/contratos")({
@@ -384,7 +384,7 @@ function ContratosPage() {
 
   // Modal ver contrato
   const [verContrato, setVerContrato] = useState<Contrato | null>(null);
-  const [previewing, setPreviewing] = useState<string | null>(null);
+  
 
   // Modal assinatura
   const [assContrato, setAssContrato] = useState<Contrato | null>(null);
@@ -394,7 +394,6 @@ function ContratosPage() {
   const [emailDest, setEmailDest] = useState("");
   const [sendingEmail, setSendingEmail] = useState(false);
 
-  const visualizar = useServerFn(visualizarContrato);
   const enviarEmail = useServerFn(enviarContratoEmail);
   const gerarContratoPadrao = useServerFn(gerarContratoPadraoBioLogus);
 
@@ -588,9 +587,9 @@ function ContratosPage() {
                       <td>{statusBadge(c.status)}</td>
                       <td>
                         <div style={{ display: "flex", gap: "4px" }}>
-                          <button title="Visualizar contrato" onClick={() => handleVerPDF(c)} disabled={previewing === c.id}
+                          <button title="Visualizar contrato" onClick={() => handleVerPDF(c)}
                             style={{ padding: "5px", borderRadius: "6px", border: "1px solid #E2E8E5", background: "transparent", cursor: "pointer", display: "flex", alignItems: "center" }}>
-                            {previewing === c.id ? <Loader2 size={14} className="animate-spin" /> : <Eye size={14} />}
+                            <Eye size={14} />
                           </button>
                           <button title="Ver HTML" onClick={() => setVerContrato(c)}
                             style={{ padding: "5px", borderRadius: "6px", border: "1px solid #E2E8E5", background: "transparent", cursor: "pointer", display: "flex", alignItems: "center" }}>
@@ -782,8 +781,8 @@ function ContratosPage() {
           <div style={{ padding: "14px 20px", borderBottom: "1px solid #E2E8E5", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
             <span style={{ fontWeight: 600, fontSize: "14px" }}>{verContrato?.numero} — {verContrato?.clientes?.razao_social}</span>
             <div style={{ display: "flex", gap: "8px" }}>
-              <button className="eco-btn eco-btn-g" style={{ fontSize: "12px" }} onClick={() => verContrato && handleVerPDF(verContrato)} disabled={!!previewing}>
-                {previewing ? <Loader2 size={13} className="animate-spin" /> : null} Imprimir / PDF
+              <button className="eco-btn eco-btn-g" style={{ fontSize: "12px" }} onClick={() => verContrato && handleVerPDF(verContrato)}>
+                Imprimir / PDF
               </button>
               <button className="eco-btn eco-btn-p" style={{ fontSize: "12px" }} onClick={() => { setAssContrato(verContrato); setVerContrato(null); }}>
                 ✏ Assinar digitalmente
