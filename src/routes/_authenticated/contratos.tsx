@@ -16,7 +16,7 @@ import {
 import { Loader2, Plus, Eye, Mail, PenTool, Trash2, FileSignature } from "lucide-react";
 import { toast } from "sonner";
 import { useServerFn } from "@tanstack/react-start";
-import { enviarContratoEmail, gerarContratoPadraoBioLogus } from "@/lib/contrato.functions";
+import { enviarContratoEmail, gerarContratoPadraoBioLogus, visualizarContrato } from "@/lib/contrato.functions";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 export const Route = createFileRoute("/_authenticated/contratos")({
@@ -459,6 +459,7 @@ function ContratosPage() {
 
   const enviarEmail = useServerFn(enviarContratoEmail);
   const gerarContratoPadrao = useServerFn(gerarContratoPadraoBioLogus);
+  const visualizar = useServerFn(visualizarContrato);
 
   const { data: clientes = [] } = useQuery({
     queryKey: ["clientes-select"],
@@ -522,8 +523,18 @@ function ContratosPage() {
     createMutation.mutate(payload);
   };
 
-  const handleVerPDF = (c: Contrato) => {
-    setVerContrato(c);
+  const handleVerPDF = async (c: Contrato) => {
+    if (c.conteudo_html && c.conteudo_html.trim().length > 20) {
+      setVerContrato(c);
+      return;
+    }
+    try {
+      const res = await visualizar({ data: { contrato_id: c.id } });
+      const win = window.open(res.url, "_blank");
+      if (!win) toast.error("Pop-up bloqueado. Habilite pop-ups para visualizar.");
+    } catch (e: unknown) {
+      toast.error(e instanceof Error ? e.message : "Falha ao gerar visualização do contrato");
+    }
   };
 
   const handleAssinaturaSalva = async (rubrica: string, foto: string | null) => {
