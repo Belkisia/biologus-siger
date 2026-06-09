@@ -16,7 +16,7 @@ import {
 import { Loader2, Plus, Eye, Mail, PenTool, Trash2, FileSignature } from "lucide-react";
 import { toast } from "sonner";
 import { useServerFn } from "@tanstack/react-start";
-import { enviarContratoEmail, gerarContratoPadraoBioLogus } from "@/lib/contrato.functions";
+import { enviarContratoEmail, gerarContratoPadraoBioLogus, visualizarContrato } from "@/lib/contrato.functions";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 export const Route = createFileRoute("/_authenticated/contratos")({
@@ -122,31 +122,31 @@ type Contrato = {
   clientes?: { razao_social: string } | null;
 };
 
-function ContratoViewer({ contrato, onClose, onAssinar }: { contrato: Contrato; onClose: () => void; onAssinar: () => void; }) {
-  const printId = "contrato-print-area";
+function ContratoViewer({ contrato, html, onClose, onAssinar }: { contrato: Contrato; html: string; onClose: () => void; onAssinar: () => void; }) {
+  const iframeRef = useRef<HTMLIFrameElement>(null);
 
-  const htmlContent = contrato.conteudo_html && contrato.conteudo_html.trim().length > 20
-    ? contrato.conteudo_html
-    : `<div style="padding:40px;font-family:Arial;max-width:800px;margin:0 auto">
-        <h2 style="text-align:center;color:#0D6B54">CONTRATO Nº ${contrato.numero}</h2>
-        <p><strong>Vigência:</strong> ${new Date(contrato.data_inicio).toLocaleDateString("pt-BR")} → ${contrato.data_fim ? new Date(contrato.data_fim).toLocaleDateString("pt-BR") : "—"}</p>
-        <p><strong>Valor mensal:</strong> ${contrato.valor_mensal?.toLocaleString("pt-BR",{style:"currency",currency:"BRL"}) || "—"}</p>
-      </div>`;
+  const fallbackBody = `<div style="padding:40px;font-family:Arial;max-width:800px;margin:0 auto">
+    <h2 style="text-align:center;color:#0D6B54">CONTRATO Nº ${contrato.numero}</h2>
+    <p><strong>Vigência:</strong> ${new Date(contrato.data_inicio).toLocaleDateString("pt-BR")} → ${contrato.data_fim ? new Date(contrato.data_fim).toLocaleDateString("pt-BR") : "—"}</p>
+    <p><strong>Valor mensal:</strong> ${contrato.valor_mensal?.toLocaleString("pt-BR", { style: "currency", currency: "BRL" }) || "—"}</p>
+  </div>`;
+  const srcDoc = html?.trim()
+    ? html
+    : `<!doctype html><html><head><meta charset="utf-8"><title>Contrato ${contrato.numero}</title><style>body{font-family:Arial,sans-serif;max-width:820px;margin:24px auto;padding:24px;color:#111;line-height:1.6}</style></head><body>${fallbackBody}</body></html>`;
 
   const handlePrint = () => {
-    const el = document.getElementById(printId);
-    if (!el) return;
-    const style = document.createElement("style");
-    style.id = "__print_style__";
-    style.textContent = `@media print { body > *:not(#__print_wrapper__) { display: none !important; } #__print_wrapper__ { display: block !important; position: fixed; inset: 0; background: white; z-index: 99999; padding: 24px; } }`;
-    document.head.appendChild(style);
-    const wrapper = document.createElement("div");
-    wrapper.id = "__print_wrapper__";
-    wrapper.innerHTML = el.innerHTML;
-    document.body.appendChild(wrapper);
-    window.print();
-    document.body.removeChild(wrapper);
-    document.head.removeChild(style);
+    const printWin = window.open("", "_blank", "width=900,height=700");
+    if (!printWin) {
+      iframeRef.current?.contentWindow?.print();
+      return;
+    }
+    const printScript = `<script>window.addEventListener('load',function(){setTimeout(function(){window.focus();window.print();window.onafterprint=function(){window.close();};},150);});<\/script>`;
+    const printDoc = srcDoc.includes("</body>")
+      ? srcDoc.replace("</body>", `${printScript}</body>`)
+      : `${srcDoc}${printScript}`;
+    printWin.document.open();
+    printWin.document.write(printDoc.replace("</head>", `<style>@media print{body{margin:0!important;padding:16px!important}}</style></head>`));
+    printWin.document.close();
   };
 
   return (
@@ -166,8 +166,11 @@ function ContratoViewer({ contrato, onClose, onAssinar }: { contrato: Contrato; 
             Fechar
           </button>
         </div>
-        <div id={printId} style={{ flex: 1, overflowY: "auto", padding: "32px", fontFamily: "Arial, sans-serif", fontSize: "13px", lineHeight: 1.8 }}
-          dangerouslySetInnerHTML={{ __html: htmlContent }}
+        <iframe
+          ref={iframeRef}
+          srcDoc={srcDoc}
+          title={`Contrato ${contrato.numero}`}
+          style={{ flex: 1, width: "100%", border: "none", background: "#fff" }}
         />
       </div>
     </div>
@@ -451,6 +454,7 @@ function ContratosPage() {
 
   // Modal ver contrato
   const [verContrato, setVerContrato] = useState<Contrato | null>(null);
+  const [verContratoHtml, setVerContratoHtml] = useState("");
   
 
   // Modal assinatura
@@ -463,6 +467,7 @@ function ContratosPage() {
 
   const enviarEmail = useServerFn(enviarContratoEmail);
   const gerarContratoPadrao = useServerFn(gerarContratoPadraoBioLogus);
+  const visualizarContratoHtml = useServerFn(visualizarContrato);
   
 
   const { data: clientes = [] } = useQuery({
@@ -527,8 +532,15 @@ function ContratosPage() {
     createMutation.mutate(payload);
   };
 
-  const handleVerPDF = (c: Contrato) => {
+  const handleVerPDF = async (c: Contrato) => {
     setVerContrato(c);
+    setVerContratoHtml("");
+    try {
+      const res = await visualizarContratoHtml({ data: { contrato_id: c.id } });
+      setVerContratoHtml(res.html);
+    } catch (e) {
+      toast.error(e instanceof Error ? e.message : "Falha ao abrir contrato");
+    }
   };
 
   const handleAssinaturaSalva = async (rubrica: string, foto: string | null) => {
@@ -840,6 +852,7 @@ function ContratosPage() {
       {verContrato && (
         <ContratoViewer
           contrato={verContrato}
+          html={verContratoHtml}
           onClose={() => setVerContrato(null)}
           onAssinar={() => { setAssContrato(verContrato); setVerContrato(null); }}
         />
