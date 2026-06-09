@@ -455,6 +455,7 @@ function ContratosPage() {
 
   // Modal ver contrato
   const [verContrato, setVerContrato] = useState<Contrato | null>(null);
+  const [verContratoHtml, setVerContratoHtml] = useState("");
   
 
   // Modal assinatura
@@ -467,6 +468,7 @@ function ContratosPage() {
 
   const enviarEmail = useServerFn(enviarContratoEmail);
   const gerarContratoPadrao = useServerFn(gerarContratoPadraoBioLogus);
+  const visualizarContratoHtml = useServerFn(visualizarContrato);
   
 
   const { data: clientes = [] } = useQuery({
@@ -531,8 +533,15 @@ function ContratosPage() {
     createMutation.mutate(payload);
   };
 
-  const handleVerPDF = (c: Contrato) => {
+  const handleVerPDF = async (c: Contrato) => {
     setVerContrato(c);
+    setVerContratoHtml("");
+    try {
+      const res = await visualizarContratoHtml({ data: { contrato_id: c.id } });
+      setVerContratoHtml(res.html);
+    } catch (e) {
+      toast.error(e instanceof Error ? e.message : "Falha ao abrir contrato");
+    }
   };
 
   const handleAssinaturaSalva = async (rubrica: string, foto: string | null) => {
@@ -844,6 +853,7 @@ function ContratosPage() {
       {verContrato && (
         <ContratoViewer
           contrato={verContrato}
+          html={verContratoHtml}
           onClose={() => setVerContrato(null)}
           onAssinar={() => { setAssContrato(verContrato); setVerContrato(null); }}
         />
