@@ -122,72 +122,34 @@ type Contrato = {
   clientes?: { razao_social: string } | null;
 };
 
-function ContratoViewer({
-  contrato,
-  onClose,
-  onAssinar,
-}: {
-  contrato: Contrato;
-  onClose: () => void;
-  onAssinar: () => void;
-}) {
-  console.log("ContratoViewer rendering, html:", contrato.conteudo_html?.substring(0, 50));
+function ContratoViewer({ contrato, onClose, onAssinar }: { contrato: Contrato; onClose: () => void; onAssinar: () => void; }) {
   return (
-    <Dialog open onOpenChange={(o) => { if (!o) onClose(); }}>
-      <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
+    <Dialog open={true} onOpenChange={(open) => { if (!open) onClose(); }}>
+      <DialogContent className="max-w-4xl max-h-[90vh] flex flex-col">
         <DialogHeader>
-          <DialogTitle>
-            {contrato.numero} — {contrato.clientes?.razao_social || "Cliente não informado"}
-          </DialogTitle>
+          <DialogTitle>{contrato.numero} — {contrato.clientes?.razao_social}</DialogTitle>
         </DialogHeader>
-        <div className="contrato-doc bg-white text-black p-6 border rounded">
-          {contrato.conteudo_html ? (
+        <div className="flex-1 overflow-y-auto p-4 bg-gray-50">
+          {contrato.conteudo_html && contrato.conteudo_html.trim().length > 20 ? (
             <div dangerouslySetInnerHTML={{ __html: contrato.conteudo_html }} />
           ) : (
-            <div className="space-y-4">
-              <div className="p-4 bg-yellow-50 border border-yellow-200 rounded text-sm text-yellow-900">
-                Contrato sem conteúdo HTML gerado. Exibindo dados básicos:
-              </div>
-              <h2 className="text-xl font-bold text-center">CONTRATO Nº {contrato.numero}</h2>
-              <table className="w-full border-collapse">
-                <tbody>
-                  <tr>
-                    <td className="border p-2"><strong>Cliente:</strong> {contrato.clientes?.razao_social || "—"}</td>
-                  </tr>
-                  <tr>
-                    <td className="border p-2">
-                      <strong>Início:</strong> {new Date(contrato.data_inicio).toLocaleDateString("pt-BR")}
-                      {" — "}
-                      <strong>Fim:</strong> {contrato.data_fim ? new Date(contrato.data_fim).toLocaleDateString("pt-BR") : "—"}
-                    </td>
-                  </tr>
-                  <tr>
-                    <td className="border p-2">
-                      <strong>Valor mensal:</strong>{" "}
-                      {contrato.valor_mensal?.toLocaleString("pt-BR", { style: "currency", currency: "BRL" }) || "—"}
-                      {contrato.forma_pagamento ? <> — <strong>Pagamento:</strong> {contrato.forma_pagamento}</> : null}
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
+            <div className="p-8 text-center text-gray-500">
+              <p className="font-semibold text-lg">{contrato.numero}</p>
+              <p>Vigência: {new Date(contrato.data_inicio).toLocaleDateString("pt-BR")} → {contrato.data_fim ? new Date(contrato.data_fim).toLocaleDateString("pt-BR") : "—"}</p>
+              <p>Valor mensal: {contrato.valor_mensal?.toLocaleString("pt-BR", { style: "currency", currency: "BRL" }) || "—"}</p>
             </div>
           )}
         </div>
-        <DialogFooter className="gap-2">
-          <Button variant="outline" type="button" onClick={() => window.print()}>
-            Imprimir / PDF
-          </Button>
-          <Button type="button" onClick={onAssinar}>
-            ✏ Assinar digitalmente
-          </Button>
-          <Button variant="secondary" type="button" onClick={onClose}>
-            Fechar
-          </Button>
-        </DialogFooter>
+        <div className="flex justify-end gap-2 pt-2">
+          <button onClick={() => window.print()} className="px-4 py-2 border rounded text-sm">Imprimir</button>
+          <button onClick={onAssinar} className="px-4 py-2 bg-green-700 text-white rounded text-sm">✏ Assinar</button>
+          <button onClick={onClose} className="px-4 py-2 border rounded text-sm">Fechar</button>
+        </div>
       </DialogContent>
     </Dialog>
   );
 }
+
 
 // ── Modal assinatura EcoTrack ─────────────────────────────────────────────────
 function ModalAssinatura({
