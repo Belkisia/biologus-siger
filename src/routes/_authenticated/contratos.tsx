@@ -523,8 +523,18 @@ function ContratosPage() {
     createMutation.mutate(payload);
   };
 
-  const handleVerPDF = (c: Contrato) => {
-    setVerContrato(c);
+  const handleVerPDF = async (c: Contrato) => {
+    if (c.conteudo_html && c.conteudo_html.trim().length > 20) {
+      setVerContrato(c);
+      return;
+    }
+    try {
+      const res = await visualizar({ data: { contrato_id: c.id } });
+      const win = window.open(res.url, "_blank");
+      if (!win) toast.error("Pop-up bloqueado. Habilite pop-ups para visualizar.");
+    } catch (e: unknown) {
+      toast.error(e instanceof Error ? e.message : "Falha ao gerar visualização do contrato");
+    }
   };
 
   const handleAssinaturaSalva = async (rubrica: string, foto: string | null) => {
