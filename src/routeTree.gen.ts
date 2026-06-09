@@ -41,6 +41,8 @@ import { Route as LovableEmailTransactionalPreviewRouteImport } from './routes/l
 import { Route as LovableEmailQueueProcessRouteImport } from './routes/lovable/email/queue/process'
 import { Route as LovableEmailAuthWebhookRouteImport } from './routes/lovable/email/auth/webhook'
 import { Route as LovableEmailAuthPreviewRouteImport } from './routes/lovable/email/auth/preview'
+import { Route as AuthenticatedPropostasPgrssNovaRouteImport } from './routes/_authenticated/propostas.pgrss.nova'
+import { Route as AuthenticatedPropostasPgrssIdRouteImport } from './routes/_authenticated/propostas.pgrss.$id'
 
 const UnsubscribeRoute = UnsubscribeRouteImport.update({
   id: '/unsubscribe',
@@ -209,6 +211,18 @@ const LovableEmailAuthPreviewRoute = LovableEmailAuthPreviewRouteImport.update({
   path: '/lovable/email/auth/preview',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AuthenticatedPropostasPgrssNovaRoute =
+  AuthenticatedPropostasPgrssNovaRouteImport.update({
+    id: '/pgrss/nova',
+    path: '/pgrss/nova',
+    getParentRoute: () => AuthenticatedPropostasRoute,
+  } as any)
+const AuthenticatedPropostasPgrssIdRoute =
+  AuthenticatedPropostasPgrssIdRouteImport.update({
+    id: '/pgrss/$id',
+    path: '/pgrss/$id',
+    getParentRoute: () => AuthenticatedPropostasRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -237,6 +251,8 @@ export interface FileRoutesByFullPath {
   '/clientes/$clienteId': typeof AuthenticatedClientesClienteIdRoute
   '/propostas/nova': typeof AuthenticatedPropostasNovaRoute
   '/lovable/email/suppression': typeof LovableEmailSuppressionRoute
+  '/propostas/pgrss/$id': typeof AuthenticatedPropostasPgrssIdRoute
+  '/propostas/pgrss/nova': typeof AuthenticatedPropostasPgrssNovaRoute
   '/lovable/email/auth/preview': typeof LovableEmailAuthPreviewRoute
   '/lovable/email/auth/webhook': typeof LovableEmailAuthWebhookRoute
   '/lovable/email/queue/process': typeof LovableEmailQueueProcessRoute
@@ -270,6 +286,8 @@ export interface FileRoutesByTo {
   '/clientes/$clienteId': typeof AuthenticatedClientesClienteIdRoute
   '/propostas/nova': typeof AuthenticatedPropostasNovaRoute
   '/lovable/email/suppression': typeof LovableEmailSuppressionRoute
+  '/propostas/pgrss/$id': typeof AuthenticatedPropostasPgrssIdRoute
+  '/propostas/pgrss/nova': typeof AuthenticatedPropostasPgrssNovaRoute
   '/lovable/email/auth/preview': typeof LovableEmailAuthPreviewRoute
   '/lovable/email/auth/webhook': typeof LovableEmailAuthWebhookRoute
   '/lovable/email/queue/process': typeof LovableEmailQueueProcessRoute
@@ -305,6 +323,8 @@ export interface FileRoutesById {
   '/_authenticated/clientes/$clienteId': typeof AuthenticatedClientesClienteIdRoute
   '/_authenticated/propostas/nova': typeof AuthenticatedPropostasNovaRoute
   '/lovable/email/suppression': typeof LovableEmailSuppressionRoute
+  '/_authenticated/propostas/pgrss/$id': typeof AuthenticatedPropostasPgrssIdRoute
+  '/_authenticated/propostas/pgrss/nova': typeof AuthenticatedPropostasPgrssNovaRoute
   '/lovable/email/auth/preview': typeof LovableEmailAuthPreviewRoute
   '/lovable/email/auth/webhook': typeof LovableEmailAuthWebhookRoute
   '/lovable/email/queue/process': typeof LovableEmailQueueProcessRoute
@@ -340,6 +360,8 @@ export interface FileRouteTypes {
     | '/clientes/$clienteId'
     | '/propostas/nova'
     | '/lovable/email/suppression'
+    | '/propostas/pgrss/$id'
+    | '/propostas/pgrss/nova'
     | '/lovable/email/auth/preview'
     | '/lovable/email/auth/webhook'
     | '/lovable/email/queue/process'
@@ -373,6 +395,8 @@ export interface FileRouteTypes {
     | '/clientes/$clienteId'
     | '/propostas/nova'
     | '/lovable/email/suppression'
+    | '/propostas/pgrss/$id'
+    | '/propostas/pgrss/nova'
     | '/lovable/email/auth/preview'
     | '/lovable/email/auth/webhook'
     | '/lovable/email/queue/process'
@@ -407,6 +431,8 @@ export interface FileRouteTypes {
     | '/_authenticated/clientes/$clienteId'
     | '/_authenticated/propostas/nova'
     | '/lovable/email/suppression'
+    | '/_authenticated/propostas/pgrss/$id'
+    | '/_authenticated/propostas/pgrss/nova'
     | '/lovable/email/auth/preview'
     | '/lovable/email/auth/webhook'
     | '/lovable/email/queue/process'
@@ -658,6 +684,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LovableEmailAuthPreviewRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_authenticated/propostas/pgrss/nova': {
+      id: '/_authenticated/propostas/pgrss/nova'
+      path: '/pgrss/nova'
+      fullPath: '/propostas/pgrss/nova'
+      preLoaderRoute: typeof AuthenticatedPropostasPgrssNovaRouteImport
+      parentRoute: typeof AuthenticatedPropostasRoute
+    }
+    '/_authenticated/propostas/pgrss/$id': {
+      id: '/_authenticated/propostas/pgrss/$id'
+      path: '/pgrss/$id'
+      fullPath: '/propostas/pgrss/$id'
+      preLoaderRoute: typeof AuthenticatedPropostasPgrssIdRouteImport
+      parentRoute: typeof AuthenticatedPropostasRoute
+    }
   }
 }
 
@@ -676,11 +716,15 @@ const AuthenticatedClientesRouteWithChildren =
 
 interface AuthenticatedPropostasRouteChildren {
   AuthenticatedPropostasNovaRoute: typeof AuthenticatedPropostasNovaRoute
+  AuthenticatedPropostasPgrssIdRoute: typeof AuthenticatedPropostasPgrssIdRoute
+  AuthenticatedPropostasPgrssNovaRoute: typeof AuthenticatedPropostasPgrssNovaRoute
 }
 
 const AuthenticatedPropostasRouteChildren: AuthenticatedPropostasRouteChildren =
   {
     AuthenticatedPropostasNovaRoute: AuthenticatedPropostasNovaRoute,
+    AuthenticatedPropostasPgrssIdRoute: AuthenticatedPropostasPgrssIdRoute,
+    AuthenticatedPropostasPgrssNovaRoute: AuthenticatedPropostasPgrssNovaRoute,
   }
 
 const AuthenticatedPropostasRouteWithChildren =
@@ -747,3 +791,13 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}
