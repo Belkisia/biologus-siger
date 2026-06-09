@@ -1068,6 +1068,57 @@ export type Database = {
         }
         Relationships: []
       }
+      pgrss_precos: {
+        Row: {
+          created_at: string
+          id: string
+          multiplicador_grande: number
+          multiplicador_medio: number
+          multiplicador_pequeno: number
+          owner_id: string
+          preco_art: number
+          preco_atualizacao_anual: number
+          preco_consultoria_mensal: number
+          preco_deslocamento_km: number
+          preco_elaboracao: number
+          preco_treinamento: number
+          preco_visita_tecnica: number
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          multiplicador_grande?: number
+          multiplicador_medio?: number
+          multiplicador_pequeno?: number
+          owner_id: string
+          preco_art?: number
+          preco_atualizacao_anual?: number
+          preco_consultoria_mensal?: number
+          preco_deslocamento_km?: number
+          preco_elaboracao?: number
+          preco_treinamento?: number
+          preco_visita_tecnica?: number
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          multiplicador_grande?: number
+          multiplicador_medio?: number
+          multiplicador_pequeno?: number
+          owner_id?: string
+          preco_art?: number
+          preco_atualizacao_anual?: number
+          preco_consultoria_mensal?: number
+          preco_deslocamento_km?: number
+          preco_elaboracao?: number
+          preco_treinamento?: number
+          preco_visita_tecnica?: number
+          updated_at?: string
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           avatar_url: string | null
@@ -1146,8 +1197,10 @@ export type Database = {
         Row: {
           cliente_id: string
           condicoes_pagamento: string | null
+          conteudo_html: string | null
           contrato_id: string | null
           created_at: string
+          dados_pgrss: Json | null
           data_emissao: string
           enviada_em: string | null
           id: string
@@ -1157,6 +1210,7 @@ export type Database = {
           prazo_coleta: string | null
           respondida_em: string | null
           status: string
+          tipo: string
           updated_at: string
           validade: string | null
           valor_total: number
@@ -1164,8 +1218,10 @@ export type Database = {
         Insert: {
           cliente_id: string
           condicoes_pagamento?: string | null
+          conteudo_html?: string | null
           contrato_id?: string | null
           created_at?: string
+          dados_pgrss?: Json | null
           data_emissao?: string
           enviada_em?: string | null
           id?: string
@@ -1175,6 +1231,7 @@ export type Database = {
           prazo_coleta?: string | null
           respondida_em?: string | null
           status?: string
+          tipo?: string
           updated_at?: string
           validade?: string | null
           valor_total?: number
@@ -1182,8 +1239,10 @@ export type Database = {
         Update: {
           cliente_id?: string
           condicoes_pagamento?: string | null
+          conteudo_html?: string | null
           contrato_id?: string | null
           created_at?: string
+          dados_pgrss?: Json | null
           data_emissao?: string
           enviada_em?: string | null
           id?: string
@@ -1193,6 +1252,7 @@ export type Database = {
           prazo_coleta?: string | null
           respondida_em?: string | null
           status?: string
+          tipo?: string
           updated_at?: string
           validade?: string | null
           valor_total?: number
