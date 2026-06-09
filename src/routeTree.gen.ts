@@ -21,6 +21,7 @@ import { Route as ApiAnthropicProxyRouteImport } from './routes/api/anthropic-pr
 import { Route as AuthenticatedUsuariosRouteImport } from './routes/_authenticated/usuarios'
 import { Route as AuthenticatedRelatoriosRouteImport } from './routes/_authenticated/relatorios'
 import { Route as AuthenticatedPropostasRouteImport } from './routes/_authenticated/propostas'
+import { Route as AuthenticatedPrecosPgrssRouteImport } from './routes/_authenticated/precos-pgrss'
 import { Route as AuthenticatedPortalRouteImport } from './routes/_authenticated/portal'
 import { Route as AuthenticatedMtrRouteImport } from './routes/_authenticated/mtr'
 import { Route as AuthenticatedModelosContratoRouteImport } from './routes/_authenticated/modelos-contrato'
@@ -100,6 +101,12 @@ const AuthenticatedPropostasRoute = AuthenticatedPropostasRouteImport.update({
   path: '/propostas',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedPrecosPgrssRoute =
+  AuthenticatedPrecosPgrssRouteImport.update({
+    id: '/precos-pgrss',
+    path: '/precos-pgrss',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 const AuthenticatedPortalRoute = AuthenticatedPortalRouteImport.update({
   id: '/portal',
   path: '/portal',
@@ -219,6 +226,7 @@ export interface FileRoutesByFullPath {
   '/modelos-contrato': typeof AuthenticatedModelosContratoRoute
   '/mtr': typeof AuthenticatedMtrRoute
   '/portal': typeof AuthenticatedPortalRoute
+  '/precos-pgrss': typeof AuthenticatedPrecosPgrssRoute
   '/propostas': typeof AuthenticatedPropostasRouteWithChildren
   '/relatorios': typeof AuthenticatedRelatoriosRoute
   '/usuarios': typeof AuthenticatedUsuariosRoute
@@ -251,6 +259,7 @@ export interface FileRoutesByTo {
   '/modelos-contrato': typeof AuthenticatedModelosContratoRoute
   '/mtr': typeof AuthenticatedMtrRoute
   '/portal': typeof AuthenticatedPortalRoute
+  '/precos-pgrss': typeof AuthenticatedPrecosPgrssRoute
   '/propostas': typeof AuthenticatedPropostasRouteWithChildren
   '/relatorios': typeof AuthenticatedRelatoriosRoute
   '/usuarios': typeof AuthenticatedUsuariosRoute
@@ -285,6 +294,7 @@ export interface FileRoutesById {
   '/_authenticated/modelos-contrato': typeof AuthenticatedModelosContratoRoute
   '/_authenticated/mtr': typeof AuthenticatedMtrRoute
   '/_authenticated/portal': typeof AuthenticatedPortalRoute
+  '/_authenticated/precos-pgrss': typeof AuthenticatedPrecosPgrssRoute
   '/_authenticated/propostas': typeof AuthenticatedPropostasRouteWithChildren
   '/_authenticated/relatorios': typeof AuthenticatedRelatoriosRoute
   '/_authenticated/usuarios': typeof AuthenticatedUsuariosRoute
@@ -319,6 +329,7 @@ export interface FileRouteTypes {
     | '/modelos-contrato'
     | '/mtr'
     | '/portal'
+    | '/precos-pgrss'
     | '/propostas'
     | '/relatorios'
     | '/usuarios'
@@ -351,6 +362,7 @@ export interface FileRouteTypes {
     | '/modelos-contrato'
     | '/mtr'
     | '/portal'
+    | '/precos-pgrss'
     | '/propostas'
     | '/relatorios'
     | '/usuarios'
@@ -384,6 +396,7 @@ export interface FileRouteTypes {
     | '/_authenticated/modelos-contrato'
     | '/_authenticated/mtr'
     | '/_authenticated/portal'
+    | '/_authenticated/precos-pgrss'
     | '/_authenticated/propostas'
     | '/_authenticated/relatorios'
     | '/_authenticated/usuarios'
@@ -503,6 +516,13 @@ declare module '@tanstack/react-router' {
       path: '/propostas'
       fullPath: '/propostas'
       preLoaderRoute: typeof AuthenticatedPropostasRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/precos-pgrss': {
+      id: '/_authenticated/precos-pgrss'
+      path: '/precos-pgrss'
+      fullPath: '/precos-pgrss'
+      preLoaderRoute: typeof AuthenticatedPrecosPgrssRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/portal': {
@@ -680,6 +700,7 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedModelosContratoRoute: typeof AuthenticatedModelosContratoRoute
   AuthenticatedMtrRoute: typeof AuthenticatedMtrRoute
   AuthenticatedPortalRoute: typeof AuthenticatedPortalRoute
+  AuthenticatedPrecosPgrssRoute: typeof AuthenticatedPrecosPgrssRoute
   AuthenticatedPropostasRoute: typeof AuthenticatedPropostasRouteWithChildren
   AuthenticatedRelatoriosRoute: typeof AuthenticatedRelatoriosRoute
   AuthenticatedUsuariosRoute: typeof AuthenticatedUsuariosRoute
@@ -697,6 +718,7 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedModelosContratoRoute: AuthenticatedModelosContratoRoute,
   AuthenticatedMtrRoute: AuthenticatedMtrRoute,
   AuthenticatedPortalRoute: AuthenticatedPortalRoute,
+  AuthenticatedPrecosPgrssRoute: AuthenticatedPrecosPgrssRoute,
   AuthenticatedPropostasRoute: AuthenticatedPropostasRouteWithChildren,
   AuthenticatedRelatoriosRoute: AuthenticatedRelatoriosRoute,
   AuthenticatedUsuariosRoute: AuthenticatedUsuariosRoute,
