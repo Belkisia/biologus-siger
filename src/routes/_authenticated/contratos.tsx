@@ -462,22 +462,26 @@ function ContratosPage() {
 
   const handleVerPDF = async (c: Contrato) => {
     setPreviewing(c.id);
-    const win = window.open("", "_blank");
-    if (!win) { setPreviewing(null); toast.error("Permita pop-ups para visualizar o contrato"); return; }
-    win.document.write('<!doctype html><title>Carregando contrato…</title><body style="font-family:Arial;padding:24px;color:#555">Carregando contrato…</body>');
+    // Abre a janela imediatamente (gesto do usuário) para não ser bloqueada
+    const win = window.open("about:blank", "_blank");
     try {
       const r = await visualizar({ data: { contrato_id: c.id } });
       const html = (r as { html?: string; url?: string }).html;
-      if (html) {
-        win.document.open(); win.document.write(html); win.document.close();
-      } else if (r.url) {
-        win.location.href = r.url;
+      if (!html) throw new Error("Contrato sem conteúdo");
+      // Blob URL funciona de forma confiável (desktop e mobile), ao contrário de document.write/data:
+      const blob = new Blob([html], { type: "text/html;charset=utf-8" });
+      const url = URL.createObjectURL(blob);
+      if (win && !win.closed) {
+        win.location.href = url;
       } else {
-        win.document.body.innerHTML = '<p style="color:#b91c1c">Contrato sem conteúdo.</p>';
+        // Pop-up bloqueado: navega na mesma aba como fallback
+        window.location.href = url;
       }
+      // Libera o blob após algum tempo
+      setTimeout(() => URL.revokeObjectURL(url), 60_000);
     } catch (e: any) {
-      win.document.body.innerHTML = `<p style="color:#b91c1c;font-family:Arial;padding:24px">Erro: ${e.message}</p>`;
-      toast.error(e.message);
+      if (win && !win.closed) win.close();
+      toast.error(e.message || "Erro ao abrir contrato");
     } finally { setPreviewing(null); }
   };
 
