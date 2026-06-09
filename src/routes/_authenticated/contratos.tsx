@@ -504,22 +504,7 @@ function ContratosPage() {
   };
 
   const handleVerPDF = (c: Contrato) => {
-    // Abre janela IMEDIATAMENTE no clique do usuário (evita popup blocker)
-    const win = window.open("", "_blank");
-    if (!win) { toast.error("Habilite pop-ups para visualizar o contrato"); return; }
-    const cli = clientes.find(cl => cl.id === c.cliente_id);
-    const body = c.conteudo_html && c.conteudo_html.trim().length > 20
-      ? c.conteudo_html
-      : `<div style="padding:40px;font-family:Arial;max-width:800px;margin:0 auto">
-          <h2 style="text-align:center;color:#0D6B54">CONTRATO Nº ${c.numero}</h2>
-          <p><strong>Contratante:</strong> ${cli?.razao_social || "—"}</p>
-          <p><strong>CNPJ:</strong> ${cli?.cnpj || "—"}</p>
-          <p><strong>Vigência:</strong> ${new Date(c.data_inicio).toLocaleDateString("pt-BR")} → ${c.data_fim ? new Date(c.data_fim).toLocaleDateString("pt-BR") : "indeterminado"}</p>
-          <p><strong>Valor mensal:</strong> ${c.valor_mensal?.toLocaleString("pt-BR",{style:"currency",currency:"BRL"}) || "—"}</p>
-          <p><strong>Forma de pagamento:</strong> ${c.forma_pagamento || "—"}</p>
-        </div>`;
-    win.document.write(`<!doctype html><html><head><meta charset="utf-8"><title>Contrato ${c.numero}</title><style>body{margin:0;font-family:Arial,sans-serif}@media print{.np{display:none}}</style></head><body><div class="np" style="background:#0D6B54;padding:12px 24px;display:flex;gap:12px;align-items:center"><span style="color:#fff;font-weight:600;flex:1">Contrato ${c.numero} — ${cli?.razao_social || ""}</span><button onclick="window.print()" style="background:#fff;color:#0D6B54;border:none;padding:6px 14px;border-radius:6px;cursor:pointer;font-weight:600">Imprimir / PDF</button><button onclick="window.close()" style="background:transparent;color:#fff;border:1px solid rgba(255,255,255,.5);padding:6px 14px;border-radius:6px;cursor:pointer">Fechar</button></div>${body}</body></html>`);
-    win.document.close();
+    setVerContrato(c);
   };
 
   const handleAssinaturaSalva = async (rubrica: string, foto: string | null) => {
@@ -596,7 +581,7 @@ function ContratosPage() {
       {/* Tabela */}
       <div style={{ background: "#fff", border: "1px solid #E2E8E5", borderRadius: "10px", boxShadow: "0 1px 3px rgba(0,0,0,.08)" }}>
         <div style={{ padding: "16px 20px 12px", borderBottom: "1px solid #E2E8E5", display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: "8px" }}>
-          <span style={{ fontSize: "13px", fontWeight: 600 }}>Contratos</span>
+          <span style={{ fontSize: "13px", fontWeight: 600 }}>✅ Contratos v2</span>
         </div>
         <div style={{ padding: "14px 20px 8px" }}>
           {/* Filtros EcoTrack */}
