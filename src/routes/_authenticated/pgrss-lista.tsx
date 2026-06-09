@@ -23,6 +23,7 @@ function fmtBRL(v: number) {
 
 function PgrssLista() {
   const [propostas, setPropostas] = useState<Proposta[]>([]);
+  const [deletando, setDeletando] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -36,6 +37,14 @@ function PgrssLista() {
         setLoading(false);
       });
   }, []);
+
+  const handleDeletar = async (id: string, numero: string) => {
+    if (!confirm(`Remover a proposta ${numero}? Esta ação não pode ser desfeita.`)) return;
+    setDeletando(id);
+    await supabase.from("propostas").delete().eq("id", id);
+    setPropostas(prev => prev.filter(p => p.id !== id));
+    setDeletando(null);
+  };
 
   const statusBadge = (s: string) => {
     const map: Record<string, { bg: string; color: string; label: string }> = {
@@ -132,13 +141,23 @@ function PgrssLista() {
                     </td>
                     <td style={{ padding: "12px 16px" }}>{statusBadge(p.status)}</td>
                     <td style={{ padding: "12px 16px" }}>
-                      <button
-                        onClick={() => window.location.href = `/pgrss-ver/${p.id}`}
-                        title="Visualizar proposta"
-                        style={{ padding: "6px 12px", borderRadius: "6px", border: "1px solid #0D6B54", background: "#EAF4ED", color: "#0D6B54", cursor: "pointer", display: "inline-flex", alignItems: "center", gap: "4px", fontSize: "12px", fontFamily: "inherit" }}
-                      >
-                        <Eye size={13} /> Ver
-                      </button>
+                      <div style={{ display: "flex", gap: "6px" }}>
+                        <button
+                          onClick={() => window.location.href = `/pgrss-ver/${p.id}`}
+                          title="Visualizar proposta"
+                          style={{ padding: "6px 12px", borderRadius: "6px", border: "1px solid #0D6B54", background: "#EAF4ED", color: "#0D6B54", cursor: "pointer", display: "inline-flex", alignItems: "center", gap: "4px", fontSize: "12px", fontFamily: "inherit" }}
+                        >
+                          <Eye size={13} /> Ver
+                        </button>
+                        <button
+                          onClick={() => handleDeletar(p.id, p.numero)}
+                          disabled={deletando === p.id}
+                          title="Excluir proposta"
+                          style={{ padding: "6px 10px", borderRadius: "6px", border: "1px solid #fca5a5", background: "#fff", color: "#DC3545", cursor: "pointer", display: "inline-flex", alignItems: "center", fontSize: "12px", fontFamily: "inherit", opacity: deletando === p.id ? 0.5 : 1 }}
+                        >
+                          {deletando === p.id ? "..." : "✕"}
+                        </button>
+                      </div>
                     </td>
                   </tr>
                 ))}
