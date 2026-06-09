@@ -571,7 +571,7 @@ function ContratosPage() {
           {/* Filtros EcoTrack */}
           <div className="eco-filtros">
             {[
-              { k: "todos", lbl: `Todos (${counts.todos})` },
+              { k: "todos", lbl: `✓ Todos (${counts.todos})` },
               { k: "ativo", lbl: `Ativos (${counts.ativo})` },
               { k: "suspenso", lbl: `Suspensos (${counts.suspenso})` },
               { k: "encerrado", lbl: `Encerrados (${counts.encerrado})` },
