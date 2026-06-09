@@ -221,7 +221,8 @@ function NovaPgrssSimples() {
         },
       });
       toast.success("✅ Proposta PGRSS salva com sucesso!");
-      navigate({ to: "/propostas/pgrss/$id", params: { id: res.id } });
+      // Força navegação hard para garantir que o bundle novo seja carregado
+      window.location.href = `/propostas/pgrss/${res.id}`;
     } catch (e: any) {
       toast.error(e.message ?? "Erro ao salvar");
     } finally {
