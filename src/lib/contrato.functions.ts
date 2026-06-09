@@ -369,6 +369,111 @@ export const excluirModelo = createServerFn({ method: "POST" })
     return { ok: true };
   });
 
+const ContratoPadraoInput = z.object({
+  cliente_id: z.string().uuid(),
+  numero: z.string().trim().min(1).max(50),
+  data_inicio: z.string().trim().min(1),
+  data_fim: z.string().optional().nullable(),
+  valor_mensal: z.coerce.number().optional().nullable(),
+  indice_reajuste: z.string().optional().nullable(),
+  periodicidade_reajuste: z.string().optional().nullable(),
+  dia_vencimento: z.coerce.number().int().optional().nullable(),
+  forma_pagamento: z.string().optional().nullable(),
+  observacoes: z.string().optional().nullable(),
+  status: z.string().optional().nullable(),
+  grupos_residuos: z.string().optional().nullable(),
+  frequencia_coleta_texto: z.string().optional().nullable(),
+  limite_kg: z.coerce.number().optional().nullable(),
+  valor_excedente: z.coerce.number().optional().nullable(),
+  periodicidade_vigencia: z.string().optional().nullable(),
+});
+
+export const gerarContratoPadraoBioLogus = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((d: z.infer<typeof ContratoPadraoInput>) => ContratoPadraoInput.parse(d))
+  .handler(async ({ data, context }) => {
+    const [{ data: modelos, error: modelosError }, { data: cliente, error: clienteError }] =
+      await Promise.all([
+        context.supabase
+          .from("contrato_modelos")
+          .select("id,nome,conteudo_html,owner_id")
+          .eq("ativo", true)
+          .order("updated_at", { ascending: false }),
+        context.supabase.from("clientes").select("*").eq("id", data.cliente_id).single(),
+      ]);
+
+    if (modelosError) throw new Error(modelosError.message);
+    if (clienteError || !cliente) throw new Error("Cliente não encontrado.");
+
+    const modelo = (modelos || []).find(
+      (m) => m.owner_id === null && (m.conteudo_html?.length || 0) > 5000,
+    );
+    if (!modelo?.conteudo_html) {
+      throw new Error("Modelo padrão não encontrado. Ative o modelo Bio Logus 2026.");
+    }
+
+    const vigenciaAnos =
+      data.periodicidade_vigencia === "semestral"
+        ? "0,5 (meio)"
+        : data.periodicidade_vigencia === "trimestral"
+          ? "0,25 (três meses)"
+          : "01 (um)";
+
+    const conteudo_html = renderTemplate(
+      modelo.conteudo_html,
+      buildVars({
+        cliente,
+        contrato: {
+          numero: data.numero,
+          data_inicio: data.data_inicio,
+          data_fim: data.data_fim || null,
+          valor_mensal: data.valor_mensal ?? null,
+          forma_pagamento: data.forma_pagamento || "",
+          dia_vencimento: data.dia_vencimento ?? null,
+          frequencia_coleta: data.frequencia_coleta_texto || "mensal (1 vez ao mês)",
+          vigencia_anos: vigenciaAnos,
+        },
+        itens: data.limite_kg
+          ? [
+              {
+                descricao: "Resíduos de serviços de saúde",
+                grupo_residuo: data.grupos_residuos || "Grupo A, B e E",
+                unidade: "kg",
+                franquia: data.limite_kg,
+                preco_unitario: 0,
+                preco_excedente: data.valor_excedente || 0,
+              },
+            ]
+          : [],
+      }),
+    );
+
+    const { data: novo, error } = await context.supabase
+      .from("contratos")
+      .insert({
+        owner_id: context.userId,
+        cliente_id: data.cliente_id,
+        numero: data.numero,
+        objeto: "Coleta, transporte, tratamento e destinação final de resíduos de serviços de saúde",
+        data_inicio: data.data_inicio,
+        data_fim: data.data_fim || null,
+        valor_mensal: data.valor_mensal ?? null,
+        indice_reajuste: data.indice_reajuste || null,
+        periodicidade_reajuste: data.periodicidade_reajuste || null,
+        dia_vencimento: data.dia_vencimento ?? null,
+        forma_pagamento: data.forma_pagamento || null,
+        observacoes: data.observacoes || null,
+        status: data.status || "ativo",
+        conteudo_html,
+        modelo_id: modelo.id,
+      })
+      .select("id")
+      .single();
+
+    if (error) throw new Error(error.message);
+    return { id: novo!.id };
+  });
+
 // =============================
 // Renderizar prévia
 // =============================
