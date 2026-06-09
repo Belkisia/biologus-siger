@@ -452,7 +452,7 @@ function ContratosPage() {
 
   const enviarEmail = useServerFn(enviarContratoEmail);
   const gerarContratoPadrao = useServerFn(gerarContratoPadraoBioLogus);
-  const visualizar = useServerFn(visualizarContrato);
+  
 
   const { data: clientes = [] } = useQuery({
     queryKey: ["clientes-select"],
