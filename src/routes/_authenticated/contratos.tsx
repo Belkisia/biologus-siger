@@ -78,11 +78,25 @@ const ECO_CSS = `
 .assinatura-linha{border-top:1.5px solid #333;margin-bottom:8px;margin-top:60px}
 .assinatura-nome{font-weight:600;font-size:13px}
 .assinatura-cargo{font-size:12px;color:#6B7671}
+.eco-viewer-backdrop{position:fixed;inset:0;z-index:9999;background:rgba(10,18,15,.72);display:flex;align-items:stretch;justify-content:center;padding:18px}
+.eco-viewer-shell{width:min(1120px,100%);height:calc(100vh - 36px);background:#fff;border:1px solid #DDE7E1;border-radius:10px;box-shadow:0 24px 80px rgba(0,0,0,.28);display:flex;flex-direction:column;overflow:hidden}
+.eco-viewer-toolbar{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 16px;border-bottom:1px solid #E2E8E5;background:#fff;flex-wrap:wrap}
+.eco-viewer-title{min-width:0;font-size:14px;font-weight:600;color:#1A1F1D;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.eco-viewer-actions{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.eco-viewer-document{flex:1;overflow:auto;background:#F7F8F6;padding:24px}
+.eco-viewer-paper{width:min(880px,100%);min-height:calc(100% - 48px);margin:0 auto;background:#fff;border:1px solid #E2E8E5;box-shadow:0 4px 18px rgba(0,0,0,.08);padding:38px;color:#1a1a1a}
+.eco-viewer-footer{padding:10px 16px;border-top:1px solid #E2E8E5;background:#fff;display:flex;justify-content:flex-end}
+@media (max-width:640px){.eco-viewer-backdrop{padding:0}.eco-viewer-shell{height:100vh;border-radius:0;border:0}.eco-viewer-document{padding:12px}.eco-viewer-paper{padding:18px;font-size:12px}.eco-viewer-title{white-space:normal}}
+@media print{body *{visibility:hidden!important}.eco-viewer-backdrop,.eco-viewer-backdrop *{visibility:visible!important}.eco-viewer-backdrop{position:absolute!important;inset:0!important;background:#fff!important;padding:0!important}.eco-viewer-shell{height:auto!important;width:100%!important;border:0!important;box-shadow:none!important;border-radius:0!important;overflow:visible!important}.eco-viewer-toolbar,.eco-viewer-footer{display:none!important}.eco-viewer-document{overflow:visible!important;background:#fff!important;padding:0!important}.eco-viewer-paper{width:100%!important;max-width:none!important;min-height:0!important;margin:0!important;border:0!important;box-shadow:none!important;padding:0!important}}
 `;
 
 function injectCSS() {
   if (typeof document === "undefined") return;
-  if (document.getElementById("eco-ct-styles")) return;
+  const existing = document.getElementById("eco-ct-styles");
+  if (existing) {
+    if (existing.textContent !== ECO_CSS) existing.textContent = ECO_CSS;
+    return;
+  }
   const s = document.createElement("style");
   s.id = "eco-ct-styles";
   s.textContent = ECO_CSS;
@@ -107,6 +121,55 @@ type Contrato = {
   ultimo_email_em: string | null; ultimo_email_destino: string | null;
   clientes?: { razao_social: string } | null;
 };
+
+function ContratoViewer({
+  contrato,
+  onClose,
+  onAssinar,
+}: {
+  contrato: Contrato;
+  onClose: () => void;
+  onAssinar: () => void;
+}) {
+  useEffect(() => {
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") onClose();
+    };
+    document.body.style.overflow = "hidden";
+    window.addEventListener("keydown", onKeyDown);
+    return () => {
+      document.body.style.overflow = "";
+      window.removeEventListener("keydown", onKeyDown);
+    };
+  }, [onClose]);
+
+  return (
+    <div className="eco-viewer-backdrop" role="dialog" aria-modal="true" aria-label="Visualização do contrato">
+      <div className="eco-viewer-shell">
+        <div className="eco-viewer-toolbar">
+          <div className="eco-viewer-title">{contrato.numero} — {contrato.clientes?.razao_social || "Cliente não informado"}</div>
+          <div className="eco-viewer-actions">
+            <button className="eco-btn eco-btn-g" type="button" onClick={() => window.print()}>Imprimir / PDF</button>
+            <button className="eco-btn eco-btn-p" type="button" onClick={onAssinar}>✏ Assinar digitalmente</button>
+            <button className="eco-btn eco-btn-g" type="button" onClick={onClose}>Fechar</button>
+          </div>
+        </div>
+        <div className="eco-viewer-document">
+          <div className="eco-viewer-paper contrato-doc">
+            {contrato.conteudo_html ? (
+              <div dangerouslySetInnerHTML={{ __html: contrato.conteudo_html }} />
+            ) : (
+              <div style={{ padding: "40px", textAlign: "center", color: "#6B7671" }}>Contrato sem conteúdo HTML gerado.</div>
+            )}
+          </div>
+        </div>
+        <div className="eco-viewer-footer">
+          <button className="eco-btn eco-btn-g" type="button" onClick={onClose}>Fechar</button>
+        </div>
+      </div>
+    </div>
+  );
+}
 
 // ── Modal assinatura EcoTrack ─────────────────────────────────────────────────
 function ModalAssinatura({
@@ -474,7 +537,7 @@ function ContratosPage() {
     if (!emailContrato || !emailDest) return;
     setSendingEmail(true);
     try { await enviarEmail({ data: { contrato_id: emailContrato.id, email: emailDest } }); toast.success("Contrato enviado por e-mail"); setEmailContrato(null); }
-    catch (e: any) { toast.error(e.message); }
+    catch (e: unknown) { toast.error(e instanceof Error ? e.message : "Falha ao enviar contrato por e-mail"); }
     finally { setSendingEmail(false); }
   };
 
@@ -588,10 +651,6 @@ function ContratosPage() {
                           <button title="Visualizar contrato" onClick={() => handleVerPDF(c)}
                             style={{ padding: "5px", borderRadius: "6px", border: "1px solid #E2E8E5", background: "transparent", cursor: "pointer", display: "flex", alignItems: "center" }}>
                             <Eye size={14} />
-                          </button>
-                          <button title="Ver HTML" onClick={() => setVerContrato(c)}
-                            style={{ padding: "5px", borderRadius: "6px", border: "1px solid #E2E8E5", background: "transparent", cursor: "pointer", display: "flex", alignItems: "center" }}>
-                            <FileSignature size={14} />
                           </button>
                           <button title="Assinar digitalmente" onClick={() => setAssContrato(c)}
                             style={{ padding: "5px", borderRadius: "6px", border: "1px solid #0D6B54", background: "#EAF4ED", color: "#0D6B54", cursor: "pointer", display: "flex", alignItems: "center" }}>
@@ -773,32 +832,13 @@ function ContratosPage() {
         </DialogContent>
       </Dialog>
 
-      {/* Modal: Ver contrato HTML */}
-      <Dialog open={!!verContrato} onOpenChange={() => setVerContrato(null)}>
-        <DialogContent className="max-w-4xl max-h-[92vh] overflow-hidden flex flex-col p-0">
-          <div style={{ padding: "14px 20px", borderBottom: "1px solid #E2E8E5", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-            <span style={{ fontWeight: 600, fontSize: "14px" }}>{verContrato?.numero} — {verContrato?.clientes?.razao_social}</span>
-            <div style={{ display: "flex", gap: "8px" }}>
-              <button className="eco-btn eco-btn-g" style={{ fontSize: "12px" }} onClick={() => window.print()}>
-                Imprimir / PDF
-              </button>
-              <button className="eco-btn eco-btn-p" style={{ fontSize: "12px" }} onClick={() => { setAssContrato(verContrato); setVerContrato(null); }}>
-                ✏ Assinar digitalmente
-              </button>
-            </div>
-          </div>
-          <div style={{ flex: 1, overflowY: "auto", padding: "20px", background: "#F7F8F6" }}>
-            {verContrato?.conteudo_html ? (
-              <div dangerouslySetInnerHTML={{ __html: verContrato.conteudo_html }} />
-            ) : (
-              <div style={{ padding: "40px", textAlign: "center", color: "#6B7671" }}>Contrato sem conteúdo HTML gerado.</div>
-            )}
-          </div>
-          <div style={{ padding: "12px 20px", borderTop: "1px solid #E2E8E5", textAlign: "right" }}>
-            <button className="eco-btn eco-btn-g" onClick={() => setVerContrato(null)}>Fechar</button>
-          </div>
-        </DialogContent>
-      </Dialog>
+      {verContrato && (
+        <ContratoViewer
+          contrato={verContrato}
+          onClose={() => setVerContrato(null)}
+          onAssinar={() => { setAssContrato(verContrato); setVerContrato(null); }}
+        />
+      )}
 
       {/* Modal: Assinatura EcoTrack */}
       <ModalAssinatura

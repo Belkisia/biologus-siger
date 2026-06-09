@@ -134,7 +134,7 @@ export function buildVars(args: {
     CLIENTE_WHATSAPP: c.whatsapp || "",
     REPRESENTANTE_NOME:
       c.responsavel_financeiro || c.responsavel_tecnico || c.responsavel_operacional || "",
-    REPRESENTANTE_CPF: (c as any).representante_cpf || c.cnpj || "",
+    REPRESENTANTE_CPF: c.representante_cpf || c.cnpj || "",
     RESPONSAVEL_TECNICO: c.responsavel_tecnico || "",
     RESPONSAVEL_FINANCEIRO: c.responsavel_financeiro || "",
     RESPONSAVEL_OPERACIONAL: c.responsavel_operacional || "",
@@ -638,22 +638,6 @@ function htmlToDataUrl(html: string) {
       : Buffer.from(html, "utf-8").toString("base64");
   return `data:text/html;charset=utf-8;base64,${b64}`;
 }
-
-export const visualizarContrato = createServerFn({ method: "POST" })
-  .middleware([requireSupabaseAuth])
-  .inputValidator((d: { contrato_id: string }) =>
-    z.object({ contrato_id: z.string().uuid() }).parse(d),
-  )
-  .handler(async ({ data, context }) => {
-    const { data: c, error } = await context.supabase
-      .from("contratos")
-      .select("conteudo_html, numero")
-      .eq("id", data.contrato_id)
-      .single();
-    if (error || !c) throw new Error("Contrato não encontrado");
-    const html = `<!doctype html><html><head><meta charset="utf-8"><title>Contrato ${c.numero || ""}</title><style>body{font-family:Arial,sans-serif;max-width:820px;margin:24px auto;padding:0 24px;color:#111;line-height:1.5}table{border-collapse:collapse;width:100%}td,th{border:1px solid #999;padding:6px}@media print{body{margin:0}}</style></head><body>${c.conteudo_html || "<p style=\"color:#b91c1c\">Contrato sem conteúdo HTML salvo.</p>"}</body></html>`;
-    return { html, url: htmlToDataUrl(html) };
-  });
 
 export const previewContratoRascunho = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
