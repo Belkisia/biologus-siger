@@ -453,7 +453,9 @@ function ContratosPage() {
     const fd = new FormData(e.currentTarget);
     const payload: Record<string, unknown> = {};
     fd.forEach((v, k) => { if (v !== "") payload[k] = v; });
-    if (!payload.cliente_id || !payload.numero || !payload.data_inicio) return toast.error("Preencha cliente, número e data de início");
+    if (!selectedClienteId || !payload.numero || !payload.data_inicio) return toast.error("Preencha cliente, número e data de início");
+    payload.cliente_id = selectedClienteId;
+    payload.periodicidade_vigencia = periodicidade;
     if (payload.valor_mensal) payload.valor_mensal = Number(payload.valor_mensal);
     createMutation.mutate(payload);
   };
