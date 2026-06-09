@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Card } from "@/components/ui/card";
@@ -140,6 +140,12 @@ function PropostasPage() {
   const [open, setOpen] = useState(false);
   const [editing, setEditing] = useState<Proposta | null>(null);
   const [showContratoImport, setShowContratoImport] = useState(false);
+  const [pdfPreview, setPdfPreview] = useState({
+    open: false,
+    url: "",
+    numero: "",
+    loading: false,
+  });
 
   const [form, setForm] = useState({
     cliente_id: "",
@@ -152,6 +158,12 @@ function PropostasPage() {
     observacoes: "",
   });
   const [items, setItems] = useState<Item[]>([emptyItem()]);
+
+  useEffect(() => {
+    return () => {
+      if (pdfPreview.url) URL.revokeObjectURL(pdfPreview.url);
+    };
+  }, [pdfPreview.url]);
 
   const { data: clientes = [] } = useQuery({
     queryKey: ["clientes-select"],
