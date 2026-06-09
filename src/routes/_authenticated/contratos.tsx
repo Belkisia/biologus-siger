@@ -519,6 +519,7 @@ function ContratosPage() {
 
   const handleVerPDF = async (c: Contrato) => {
     if (c.conteudo_html && c.conteudo_html.trim().length > 20) {
+      console.log("opening viewer, html length:", c.conteudo_html?.length, "preview:", c.conteudo_html?.substring(0, 100));
       setVerContrato(c);
       return;
     }
