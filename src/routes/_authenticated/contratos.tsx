@@ -92,7 +92,11 @@ const ECO_CSS = `
 
 function injectCSS() {
   if (typeof document === "undefined") return;
-  if (document.getElementById("eco-ct-styles")) return;
+  const existing = document.getElementById("eco-ct-styles");
+  if (existing) {
+    if (existing.textContent !== ECO_CSS) existing.textContent = ECO_CSS;
+    return;
+  }
   const s = document.createElement("style");
   s.id = "eco-ct-styles";
   s.textContent = ECO_CSS;
