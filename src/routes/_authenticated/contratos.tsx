@@ -16,8 +16,7 @@ import {
 import { Loader2, Plus, Eye, Mail, PenTool, Trash2, FileSignature } from "lucide-react";
 import { toast } from "sonner";
 import { useServerFn } from "@tanstack/react-start";
-import { visualizarContrato, enviarContratoEmail, previewContratoRascunho } from "@/lib/contrato.functions";
-import { buildVars, renderTemplate } from "@/lib/contrato-modelo.functions";
+import { visualizarContrato, enviarContratoEmail, gerarContratoPadraoBioLogus } from "@/lib/contrato.functions";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 export const Route = createFileRoute("/_authenticated/contratos")({
@@ -372,7 +371,6 @@ function ModalAssinatura({
 function ContratosPage() {
   injectCSS();
   const qc = useQueryClient();
-  const { user } = Route.useRouteContext();
 
   const [novoOpen, setNovoOpen] = useState(false);
   const [filtro, setFiltro] = useState("todos");
@@ -398,7 +396,7 @@ function ContratosPage() {
 
   const visualizar = useServerFn(visualizarContrato);
   const enviarEmail = useServerFn(enviarContratoEmail);
-  const previewFn = useServerFn(previewContratoRascunho);
+  const gerarContratoPadrao = useServerFn(gerarContratoPadraoBioLogus);
 
   const { data: clientes = [] } = useQuery({
     queryKey: ["clientes-select"],
@@ -433,51 +431,13 @@ function ContratosPage() {
 
   const createMutation = useMutation({
     mutationFn: async (payload: Record<string, unknown>) => {
-      const [{ data: modelos }, { data: cliente }] = await Promise.all([
-        supabase.from("contrato_modelos").select("id,nome,conteudo_html,owner_id").eq("ativo", true).order("updated_at", { ascending: false }),
-        supabase.from("clientes").select("*").eq("id", payload.cliente_id as string).single(),
-      ]);
-      const modelo = (modelos || []).find((m) => m.owner_id === null && (m.conteudo_html?.length || 0) > 5000) || null;
-      if (!modelo?.conteudo_html) throw new Error("Modelo padrão não encontrado. Ative o modelo Bio Logus 2026.");
-      if (!cliente) throw new Error("Cliente não encontrado.");
-      const vars = buildVars({
-        cliente,
-        contrato: {
-          numero: String(payload.numero || ""),
-          data_inicio: String(payload.data_inicio || ""),
-          data_fim: payload.data_fim ? String(payload.data_fim) : null,
-          valor_mensal: payload.valor_mensal ? Number(payload.valor_mensal) : null,
-          forma_pagamento: String(payload.forma_pagamento || ""),
-          dia_vencimento: payload.dia_vencimento ? Number(payload.dia_vencimento) : null,
-          frequencia_coleta: String(payload.frequencia_coleta_texto || "mensal (1 vez ao mês)"),
-          vigencia_anos: periodicidade === "anual" ? "01 (um)" : periodicidade === "semestral" ? "0,5 (meio)" : "0,25 (três meses)",
-        },
-        itens: payload.limite_kg ? [{
-          descricao: "Resíduos de serviços de saúde",
-          grupo_residuo: String(payload.grupos_residuos || "Grupo A, B e E"),
-          unidade: "kg", franquia: Number(payload.limite_kg), preco_unitario: 0,
-          preco_excedente: Number(payload.valor_excedente || 0),
-        }] : [],
+      await gerarContratoPadrao({
+        data: {
+          ...payload,
+          cliente_id: selectedClienteId,
+          periodicidade_vigencia: periodicidade,
+        } as never,
       });
-      const conteudo_html = renderTemplate(modelo.conteudo_html, vars);
-      const { error } = await supabase.from("contratos").insert({
-        owner_id: user.id,
-        cliente_id: payload.cliente_id as string,
-        numero: String(payload.numero || ""),
-        objeto: payload.objeto ? String(payload.objeto) : null,
-        data_inicio: String(payload.data_inicio || ""),
-        data_fim: payload.data_fim ? String(payload.data_fim) : null,
-        valor_mensal: payload.valor_mensal ? Number(payload.valor_mensal) : null,
-        indice_reajuste: payload.indice_reajuste ? String(payload.indice_reajuste) : null,
-        periodicidade_reajuste: payload.periodicidade_reajuste ? String(payload.periodicidade_reajuste) : null,
-        dia_vencimento: payload.dia_vencimento ? Number(payload.dia_vencimento) : null,
-        forma_pagamento: payload.forma_pagamento ? String(payload.forma_pagamento) : null,
-        observacoes: payload.observacoes ? String(payload.observacoes) : null,
-        status: payload.status ? String(payload.status) : "ativo",
-        conteudo_html,
-        modelo_id: modelo.id,
-      } as never);
-      if (error) throw error;
     },
     onSuccess: () => { qc.invalidateQueries({ queryKey: ["contratos"] }); toast.success("Contrato gerado!"); setNovoOpen(false); },
     onError: (e: Error) => toast.error(e.message),
@@ -493,7 +453,9 @@ function ContratosPage() {
     const fd = new FormData(e.currentTarget);
     const payload: Record<string, unknown> = {};
     fd.forEach((v, k) => { if (v !== "") payload[k] = v; });
-    if (!payload.cliente_id || !payload.numero || !payload.data_inicio) return toast.error("Preencha cliente, número e data de início");
+    if (!selectedClienteId || !payload.numero || !payload.data_inicio) return toast.error("Preencha cliente, número e data de início");
+    payload.cliente_id = selectedClienteId;
+    payload.periodicidade_vigencia = periodicidade;
     if (payload.valor_mensal) payload.valor_mensal = Number(payload.valor_mensal);
     createMutation.mutate(payload);
   };

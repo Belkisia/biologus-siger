@@ -497,8 +497,11 @@ export type Database = {
           data_inicio: string
           dia_vencimento: number | null
           forma_pagamento: string | null
+          frequencia_coleta: string | null
+          grupos_residuos: string | null
           id: string
           indice_reajuste: string | null
+          limite_kg: number | null
           modelo_id: string | null
           numero: string
           objeto: string | null
@@ -511,7 +514,9 @@ export type Database = {
           ultimo_email_erro: string | null
           ultimo_email_status: string | null
           updated_at: string
+          valor_excedente: number | null
           valor_mensal: number | null
+          vigencia_anos: string | null
         }
         Insert: {
           cliente_id: string
@@ -521,8 +526,11 @@ export type Database = {
           data_inicio: string
           dia_vencimento?: number | null
           forma_pagamento?: string | null
+          frequencia_coleta?: string | null
+          grupos_residuos?: string | null
           id?: string
           indice_reajuste?: string | null
+          limite_kg?: number | null
           modelo_id?: string | null
           numero: string
           objeto?: string | null
@@ -535,7 +543,9 @@ export type Database = {
           ultimo_email_erro?: string | null
           ultimo_email_status?: string | null
           updated_at?: string
+          valor_excedente?: number | null
           valor_mensal?: number | null
+          vigencia_anos?: string | null
         }
         Update: {
           cliente_id?: string
@@ -545,8 +555,11 @@ export type Database = {
           data_inicio?: string
           dia_vencimento?: number | null
           forma_pagamento?: string | null
+          frequencia_coleta?: string | null
+          grupos_residuos?: string | null
           id?: string
           indice_reajuste?: string | null
+          limite_kg?: number | null
           modelo_id?: string | null
           numero?: string
           objeto?: string | null
@@ -559,7 +572,9 @@ export type Database = {
           ultimo_email_erro?: string | null
           ultimo_email_status?: string | null
           updated_at?: string
+          valor_excedente?: number | null
           valor_mensal?: number | null
+          vigencia_anos?: string | null
         }
         Relationships: [
           {
