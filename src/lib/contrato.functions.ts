@@ -651,8 +651,8 @@ export const visualizarContrato = createServerFn({ method: "POST" })
       .eq("id", data.contrato_id)
       .single();
     if (error || !c) throw new Error("Contrato não encontrado");
-    const html = `<!doctype html><html><head><meta charset="utf-8"><title>Contrato ${c.numero || ""}</title><style>body{font-family:Arial,sans-serif;max-width:820px;margin:24px auto;padding:0 24px;color:#111;line-height:1.5}table{border-collapse:collapse;width:100%}td,th{border:1px solid #999;padding:6px}@media print{body{margin:0}}</style></head><body>${c.conteudo_html || ""}<script>setTimeout(()=>{},100)</script></body></html>`;
-    return { url: htmlToDataUrl(html) };
+    const html = `<!doctype html><html><head><meta charset="utf-8"><title>Contrato ${c.numero || ""}</title><style>body{font-family:Arial,sans-serif;max-width:820px;margin:24px auto;padding:0 24px;color:#111;line-height:1.5}table{border-collapse:collapse;width:100%}td,th{border:1px solid #999;padding:6px}@media print{body{margin:0}}</style></head><body>${c.conteudo_html || "<p style=\"color:#b91c1c\">Contrato sem conteúdo HTML salvo.</p>"}</body></html>`;
+    return { html, url: htmlToDataUrl(html) };
   });
 
 export const previewContratoRascunho = createServerFn({ method: "POST" })

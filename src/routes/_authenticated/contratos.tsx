@@ -462,9 +462,23 @@ function ContratosPage() {
 
   const handleVerPDF = async (c: Contrato) => {
     setPreviewing(c.id);
-    try { const r = await visualizar({ data: { contrato_id: c.id } }); if (r.url) window.open(r.url, "_blank"); }
-    catch (e: any) { toast.error(e.message); }
-    finally { setPreviewing(null); }
+    const win = window.open("", "_blank");
+    if (!win) { setPreviewing(null); toast.error("Permita pop-ups para visualizar o contrato"); return; }
+    win.document.write('<!doctype html><title>Carregando contrato…</title><body style="font-family:Arial;padding:24px;color:#555">Carregando contrato…</body>');
+    try {
+      const r = await visualizar({ data: { contrato_id: c.id } });
+      const html = (r as { html?: string; url?: string }).html;
+      if (html) {
+        win.document.open(); win.document.write(html); win.document.close();
+      } else if (r.url) {
+        win.location.href = r.url;
+      } else {
+        win.document.body.innerHTML = '<p style="color:#b91c1c">Contrato sem conteúdo.</p>';
+      }
+    } catch (e: any) {
+      win.document.body.innerHTML = `<p style="color:#b91c1c;font-family:Arial;padding:24px">Erro: ${e.message}</p>`;
+      toast.error(e.message);
+    } finally { setPreviewing(null); }
   };
 
   const handleAssinaturaSalva = async (rubrica: string, foto: string | null) => {
