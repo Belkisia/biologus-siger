@@ -1,5 +1,5 @@
 import { createFileRoute, useRouter, Link } from "@tanstack/react-router";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { lovable } from "@/integrations/lovable";
 import { Button } from "@/components/ui/button";
@@ -30,6 +30,7 @@ function AuthPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [fullName, setFullName] = useState("");
+  const resetEmailInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     supabase.auth.getUser().then(({ data }) => {
@@ -109,6 +110,12 @@ function AuthPage() {
     toast.success(text);
   };
 
+  const openResetTab = () => {
+    setAuthTab("reset");
+    setMessage(null);
+    window.requestAnimationFrame(() => resetEmailInputRef.current?.focus());
+  };
+
   return (
     <div className="min-h-screen flex items-center justify-center p-4" style={{ background: "var(--gradient-subtle)" }}>
       <div className="w-full max-w-md">
@@ -145,7 +152,7 @@ function AuthPage() {
                 </div>
                 <button
                   type="button"
-                  onClick={() => router.navigate({ to: "/reset-password" })}
+                  onClick={openResetTab}
                   className="text-sm font-medium text-primary hover:underline"
                 >
                   Esqueci minha senha
@@ -161,7 +168,7 @@ function AuthPage() {
               <div className="space-y-4">
                 <div className="space-y-2">
                   <Label htmlFor="reset-email">E-mail</Label>
-                  <Input id="reset-email" type="email" required value={email} onChange={(e) => setEmail(e.target.value)} autoComplete="email" />
+                  <Input ref={resetEmailInputRef} id="reset-email" type="email" required value={email} onChange={(e) => setEmail(e.target.value)} autoComplete="email" />
                 </div>
                 <Button type="button" className="w-full" onClick={onResetPassword} disabled={resetLoading || loading}>
                   {resetLoading && <Loader2 className="h-4 w-4 mr-2 animate-spin" />}
