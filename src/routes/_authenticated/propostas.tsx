@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Card } from "@/components/ui/card";
@@ -140,6 +140,12 @@ function PropostasPage() {
   const [open, setOpen] = useState(false);
   const [editing, setEditing] = useState<Proposta | null>(null);
   const [showContratoImport, setShowContratoImport] = useState(false);
+  const [pdfPreview, setPdfPreview] = useState({
+    open: false,
+    url: "",
+    numero: "",
+    loading: false,
+  });
 
   const [form, setForm] = useState({
     cliente_id: "",
@@ -152,6 +158,12 @@ function PropostasPage() {
     observacoes: "",
   });
   const [items, setItems] = useState<Item[]>([emptyItem()]);
+
+  useEffect(() => {
+    return () => {
+      if (pdfPreview.url) URL.revokeObjectURL(pdfPreview.url);
+    };
+  }, [pdfPreview.url]);
 
   const { data: clientes = [] } = useQuery({
     queryKey: ["clientes-select"],
@@ -975,20 +987,27 @@ function PropostasPage() {
     doc.save(`Proposta-${p.numero}.pdf`);
   };
 
+  const closePdfPreview = () => {
+    setPdfPreview((current) => {
+      if (current.url) URL.revokeObjectURL(current.url);
+      return { open: false, url: "", numero: "", loading: false };
+    });
+  };
+
   const previewPDF = async (p: Proposta) => {
+    setPdfPreview((current) => {
+      if (current.url) URL.revokeObjectURL(current.url);
+      return { open: true, url: "", numero: p.numero, loading: true };
+    });
     try {
       const doc = await buildPDF(p);
       const blob = doc.output("blob");
       const url = URL.createObjectURL(blob);
-      const win = window.open(url, "_blank");
-      if (!win) {
-        // fallback se popup bloqueado: força download
-        doc.save(`Proposta-${p.numero}.pdf`);
-      }
-      setTimeout(() => URL.revokeObjectURL(url), 60_000);
-    } catch (e) {
+      setPdfPreview({ open: true, url, numero: p.numero, loading: false });
+    } catch (e: unknown) {
       console.error("Erro ao gerar PDF:", e);
-      alert("Não foi possível gerar o PDF. Veja o console para detalhes.");
+      closePdfPreview();
+      toast.error(getErrorMessage(e, "Não foi possível gerar o PDF"));
     }
   };
 
@@ -1527,6 +1546,38 @@ function PropostasPage() {
           </Table>
         )}
       </Card>
+
+      <Dialog open={pdfPreview.open} onOpenChange={(open) => !open && closePdfPreview()}>
+        <DialogContent className="max-w-6xl h-[92vh] p-0 overflow-hidden flex flex-col">
+          <DialogHeader className="px-4 py-3 border-b flex-row items-center justify-between space-y-0">
+            <DialogTitle>Proposta {pdfPreview.numero}</DialogTitle>
+            {pdfPreview.url && (
+              <Button variant="outline" size="sm" asChild>
+                <a href={pdfPreview.url} download={`Proposta-${pdfPreview.numero}.pdf`}>
+                  <Download className="h-4 w-4 mr-2" /> Baixar PDF
+                </a>
+              </Button>
+            )}
+          </DialogHeader>
+          <div className="flex-1 bg-muted/30">
+            {pdfPreview.loading ? (
+              <div className="h-full flex items-center justify-center text-muted-foreground">
+                <Loader2 className="h-5 w-5 mr-2 animate-spin" /> Gerando PDF...
+              </div>
+            ) : pdfPreview.url ? (
+              <iframe
+                src={pdfPreview.url}
+                title={`Proposta ${pdfPreview.numero}`}
+                className="w-full h-full border-0 bg-background"
+              />
+            ) : (
+              <div className="h-full flex items-center justify-center text-muted-foreground">
+                PDF indisponível.
+              </div>
+            )}
+          </div>
+        </DialogContent>
+      </Dialog>
 
       <Dialog
         open={emailDialog.open}
