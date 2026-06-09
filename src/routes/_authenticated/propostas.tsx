@@ -1547,6 +1547,38 @@ function PropostasPage() {
         )}
       </Card>
 
+      <Dialog open={pdfPreview.open} onOpenChange={(open) => !open && closePdfPreview()}>
+        <DialogContent className="max-w-6xl h-[92vh] p-0 overflow-hidden flex flex-col">
+          <DialogHeader className="px-4 py-3 border-b flex-row items-center justify-between space-y-0">
+            <DialogTitle>Proposta {pdfPreview.numero}</DialogTitle>
+            {pdfPreview.url && (
+              <Button variant="outline" size="sm" asChild>
+                <a href={pdfPreview.url} download={`Proposta-${pdfPreview.numero}.pdf`}>
+                  <Download className="h-4 w-4 mr-2" /> Baixar PDF
+                </a>
+              </Button>
+            )}
+          </DialogHeader>
+          <div className="flex-1 bg-muted/30">
+            {pdfPreview.loading ? (
+              <div className="h-full flex items-center justify-center text-muted-foreground">
+                <Loader2 className="h-5 w-5 mr-2 animate-spin" /> Gerando PDF...
+              </div>
+            ) : pdfPreview.url ? (
+              <iframe
+                src={pdfPreview.url}
+                title={`Proposta ${pdfPreview.numero}`}
+                className="w-full h-full border-0 bg-background"
+              />
+            ) : (
+              <div className="h-full flex items-center justify-center text-muted-foreground">
+                PDF indisponível.
+              </div>
+            )}
+          </div>
+        </DialogContent>
+      </Dialog>
+
       <Dialog
         open={emailDialog.open}
         onOpenChange={(o) => !emailDialog.sending && setEmailDialog((s) => ({ ...s, open: o }))}
