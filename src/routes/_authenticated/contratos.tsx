@@ -648,10 +648,6 @@ function ContratosPage() {
                             style={{ padding: "5px", borderRadius: "6px", border: "1px solid #E2E8E5", background: "transparent", cursor: "pointer", display: "flex", alignItems: "center" }}>
                             <Eye size={14} />
                           </button>
-                          <button title="Ver HTML" onClick={() => setVerContrato(c)}
-                            style={{ padding: "5px", borderRadius: "6px", border: "1px solid #E2E8E5", background: "transparent", cursor: "pointer", display: "flex", alignItems: "center" }}>
-                            <FileSignature size={14} />
-                          </button>
                           <button title="Assinar digitalmente" onClick={() => setAssContrato(c)}
                             style={{ padding: "5px", borderRadius: "6px", border: "1px solid #0D6B54", background: "#EAF4ED", color: "#0D6B54", cursor: "pointer", display: "flex", alignItems: "center" }}>
                             <PenTool size={14} />
@@ -832,32 +828,13 @@ function ContratosPage() {
         </DialogContent>
       </Dialog>
 
-      {/* Modal: Ver contrato HTML */}
-      <Dialog open={!!verContrato} onOpenChange={() => setVerContrato(null)}>
-        <DialogContent className="max-w-4xl max-h-[92vh] overflow-hidden flex flex-col p-0">
-          <div style={{ padding: "14px 20px", borderBottom: "1px solid #E2E8E5", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-            <span style={{ fontWeight: 600, fontSize: "14px" }}>{verContrato?.numero} — {verContrato?.clientes?.razao_social}</span>
-            <div style={{ display: "flex", gap: "8px" }}>
-              <button className="eco-btn eco-btn-g" style={{ fontSize: "12px" }} onClick={() => window.print()}>
-                Imprimir / PDF
-              </button>
-              <button className="eco-btn eco-btn-p" style={{ fontSize: "12px" }} onClick={() => { setAssContrato(verContrato); setVerContrato(null); }}>
-                ✏ Assinar digitalmente
-              </button>
-            </div>
-          </div>
-          <div style={{ flex: 1, overflowY: "auto", padding: "20px", background: "#F7F8F6" }}>
-            {verContrato?.conteudo_html ? (
-              <div dangerouslySetInnerHTML={{ __html: verContrato.conteudo_html }} />
-            ) : (
-              <div style={{ padding: "40px", textAlign: "center", color: "#6B7671" }}>Contrato sem conteúdo HTML gerado.</div>
-            )}
-          </div>
-          <div style={{ padding: "12px 20px", borderTop: "1px solid #E2E8E5", textAlign: "right" }}>
-            <button className="eco-btn eco-btn-g" onClick={() => setVerContrato(null)}>Fechar</button>
-          </div>
-        </DialogContent>
-      </Dialog>
+      {verContrato && (
+        <ContratoViewer
+          contrato={verContrato}
+          onClose={() => setVerContrato(null)}
+          onAssinar={() => { setAssContrato(verContrato); setVerContrato(null); }}
+        />
+      )}
 
       {/* Modal: Assinatura EcoTrack */}
       <ModalAssinatura
