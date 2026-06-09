@@ -16,7 +16,7 @@ import {
 import { Loader2, Plus, Eye, Mail, PenTool, Trash2, FileSignature } from "lucide-react";
 import { toast } from "sonner";
 import { useServerFn } from "@tanstack/react-start";
-import { enviarContratoEmail, gerarContratoPadraoBioLogus } from "@/lib/contrato.functions";
+import { enviarContratoEmail, gerarContratoPadraoBioLogus, visualizarContrato } from "@/lib/contrato.functions";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 export const Route = createFileRoute("/_authenticated/contratos")({
@@ -122,31 +122,32 @@ type Contrato = {
   clientes?: { razao_social: string } | null;
 };
 
-function ContratoViewer({ contrato, onClose, onAssinar }: { contrato: Contrato; onClose: () => void; onAssinar: () => void; }) {
-  const printId = "contrato-print-area";
+function ContratoViewer({ contrato, html, onClose, onAssinar }: { contrato: Contrato; html: string; onClose: () => void; onAssinar: () => void; }) {
+  const iframeRef = useRef<HTMLIFrameElement>(null);
 
-  const htmlContent = contrato.conteudo_html && contrato.conteudo_html.trim().length > 20
-    ? contrato.conteudo_html
-    : `<div style="padding:40px;font-family:Arial;max-width:800px;margin:0 auto">
-        <h2 style="text-align:center;color:#0D6B54">CONTRATO Nº ${contrato.numero}</h2>
-        <p><strong>Vigência:</strong> ${new Date(contrato.data_inicio).toLocaleDateString("pt-BR")} → ${contrato.data_fim ? new Date(contrato.data_fim).toLocaleDateString("pt-BR") : "—"}</p>
-        <p><strong>Valor mensal:</strong> ${contrato.valor_mensal?.toLocaleString("pt-BR",{style:"currency",currency:"BRL"}) || "—"}</p>
-      </div>`;
+  const fallbackBody = `<div style="padding:40px;font-family:Arial;max-width:800px;margin:0 auto">
+    <h2 style="text-align:center;color:#0D6B54">CONTRATO Nº ${contrato.numero}</h2>
+    <p><strong>Vigência:</strong> ${new Date(contrato.data_inicio).toLocaleDateString("pt-BR")} → ${contrato.data_fim ? new Date(contrato.data_fim).toLocaleDateString("pt-BR") : "—"}</p>
+    <p><strong>Valor mensal:</strong> ${contrato.valor_mensal?.toLocaleString("pt-BR", { style: "currency", currency: "BRL" }) || "—"}</p>
+  </div>`;
+  const srcDoc = html?.trim()
+    ? html
+    : `<!doctype html><html><head><meta charset="utf-8"><title>Contrato ${contrato.numero}</title><style>body{font-family:Arial,sans-serif;max-width:820px;margin:24px auto;padding:24px;color:#111;line-height:1.6}</style></head><body>${fallbackBody}</body></html>`;
 
   const handlePrint = () => {
-    const el = document.getElementById(printId);
-    if (!el) return;
-    const style = document.createElement("style");
-    style.id = "__print_style__";
-    style.textContent = `@media print { body > *:not(#__print_wrapper__) { display: none !important; } #__print_wrapper__ { display: block !important; position: fixed; inset: 0; background: white; z-index: 99999; padding: 24px; } }`;
-    document.head.appendChild(style);
-    const wrapper = document.createElement("div");
-    wrapper.id = "__print_wrapper__";
-    wrapper.innerHTML = el.innerHTML;
-    document.body.appendChild(wrapper);
-    window.print();
-    document.body.removeChild(wrapper);
-    document.head.removeChild(style);
+    const printWin = window.open("", "_blank", "width=900,height=700");
+    if (!printWin) {
+      iframeRef.current?.contentWindow?.print();
+      return;
+    }
+    printWin.document.open();
+    printWin.document.write(srcDoc.replace("</head>", `<style>@media print{body{margin:0!important;padding:16px!important}}</style></head>`));
+    printWin.document.close();
+    printWin.onload = () => {
+      printWin.focus();
+      printWin.print();
+      printWin.onafterprint = () => printWin.close();
+    };
   };
 
   return (
@@ -166,8 +167,11 @@ function ContratoViewer({ contrato, onClose, onAssinar }: { contrato: Contrato; 
             Fechar
           </button>
         </div>
-        <div id={printId} style={{ flex: 1, overflowY: "auto", padding: "32px", fontFamily: "Arial, sans-serif", fontSize: "13px", lineHeight: 1.8 }}
-          dangerouslySetInnerHTML={{ __html: htmlContent }}
+        <iframe
+          ref={iframeRef}
+          srcDoc={srcDoc}
+          title={`Contrato ${contrato.numero}`}
+          style={{ flex: 1, width: "100%", border: "none", background: "#fff" }}
         />
       </div>
     </div>
