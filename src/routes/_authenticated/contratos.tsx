@@ -158,7 +158,7 @@ function ModalAssinatura({
     ctx.strokeStyle = corSel; ctx.lineWidth = Number(espSel);
     ctx.lineCap = "round"; ctx.lineJoin = "round";
 
-    function pos(e: MouseEvent | TouchEvent) {
+    const pos = (e: MouseEvent | TouchEvent) => {
       const r = cv.getBoundingClientRect();
       const src = "touches" in e ? e.touches[0] : e;
       return [(src.clientX - r.left) * (cv.width / r.width), (src.clientY - r.top) * (cv.height / r.height)];
