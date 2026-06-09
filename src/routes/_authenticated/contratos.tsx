@@ -629,7 +629,7 @@ function ContratosPage() {
                       <td>{statusBadge(c.status)}</td>
                       <td>
                         <div style={{ display: "flex", gap: "4px" }}>
-                          <button title="Visualizar contrato" onClick={() => handleVerPDF(c)}
+                          <button title="Ver contrato" onClick={() => handleVerPDF(c)}
                             style={{ padding: "5px", borderRadius: "6px", border: "1px solid #E2E8E5", background: "transparent", cursor: "pointer", display: "flex", alignItems: "center" }}>
                             <Eye size={14} />
                           </button>
