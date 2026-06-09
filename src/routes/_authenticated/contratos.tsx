@@ -141,7 +141,13 @@ function ContratoViewer({ contrato, onClose, onAssinar }: { contrato: Contrato; 
           )}
         </div>
         <div className="flex justify-end gap-2 pt-2">
-          <button onClick={() => window.print()} className="px-4 py-2 border rounded text-sm">Imprimir</button>
+          <button onClick={() => {
+            const printWin = window.open("", "_blank", "width=900,height=700");
+            if (!printWin) return;
+            const style = `<style>body{font-family:Arial,sans-serif;max-width:820px;margin:24px auto;padding:24px;color:#111;line-height:1.6}@media print{body{margin:0;padding:16px}}</style>`;
+            printWin.document.write(`<!doctype html><html><head><meta charset="utf-8"><title>Contrato ${contrato?.numero}</title>${style}</head><body>${contrato?.conteudo_html || ""}<script>window.onload=function(){window.print();window.onafterprint=function(){window.close();};}<\/script></body></html>`);
+            printWin.document.close();
+          }} className="px-4 py-2 border rounded text-sm">Imprimir</button>
           <button onClick={onAssinar} className="px-4 py-2 bg-green-700 text-white rounded text-sm">✏ Assinar</button>
           <button onClick={onClose} className="px-4 py-2 border rounded text-sm">Fechar</button>
         </div>
