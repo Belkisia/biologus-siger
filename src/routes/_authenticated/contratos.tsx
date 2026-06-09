@@ -123,30 +123,43 @@ type Contrato = {
 };
 
 function ContratoViewer({ contrato, onClose, onAssinar }: { contrato: Contrato; onClose: () => void; onAssinar: () => void; }) {
+  const iframeRef = useRef<HTMLIFrameElement>(null);
+
+  const handlePrint = () => {
+    const iframe = iframeRef.current;
+    if (!iframe) return;
+    iframe.contentWindow?.focus();
+    iframe.contentWindow?.print();
+  };
+
+  const htmlContent = contrato.conteudo_html && contrato.conteudo_html.trim().length > 20
+    ? contrato.conteudo_html
+    : `<div style="padding:40px;font-family:Arial;max-width:800px;margin:0 auto">
+        <h2 style="text-align:center;color:#0D6B54">CONTRATO Nº ${contrato.numero}</h2>
+        <p><strong>Vigência:</strong> ${new Date(contrato.data_inicio).toLocaleDateString("pt-BR")} → ${contrato.data_fim ? new Date(contrato.data_fim).toLocaleDateString("pt-BR") : "—"}</p>
+        <p><strong>Valor mensal:</strong> ${contrato.valor_mensal?.toLocaleString("pt-BR",{style:"currency",currency:"BRL"}) || "—"}</p>
+      </div>`;
+
+  const iframeSrc = `data:text/html;charset=utf-8,${encodeURIComponent(`<!doctype html><html><head><meta charset="utf-8"><style>body{font-family:Arial,sans-serif;max-width:820px;margin:24px auto;padding:24px;line-height:1.6;color:#111}@media print{body{margin:0;padding:16px}}</style></head><body>${htmlContent}</body></html>`)}`;
+
   return (
     <Dialog open={true} onOpenChange={(open) => { if (!open) onClose(); }}>
       <DialogContent className="max-w-4xl max-h-[90vh] flex flex-col">
         <DialogHeader>
           <DialogTitle>{contrato.numero} — {contrato.clientes?.razao_social}</DialogTitle>
         </DialogHeader>
-        <div className="flex-1 overflow-y-auto p-4 bg-gray-50">
-          {contrato.conteudo_html && contrato.conteudo_html.trim().length > 20 ? (
-            <div dangerouslySetInnerHTML={{ __html: contrato.conteudo_html }} />
-          ) : (
-            <div className="p-8 text-center text-gray-500">
-              <p className="font-semibold text-lg">{contrato.numero}</p>
-              <p>Vigência: {new Date(contrato.data_inicio).toLocaleDateString("pt-BR")} → {contrato.data_fim ? new Date(contrato.data_fim).toLocaleDateString("pt-BR") : "—"}</p>
-              <p>Valor mensal: {contrato.valor_mensal?.toLocaleString("pt-BR", { style: "currency", currency: "BRL" }) || "—"}</p>
-            </div>
-          )}
+        <div className="flex-1 overflow-hidden rounded border">
+          <iframe
+            ref={iframeRef}
+            src={iframeSrc}
+            className="w-full h-full"
+            style={{ minHeight: "60vh", border: "none" }}
+            title={`Contrato ${contrato.numero}`}
+          />
         </div>
         <div className="flex justify-end gap-2 pt-2">
           <button onClick={() => {
-            const printWin = window.open("", "_blank", "width=900,height=700");
-            if (!printWin) return;
-            const style = `<style>body{font-family:Arial,sans-serif;max-width:820px;margin:24px auto;padding:24px;color:#111;line-height:1.6}@media print{body{margin:0;padding:16px}}</style>`;
-            printWin.document.write(`<!doctype html><html><head><meta charset="utf-8"><title>Contrato ${contrato?.numero}</title>${style}</head><body>${contrato?.conteudo_html || ""}<script>window.onload=function(){window.print();window.onafterprint=function(){window.close();};}<\/script></body></html>`);
-            printWin.document.close();
+            handlePrint();
           }} className="px-4 py-2 border rounded text-sm">Imprimir</button>
           <button onClick={onAssinar} className="px-4 py-2 bg-green-700 text-white rounded text-sm">✏ Assinar</button>
           <button onClick={onClose} className="px-4 py-2 border rounded text-sm">Fechar</button>
