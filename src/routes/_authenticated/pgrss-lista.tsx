@@ -24,6 +24,15 @@ function fmtBRL(v: number) {
 function PgrssLista() {
   const [propostas, setPropostas] = useState<Proposta[]>([]);
   const [loading, setLoading] = useState(true);
+  const [deletando, setDeletando] = useState<string | null>(null);
+
+  const handleDeletar = async (id: string, numero: string) => {
+    if (!confirm(`Remover a proposta ${numero}?`)) return;
+    setDeletando(id);
+    await supabase.from("propostas").delete().eq("id", id);
+    setPropostas(prev => prev.filter(p => p.id !== id));
+    setDeletando(null);
+  };
 
   useEffect(() => {
     supabase
