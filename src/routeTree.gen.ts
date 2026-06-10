@@ -23,6 +23,8 @@ import { Route as AuthenticatedRelatoriosRouteImport } from './routes/_authentic
 import { Route as AuthenticatedPropostasRouteImport } from './routes/_authenticated/propostas'
 import { Route as AuthenticatedPrecosPgrssRouteImport } from './routes/_authenticated/precos-pgrss'
 import { Route as AuthenticatedPortalRouteImport } from './routes/_authenticated/portal'
+import { Route as AuthenticatedPgrssNovaRouteImport } from './routes/_authenticated/pgrss-nova'
+import { Route as AuthenticatedPgrssListaRouteImport } from './routes/_authenticated/pgrss-lista'
 import { Route as AuthenticatedMtrRouteImport } from './routes/_authenticated/mtr'
 import { Route as AuthenticatedModelosContratoRouteImport } from './routes/_authenticated/modelos-contrato'
 import { Route as AuthenticatedLicencasRouteImport } from './routes/_authenticated/licencas'
@@ -35,6 +37,7 @@ import { Route as AuthenticatedClientesRouteImport } from './routes/_authenticat
 import { Route as AuthenticatedCdfRouteImport } from './routes/_authenticated/cdf'
 import { Route as LovableEmailSuppressionRouteImport } from './routes/lovable/email/suppression'
 import { Route as AuthenticatedPropostasNovaRouteImport } from './routes/_authenticated/propostas.nova'
+import { Route as AuthenticatedPgrssVerIdRouteImport } from './routes/_authenticated/pgrss-ver.$id'
 import { Route as AuthenticatedClientesClienteIdRouteImport } from './routes/_authenticated/clientes.$clienteId'
 import { Route as LovableEmailTransactionalSendRouteImport } from './routes/lovable/email/transactional/send'
 import { Route as LovableEmailTransactionalPreviewRouteImport } from './routes/lovable/email/transactional/preview'
@@ -114,6 +117,16 @@ const AuthenticatedPortalRoute = AuthenticatedPortalRouteImport.update({
   path: '/portal',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedPgrssNovaRoute = AuthenticatedPgrssNovaRouteImport.update({
+  id: '/pgrss-nova',
+  path: '/pgrss-nova',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedPgrssListaRoute = AuthenticatedPgrssListaRouteImport.update({
+  id: '/pgrss-lista',
+  path: '/pgrss-lista',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
 const AuthenticatedMtrRoute = AuthenticatedMtrRouteImport.update({
   id: '/mtr',
   path: '/mtr',
@@ -177,6 +190,11 @@ const AuthenticatedPropostasNovaRoute =
     path: '/nova',
     getParentRoute: () => AuthenticatedPropostasRoute,
   } as any)
+const AuthenticatedPgrssVerIdRoute = AuthenticatedPgrssVerIdRouteImport.update({
+  id: '/pgrss-ver/$id',
+  path: '/pgrss-ver/$id',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
 const AuthenticatedClientesClienteIdRoute =
   AuthenticatedClientesClienteIdRouteImport.update({
     id: '/$clienteId',
@@ -239,6 +257,8 @@ export interface FileRoutesByFullPath {
   '/licencas': typeof AuthenticatedLicencasRoute
   '/modelos-contrato': typeof AuthenticatedModelosContratoRoute
   '/mtr': typeof AuthenticatedMtrRoute
+  '/pgrss-lista': typeof AuthenticatedPgrssListaRoute
+  '/pgrss-nova': typeof AuthenticatedPgrssNovaRoute
   '/portal': typeof AuthenticatedPortalRoute
   '/precos-pgrss': typeof AuthenticatedPrecosPgrssRoute
   '/propostas': typeof AuthenticatedPropostasRouteWithChildren
@@ -249,6 +269,7 @@ export interface FileRoutesByFullPath {
   '/email/unsubscribe': typeof EmailUnsubscribeRoute
   '/validar/$codigo': typeof ValidarCodigoRoute
   '/clientes/$clienteId': typeof AuthenticatedClientesClienteIdRoute
+  '/pgrss-ver/$id': typeof AuthenticatedPgrssVerIdRoute
   '/propostas/nova': typeof AuthenticatedPropostasNovaRoute
   '/lovable/email/suppression': typeof LovableEmailSuppressionRoute
   '/propostas/pgrss/$id': typeof AuthenticatedPropostasPgrssIdRoute
@@ -274,6 +295,8 @@ export interface FileRoutesByTo {
   '/licencas': typeof AuthenticatedLicencasRoute
   '/modelos-contrato': typeof AuthenticatedModelosContratoRoute
   '/mtr': typeof AuthenticatedMtrRoute
+  '/pgrss-lista': typeof AuthenticatedPgrssListaRoute
+  '/pgrss-nova': typeof AuthenticatedPgrssNovaRoute
   '/portal': typeof AuthenticatedPortalRoute
   '/precos-pgrss': typeof AuthenticatedPrecosPgrssRoute
   '/propostas': typeof AuthenticatedPropostasRouteWithChildren
@@ -284,6 +307,7 @@ export interface FileRoutesByTo {
   '/email/unsubscribe': typeof EmailUnsubscribeRoute
   '/validar/$codigo': typeof ValidarCodigoRoute
   '/clientes/$clienteId': typeof AuthenticatedClientesClienteIdRoute
+  '/pgrss-ver/$id': typeof AuthenticatedPgrssVerIdRoute
   '/propostas/nova': typeof AuthenticatedPropostasNovaRoute
   '/lovable/email/suppression': typeof LovableEmailSuppressionRoute
   '/propostas/pgrss/$id': typeof AuthenticatedPropostasPgrssIdRoute
@@ -311,6 +335,8 @@ export interface FileRoutesById {
   '/_authenticated/licencas': typeof AuthenticatedLicencasRoute
   '/_authenticated/modelos-contrato': typeof AuthenticatedModelosContratoRoute
   '/_authenticated/mtr': typeof AuthenticatedMtrRoute
+  '/_authenticated/pgrss-lista': typeof AuthenticatedPgrssListaRoute
+  '/_authenticated/pgrss-nova': typeof AuthenticatedPgrssNovaRoute
   '/_authenticated/portal': typeof AuthenticatedPortalRoute
   '/_authenticated/precos-pgrss': typeof AuthenticatedPrecosPgrssRoute
   '/_authenticated/propostas': typeof AuthenticatedPropostasRouteWithChildren
@@ -321,6 +347,7 @@ export interface FileRoutesById {
   '/email/unsubscribe': typeof EmailUnsubscribeRoute
   '/validar/$codigo': typeof ValidarCodigoRoute
   '/_authenticated/clientes/$clienteId': typeof AuthenticatedClientesClienteIdRoute
+  '/_authenticated/pgrss-ver/$id': typeof AuthenticatedPgrssVerIdRoute
   '/_authenticated/propostas/nova': typeof AuthenticatedPropostasNovaRoute
   '/lovable/email/suppression': typeof LovableEmailSuppressionRoute
   '/_authenticated/propostas/pgrss/$id': typeof AuthenticatedPropostasPgrssIdRoute
@@ -348,6 +375,8 @@ export interface FileRouteTypes {
     | '/licencas'
     | '/modelos-contrato'
     | '/mtr'
+    | '/pgrss-lista'
+    | '/pgrss-nova'
     | '/portal'
     | '/precos-pgrss'
     | '/propostas'
@@ -358,6 +387,7 @@ export interface FileRouteTypes {
     | '/email/unsubscribe'
     | '/validar/$codigo'
     | '/clientes/$clienteId'
+    | '/pgrss-ver/$id'
     | '/propostas/nova'
     | '/lovable/email/suppression'
     | '/propostas/pgrss/$id'
@@ -383,6 +413,8 @@ export interface FileRouteTypes {
     | '/licencas'
     | '/modelos-contrato'
     | '/mtr'
+    | '/pgrss-lista'
+    | '/pgrss-nova'
     | '/portal'
     | '/precos-pgrss'
     | '/propostas'
@@ -393,6 +425,7 @@ export interface FileRouteTypes {
     | '/email/unsubscribe'
     | '/validar/$codigo'
     | '/clientes/$clienteId'
+    | '/pgrss-ver/$id'
     | '/propostas/nova'
     | '/lovable/email/suppression'
     | '/propostas/pgrss/$id'
@@ -419,6 +452,8 @@ export interface FileRouteTypes {
     | '/_authenticated/licencas'
     | '/_authenticated/modelos-contrato'
     | '/_authenticated/mtr'
+    | '/_authenticated/pgrss-lista'
+    | '/_authenticated/pgrss-nova'
     | '/_authenticated/portal'
     | '/_authenticated/precos-pgrss'
     | '/_authenticated/propostas'
@@ -429,6 +464,7 @@ export interface FileRouteTypes {
     | '/email/unsubscribe'
     | '/validar/$codigo'
     | '/_authenticated/clientes/$clienteId'
+    | '/_authenticated/pgrss-ver/$id'
     | '/_authenticated/propostas/nova'
     | '/lovable/email/suppression'
     | '/_authenticated/propostas/pgrss/$id'
@@ -558,6 +594,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedPortalRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/pgrss-nova': {
+      id: '/_authenticated/pgrss-nova'
+      path: '/pgrss-nova'
+      fullPath: '/pgrss-nova'
+      preLoaderRoute: typeof AuthenticatedPgrssNovaRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/pgrss-lista': {
+      id: '/_authenticated/pgrss-lista'
+      path: '/pgrss-lista'
+      fullPath: '/pgrss-lista'
+      preLoaderRoute: typeof AuthenticatedPgrssListaRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/mtr': {
       id: '/_authenticated/mtr'
       path: '/mtr'
@@ -641,6 +691,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/propostas/nova'
       preLoaderRoute: typeof AuthenticatedPropostasNovaRouteImport
       parentRoute: typeof AuthenticatedPropostasRoute
+    }
+    '/_authenticated/pgrss-ver/$id': {
+      id: '/_authenticated/pgrss-ver/$id'
+      path: '/pgrss-ver/$id'
+      fullPath: '/pgrss-ver/$id'
+      preLoaderRoute: typeof AuthenticatedPgrssVerIdRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/clientes/$clienteId': {
       id: '/_authenticated/clientes/$clienteId'
@@ -743,11 +800,14 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedLicencasRoute: typeof AuthenticatedLicencasRoute
   AuthenticatedModelosContratoRoute: typeof AuthenticatedModelosContratoRoute
   AuthenticatedMtrRoute: typeof AuthenticatedMtrRoute
+  AuthenticatedPgrssListaRoute: typeof AuthenticatedPgrssListaRoute
+  AuthenticatedPgrssNovaRoute: typeof AuthenticatedPgrssNovaRoute
   AuthenticatedPortalRoute: typeof AuthenticatedPortalRoute
   AuthenticatedPrecosPgrssRoute: typeof AuthenticatedPrecosPgrssRoute
   AuthenticatedPropostasRoute: typeof AuthenticatedPropostasRouteWithChildren
   AuthenticatedRelatoriosRoute: typeof AuthenticatedRelatoriosRoute
   AuthenticatedUsuariosRoute: typeof AuthenticatedUsuariosRoute
+  AuthenticatedPgrssVerIdRoute: typeof AuthenticatedPgrssVerIdRoute
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
@@ -761,11 +821,14 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedLicencasRoute: AuthenticatedLicencasRoute,
   AuthenticatedModelosContratoRoute: AuthenticatedModelosContratoRoute,
   AuthenticatedMtrRoute: AuthenticatedMtrRoute,
+  AuthenticatedPgrssListaRoute: AuthenticatedPgrssListaRoute,
+  AuthenticatedPgrssNovaRoute: AuthenticatedPgrssNovaRoute,
   AuthenticatedPortalRoute: AuthenticatedPortalRoute,
   AuthenticatedPrecosPgrssRoute: AuthenticatedPrecosPgrssRoute,
   AuthenticatedPropostasRoute: AuthenticatedPropostasRouteWithChildren,
   AuthenticatedRelatoriosRoute: AuthenticatedRelatoriosRoute,
   AuthenticatedUsuariosRoute: AuthenticatedUsuariosRoute,
+  AuthenticatedPgrssVerIdRoute: AuthenticatedPgrssVerIdRoute,
 }
 
 const AuthenticatedRouteRouteWithChildren =
