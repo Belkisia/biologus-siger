@@ -148,6 +148,14 @@ function PgrssLista() {
                       >
                         <Eye size={13} /> Ver
                       </button>
+                      <button
+                        onClick={() => handleDeletar(p.id, p.numero)}
+                        disabled={deletando === p.id}
+                        title="Excluir proposta"
+                        style={{ padding: "6px 10px", borderRadius: "6px", border: "1px solid #fca5a5", background: "#fff", color: "#DC3545", cursor: "pointer", display: "inline-flex", alignItems: "center", fontSize: "12px", fontFamily: "inherit", marginLeft: "6px" }}
+                      >
+                        ✕
+                      </button>
                     </td>
                   </tr>
                 ))}
