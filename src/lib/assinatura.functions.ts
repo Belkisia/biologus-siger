@@ -451,7 +451,7 @@ export const validarCodigoAssinatura = createServerFn({ method: "POST" })
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const { data: assin } = await supabaseAdmin
       .from("documento_assinaturas")
-      .select("*, signatarios(nome, email, cpf_cnpj, papel, assinado_em)")
+      .select("*, signatarios(nome, papel, assinado_em)")
       .eq("codigo_verificacao", data.codigo.toUpperCase())
       .single();
     if (!assin) return { encontrado: false };
