@@ -366,6 +366,22 @@ export const renderizarModelo = createServerFn({ method: "POST" })
       .parse(d),
   )
   .handler(async ({ data, context }) => {
+    // Verifica ownership do cliente antes de usar supabaseAdmin
+    const { data: clienteOwn, error: cErr } = await context.supabase
+      .from("clientes")
+      .select("id")
+      .eq("id", data.cliente_id)
+      .maybeSingle();
+    if (cErr || !clienteOwn) throw new Error("Cliente não encontrado ou não autorizado");
+    if (data.proposta_id) {
+      const { data: pOwn } = await context.supabase
+        .from("propostas")
+        .select("id")
+        .eq("id", data.proposta_id)
+        .maybeSingle();
+      if (!pOwn) throw new Error("Proposta não autorizada");
+    }
+
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const { data: m } = await supabaseAdmin
       .from("contrato_modelos")
@@ -431,6 +447,22 @@ export const gerarContratoDeModelo = createServerFn({ method: "POST" })
         .parse(d),
   )
   .handler(async ({ data, context }) => {
+    // Ownership checks via RLS-scoped client
+    const { data: clienteOwn, error: cErr } = await context.supabase
+      .from("clientes")
+      .select("id")
+      .eq("id", data.cliente_id)
+      .maybeSingle();
+    if (cErr || !clienteOwn) throw new Error("Cliente não encontrado ou não autorizado");
+    if (data.proposta_id) {
+      const { data: pOwn } = await context.supabase
+        .from("propostas")
+        .select("id")
+        .eq("id", data.proposta_id)
+        .maybeSingle();
+      if (!pOwn) throw new Error("Proposta não autorizada");
+    }
+
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const { data: m, error: em } = await supabaseAdmin
       .from("contrato_modelos")

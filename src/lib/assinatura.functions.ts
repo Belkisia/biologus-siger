@@ -56,13 +56,16 @@ export const criarSolicitacaoAssinatura = createServerFn({ method: "POST" })
     const { gerarPDFContrato } = await import("./assinatura-pdf.server");
     const { enviarConviteAssinatura } = await import("./assinatura-email.server");
 
-    // 1. Buscar o contrato + cliente + itens
-    const { data: contrato, error: errC } = await supabaseAdmin
+    // 1. Buscar o contrato + cliente + itens (RLS via context.supabase garante ownership)
+    const { data: contrato, error: errC } = await context.supabase
       .from("contratos")
       .select("*, clientes(razao_social, cnpj, endereco, email)")
       .eq("id", data.documento_id)
       .single();
     if (errC || !contrato) throw new Error("Contrato não encontrado");
+    if (contrato.owner_id !== context.userId) {
+      throw new Error("Não autorizado");
+    }
 
     const { data: itens } = await supabaseAdmin
       .from("contrato_itens")
@@ -448,15 +451,15 @@ export const validarCodigoAssinatura = createServerFn({ method: "POST" })
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const { data: assin } = await supabaseAdmin
       .from("documento_assinaturas")
-      .select("*, signatarios(nome, email, cpf_cnpj, papel, assinado_em)")
+      .select("*, signatarios(nome, papel, assinado_em)")
       .eq("codigo_verificacao", data.codigo.toUpperCase())
       .single();
     if (!assin) return { encontrado: false };
 
-    // Listar todos signatários do documento
+    // Listar todos signatários do documento (sem e-mail — endpoint público)
     const { data: todos } = await supabaseAdmin
       .from("signatarios")
-      .select("nome, email, papel, status, assinado_em")
+      .select("nome, papel, status, assinado_em")
       .eq("documento_tipo", assin.documento_tipo)
       .eq("documento_id", assin.documento_id)
       .order("ordem");
