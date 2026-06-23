@@ -10,8 +10,11 @@ import {
 import { useEffect, type ReactNode } from "react";
 
 import appCss from "../styles.css?url";
+<<<<<<< HEAD
 import { reportLovableError } from "../lib/lovable-error-reporting";
 import { Toaster } from "@/components/ui/sonner";
+=======
+>>>>>>> independente
 
 function NotFoundComponent() {
   return (
@@ -39,7 +42,11 @@ function ErrorComponent({ error, reset }: { error: Error; reset: () => void }) {
   console.error(error);
   const router = useRouter();
   useEffect(() => {
+<<<<<<< HEAD
     reportLovableError(error, { boundary: "tanstack_root_error_component" });
+=======
+    console.error("[ErrorBoundary]", error);
+>>>>>>> independente
   }, [error]);
 
   return (
@@ -125,7 +132,10 @@ function RootComponent() {
     <QueryClientProvider client={queryClient}>
       {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
       <Outlet />
+<<<<<<< HEAD
       <Toaster position="top-center" richColors />
+=======
+>>>>>>> independente
     </QueryClientProvider>
   );
 }

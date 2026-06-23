@@ -1,7 +1,10 @@
 import { useState, useRef } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
+<<<<<<< HEAD
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+=======
+>>>>>>> independente
 import { Upload, FileText, ExternalLink, Loader2, X } from "lucide-react";
 import { toast } from "sonner";
 
@@ -27,7 +30,10 @@ export function DocumentUpload({
 }: DocumentUploadProps) {
   const [uploading, setUploading] = useState(false);
   const [opening, setOpening] = useState(false);
+<<<<<<< HEAD
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+=======
+>>>>>>> independente
   const inputRef = useRef<HTMLInputElement>(null);
 
   const handleUpload = async (file: File) => {
@@ -64,7 +70,11 @@ export function DocumentUpload({
     try {
       const { data, error } = await supabase.storage.from(BUCKET).createSignedUrl(value, 3600);
       if (error) throw error;
+<<<<<<< HEAD
       setPreviewUrl(data.signedUrl);
+=======
+      window.open(data.signedUrl, "_blank");
+>>>>>>> independente
     } catch (e) {
       toast.error((e as Error).message);
     } finally {
@@ -81,7 +91,10 @@ export function DocumentUpload({
   };
 
   return (
+<<<<<<< HEAD
     <>
+=======
+>>>>>>> independente
     <div className="space-y-1">
       {label && <p className="text-sm font-medium">{label}</p>}
       <div className="flex items-center gap-2 flex-wrap">
@@ -114,6 +127,7 @@ export function DocumentUpload({
       </div>
       <p className="text-xs text-muted-foreground">PDF ou imagem, até 10MB. Acesso restrito ao seu usuário.</p>
     </div>
+<<<<<<< HEAD
     <Dialog open={!!previewUrl} onOpenChange={(open) => !open && setPreviewUrl(null)}>
       <DialogContent className="max-w-5xl h-[90vh] p-0 overflow-hidden flex flex-col">
         <DialogHeader className="px-4 py-3 border-b">
@@ -123,23 +137,36 @@ export function DocumentUpload({
       </DialogContent>
     </Dialog>
     </>
+=======
+>>>>>>> independente
   );
 }
 
 export function OpenDocumentButton({ path }: { path: string | null }) {
   const [loading, setLoading] = useState(false);
+<<<<<<< HEAD
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+=======
+>>>>>>> independente
   if (!path) return null;
   const open = async () => {
     setLoading(true);
     try {
       // Backwards-compat: se for URL completa, abre direto
       if (/^https?:\/\//i.test(path)) {
+<<<<<<< HEAD
         setPreviewUrl(path);
       } else {
         const { data, error } = await supabase.storage.from(BUCKET).createSignedUrl(path, 3600);
         if (error) throw error;
         setPreviewUrl(data.signedUrl);
+=======
+        window.open(path, "_blank");
+      } else {
+        const { data, error } = await supabase.storage.from(BUCKET).createSignedUrl(path, 3600);
+        if (error) throw error;
+        window.open(data.signedUrl, "_blank");
+>>>>>>> independente
       }
     } catch (e) {
       toast.error((e as Error).message);
@@ -148,6 +175,7 @@ export function OpenDocumentButton({ path }: { path: string | null }) {
     }
   };
   return (
+<<<<<<< HEAD
     <>
       <Button variant="ghost" size="icon" onClick={open} disabled={loading}>
         {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : <ExternalLink className="h-4 w-4" />}
@@ -159,5 +187,10 @@ export function OpenDocumentButton({ path }: { path: string | null }) {
         </DialogContent>
       </Dialog>
     </>
+=======
+    <Button variant="ghost" size="icon" onClick={open} disabled={loading}>
+      {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : <ExternalLink className="h-4 w-4" />}
+    </Button>
+>>>>>>> independente
   );
 }

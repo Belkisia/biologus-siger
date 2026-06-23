@@ -366,6 +366,7 @@ export const renderizarModelo = createServerFn({ method: "POST" })
       .parse(d),
   )
   .handler(async ({ data, context }) => {
+<<<<<<< HEAD
     // Verifica ownership do cliente antes de usar supabaseAdmin
     const { data: clienteOwn, error: cErr } = await context.supabase
       .from("clientes")
@@ -382,6 +383,8 @@ export const renderizarModelo = createServerFn({ method: "POST" })
       if (!pOwn) throw new Error("Proposta não autorizada");
     }
 
+=======
+>>>>>>> independente
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const { data: m } = await supabaseAdmin
       .from("contrato_modelos")
@@ -398,7 +401,11 @@ export const renderizarModelo = createServerFn({ method: "POST" })
     if (data.proposta_id) {
       proposta = (
         await supabaseAdmin.from("propostas").select("*").eq("id", data.proposta_id).single()
+<<<<<<< HEAD
       ).data as unknown as PropostaVars | null;
+=======
+      ).data;
+>>>>>>> independente
       const { data: pis } = await supabaseAdmin
         .from("proposta_itens")
         .select("*")
@@ -447,6 +454,7 @@ export const gerarContratoDeModelo = createServerFn({ method: "POST" })
         .parse(d),
   )
   .handler(async ({ data, context }) => {
+<<<<<<< HEAD
     // Ownership checks via RLS-scoped client
     const { data: clienteOwn, error: cErr } = await context.supabase
       .from("clientes")
@@ -463,6 +471,8 @@ export const gerarContratoDeModelo = createServerFn({ method: "POST" })
       if (!pOwn) throw new Error("Proposta não autorizada");
     }
 
+=======
+>>>>>>> independente
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const { data: m, error: em } = await supabaseAdmin
       .from("contrato_modelos")

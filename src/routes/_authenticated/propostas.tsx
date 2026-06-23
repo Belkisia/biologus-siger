@@ -1,5 +1,10 @@
+<<<<<<< HEAD
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useState, useMemo, useEffect } from "react";
+=======
+import { createFileRoute } from "@tanstack/react-router";
+import { useState, useMemo } from "react";
+>>>>>>> independente
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Card } from "@/components/ui/card";
@@ -137,6 +142,7 @@ function emptyItem(): Item {
 function PropostasPage() {
   const qc = useQueryClient();
   const { user } = Route.useRouteContext();
+<<<<<<< HEAD
   const navigate = useNavigate();
   const [open, setOpen] = useState(false);
   const [editing, setEditing] = useState<Proposta | null>(null);
@@ -147,6 +153,11 @@ function PropostasPage() {
     numero: "",
     loading: false,
   });
+=======
+  const [open, setOpen] = useState(false);
+  const [editing, setEditing] = useState<Proposta | null>(null);
+  const [showContratoImport, setShowContratoImport] = useState(false);
+>>>>>>> independente
 
   const [form, setForm] = useState({
     cliente_id: "",
@@ -160,12 +171,15 @@ function PropostasPage() {
   });
   const [items, setItems] = useState<Item[]>([emptyItem()]);
 
+<<<<<<< HEAD
   useEffect(() => {
     return () => {
       if (pdfPreview.url) URL.revokeObjectURL(pdfPreview.url);
     };
   }, [pdfPreview.url]);
 
+=======
+>>>>>>> independente
   const { data: clientes = [] } = useQuery({
     queryKey: ["clientes-select"],
     queryFn: async () => {
@@ -988,6 +1002,7 @@ function PropostasPage() {
     doc.save(`Proposta-${p.numero}.pdf`);
   };
 
+<<<<<<< HEAD
   const closePdfPreview = () => {
     setPdfPreview((current) => {
       if (current.url) URL.revokeObjectURL(current.url);
@@ -1005,15 +1020,30 @@ function PropostasPage() {
       if (current.url) URL.revokeObjectURL(current.url);
       return { open: true, url: "", numero: p.numero, loading: true };
     });
+=======
+  const previewPDF = async (p: Proposta) => {
+>>>>>>> independente
     try {
       const doc = await buildPDF(p);
       const blob = doc.output("blob");
       const url = URL.createObjectURL(blob);
+<<<<<<< HEAD
       setPdfPreview({ open: true, url, numero: p.numero, loading: false });
     } catch (e: unknown) {
       console.error("Erro ao gerar PDF:", e);
       closePdfPreview();
       toast.error(getErrorMessage(e, "Não foi possível gerar o PDF"));
+=======
+      const win = window.open(url, "_blank");
+      if (!win) {
+        // fallback se popup bloqueado: força download
+        doc.save(`Proposta-${p.numero}.pdf`);
+      }
+      setTimeout(() => URL.revokeObjectURL(url), 60_000);
+    } catch (e) {
+      console.error("Erro ao gerar PDF:", e);
+      alert("Não foi possível gerar o PDF. Veja o console para detalhes.");
+>>>>>>> independente
     }
   };
 
@@ -1553,6 +1583,7 @@ function PropostasPage() {
         )}
       </Card>
 
+<<<<<<< HEAD
       <Dialog open={pdfPreview.open} onOpenChange={(open) => !open && closePdfPreview()}>
         <DialogContent className="max-w-6xl h-[92vh] p-0 overflow-hidden flex flex-col">
           <DialogHeader className="px-4 py-3 border-b flex-row items-center justify-between space-y-0">
@@ -1585,6 +1616,8 @@ function PropostasPage() {
         </DialogContent>
       </Dialog>
 
+=======
+>>>>>>> independente
       <Dialog
         open={emailDialog.open}
         onOpenChange={(o) => !emailDialog.sending && setEmailDialog((s) => ({ ...s, open: o }))}

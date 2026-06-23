@@ -85,7 +85,7 @@ function ValidarPage() {
               <div key={i} className="flex items-center justify-between p-3 bg-muted/30 rounded-lg">
                 <div>
                   <p className="font-medium">{s.nome}</p>
-                  <p className="text-xs text-muted-foreground">{s.papel}</p>
+                  <p className="text-xs text-muted-foreground">{s.email} · {s.papel}</p>
                   {s.assinado_em && (
                     <p className="text-xs text-muted-foreground mt-1">
                       Assinado em {new Date(s.assinado_em).toLocaleString("pt-BR")}

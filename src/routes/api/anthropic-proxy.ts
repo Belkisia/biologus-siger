@@ -1,10 +1,14 @@
 import { createFileRoute } from "@tanstack/react-router";
+<<<<<<< HEAD
 import { createClient } from "@supabase/supabase-js";
+=======
+>>>>>>> independente
 
 export const Route = createFileRoute("/api/anthropic-proxy")({
   server: {
     handlers: {
       POST: async ({ request }) => {
+<<<<<<< HEAD
         const authHeader = request.headers.get("authorization");
         if (!authHeader?.startsWith("Bearer ")) {
           return new Response(
@@ -34,6 +38,8 @@ export const Route = createFileRoute("/api/anthropic-proxy")({
           );
         }
 
+=======
+>>>>>>> independente
         const apiKey = process.env.ANTHROPIC_API_KEY;
         if (!apiKey) {
           return new Response(

@@ -1,0 +1,67 @@
+openapi: 3.0.3
+info:
+  title: Biólogus Ambiental API
+  version: "1.0.0"
+  description: |
+    A API principal do sistema é exposta via TanStack server functions
+    (RPC tipado, transporte HTTP POST em `/_serverFn/*`). Os endpoints
+    listados abaixo são as rotas HTTP públicas em `src/routes/api/` e
+    `src/routes/lovable/email/*`. Server functions são chamadas no client
+    via `useServerFn(fn)` e não precisam ser invocadas manualmente.
+servers:
+  - url: https://seu-dominio.com
+paths:
+  /api/anthropic-proxy:
+    post:
+      summary: Proxy para Claude (usado pelo assistente de propostas)
+      security: [{ bearerAuth: [] }]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { type: object }
+      responses:
+        "200": { description: Resposta do modelo }
+        "401": { description: Não autenticado }
+  /lovable/email/auth/webhook:
+    post:
+      summary: Webhook de e-mails de autenticação (Supabase Auth → Resend)
+      responses:
+        "200": { description: ok }
+        "401": { description: assinatura inválida }
+  /lovable/email/queue/process:
+    post:
+      summary: Processa fila pgmq de e-mails (cron)
+      responses: { "200": { description: ok } }
+  /lovable/email/transactional/send:
+    post:
+      summary: Envia e-mail transacional
+      responses: { "200": { description: ok } }
+  /email/unsubscribe:
+    get:
+      summary: Endpoint público de unsubscribe (token em querystring)
+      responses: { "200": { description: ok } }
+  /assinar/{token}:
+    get:
+      summary: Página pública de assinatura
+      parameters:
+        - in: path
+          name: token
+          required: true
+          schema: { type: string, format: uuid }
+      responses: { "200": { description: HTML } }
+  /validar/{codigo}:
+    get:
+      summary: Validação pública de documento assinado
+      parameters:
+        - in: path
+          name: codigo
+          required: true
+          schema: { type: string }
+      responses: { "200": { description: HTML } }
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT

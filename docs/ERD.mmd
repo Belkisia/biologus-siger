@@ -1,0 +1,343 @@
+erDiagram
+  cdfs {
+    uuid id PK
+    uuid owner_id
+    uuid mtr_id
+    text numero
+    date data_destinacao
+    text tecnologia
+    text destinador
+    numeric quantidade_destinada
+    text url_documento
+    text observacoes
+    timestamp_with_time_zone created_at
+    timestamp_with_time_zone updated_at
+  }
+  cliente_documento_versoes {
+    uuid id PK
+    uuid documento_id
+    uuid owner_id
+    integer versao
+    text storage_path
+    text mime_type
+    bigint tamanho_bytes
+    text nome_arquivo
+    text acao
+    text nota
+    uuid uploaded_by
+    timestamp_with_time_zone created_at
+  }
+  cliente_documentos {
+    uuid id PK
+    uuid owner_id
+    uuid cliente_id
+    text nome
+    text categoria
+    text descricao
+    integer versao_atual
+    text storage_path
+    text mime_type
+    bigint tamanho_bytes
+    timestamp_with_time_zone created_at
+    timestamp_with_time_zone updated_at
+  }
+  clientes {
+    uuid id PK
+    uuid owner_id
+    text razao_social
+    text nome_fantasia
+    text cnpj
+    text inscricao_estadual
+    text inscricao_municipal
+    text cnae
+    text porte
+    text responsavel_tecnico
+    text responsavel_financeiro
+    text responsavel_operacional
+    text telefone
+    text whatsapp
+    text email
+  }
+  coletas {
+    uuid id PK
+    uuid owner_id
+    uuid cliente_id
+    timestamp_with_time_zone data_agendada
+    text horario
+    text tipo_residuo
+    text grupo_residuo
+    numeric quantidade_prevista
+    text unidade
+    text motorista
+    text veiculo
+    text status
+    numeric peso_real
+    text observacoes
+    timestamp_with_time_zone created_at
+  }
+  contas_bancarias {
+    uuid id PK
+    uuid owner_id
+    text nome
+    text banco
+    text agencia
+    text numero_conta
+    numeric saldo_inicial
+    boolean ativa
+    timestamp_with_time_zone created_at
+    timestamp_with_time_zone updated_at
+  }
+  contrato_itens {
+    uuid id PK
+    uuid contrato_id
+    text descricao
+    text grupo_residuo
+    text unidade
+    numeric preco_unitario
+    numeric franquia
+    numeric preco_excedente
+    timestamp_with_time_zone created_at
+  }
+  contrato_modelo_versoes {
+    uuid id PK
+    uuid modelo_id
+    integer versao
+    text conteudo_html
+    text motivo
+    uuid alterado_por
+    timestamp_with_time_zone created_at
+  }
+  contrato_modelos {
+    uuid id PK
+    uuid owner_id
+    text nome
+    text descricao
+    text conteudo_html
+    boolean ativo
+    integer versao_atual
+    timestamp_with_time_zone created_at
+    timestamp_with_time_zone updated_at
+  }
+  contratos {
+    uuid id PK
+    uuid owner_id
+    uuid cliente_id
+    text numero
+    text objeto
+    date data_inicio
+    date data_fim
+    numeric valor_mensal
+    text indice_reajuste
+    text periodicidade_reajuste
+    integer dia_vencimento
+    text forma_pagamento
+    text observacoes
+    text status
+    timestamp_with_time_zone created_at
+  }
+  documento_assinaturas {
+    uuid id PK
+    uuid signatario_id
+    USER-DEFINED documento_tipo
+    uuid documento_id
+    text hash_documento
+    text codigo_verificacao
+    text rubrica_base64
+    text pdf_assinado_path
+    text ip
+    text user_agent
+    jsonb geo
+    timestamp_with_time_zone assinado_em
+    timestamp_with_time_zone created_at
+  }
+  email_send_log {
+    uuid id PK
+    text message_id
+    text template_name
+    text recipient_email
+    text status
+    text error_message
+    jsonb metadata
+    timestamp_with_time_zone created_at
+  }
+  email_send_state {
+    integer id PK
+    timestamp_with_time_zone retry_after_until
+    integer batch_size
+    integer send_delay_ms
+    integer auth_email_ttl_minutes
+    integer transactional_email_ttl_minutes
+    timestamp_with_time_zone updated_at
+  }
+  email_unsubscribe_tokens {
+    uuid id PK
+    text token
+    text email
+    timestamp_with_time_zone created_at
+    timestamp_with_time_zone used_at
+  }
+  extrato_lancamentos {
+    uuid id PK
+    uuid owner_id
+    uuid conta_id
+    text fit_id
+    date data_lancamento
+    text tipo
+    numeric valor
+    text descricao
+    text memo
+    text status
+    uuid fatura_id
+    timestamp_with_time_zone conciliado_em
+    timestamp_with_time_zone created_at
+    timestamp_with_time_zone updated_at
+  }
+  faturas {
+    uuid id PK
+    uuid owner_id
+    uuid cliente_id
+    uuid contrato_id
+    text numero
+    text competencia
+    date data_emissao
+    date data_vencimento
+    numeric valor
+    numeric valor_pago
+    date data_pagamento
+    text forma_pagamento
+    text status
+    text descricao
+    text observacoes
+  }
+  licencas {
+    uuid id PK
+    uuid owner_id
+    uuid cliente_id
+    text numero
+    text tipo
+    text orgao_emissor
+    date data_emissao
+    date data_validade
+    text status
+    text escopo
+    text condicionantes
+    text arquivo_url
+    text observacoes
+    timestamp_with_time_zone created_at
+    timestamp_with_time_zone updated_at
+  }
+  mtrs {
+    uuid id PK
+    uuid owner_id
+    uuid cliente_id
+    uuid coleta_id
+    text numero
+    date data_emissao
+    text gerador
+    text transportador
+    text destinador
+    text classe_ibama
+    text codigo_residuo
+    text descricao_residuo
+    numeric quantidade
+    text unidade
+    text acondicionamento
+  }
+  notificacoes {
+    uuid id PK
+    uuid owner_id
+    text tipo
+    text titulo
+    text mensagem
+    text ref_tabela
+    uuid ref_id
+    boolean lida
+    text prioridade
+    timestamp_with_time_zone created_at
+    timestamp_with_time_zone updated_at
+  }
+  profiles {
+    uuid id PK
+    text full_name
+    text email
+    text avatar_url
+    timestamp_with_time_zone created_at
+    timestamp_with_time_zone updated_at
+  }
+  proposta_itens {
+    uuid id PK
+    uuid proposta_id
+    text descricao
+    text tipo_residuo
+    numeric quantidade
+    text unidade
+    numeric valor_unitario
+    numeric valor_total
+    integer ordem
+    timestamp_with_time_zone created_at
+  }
+  propostas {
+    uuid id PK
+    uuid owner_id
+    uuid cliente_id
+    text numero
+    date data_emissao
+    date validade
+    text condicoes_pagamento
+    text prazo_coleta
+    numeric valor_total
+    text status
+    text observacoes
+    uuid contrato_id
+    timestamp_with_time_zone enviada_em
+    timestamp_with_time_zone respondida_em
+    timestamp_with_time_zone created_at
+  }
+  signatario_eventos {
+    uuid id PK
+    uuid signatario_id
+    text evento
+    text ip
+    text user_agent
+    jsonb metadata
+    timestamp_with_time_zone created_at
+  }
+  signatario_otps {
+    uuid id PK
+    uuid signatario_id
+    text codigo_hash
+    integer tentativas
+    timestamp_with_time_zone expira_em
+    timestamp_with_time_zone usado_em
+    timestamp_with_time_zone created_at
+  }
+  signatarios {
+    uuid id PK
+    uuid owner_id
+    USER-DEFINED documento_tipo
+    uuid documento_id
+    integer ordem
+    text nome
+    text email
+    text cpf_cnpj
+    USER-DEFINED papel
+    uuid token
+    USER-DEFINED status
+    timestamp_with_time_zone email_enviado_em
+    timestamp_with_time_zone assinado_em
+    timestamp_with_time_zone expira_em
+    timestamp_with_time_zone created_at
+  }
+  suppressed_emails {
+    uuid id PK
+    text email
+    text reason
+    jsonb metadata
+    timestamp_with_time_zone created_at
+  }
+  user_roles {
+    uuid id PK
+    uuid user_id
+    USER-DEFINED role
+    timestamp_with_time_zone created_at
+  }

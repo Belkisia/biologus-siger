@@ -1,4 +1,8 @@
+<<<<<<< HEAD
  import { createServerFn } from "@tanstack/react-start";
+=======
+import { createServerFn } from "@tanstack/react-start";
+>>>>>>> independente
 import { getRequestHeader, getRequestIP } from "@tanstack/react-start/server";
 import { z } from "zod";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
@@ -56,16 +60,24 @@ export const criarSolicitacaoAssinatura = createServerFn({ method: "POST" })
     const { gerarPDFContrato } = await import("./assinatura-pdf.server");
     const { enviarConviteAssinatura } = await import("./assinatura-email.server");
 
+<<<<<<< HEAD
     // 1. Buscar o contrato + cliente + itens (RLS via context.supabase garante ownership)
     const { data: contrato, error: errC } = await context.supabase
+=======
+    // 1. Buscar o contrato + cliente + itens
+    const { data: contrato, error: errC } = await supabaseAdmin
+>>>>>>> independente
       .from("contratos")
       .select("*, clientes(razao_social, cnpj, endereco, email)")
       .eq("id", data.documento_id)
       .single();
     if (errC || !contrato) throw new Error("Contrato não encontrado");
+<<<<<<< HEAD
     if (contrato.owner_id !== context.userId) {
       throw new Error("Não autorizado");
     }
+=======
+>>>>>>> independente
 
     const { data: itens } = await supabaseAdmin
       .from("contrato_itens")
@@ -83,10 +95,17 @@ export const criarSolicitacaoAssinatura = createServerFn({ method: "POST" })
         endereco: contrato.clientes?.endereco || "",
       },
       contratada: {
+<<<<<<< HEAD
         nome: "BIO LOGUS AMBIENTAL LTDA - ME",
         cnpj: "26.484.921/0001-60",
         endereco: "Rua dos Ferroviários, Qd. 01, Lt. 05, Parque Industrial João Brás 2, Goiânia-GO, CEP 74.483-115",
         email: "comercial@biologusambiental.com.br",
+=======
+        nome: "Bio Logus Ambiental Ltda.",
+        cnpj: "00.000.000/0001-00",
+        endereco: "Endereço Bio Logus",
+        email: "contato@biologus.com.br",
+>>>>>>> independente
       },
       objeto: contrato.objeto || "",
       itens: ((itens || []) as ContratoItemPdf[]).map((i) => ({
@@ -451,15 +470,26 @@ export const validarCodigoAssinatura = createServerFn({ method: "POST" })
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const { data: assin } = await supabaseAdmin
       .from("documento_assinaturas")
+<<<<<<< HEAD
       .select("*, signatarios(nome, papel, assinado_em)")
+=======
+      .select("*, signatarios(nome, email, cpf_cnpj, papel, assinado_em)")
+>>>>>>> independente
       .eq("codigo_verificacao", data.codigo.toUpperCase())
       .single();
     if (!assin) return { encontrado: false };
 
+<<<<<<< HEAD
     // Listar todos signatários do documento (sem e-mail — endpoint público)
     const { data: todos } = await supabaseAdmin
       .from("signatarios")
       .select("nome, papel, status, assinado_em")
+=======
+    // Listar todos signatários do documento
+    const { data: todos } = await supabaseAdmin
+      .from("signatarios")
+      .select("nome, email, papel, status, assinado_em")
+>>>>>>> independente
       .eq("documento_tipo", assin.documento_tipo)
       .eq("documento_id", assin.documento_id)
       .order("ordem");
