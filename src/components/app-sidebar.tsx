@@ -18,6 +18,9 @@ import {
   Sparkles,
   CalendarDays,
   Scale,
+  MapPin,
+  Clock,
+  TrendingUp,
 } from "lucide-react";
 import {
   Sidebar,
@@ -37,11 +40,14 @@ type NavItem = { title: string; url: string; icon: typeof LayoutDashboard };
 
 const operacao: NavItem[] = [
   { title: "Dashboard", url: "/dashboard", icon: LayoutDashboard },
+  { title: "Painel do Dia", url: "/painel", icon: Truck },
   { title: "Agendamento de Rotas", url: "/agendamento", icon: CalendarDays },
   { title: "Boletim de Medição", url: "/boletim", icon: Scale },
+  { title: "Gestão de Rotas", url: "/rotas", icon: MapPin },
   { title: "Coletas", url: "/coletas", icon: Truck },
   { title: "MTR", url: "/mtr", icon: FileText },
   { title: "Certificados (CDF)", url: "/cdf", icon: Award },
+  { title: "Histórico por Cliente", url: "/historico", icon: Clock },
   { title: "Licenças", url: "/licencas", icon: ShieldCheck },
 ];
 
@@ -58,6 +64,7 @@ const comercial: NavItem[] = [
 ];
 
 const gestao: NavItem[] = [
+  { title: "Relatório Financeiro", url: "/relatorio-financeiro", icon: TrendingUp },
   { title: "Relatórios", url: "/relatorios", icon: BarChart3 },
   { title: "Usuários", url: "/usuarios", icon: UsersRound },
 ];
