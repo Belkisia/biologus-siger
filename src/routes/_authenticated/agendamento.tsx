@@ -77,8 +77,8 @@ function AgendamentoPage() {
   const { data: clientes = [] } = useQuery({
     queryKey: ["clientes-agendamento"],
     queryFn: async () => {
-      const { data } = await supabase.from("clientes").select("id, razao_social, fantasia, logradouro, cidade").eq("ativo", true).order("razao_social");
-      return (data ?? []) as Cliente[];
+      const { data } = await supabase.from("clientes").select("id, razao_social, fantasia:nome_fantasia, logradouro:endereco, cidade").order("razao_social");
+      return (data ?? []) as unknown as Cliente[];
     },
   });
 
@@ -299,7 +299,7 @@ function AgendamentoPage() {
                       prev.includes(c.id) ? prev.filter((x) => x !== c.id) : [...prev, c.id]
                     )}
                   >
-                    <Checkbox checked={clientesSelecionados.includes(c.id)} readOnly />
+                    <Checkbox checked={clientesSelecionados.includes(c.id)} />
                     <div className="flex-1 min-w-0">
                       <p className="text-sm font-medium truncate">{c.fantasia || c.razao_social}</p>
                       <p className="text-xs text-muted-foreground truncate">{c.logradouro ?? ""}{c.cidade ? ` — ${c.cidade}` : ""}</p>
