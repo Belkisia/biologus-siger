@@ -37,7 +37,6 @@ import { Route as AuthenticatedClientesRouteImport } from './routes/_authenticat
 import { Route as AuthenticatedCdfRouteImport } from './routes/_authenticated/cdf'
 import { Route as AuthenticatedAgendamentoRouteImport } from './routes/_authenticated/agendamento'
 import { Route as LovableEmailSuppressionRouteImport } from './routes/lovable/email/suppression'
-import { Route as ApiPublicTmpResetRouteImport } from './routes/api/public/_tmp-reset'
 import { Route as AuthenticatedPropostasNovaRouteImport } from './routes/_authenticated/propostas.nova'
 import { Route as AuthenticatedPgrssVerIdRouteImport } from './routes/_authenticated/pgrss-ver.$id'
 import { Route as AuthenticatedClientesClienteIdRouteImport } from './routes/_authenticated/clientes.$clienteId'
@@ -192,11 +191,6 @@ const LovableEmailSuppressionRoute = LovableEmailSuppressionRouteImport.update({
   path: '/lovable/email/suppression',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ApiPublicTmpResetRoute = ApiPublicTmpResetRouteImport.update({
-  id: '/api/public/_tmp-reset',
-  path: '/api/public',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const AuthenticatedPropostasNovaRoute =
   AuthenticatedPropostasNovaRouteImport.update({
     id: '/nova',
@@ -285,7 +279,6 @@ export interface FileRoutesByFullPath {
   '/clientes/$clienteId': typeof AuthenticatedClientesClienteIdRoute
   '/pgrss-ver/$id': typeof AuthenticatedPgrssVerIdRoute
   '/propostas/nova': typeof AuthenticatedPropostasNovaRoute
-  '/api/public': typeof ApiPublicTmpResetRoute
   '/lovable/email/suppression': typeof LovableEmailSuppressionRoute
   '/propostas/pgrss/$id': typeof AuthenticatedPropostasPgrssIdRoute
   '/propostas/pgrss/nova': typeof AuthenticatedPropostasPgrssNovaRoute
@@ -325,7 +318,6 @@ export interface FileRoutesByTo {
   '/clientes/$clienteId': typeof AuthenticatedClientesClienteIdRoute
   '/pgrss-ver/$id': typeof AuthenticatedPgrssVerIdRoute
   '/propostas/nova': typeof AuthenticatedPropostasNovaRoute
-  '/api/public': typeof ApiPublicTmpResetRoute
   '/lovable/email/suppression': typeof LovableEmailSuppressionRoute
   '/propostas/pgrss/$id': typeof AuthenticatedPropostasPgrssIdRoute
   '/propostas/pgrss/nova': typeof AuthenticatedPropostasPgrssNovaRoute
@@ -367,7 +359,6 @@ export interface FileRoutesById {
   '/_authenticated/clientes/$clienteId': typeof AuthenticatedClientesClienteIdRoute
   '/_authenticated/pgrss-ver/$id': typeof AuthenticatedPgrssVerIdRoute
   '/_authenticated/propostas/nova': typeof AuthenticatedPropostasNovaRoute
-  '/api/public/_tmp-reset': typeof ApiPublicTmpResetRoute
   '/lovable/email/suppression': typeof LovableEmailSuppressionRoute
   '/_authenticated/propostas/pgrss/$id': typeof AuthenticatedPropostasPgrssIdRoute
   '/_authenticated/propostas/pgrss/nova': typeof AuthenticatedPropostasPgrssNovaRoute
@@ -409,7 +400,6 @@ export interface FileRouteTypes {
     | '/clientes/$clienteId'
     | '/pgrss-ver/$id'
     | '/propostas/nova'
-    | '/api/public'
     | '/lovable/email/suppression'
     | '/propostas/pgrss/$id'
     | '/propostas/pgrss/nova'
@@ -449,7 +439,6 @@ export interface FileRouteTypes {
     | '/clientes/$clienteId'
     | '/pgrss-ver/$id'
     | '/propostas/nova'
-    | '/api/public'
     | '/lovable/email/suppression'
     | '/propostas/pgrss/$id'
     | '/propostas/pgrss/nova'
@@ -490,7 +479,6 @@ export interface FileRouteTypes {
     | '/_authenticated/clientes/$clienteId'
     | '/_authenticated/pgrss-ver/$id'
     | '/_authenticated/propostas/nova'
-    | '/api/public/_tmp-reset'
     | '/lovable/email/suppression'
     | '/_authenticated/propostas/pgrss/$id'
     | '/_authenticated/propostas/pgrss/nova'
@@ -511,7 +499,6 @@ export interface RootRouteChildren {
   AssinarTokenRoute: typeof AssinarTokenRoute
   EmailUnsubscribeRoute: typeof EmailUnsubscribeRoute
   ValidarCodigoRoute: typeof ValidarCodigoRoute
-  ApiPublicTmpResetRoute: typeof ApiPublicTmpResetRoute
   LovableEmailSuppressionRoute: typeof LovableEmailSuppressionRoute
   LovableEmailAuthPreviewRoute: typeof LovableEmailAuthPreviewRoute
   LovableEmailAuthWebhookRoute: typeof LovableEmailAuthWebhookRoute
@@ -718,13 +705,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LovableEmailSuppressionRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/api/public/_tmp-reset': {
-      id: '/api/public/_tmp-reset'
-      path: '/api/public'
-      fullPath: '/api/public'
-      preLoaderRoute: typeof ApiPublicTmpResetRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/_authenticated/propostas/nova': {
       id: '/_authenticated/propostas/nova'
       path: '/nova'
@@ -886,7 +866,6 @@ const rootRouteChildren: RootRouteChildren = {
   AssinarTokenRoute: AssinarTokenRoute,
   EmailUnsubscribeRoute: EmailUnsubscribeRoute,
   ValidarCodigoRoute: ValidarCodigoRoute,
-  ApiPublicTmpResetRoute: ApiPublicTmpResetRoute,
   LovableEmailSuppressionRoute: LovableEmailSuppressionRoute,
   LovableEmailAuthPreviewRoute: LovableEmailAuthPreviewRoute,
   LovableEmailAuthWebhookRoute: LovableEmailAuthWebhookRoute,
