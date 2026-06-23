@@ -17,6 +17,7 @@ import {
   ExternalLink,
   Sparkles,
   CalendarDays,
+  Scale,
 } from "lucide-react";
 import {
   Sidebar,
@@ -37,6 +38,7 @@ type NavItem = { title: string; url: string; icon: typeof LayoutDashboard };
 const operacao: NavItem[] = [
   { title: "Dashboard", url: "/dashboard", icon: LayoutDashboard },
   { title: "Agendamento de Rotas", url: "/agendamento", icon: CalendarDays },
+  { title: "Boletim de Medição", url: "/boletim", icon: Scale },
   { title: "Coletas", url: "/coletas", icon: Truck },
   { title: "MTR", url: "/mtr", icon: FileText },
   { title: "Certificados (CDF)", url: "/cdf", icon: Award },
