@@ -35,6 +35,7 @@ import { Route as AuthenticatedConciliacaoRouteImport } from './routes/_authenti
 import { Route as AuthenticatedColetasRouteImport } from './routes/_authenticated/coletas'
 import { Route as AuthenticatedClientesRouteImport } from './routes/_authenticated/clientes'
 import { Route as AuthenticatedCdfRouteImport } from './routes/_authenticated/cdf'
+import { Route as AuthenticatedAgendamentoRouteImport } from './routes/_authenticated/agendamento'
 import { Route as LovableEmailSuppressionRouteImport } from './routes/lovable/email/suppression'
 import { Route as AuthenticatedPropostasNovaRouteImport } from './routes/_authenticated/propostas.nova'
 import { Route as AuthenticatedPgrssVerIdRouteImport } from './routes/_authenticated/pgrss-ver.$id'
@@ -179,6 +180,12 @@ const AuthenticatedCdfRoute = AuthenticatedCdfRouteImport.update({
   path: '/cdf',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedAgendamentoRoute =
+  AuthenticatedAgendamentoRouteImport.update({
+    id: '/agendamento',
+    path: '/agendamento',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 const LovableEmailSuppressionRoute = LovableEmailSuppressionRouteImport.update({
   id: '/lovable/email/suppression',
   path: '/lovable/email/suppression',
@@ -247,6 +254,7 @@ export interface FileRoutesByFullPath {
   '/auth': typeof AuthRoute
   '/reset-password': typeof ResetPasswordRoute
   '/unsubscribe': typeof UnsubscribeRoute
+  '/agendamento': typeof AuthenticatedAgendamentoRoute
   '/cdf': typeof AuthenticatedCdfRoute
   '/clientes': typeof AuthenticatedClientesRouteWithChildren
   '/coletas': typeof AuthenticatedColetasRoute
@@ -285,6 +293,7 @@ export interface FileRoutesByTo {
   '/auth': typeof AuthRoute
   '/reset-password': typeof ResetPasswordRoute
   '/unsubscribe': typeof UnsubscribeRoute
+  '/agendamento': typeof AuthenticatedAgendamentoRoute
   '/cdf': typeof AuthenticatedCdfRoute
   '/clientes': typeof AuthenticatedClientesRouteWithChildren
   '/coletas': typeof AuthenticatedColetasRoute
@@ -325,6 +334,7 @@ export interface FileRoutesById {
   '/auth': typeof AuthRoute
   '/reset-password': typeof ResetPasswordRoute
   '/unsubscribe': typeof UnsubscribeRoute
+  '/_authenticated/agendamento': typeof AuthenticatedAgendamentoRoute
   '/_authenticated/cdf': typeof AuthenticatedCdfRoute
   '/_authenticated/clientes': typeof AuthenticatedClientesRouteWithChildren
   '/_authenticated/coletas': typeof AuthenticatedColetasRoute
@@ -365,6 +375,7 @@ export interface FileRouteTypes {
     | '/auth'
     | '/reset-password'
     | '/unsubscribe'
+    | '/agendamento'
     | '/cdf'
     | '/clientes'
     | '/coletas'
@@ -403,6 +414,7 @@ export interface FileRouteTypes {
     | '/auth'
     | '/reset-password'
     | '/unsubscribe'
+    | '/agendamento'
     | '/cdf'
     | '/clientes'
     | '/coletas'
@@ -442,6 +454,7 @@ export interface FileRouteTypes {
     | '/auth'
     | '/reset-password'
     | '/unsubscribe'
+    | '/_authenticated/agendamento'
     | '/_authenticated/cdf'
     | '/_authenticated/clientes'
     | '/_authenticated/coletas'
@@ -678,6 +691,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedCdfRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/agendamento': {
+      id: '/_authenticated/agendamento'
+      path: '/agendamento'
+      fullPath: '/agendamento'
+      preLoaderRoute: typeof AuthenticatedAgendamentoRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/lovable/email/suppression': {
       id: '/lovable/email/suppression'
       path: '/lovable/email/suppression'
@@ -790,6 +810,7 @@ const AuthenticatedPropostasRouteWithChildren =
   )
 
 interface AuthenticatedRouteRouteChildren {
+  AuthenticatedAgendamentoRoute: typeof AuthenticatedAgendamentoRoute
   AuthenticatedCdfRoute: typeof AuthenticatedCdfRoute
   AuthenticatedClientesRoute: typeof AuthenticatedClientesRouteWithChildren
   AuthenticatedColetasRoute: typeof AuthenticatedColetasRoute
@@ -811,6 +832,7 @@ interface AuthenticatedRouteRouteChildren {
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
+  AuthenticatedAgendamentoRoute: AuthenticatedAgendamentoRoute,
   AuthenticatedCdfRoute: AuthenticatedCdfRoute,
   AuthenticatedClientesRoute: AuthenticatedClientesRouteWithChildren,
   AuthenticatedColetasRoute: AuthenticatedColetasRoute,
@@ -854,3 +876,13 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}
