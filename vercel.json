@@ -2,9 +2,8 @@
   "buildCommand": "bun run build",
   "outputDirectory": ".vercel/output",
   "installCommand": "bun install",
-  "build": {
-    "env": {
-      "NODE_VERSION": "20"
-    }
+  "framework": null,
+  "env": {
+    "NODE_VERSION": "20"
   }
 }
