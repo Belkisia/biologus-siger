@@ -1,19 +1,14 @@
-import { defineConfig } from "vite";
-import react from "@vitejs/plugin-react";
-import { TanStackRouterVite } from "@tanstack/router-plugin/vite";
+import { defineConfig } from "@tanstack/react-start/config";
 import tsconfigPaths from "vite-tsconfig-paths";
 
 export default defineConfig({
-  plugins: [
-    TanStackRouterVite({ autoCodeSplitting: true }),
-    react(),
-    tsconfigPaths(),
-  ],
-  server: {
-    port: 8080,
-    host: "0.0.0.0",
+  tsr: {
+    autoCodeSplitting: true,
   },
-  build: {
-    outDir: "dist",
+  vite: {
+    plugins: [tsconfigPaths()],
+  },
+  server: {
+    preset: "vercel",
   },
 });
