@@ -1,7 +1,6 @@
 {
   "version": 2,
-  "buildCommand": "bun run build && cp dist/index.html dist/client/index.html",
-  "installCommand": "bun install",
+  "buildCommand": "bun install && bun run build && cp dist/index.html dist/client/",
   "outputDirectory": "dist/client",
   "rewrites": [
     { "source": "/(.*)", "destination": "/index.html" }
