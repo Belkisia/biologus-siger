@@ -2,9 +2,8 @@
   "version": 2,
   "buildCommand": "bun run build",
   "installCommand": "bun install",
-  "outputDirectory": "dist/client",
+  "outputDirectory": "dist",
   "rewrites": [
-    { "source": "/api/(.*)", "destination": "/api/index.js" },
     { "source": "/(.*)", "destination": "/index.html" }
   ]
 }
