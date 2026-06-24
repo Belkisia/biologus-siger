@@ -2,7 +2,6 @@ const server = require("./server.cjs");
 const handler = server.default || server;
 const fs = require("fs");
 const path = require("path");
-
 const MIME = {
   ".js": "application/javascript; charset=utf-8",
   ".css": "text/css; charset=utf-8",
@@ -10,7 +9,6 @@ const MIME = {
   ".png": "image/png",
   ".ico": "image/x-icon",
 };
-
 module.exports = async function(req, res) {
   try {
     if (req.url.startsWith("/_app/")) {
