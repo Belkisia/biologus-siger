@@ -65,14 +65,14 @@ type RotaCliente = {
 
 // ---- Componente de detalhe da rota ----
 function RotaDetalhe({
-  rota, dataSelecionada, onVoltar
+  rota, dataSelecionada, onVoltar, user
 }: {
   rota: typeof ROTAS[0];
   dataSelecionada: string;
   onVoltar: () => void;
+  user: any;
 }) {
   const qc = useQueryClient();
-  const { user } = Route.useRouteContext();
   const [openAddClientes, setOpenAddClientes] = useState(false);
   const [busca, setBusca] = useState("");
   const [selecionados, setSelecionados] = useState<string[]>([]);
@@ -487,6 +487,7 @@ function AgendamentoPage() {
         rota={rotaAtiva}
         dataSelecionada={dataSelecionada}
         onVoltar={() => setRotaAtiva(null)}
+        user={user}
       />
     );
   }
