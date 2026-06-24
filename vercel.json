@@ -1,11 +1,10 @@
 {
+  "version": 2,
   "buildCommand": "bun run build",
-  "outputDirectory": "dist",
   "installCommand": "bun install",
-  "functions": {
-    "dist/server/index.mjs": {
-      "memory": 512,
-      "maxDuration": 10
-    }
-  }
+  "outputDirectory": "dist/client",
+  "rewrites": [
+    { "source": "/api/(.*)", "destination": "/api/index.js" },
+    { "source": "/(.*)", "destination": "/index.html" }
+  ]
 }
