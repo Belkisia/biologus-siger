@@ -475,7 +475,7 @@ function ContratosPage() {
     queryFn: async () => {
       const { data } = await supabase.from("clientes").select(
         "id,razao_social,nome_fantasia,cnpj,email,telefone,endereco,numero,bairro,cidade,estado,cep,responsavel_financeiro"
-      ).order("razao_social");
+      ).order('razao_social', { ascending: true });
       return (data ?? []) as Cliente[];
     },
   });

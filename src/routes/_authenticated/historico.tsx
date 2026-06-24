@@ -35,7 +35,7 @@ function HistoricoPage() {
   const { data: clientes = [] } = useQuery({
     queryKey: ["clientes-select"],
     queryFn: async () => {
-      const { data } = await supabase.from("clientes").select("id, razao_social, fantasia, cidade, cnpj, email, whatsapp").eq("ativo", true).order("razao_social");
+      const { data } = await supabase.from("clientes").select("id, razao_social, fantasia, cidade, cnpj, email, whatsapp").eq("ativo", true).order('razao_social', { ascending: true });
       return (data ?? []) as Cliente[];
     },
   });

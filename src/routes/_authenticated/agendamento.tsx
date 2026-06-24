@@ -122,7 +122,7 @@ function RotaDetalhe({
         .from("clientes")
         .select("id, razao_social, nome_fantasia, logradouro, cidade")
         .eq("ativo", true)
-        .order("razao_social");
+        .order('razao_social', { ascending: true });
       return (data ?? []) as Cliente[];
     },
   });

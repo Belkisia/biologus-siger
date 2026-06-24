@@ -172,7 +172,7 @@ function PropostasPage() {
       const { data } = await supabase
         .from("clientes")
         .select("id, razao_social")
-        .order("razao_social");
+        .order('razao_social', { ascending: true });
       return data ?? [];
     },
   });

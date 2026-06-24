@@ -81,7 +81,7 @@ function LicencasPage() {
   const { data: clientes = [] } = useQuery({
     queryKey: ["clientes-select"],
     queryFn: async () => {
-      const { data } = await supabase.from("clientes").select("id, razao_social").order("razao_social");
+      const { data } = await supabase.from("clientes").select("id, razao_social").order('razao_social', { ascending: true });
       return data ?? [];
     },
   });

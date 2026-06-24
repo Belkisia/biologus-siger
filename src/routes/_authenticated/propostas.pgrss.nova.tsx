@@ -84,7 +84,7 @@ function NovaPgrssSimples() {
       const { data } = await supabase
         .from("clientes")
         .select("id,razao_social,nome_fantasia,cnpj,endereco,numero,bairro,cidade,estado,cep,email,telefone,responsavel_tecnico,responsavel_financeiro")
-        .order("razao_social");
+        .order('razao_social', { ascending: true });
       setClientes((data ?? []) as Cliente[]);
     })();
   }, []);
