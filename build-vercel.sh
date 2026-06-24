@@ -2,7 +2,6 @@
 set -e
 
 echo "=== Using pre-compiled server bundle ==="
-# Não faz build no Vercel — usa o bundle já compilado que foi commitado
 
 echo "=== Creating Vercel Build Output API v3 ==="
 rm -rf .vercel/output
@@ -75,14 +74,25 @@ cat > .vercel/output/functions/index.func/.vc-config.json << 'EOF'
 }
 EOF
 
-# 6. config.json
+# 6. config.json com content-type correto
 cat > .vercel/output/config.json << 'EOF'
 {
   "version": 3,
   "routes": [
     {
-      "src": "^/assets/(.+)$",
-      "headers": { "cache-control": "public, max-age=31536000, immutable" },
+      "src": "^/assets/(.+\\.css)$",
+      "headers": {
+        "content-type": "text/css; charset=utf-8",
+        "cache-control": "public, max-age=31536000, immutable"
+      },
+      "continue": true
+    },
+    {
+      "src": "^/assets/(.+\\.js)$",
+      "headers": {
+        "content-type": "application/javascript; charset=utf-8",
+        "cache-control": "public, max-age=31536000, immutable"
+      },
       "continue": true
     },
     { "handle": "filesystem" },
