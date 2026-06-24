@@ -644,17 +644,13 @@ function HistoricoDialog({ doc, onOpenChange, onChanged, ownerId }: {
 
 function OpenInline({ path }: { path: string }) {
   const [loading, setLoading] = useState(false);
-<<<<<<< HEAD
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
-=======
->>>>>>> independente
   const open = async () => {
     if (!path || path === "pending") return;
     setLoading(true);
     const { data, error } = await supabase.storage.from(BUCKET).createSignedUrl(path, 3600);
     setLoading(false);
     if (error || !data?.signedUrl) { toast.error("Falha ao abrir"); return; }
-<<<<<<< HEAD
     setPreviewUrl(data.signedUrl);
   };
   return (
@@ -669,13 +665,5 @@ function OpenInline({ path }: { path: string }) {
         </DialogContent>
       </Dialog>
     </>
-=======
-    window.open(data.signedUrl, "_blank");
-  };
-  return (
-    <Button variant="ghost" size="icon" onClick={open} disabled={loading} title="Abrir">
-      {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : <ExternalLink className="h-4 w-4" />}
-    </Button>
->>>>>>> independente
   );
 }

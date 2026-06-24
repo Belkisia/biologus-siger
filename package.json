@@ -4,29 +4,16 @@
   "sideEffects": false,
   "type": "module",
   "scripts": {
-<<<<<<< HEAD
-    "dev": "vite dev",
-    "build": "vite build",
-    "build:dev": "vite build --mode development",
-    "preview": "vite preview",
-=======
     "dev": "vite dev --port 8080",
     "build": "vite build",
     "build:dev": "vite build --mode development",
     "preview": "vite preview --port 8080",
->>>>>>> independente
     "lint": "eslint .",
     "format": "prettier --write ."
   },
   "dependencies": {
     "@ai-sdk/openai-compatible": "^2.0.48",
     "@hookform/resolvers": "^5.2.2",
-<<<<<<< HEAD
-    "@lovable.dev/cloud-auth-js": "^1.1.2",
-    "@lovable.dev/email-js": "^0.0.4",
-    "@lovable.dev/webhooks-js": "^0.0.1",
-=======
->>>>>>> independente
     "@radix-ui/react-accordion": "^1.2.12",
     "@radix-ui/react-alert-dialog": "^1.1.15",
     "@radix-ui/react-aspect-ratio": "^1.1.8",
@@ -93,10 +80,6 @@
   },
   "devDependencies": {
     "@eslint/js": "^9.32.0",
-<<<<<<< HEAD
-    "@lovable.dev/vite-tanstack-config": "2.5.3",
-=======
->>>>>>> independente
     "@types/node": "^22.16.5",
     "@types/qrcode": "^1.5.6",
     "@types/react": "^19.2.0",
@@ -109,13 +92,6 @@
     "eslint-plugin-react-hooks": "^5.2.0",
     "eslint-plugin-react-refresh": "^0.4.20",
     "globals": "^15.15.0",
-<<<<<<< HEAD
-    "nitro": "3.0.260603-beta",
-    "prettier": "^3.7.3",
-    "typescript": "^5.8.3",
-    "typescript-eslint": "^8.56.1",
-    "vite": "^7.3.1"
-=======
     "nitro": "3.0.260429-beta",
     "prettier": "^3.7.3",
     "typescript": "^5.8.3",
@@ -123,15 +99,10 @@
     "vite": "^7.3.1",
     "@tanstack/router-plugin": "^1.167.28",
     "vite-tsconfig-paths": "^6.0.2"
->>>>>>> independente
   },
   "pnpm": {
     "overrides": {
       "entities": "4.5.0"
     }
   }
-<<<<<<< HEAD
 }
-=======
-}
->>>>>>> independente

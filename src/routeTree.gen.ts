@@ -10,10 +10,7 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as UnsubscribeRouteImport } from './routes/unsubscribe'
-<<<<<<< HEAD
 import { Route as ResetPasswordRouteImport } from './routes/reset-password'
-=======
->>>>>>> independente
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as IndexRouteImport } from './routes/index'
@@ -24,14 +21,10 @@ import { Route as ApiAnthropicProxyRouteImport } from './routes/api/anthropic-pr
 import { Route as AuthenticatedUsuariosRouteImport } from './routes/_authenticated/usuarios'
 import { Route as AuthenticatedRelatoriosRouteImport } from './routes/_authenticated/relatorios'
 import { Route as AuthenticatedPropostasRouteImport } from './routes/_authenticated/propostas'
-<<<<<<< HEAD
 import { Route as AuthenticatedPrecosPgrssRouteImport } from './routes/_authenticated/precos-pgrss'
 import { Route as AuthenticatedPortalRouteImport } from './routes/_authenticated/portal'
 import { Route as AuthenticatedPgrssNovaRouteImport } from './routes/_authenticated/pgrss-nova'
 import { Route as AuthenticatedPgrssListaRouteImport } from './routes/_authenticated/pgrss-lista'
-=======
-import { Route as AuthenticatedPortalRouteImport } from './routes/_authenticated/portal'
->>>>>>> independente
 import { Route as AuthenticatedMtrRouteImport } from './routes/_authenticated/mtr'
 import { Route as AuthenticatedModelosContratoRouteImport } from './routes/_authenticated/modelos-contrato'
 import { Route as AuthenticatedLicencasRouteImport } from './routes/_authenticated/licencas'
@@ -42,40 +35,29 @@ import { Route as AuthenticatedConciliacaoRouteImport } from './routes/_authenti
 import { Route as AuthenticatedColetasRouteImport } from './routes/_authenticated/coletas'
 import { Route as AuthenticatedClientesRouteImport } from './routes/_authenticated/clientes'
 import { Route as AuthenticatedCdfRouteImport } from './routes/_authenticated/cdf'
-<<<<<<< HEAD
 import { Route as AuthenticatedAgendamentoRouteImport } from './routes/_authenticated/agendamento'
 import { Route as LovableEmailSuppressionRouteImport } from './routes/lovable/email/suppression'
 import { Route as AuthenticatedPropostasNovaRouteImport } from './routes/_authenticated/propostas.nova'
 import { Route as AuthenticatedPgrssVerIdRouteImport } from './routes/_authenticated/pgrss-ver.$id'
-=======
-import { Route as LovableEmailSuppressionRouteImport } from './routes/lovable/email/suppression'
-import { Route as AuthenticatedPropostasNovaRouteImport } from './routes/_authenticated/propostas.nova'
->>>>>>> independente
 import { Route as AuthenticatedClientesClienteIdRouteImport } from './routes/_authenticated/clientes.$clienteId'
 import { Route as LovableEmailTransactionalSendRouteImport } from './routes/lovable/email/transactional/send'
 import { Route as LovableEmailTransactionalPreviewRouteImport } from './routes/lovable/email/transactional/preview'
 import { Route as LovableEmailQueueProcessRouteImport } from './routes/lovable/email/queue/process'
 import { Route as LovableEmailAuthWebhookRouteImport } from './routes/lovable/email/auth/webhook'
 import { Route as LovableEmailAuthPreviewRouteImport } from './routes/lovable/email/auth/preview'
-<<<<<<< HEAD
 import { Route as AuthenticatedPropostasPgrssNovaRouteImport } from './routes/_authenticated/propostas.pgrss.nova'
 import { Route as AuthenticatedPropostasPgrssIdRouteImport } from './routes/_authenticated/propostas.pgrss.$id'
-=======
->>>>>>> independente
 
 const UnsubscribeRoute = UnsubscribeRouteImport.update({
   id: '/unsubscribe',
   path: '/unsubscribe',
   getParentRoute: () => rootRouteImport,
 } as any)
-<<<<<<< HEAD
 const ResetPasswordRoute = ResetPasswordRouteImport.update({
   id: '/reset-password',
   path: '/reset-password',
   getParentRoute: () => rootRouteImport,
 } as any)
-=======
->>>>>>> independente
 const AuthRoute = AuthRouteImport.update({
   id: '/auth',
   path: '/auth',
@@ -125,21 +107,17 @@ const AuthenticatedPropostasRoute = AuthenticatedPropostasRouteImport.update({
   path: '/propostas',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
-<<<<<<< HEAD
 const AuthenticatedPrecosPgrssRoute =
   AuthenticatedPrecosPgrssRouteImport.update({
     id: '/precos-pgrss',
     path: '/precos-pgrss',
     getParentRoute: () => AuthenticatedRouteRoute,
   } as any)
-=======
->>>>>>> independente
 const AuthenticatedPortalRoute = AuthenticatedPortalRouteImport.update({
   id: '/portal',
   path: '/portal',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
-<<<<<<< HEAD
 const AuthenticatedPgrssNovaRoute = AuthenticatedPgrssNovaRouteImport.update({
   id: '/pgrss-nova',
   path: '/pgrss-nova',
@@ -150,8 +128,6 @@ const AuthenticatedPgrssListaRoute = AuthenticatedPgrssListaRouteImport.update({
   path: '/pgrss-lista',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
-=======
->>>>>>> independente
 const AuthenticatedMtrRoute = AuthenticatedMtrRouteImport.update({
   id: '/mtr',
   path: '/mtr',
@@ -204,15 +180,12 @@ const AuthenticatedCdfRoute = AuthenticatedCdfRouteImport.update({
   path: '/cdf',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
-<<<<<<< HEAD
 const AuthenticatedAgendamentoRoute =
   AuthenticatedAgendamentoRouteImport.update({
     id: '/agendamento',
     path: '/agendamento',
     getParentRoute: () => AuthenticatedRouteRoute,
   } as any)
-=======
->>>>>>> independente
 const LovableEmailSuppressionRoute = LovableEmailSuppressionRouteImport.update({
   id: '/lovable/email/suppression',
   path: '/lovable/email/suppression',
@@ -224,14 +197,11 @@ const AuthenticatedPropostasNovaRoute =
     path: '/nova',
     getParentRoute: () => AuthenticatedPropostasRoute,
   } as any)
-<<<<<<< HEAD
 const AuthenticatedPgrssVerIdRoute = AuthenticatedPgrssVerIdRouteImport.update({
   id: '/pgrss-ver/$id',
   path: '/pgrss-ver/$id',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
-=======
->>>>>>> independente
 const AuthenticatedClientesClienteIdRoute =
   AuthenticatedClientesClienteIdRouteImport.update({
     id: '/$clienteId',
@@ -266,7 +236,6 @@ const LovableEmailAuthPreviewRoute = LovableEmailAuthPreviewRouteImport.update({
   path: '/lovable/email/auth/preview',
   getParentRoute: () => rootRouteImport,
 } as any)
-<<<<<<< HEAD
 const AuthenticatedPropostasPgrssNovaRoute =
   AuthenticatedPropostasPgrssNovaRouteImport.update({
     id: '/pgrss/nova',
@@ -279,19 +248,13 @@ const AuthenticatedPropostasPgrssIdRoute =
     path: '/pgrss/$id',
     getParentRoute: () => AuthenticatedPropostasRoute,
   } as any)
-=======
->>>>>>> independente
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
-<<<<<<< HEAD
   '/reset-password': typeof ResetPasswordRoute
   '/unsubscribe': typeof UnsubscribeRoute
   '/agendamento': typeof AuthenticatedAgendamentoRoute
-=======
-  '/unsubscribe': typeof UnsubscribeRoute
->>>>>>> independente
   '/cdf': typeof AuthenticatedCdfRoute
   '/clientes': typeof AuthenticatedClientesRouteWithChildren
   '/coletas': typeof AuthenticatedColetasRoute
@@ -302,14 +265,10 @@ export interface FileRoutesByFullPath {
   '/licencas': typeof AuthenticatedLicencasRoute
   '/modelos-contrato': typeof AuthenticatedModelosContratoRoute
   '/mtr': typeof AuthenticatedMtrRoute
-<<<<<<< HEAD
   '/pgrss-lista': typeof AuthenticatedPgrssListaRoute
   '/pgrss-nova': typeof AuthenticatedPgrssNovaRoute
   '/portal': typeof AuthenticatedPortalRoute
   '/precos-pgrss': typeof AuthenticatedPrecosPgrssRoute
-=======
-  '/portal': typeof AuthenticatedPortalRoute
->>>>>>> independente
   '/propostas': typeof AuthenticatedPropostasRouteWithChildren
   '/relatorios': typeof AuthenticatedRelatoriosRoute
   '/usuarios': typeof AuthenticatedUsuariosRoute
@@ -318,16 +277,11 @@ export interface FileRoutesByFullPath {
   '/email/unsubscribe': typeof EmailUnsubscribeRoute
   '/validar/$codigo': typeof ValidarCodigoRoute
   '/clientes/$clienteId': typeof AuthenticatedClientesClienteIdRoute
-<<<<<<< HEAD
   '/pgrss-ver/$id': typeof AuthenticatedPgrssVerIdRoute
   '/propostas/nova': typeof AuthenticatedPropostasNovaRoute
   '/lovable/email/suppression': typeof LovableEmailSuppressionRoute
   '/propostas/pgrss/$id': typeof AuthenticatedPropostasPgrssIdRoute
   '/propostas/pgrss/nova': typeof AuthenticatedPropostasPgrssNovaRoute
-=======
-  '/propostas/nova': typeof AuthenticatedPropostasNovaRoute
-  '/lovable/email/suppression': typeof LovableEmailSuppressionRoute
->>>>>>> independente
   '/lovable/email/auth/preview': typeof LovableEmailAuthPreviewRoute
   '/lovable/email/auth/webhook': typeof LovableEmailAuthWebhookRoute
   '/lovable/email/queue/process': typeof LovableEmailQueueProcessRoute
@@ -337,13 +291,9 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
-<<<<<<< HEAD
   '/reset-password': typeof ResetPasswordRoute
   '/unsubscribe': typeof UnsubscribeRoute
   '/agendamento': typeof AuthenticatedAgendamentoRoute
-=======
-  '/unsubscribe': typeof UnsubscribeRoute
->>>>>>> independente
   '/cdf': typeof AuthenticatedCdfRoute
   '/clientes': typeof AuthenticatedClientesRouteWithChildren
   '/coletas': typeof AuthenticatedColetasRoute
@@ -354,14 +304,10 @@ export interface FileRoutesByTo {
   '/licencas': typeof AuthenticatedLicencasRoute
   '/modelos-contrato': typeof AuthenticatedModelosContratoRoute
   '/mtr': typeof AuthenticatedMtrRoute
-<<<<<<< HEAD
   '/pgrss-lista': typeof AuthenticatedPgrssListaRoute
   '/pgrss-nova': typeof AuthenticatedPgrssNovaRoute
   '/portal': typeof AuthenticatedPortalRoute
   '/precos-pgrss': typeof AuthenticatedPrecosPgrssRoute
-=======
-  '/portal': typeof AuthenticatedPortalRoute
->>>>>>> independente
   '/propostas': typeof AuthenticatedPropostasRouteWithChildren
   '/relatorios': typeof AuthenticatedRelatoriosRoute
   '/usuarios': typeof AuthenticatedUsuariosRoute
@@ -370,16 +316,11 @@ export interface FileRoutesByTo {
   '/email/unsubscribe': typeof EmailUnsubscribeRoute
   '/validar/$codigo': typeof ValidarCodigoRoute
   '/clientes/$clienteId': typeof AuthenticatedClientesClienteIdRoute
-<<<<<<< HEAD
   '/pgrss-ver/$id': typeof AuthenticatedPgrssVerIdRoute
   '/propostas/nova': typeof AuthenticatedPropostasNovaRoute
   '/lovable/email/suppression': typeof LovableEmailSuppressionRoute
   '/propostas/pgrss/$id': typeof AuthenticatedPropostasPgrssIdRoute
   '/propostas/pgrss/nova': typeof AuthenticatedPropostasPgrssNovaRoute
-=======
-  '/propostas/nova': typeof AuthenticatedPropostasNovaRoute
-  '/lovable/email/suppression': typeof LovableEmailSuppressionRoute
->>>>>>> independente
   '/lovable/email/auth/preview': typeof LovableEmailAuthPreviewRoute
   '/lovable/email/auth/webhook': typeof LovableEmailAuthWebhookRoute
   '/lovable/email/queue/process': typeof LovableEmailQueueProcessRoute
@@ -391,13 +332,9 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
   '/auth': typeof AuthRoute
-<<<<<<< HEAD
   '/reset-password': typeof ResetPasswordRoute
   '/unsubscribe': typeof UnsubscribeRoute
   '/_authenticated/agendamento': typeof AuthenticatedAgendamentoRoute
-=======
-  '/unsubscribe': typeof UnsubscribeRoute
->>>>>>> independente
   '/_authenticated/cdf': typeof AuthenticatedCdfRoute
   '/_authenticated/clientes': typeof AuthenticatedClientesRouteWithChildren
   '/_authenticated/coletas': typeof AuthenticatedColetasRoute
@@ -408,14 +345,10 @@ export interface FileRoutesById {
   '/_authenticated/licencas': typeof AuthenticatedLicencasRoute
   '/_authenticated/modelos-contrato': typeof AuthenticatedModelosContratoRoute
   '/_authenticated/mtr': typeof AuthenticatedMtrRoute
-<<<<<<< HEAD
   '/_authenticated/pgrss-lista': typeof AuthenticatedPgrssListaRoute
   '/_authenticated/pgrss-nova': typeof AuthenticatedPgrssNovaRoute
   '/_authenticated/portal': typeof AuthenticatedPortalRoute
   '/_authenticated/precos-pgrss': typeof AuthenticatedPrecosPgrssRoute
-=======
-  '/_authenticated/portal': typeof AuthenticatedPortalRoute
->>>>>>> independente
   '/_authenticated/propostas': typeof AuthenticatedPropostasRouteWithChildren
   '/_authenticated/relatorios': typeof AuthenticatedRelatoriosRoute
   '/_authenticated/usuarios': typeof AuthenticatedUsuariosRoute
@@ -424,16 +357,11 @@ export interface FileRoutesById {
   '/email/unsubscribe': typeof EmailUnsubscribeRoute
   '/validar/$codigo': typeof ValidarCodigoRoute
   '/_authenticated/clientes/$clienteId': typeof AuthenticatedClientesClienteIdRoute
-<<<<<<< HEAD
   '/_authenticated/pgrss-ver/$id': typeof AuthenticatedPgrssVerIdRoute
   '/_authenticated/propostas/nova': typeof AuthenticatedPropostasNovaRoute
   '/lovable/email/suppression': typeof LovableEmailSuppressionRoute
   '/_authenticated/propostas/pgrss/$id': typeof AuthenticatedPropostasPgrssIdRoute
   '/_authenticated/propostas/pgrss/nova': typeof AuthenticatedPropostasPgrssNovaRoute
-=======
-  '/_authenticated/propostas/nova': typeof AuthenticatedPropostasNovaRoute
-  '/lovable/email/suppression': typeof LovableEmailSuppressionRoute
->>>>>>> independente
   '/lovable/email/auth/preview': typeof LovableEmailAuthPreviewRoute
   '/lovable/email/auth/webhook': typeof LovableEmailAuthWebhookRoute
   '/lovable/email/queue/process': typeof LovableEmailQueueProcessRoute
@@ -445,13 +373,9 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/auth'
-<<<<<<< HEAD
     | '/reset-password'
     | '/unsubscribe'
     | '/agendamento'
-=======
-    | '/unsubscribe'
->>>>>>> independente
     | '/cdf'
     | '/clientes'
     | '/coletas'
@@ -462,14 +386,10 @@ export interface FileRouteTypes {
     | '/licencas'
     | '/modelos-contrato'
     | '/mtr'
-<<<<<<< HEAD
     | '/pgrss-lista'
     | '/pgrss-nova'
     | '/portal'
     | '/precos-pgrss'
-=======
-    | '/portal'
->>>>>>> independente
     | '/propostas'
     | '/relatorios'
     | '/usuarios'
@@ -478,16 +398,11 @@ export interface FileRouteTypes {
     | '/email/unsubscribe'
     | '/validar/$codigo'
     | '/clientes/$clienteId'
-<<<<<<< HEAD
     | '/pgrss-ver/$id'
     | '/propostas/nova'
     | '/lovable/email/suppression'
     | '/propostas/pgrss/$id'
     | '/propostas/pgrss/nova'
-=======
-    | '/propostas/nova'
-    | '/lovable/email/suppression'
->>>>>>> independente
     | '/lovable/email/auth/preview'
     | '/lovable/email/auth/webhook'
     | '/lovable/email/queue/process'
@@ -497,13 +412,9 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/auth'
-<<<<<<< HEAD
     | '/reset-password'
     | '/unsubscribe'
     | '/agendamento'
-=======
-    | '/unsubscribe'
->>>>>>> independente
     | '/cdf'
     | '/clientes'
     | '/coletas'
@@ -514,14 +425,10 @@ export interface FileRouteTypes {
     | '/licencas'
     | '/modelos-contrato'
     | '/mtr'
-<<<<<<< HEAD
     | '/pgrss-lista'
     | '/pgrss-nova'
     | '/portal'
     | '/precos-pgrss'
-=======
-    | '/portal'
->>>>>>> independente
     | '/propostas'
     | '/relatorios'
     | '/usuarios'
@@ -530,16 +437,11 @@ export interface FileRouteTypes {
     | '/email/unsubscribe'
     | '/validar/$codigo'
     | '/clientes/$clienteId'
-<<<<<<< HEAD
     | '/pgrss-ver/$id'
     | '/propostas/nova'
     | '/lovable/email/suppression'
     | '/propostas/pgrss/$id'
     | '/propostas/pgrss/nova'
-=======
-    | '/propostas/nova'
-    | '/lovable/email/suppression'
->>>>>>> independente
     | '/lovable/email/auth/preview'
     | '/lovable/email/auth/webhook'
     | '/lovable/email/queue/process'
@@ -550,13 +452,9 @@ export interface FileRouteTypes {
     | '/'
     | '/_authenticated'
     | '/auth'
-<<<<<<< HEAD
     | '/reset-password'
     | '/unsubscribe'
     | '/_authenticated/agendamento'
-=======
-    | '/unsubscribe'
->>>>>>> independente
     | '/_authenticated/cdf'
     | '/_authenticated/clientes'
     | '/_authenticated/coletas'
@@ -567,14 +465,10 @@ export interface FileRouteTypes {
     | '/_authenticated/licencas'
     | '/_authenticated/modelos-contrato'
     | '/_authenticated/mtr'
-<<<<<<< HEAD
     | '/_authenticated/pgrss-lista'
     | '/_authenticated/pgrss-nova'
     | '/_authenticated/portal'
     | '/_authenticated/precos-pgrss'
-=======
-    | '/_authenticated/portal'
->>>>>>> independente
     | '/_authenticated/propostas'
     | '/_authenticated/relatorios'
     | '/_authenticated/usuarios'
@@ -583,16 +477,11 @@ export interface FileRouteTypes {
     | '/email/unsubscribe'
     | '/validar/$codigo'
     | '/_authenticated/clientes/$clienteId'
-<<<<<<< HEAD
     | '/_authenticated/pgrss-ver/$id'
     | '/_authenticated/propostas/nova'
     | '/lovable/email/suppression'
     | '/_authenticated/propostas/pgrss/$id'
     | '/_authenticated/propostas/pgrss/nova'
-=======
-    | '/_authenticated/propostas/nova'
-    | '/lovable/email/suppression'
->>>>>>> independente
     | '/lovable/email/auth/preview'
     | '/lovable/email/auth/webhook'
     | '/lovable/email/queue/process'
@@ -604,10 +493,7 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
   AuthRoute: typeof AuthRoute
-<<<<<<< HEAD
   ResetPasswordRoute: typeof ResetPasswordRoute
-=======
->>>>>>> independente
   UnsubscribeRoute: typeof UnsubscribeRoute
   ApiAnthropicProxyRoute: typeof ApiAnthropicProxyRoute
   AssinarTokenRoute: typeof AssinarTokenRoute
@@ -630,7 +516,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof UnsubscribeRouteImport
       parentRoute: typeof rootRouteImport
     }
-<<<<<<< HEAD
     '/reset-password': {
       id: '/reset-password'
       path: '/reset-password'
@@ -638,8 +523,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ResetPasswordRouteImport
       parentRoute: typeof rootRouteImport
     }
-=======
->>>>>>> independente
     '/auth': {
       id: '/auth'
       path: '/auth'
@@ -710,7 +593,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedPropostasRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
-<<<<<<< HEAD
     '/_authenticated/precos-pgrss': {
       id: '/_authenticated/precos-pgrss'
       path: '/precos-pgrss'
@@ -718,8 +600,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedPrecosPgrssRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
-=======
->>>>>>> independente
     '/_authenticated/portal': {
       id: '/_authenticated/portal'
       path: '/portal'
@@ -727,7 +607,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedPortalRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
-<<<<<<< HEAD
     '/_authenticated/pgrss-nova': {
       id: '/_authenticated/pgrss-nova'
       path: '/pgrss-nova'
@@ -742,8 +621,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedPgrssListaRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
-=======
->>>>>>> independente
     '/_authenticated/mtr': {
       id: '/_authenticated/mtr'
       path: '/mtr'
@@ -814,7 +691,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedCdfRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
-<<<<<<< HEAD
     '/_authenticated/agendamento': {
       id: '/_authenticated/agendamento'
       path: '/agendamento'
@@ -822,8 +698,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAgendamentoRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
-=======
->>>>>>> independente
     '/lovable/email/suppression': {
       id: '/lovable/email/suppression'
       path: '/lovable/email/suppression'
@@ -838,7 +712,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedPropostasNovaRouteImport
       parentRoute: typeof AuthenticatedPropostasRoute
     }
-<<<<<<< HEAD
     '/_authenticated/pgrss-ver/$id': {
       id: '/_authenticated/pgrss-ver/$id'
       path: '/pgrss-ver/$id'
@@ -846,8 +719,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedPgrssVerIdRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
-=======
->>>>>>> independente
     '/_authenticated/clientes/$clienteId': {
       id: '/_authenticated/clientes/$clienteId'
       path: '/$clienteId'
@@ -890,7 +761,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LovableEmailAuthPreviewRouteImport
       parentRoute: typeof rootRouteImport
     }
-<<<<<<< HEAD
     '/_authenticated/propostas/pgrss/nova': {
       id: '/_authenticated/propostas/pgrss/nova'
       path: '/pgrss/nova'
@@ -905,8 +775,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedPropostasPgrssIdRouteImport
       parentRoute: typeof AuthenticatedPropostasRoute
     }
-=======
->>>>>>> independente
   }
 }
 
@@ -925,21 +793,15 @@ const AuthenticatedClientesRouteWithChildren =
 
 interface AuthenticatedPropostasRouteChildren {
   AuthenticatedPropostasNovaRoute: typeof AuthenticatedPropostasNovaRoute
-<<<<<<< HEAD
   AuthenticatedPropostasPgrssIdRoute: typeof AuthenticatedPropostasPgrssIdRoute
   AuthenticatedPropostasPgrssNovaRoute: typeof AuthenticatedPropostasPgrssNovaRoute
-=======
->>>>>>> independente
 }
 
 const AuthenticatedPropostasRouteChildren: AuthenticatedPropostasRouteChildren =
   {
     AuthenticatedPropostasNovaRoute: AuthenticatedPropostasNovaRoute,
-<<<<<<< HEAD
     AuthenticatedPropostasPgrssIdRoute: AuthenticatedPropostasPgrssIdRoute,
     AuthenticatedPropostasPgrssNovaRoute: AuthenticatedPropostasPgrssNovaRoute,
-=======
->>>>>>> independente
   }
 
 const AuthenticatedPropostasRouteWithChildren =
@@ -948,10 +810,7 @@ const AuthenticatedPropostasRouteWithChildren =
   )
 
 interface AuthenticatedRouteRouteChildren {
-<<<<<<< HEAD
   AuthenticatedAgendamentoRoute: typeof AuthenticatedAgendamentoRoute
-=======
->>>>>>> independente
   AuthenticatedCdfRoute: typeof AuthenticatedCdfRoute
   AuthenticatedClientesRoute: typeof AuthenticatedClientesRouteWithChildren
   AuthenticatedColetasRoute: typeof AuthenticatedColetasRoute
@@ -962,7 +821,6 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedLicencasRoute: typeof AuthenticatedLicencasRoute
   AuthenticatedModelosContratoRoute: typeof AuthenticatedModelosContratoRoute
   AuthenticatedMtrRoute: typeof AuthenticatedMtrRoute
-<<<<<<< HEAD
   AuthenticatedPgrssListaRoute: typeof AuthenticatedPgrssListaRoute
   AuthenticatedPgrssNovaRoute: typeof AuthenticatedPgrssNovaRoute
   AuthenticatedPortalRoute: typeof AuthenticatedPortalRoute
@@ -975,15 +833,6 @@ interface AuthenticatedRouteRouteChildren {
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedAgendamentoRoute: AuthenticatedAgendamentoRoute,
-=======
-  AuthenticatedPortalRoute: typeof AuthenticatedPortalRoute
-  AuthenticatedPropostasRoute: typeof AuthenticatedPropostasRouteWithChildren
-  AuthenticatedRelatoriosRoute: typeof AuthenticatedRelatoriosRoute
-  AuthenticatedUsuariosRoute: typeof AuthenticatedUsuariosRoute
-}
-
-const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
->>>>>>> independente
   AuthenticatedCdfRoute: AuthenticatedCdfRoute,
   AuthenticatedClientesRoute: AuthenticatedClientesRouteWithChildren,
   AuthenticatedColetasRoute: AuthenticatedColetasRoute,
@@ -994,7 +843,6 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedLicencasRoute: AuthenticatedLicencasRoute,
   AuthenticatedModelosContratoRoute: AuthenticatedModelosContratoRoute,
   AuthenticatedMtrRoute: AuthenticatedMtrRoute,
-<<<<<<< HEAD
   AuthenticatedPgrssListaRoute: AuthenticatedPgrssListaRoute,
   AuthenticatedPgrssNovaRoute: AuthenticatedPgrssNovaRoute,
   AuthenticatedPortalRoute: AuthenticatedPortalRoute,
@@ -1003,12 +851,6 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedRelatoriosRoute: AuthenticatedRelatoriosRoute,
   AuthenticatedUsuariosRoute: AuthenticatedUsuariosRoute,
   AuthenticatedPgrssVerIdRoute: AuthenticatedPgrssVerIdRoute,
-=======
-  AuthenticatedPortalRoute: AuthenticatedPortalRoute,
-  AuthenticatedPropostasRoute: AuthenticatedPropostasRouteWithChildren,
-  AuthenticatedRelatoriosRoute: AuthenticatedRelatoriosRoute,
-  AuthenticatedUsuariosRoute: AuthenticatedUsuariosRoute,
->>>>>>> independente
 }
 
 const AuthenticatedRouteRouteWithChildren =
@@ -1018,10 +860,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
   AuthRoute: AuthRoute,
-<<<<<<< HEAD
   ResetPasswordRoute: ResetPasswordRoute,
-=======
->>>>>>> independente
   UnsubscribeRoute: UnsubscribeRoute,
   ApiAnthropicProxyRoute: ApiAnthropicProxyRoute,
   AssinarTokenRoute: AssinarTokenRoute,

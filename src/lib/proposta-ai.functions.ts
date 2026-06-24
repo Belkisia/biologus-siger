@@ -1,10 +1,7 @@
 import { createServerFn } from "@tanstack/react-start";
 import { generateText } from "ai";
 import { z } from "zod";
-<<<<<<< HEAD
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
-=======
->>>>>>> independente
 
 const Input = z.object({
   system: z.string().min(1).max(20000),
@@ -12,10 +9,7 @@ const Input = z.object({
 });
 
 export const gerarPropostaIA = createServerFn({ method: "POST" })
-<<<<<<< HEAD
   .middleware([requireSupabaseAuth])
-=======
->>>>>>> independente
   .inputValidator((data: unknown) => Input.parse(data))
   .handler(async ({ data }) => {
     const key = process.env.LOVABLE_API_KEY;

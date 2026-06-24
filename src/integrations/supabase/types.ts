@@ -497,16 +497,11 @@ export type Database = {
           data_inicio: string
           dia_vencimento: number | null
           forma_pagamento: string | null
-<<<<<<< HEAD
           frequencia_coleta: string | null
           grupos_residuos: string | null
           id: string
           indice_reajuste: string | null
           limite_kg: number | null
-=======
-          id: string
-          indice_reajuste: string | null
->>>>>>> independente
           modelo_id: string | null
           numero: string
           objeto: string | null
@@ -519,13 +514,9 @@ export type Database = {
           ultimo_email_erro: string | null
           ultimo_email_status: string | null
           updated_at: string
-<<<<<<< HEAD
           valor_excedente: number | null
           valor_mensal: number | null
           vigencia_anos: string | null
-=======
-          valor_mensal: number | null
->>>>>>> independente
         }
         Insert: {
           cliente_id: string
@@ -535,16 +526,11 @@ export type Database = {
           data_inicio: string
           dia_vencimento?: number | null
           forma_pagamento?: string | null
-<<<<<<< HEAD
           frequencia_coleta?: string | null
           grupos_residuos?: string | null
           id?: string
           indice_reajuste?: string | null
           limite_kg?: number | null
-=======
-          id?: string
-          indice_reajuste?: string | null
->>>>>>> independente
           modelo_id?: string | null
           numero: string
           objeto?: string | null
@@ -557,13 +543,9 @@ export type Database = {
           ultimo_email_erro?: string | null
           ultimo_email_status?: string | null
           updated_at?: string
-<<<<<<< HEAD
           valor_excedente?: number | null
           valor_mensal?: number | null
           vigencia_anos?: string | null
-=======
-          valor_mensal?: number | null
->>>>>>> independente
         }
         Update: {
           cliente_id?: string
@@ -573,16 +555,11 @@ export type Database = {
           data_inicio?: string
           dia_vencimento?: number | null
           forma_pagamento?: string | null
-<<<<<<< HEAD
           frequencia_coleta?: string | null
           grupos_residuos?: string | null
           id?: string
           indice_reajuste?: string | null
           limite_kg?: number | null
-=======
-          id?: string
-          indice_reajuste?: string | null
->>>>>>> independente
           modelo_id?: string | null
           numero?: string
           objeto?: string | null
@@ -595,13 +572,9 @@ export type Database = {
           ultimo_email_erro?: string | null
           ultimo_email_status?: string | null
           updated_at?: string
-<<<<<<< HEAD
           valor_excedente?: number | null
           valor_mensal?: number | null
           vigencia_anos?: string | null
-=======
-          valor_mensal?: number | null
->>>>>>> independente
         }
         Relationships: [
           {
@@ -1095,7 +1068,6 @@ export type Database = {
         }
         Relationships: []
       }
-<<<<<<< HEAD
       pgrss_precos: {
         Row: {
           created_at: string
@@ -1147,8 +1119,6 @@ export type Database = {
         }
         Relationships: []
       }
-=======
->>>>>>> independente
       profiles: {
         Row: {
           avatar_url: string | null
@@ -1227,15 +1197,10 @@ export type Database = {
         Row: {
           cliente_id: string
           condicoes_pagamento: string | null
-<<<<<<< HEAD
           conteudo_html: string | null
           contrato_id: string | null
           created_at: string
           dados_pgrss: Json | null
-=======
-          contrato_id: string | null
-          created_at: string
->>>>>>> independente
           data_emissao: string
           enviada_em: string | null
           id: string
@@ -1245,10 +1210,7 @@ export type Database = {
           prazo_coleta: string | null
           respondida_em: string | null
           status: string
-<<<<<<< HEAD
           tipo: string
-=======
->>>>>>> independente
           updated_at: string
           validade: string | null
           valor_total: number
@@ -1256,15 +1218,10 @@ export type Database = {
         Insert: {
           cliente_id: string
           condicoes_pagamento?: string | null
-<<<<<<< HEAD
           conteudo_html?: string | null
           contrato_id?: string | null
           created_at?: string
           dados_pgrss?: Json | null
-=======
-          contrato_id?: string | null
-          created_at?: string
->>>>>>> independente
           data_emissao?: string
           enviada_em?: string | null
           id?: string
@@ -1274,10 +1231,7 @@ export type Database = {
           prazo_coleta?: string | null
           respondida_em?: string | null
           status?: string
-<<<<<<< HEAD
           tipo?: string
-=======
->>>>>>> independente
           updated_at?: string
           validade?: string | null
           valor_total?: number
@@ -1285,15 +1239,10 @@ export type Database = {
         Update: {
           cliente_id?: string
           condicoes_pagamento?: string | null
-<<<<<<< HEAD
           conteudo_html?: string | null
           contrato_id?: string | null
           created_at?: string
           dados_pgrss?: Json | null
-=======
-          contrato_id?: string | null
-          created_at?: string
->>>>>>> independente
           data_emissao?: string
           enviada_em?: string | null
           id?: string
@@ -1303,10 +1252,7 @@ export type Database = {
           prazo_coleta?: string | null
           respondida_em?: string | null
           status?: string
-<<<<<<< HEAD
           tipo?: string
-=======
->>>>>>> independente
           updated_at?: string
           validade?: string | null
           valor_total?: number

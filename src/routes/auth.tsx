@@ -1,9 +1,5 @@
 import { createFileRoute, useRouter, Link } from "@tanstack/react-router";
-<<<<<<< HEAD
 import { useEffect, useRef, useState } from "react";
-=======
-import { useEffect, useState } from "react";
->>>>>>> independente
 import { supabase } from "@/integrations/supabase/client";
 import { lovable } from "@/integrations/lovable";
 import { Button } from "@/components/ui/button";
@@ -28,7 +24,6 @@ export const Route = createFileRoute("/auth")({
 function AuthPage() {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
-<<<<<<< HEAD
   const [resetLoading, setResetLoading] = useState(false);
   const [authTab, setAuthTab] = useState("login");
   const [message, setMessage] = useState<{ type: "error" | "success"; text: string } | null>(null);
@@ -37,11 +32,6 @@ function AuthPage() {
   const [fullName, setFullName] = useState("");
   const [resetCooldown, setResetCooldown] = useState(0);
   const resetEmailInputRef = useRef<HTMLInputElement>(null);
-=======
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [fullName, setFullName] = useState("");
->>>>>>> independente
 
   useEffect(() => {
     supabase.auth.getUser().then(({ data }) => {
@@ -49,7 +39,6 @@ function AuthPage() {
     });
   }, [router]);
 
-<<<<<<< HEAD
   useEffect(() => {
     if (resetCooldown <= 0) return;
     const timer = window.setTimeout(() => setResetCooldown((seconds) => Math.max(0, seconds - 1)), 1000);
@@ -74,16 +63,6 @@ function AuthPage() {
     toast.success("Bem-vindo!");
     await router.invalidate();
     router.navigate({ to: "/dashboard", replace: true });
-=======
-  const onSignIn = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setLoading(true);
-    const { error } = await supabase.auth.signInWithPassword({ email, password });
-    setLoading(false);
-    if (error) return toast.error(error.message);
-    toast.success("Bem-vindo!");
-    router.navigate({ to: "/dashboard" });
->>>>>>> independente
   };
 
   const onSignUp = async (e: React.FormEvent) => {
@@ -113,7 +92,6 @@ function AuthPage() {
     router.navigate({ to: "/dashboard" });
   };
 
-<<<<<<< HEAD
   const onResetPassword = async () => {
     const trimmedEmail = email.trim();
     setMessage(null);
@@ -155,8 +133,6 @@ function AuthPage() {
     window.requestAnimationFrame(() => resetEmailInputRef.current?.focus());
   };
 
-=======
->>>>>>> independente
   return (
     <div className="min-h-screen flex items-center justify-center p-4" style={{ background: "var(--gradient-subtle)" }}>
       <div className="w-full max-w-md">
@@ -169,7 +145,6 @@ function AuthPage() {
         </div>
 
         <Card className="p-6">
-<<<<<<< HEAD
           <Tabs value={authTab} onValueChange={(value) => { setAuthTab(value); setMessage(null); }} className="w-full">
             <TabsList className="grid w-full grid-cols-2 mb-5">
               <TabsTrigger value="login">Entrar</TabsTrigger>
@@ -219,22 +194,6 @@ function AuthPage() {
               </div>
             </TabsContent>
           </Tabs>
-=======
-          <form onSubmit={onSignIn} className="space-y-4">
-            <div className="space-y-2">
-              <Label htmlFor="si-email">E-mail</Label>
-              <Input id="si-email" type="email" required value={email} onChange={(e) => setEmail(e.target.value)} />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="si-pass">Senha</Label>
-              <Input id="si-pass" type="password" required value={password} onChange={(e) => setPassword(e.target.value)} />
-            </div>
-            <Button type="submit" className="w-full" disabled={loading}>
-              {loading && <Loader2 className="h-4 w-4 mr-2 animate-spin" />}
-              Entrar
-            </Button>
-          </form>
->>>>>>> independente
 
           <div className="relative my-6">
             <div className="absolute inset-0 flex items-center"><span className="w-full border-t" /></div>
