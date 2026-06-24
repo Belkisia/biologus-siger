@@ -9,4 +9,7 @@ export default defineConfig({
       target: "vercel",
     }),
   ],
+  build: {
+    assetsDir: "_app",
+  },
 });
