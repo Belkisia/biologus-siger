@@ -1,10 +1,19 @@
 export default async function handler(req, res) {
+  // Assets são servidos diretamente pelo Vercel via outputDirectory
+  if (req.url.startsWith('/assets/') || req.url.startsWith('/favicon')) {
+    res.status(404).end();
+    return;
+  }
+
   const { default: server } = await import("../dist/server/server.js");
   
-  const url = new URL(req.url, `https://${req.headers.host}`);
+  const protocol = req.headers['x-forwarded-proto'] || 'https';
+  const host = req.headers['x-forwarded-host'] || req.headers.host;
+  const url = new URL(req.url, `${protocol}://${host}`);
+  
   const headers = new Headers();
   Object.entries(req.headers).forEach(([k, v]) => {
-    if (v) headers.set(k, Array.isArray(v) ? v.join(', ') : v);
+    if (v && k !== 'host') headers.set(k, Array.isArray(v) ? v.join(', ') : v);
   });
 
   const request = new Request(url.toString(), {
@@ -16,7 +25,10 @@ export default async function handler(req, res) {
   const response = await server.fetch(request);
 
   res.status(response.status);
-  response.headers.forEach((v, k) => res.setHeader(k, v));
+  response.headers.forEach((v, k) => {
+    if (k !== 'transfer-encoding') res.setHeader(k, v);
+  });
+  
   const body = await response.arrayBuffer();
   res.end(Buffer.from(body));
 }
