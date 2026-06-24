@@ -1,3 +1,9 @@
-import { createServer } from "../dist/server/server.js";
+import server from "../dist/server/server.js";
 
-export default createServer();
+export const config = {
+  runtime: "edge",
+};
+
+export default function handler(request) {
+  return server.fetch(request);
+}

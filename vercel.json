@@ -2,8 +2,18 @@
   "version": 2,
   "buildCommand": "bun run build",
   "installCommand": "bun install",
-  "outputDirectory": "dist/client",
-  "rewrites": [
-    { "source": "/(.*)", "destination": "/index.html" }
+  "routes": [
+    {
+      "src": "/_server/.*",
+      "dest": "/api/index.js"
+    },
+    {
+      "src": "/assets/(.*)",
+      "dest": "/dist/client/assets/$1"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "/api/index.js"
+    }
   ]
 }
