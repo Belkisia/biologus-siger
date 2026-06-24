@@ -1,9 +1,9 @@
 {
+  "framework": "vite",
   "buildCommand": "bun run build",
-  "outputDirectory": ".vercel/output",
+  "outputDirectory": "dist",
   "installCommand": "bun install",
-  "framework": null,
-  "env": {
-    "NODE_VERSION": "20"
-  }
+  "rewrites": [
+    { "source": "/(.*)", "destination": "/index.html" }
+  ]
 }
