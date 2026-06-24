@@ -1,14 +1,12 @@
-import { defineConfig } from "@tanstack/react-start/config";
+import { tanstackStart } from "@tanstack/react-start/plugin/vite";
 import tsconfigPaths from "vite-tsconfig-paths";
+import { defineConfig } from "vite";
 
 export default defineConfig({
-  tsr: {
-    autoCodeSplitting: true,
-  },
-  vite: {
-    plugins: [tsconfigPaths()],
-  },
-  server: {
-    preset: "vercel",
-  },
+  plugins: [
+    tsconfigPaths(),
+    tanstackStart({
+      target: "vercel",
+    }),
+  ],
 });
