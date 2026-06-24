@@ -32,3 +32,5 @@ dist-ssr
 *.sw?
 # .env
 .vercel/output
+
+# Incluir server-prebuilt (bundle pré-compilado)

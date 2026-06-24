@@ -1,30 +1,21 @@
 #!/bin/bash
 set -e
 
-echo "=== Building TanStack Start ==="
-npx vite build
-
-echo "=== Bundling server with all dependencies ==="
-npx esbuild dist/server/server.js \
-  --bundle \
-  --platform=node \
-  --format=cjs \
-  --outfile=dist/server/server.bundle.cjs \
-  --external:node:* \
-  --log-level=error
+echo "=== Using pre-compiled server bundle ==="
+# Não faz build no Vercel — usa o bundle já compilado que foi commitado
 
 echo "=== Creating Vercel Build Output API v3 ==="
 rm -rf .vercel/output
 mkdir -p .vercel/output/static/assets
 mkdir -p .vercel/output/functions/index.func
 
-# 1. Assets estáticos
-cp -r dist/client/assets/. .vercel/output/static/assets/
+# 1. Assets estáticos pré-compilados
+cp -r server-prebuilt/assets/. .vercel/output/static/assets/
 echo "✓ Assets: $(ls .vercel/output/static/assets/ | wc -l) arquivos"
 
-# 2. Server bundle standalone (CJS com deps embutidas)
-cp dist/server/server.bundle.cjs .vercel/output/functions/index.func/server.cjs
-echo "✓ Server bundle: $(du -sh .vercel/output/functions/index.func/server.cjs | cut -f1)"
+# 2. Server bundle pré-compilado
+cp server-prebuilt/server.bundle.cjs .vercel/output/functions/index.func/server.cjs
+echo "✓ Server: $(du -sh .vercel/output/functions/index.func/server.cjs | cut -f1)"
 
 # 3. Handler
 cat > .vercel/output/functions/index.func/index.js << 'EOF'
@@ -62,13 +53,13 @@ module.exports = async function(req, res) {
     const body = await response.arrayBuffer();
     res.end(Buffer.from(body));
   } catch (error) {
-    console.error("[SSR Error]", error);
+    console.error("[SSR Error]", error.message, error.stack);
     res.status(500).end("Internal Server Error: " + error.message);
   }
 }
 EOF
 
-# 4. package.json CJS para a function
+# 4. package.json CJS
 cat > .vercel/output/functions/index.func/package.json << 'EOF'
 {"type":"commonjs"}
 EOF
@@ -100,6 +91,4 @@ cat > .vercel/output/config.json << 'EOF'
 }
 EOF
 
-echo "=== Build concluído ==="
-echo "Static: $(ls .vercel/output/static/assets/ | wc -l) assets"
-echo "Function: $(ls .vercel/output/functions/index.func/)"
+echo "=== Build Output pronto ==="
