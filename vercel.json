@@ -1,11 +1,7 @@
 {
   "version": 2,
-  "functions": {
-    "api/index.js": {
-      "runtime": "nodejs20.x",
-      "maxDuration": 30
-    }
-  },
+  "buildCommand": "bun run build",
+  "installCommand": "bun install",
   "routes": [
     {
       "src": "/assets/(.*)",
@@ -15,7 +11,5 @@
       "src": "/(.*)",
       "dest": "/api/index.js"
     }
-  ],
-  "buildCommand": "bun run build",
-  "installCommand": "bun install"
+  ]
 }
