@@ -268,7 +268,7 @@ function RotaDetalhe({
       if (!clienteIds.length) return [];
       const { data } = await supabase
         .from("mtrs")
-        .select("id, numero, cliente_id, status, quantidade, unidade")
+        .select("id, numero, cliente_id, status, quantidade, unidade, data_emissao, descricao_residuo, acondicionamento")
         .in("cliente_id", clienteIds)
         .eq("data_emissao", dataSelecionada);
       return data ?? [];
