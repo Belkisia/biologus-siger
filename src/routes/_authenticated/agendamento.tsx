@@ -72,75 +72,62 @@ function imprimirMTRsLote(mtrs: any[], rotaClientes: any[]) {
     const dataFmt = mtr.data_emissao
       ? new Date(mtr.data_emissao + "T12:00:00").toLocaleDateString("pt-BR")
       : new Date().toLocaleDateString("pt-BR");
-    const pb = idx < mtrs.length - 1 ? 'page-break-after:always;' : '';
-    return `
-    <div style="${pb}padding:20px;max-width:800px;margin:0 auto">
+    const pb = idx < mtrs.length - 1 ? 'style="page-break-after:always"' : '';
+    return `<div ${pb} style="padding:20px;max-width:800px;margin:0 auto;font-family:Arial,sans-serif;font-size:11px">
       <div style="display:flex;justify-content:space-between;align-items:flex-start;border-bottom:3px solid #0D9488;padding-bottom:12px;margin-bottom:16px">
         <div><div style="font-size:20px;font-weight:bold;color:#0D9488">BIOLOGUS AMBIENTAL</div><div style="font-size:10px;color:#555">Gestão de Resíduos de Saúde</div></div>
-        <div><div style="font-size:15px;font-weight:bold;border:2px solid #000;padding:8px 20px;border-radius:4px">MANIFESTO DE TRANSPORTE DE RESÍDUOS</div><div style="font-size:12px;color:#555;margin-top:4px;text-align:center">Nº ${mtr.numero} | ${dataFmt}</div></div>
+        <div><div style="font-size:14px;font-weight:bold;border:2px solid #000;padding:6px 16px;border-radius:4px;text-align:center">MANIFESTO DE TRANSPORTE DE RESÍDUOS</div><div style="font-size:11px;color:#555;margin-top:4px;text-align:center">Nº ${mtr.numero} | ${dataFmt}</div></div>
       </div>
-      <div style="margin-bottom:14px">
-        <div style="background:#0D9488;color:white;font-size:10px;font-weight:bold;text-transform:uppercase;padding:4px 8px;border-radius:3px 3px 0 0">Gerador (Contratante)</div>
-        <div style="border:1px solid #ccc;border-top:none;padding:10px;display:grid;grid-template-columns:1fr 1fr;gap:8px">
-          <div><div style="font-size:9px;text-transform:uppercase;color:#777">Razão Social</div><div style="font-size:11px;font-weight:600;border-bottom:1px solid #ddd;padding-bottom:2px">${cliente.razao_social || ""}</div></div>
-          <div><div style="font-size:9px;text-transform:uppercase;color:#777">Nome Fantasia</div><div style="font-size:11px;font-weight:600;border-bottom:1px solid #ddd;padding-bottom:2px">${cliente.nome_fantasia || ""}</div></div>
-          <div><div style="font-size:9px;text-transform:uppercase;color:#777">CNPJ</div><div style="font-size:11px;font-weight:600;border-bottom:1px solid #ddd;padding-bottom:2px">${cliente.cnpj || ""}</div></div>
-          <div><div style="font-size:9px;text-transform:uppercase;color:#777">Endereço</div><div style="font-size:11px;font-weight:600;border-bottom:1px solid #ddd;padding-bottom:2px">${cliente.logradouro || ""}</div></div>
-          <div><div style="font-size:9px;text-transform:uppercase;color:#777">Cidade</div><div style="font-size:11px;font-weight:600;border-bottom:1px solid #ddd;padding-bottom:2px">${cliente.cidade || ""}</div></div>
+      <div style="margin-bottom:12px">
+        <div style="background:#0D9488;color:white;font-size:10px;font-weight:bold;text-transform:uppercase;padding:4px 8px">Gerador (Contratante)</div>
+        <div style="border:1px solid #ccc;border-top:none;padding:8px;display:grid;grid-template-columns:1fr 1fr;gap:6px">
+          <div><div style="font-size:9px;color:#777;text-transform:uppercase">Razão Social</div><div style="font-weight:600;border-bottom:1px solid #eee;padding-bottom:1px">${cliente.razao_social || ""}</div></div>
+          <div><div style="font-size:9px;color:#777;text-transform:uppercase">Nome Fantasia</div><div style="font-weight:600;border-bottom:1px solid #eee;padding-bottom:1px">${cliente.nome_fantasia || ""}</div></div>
+          <div><div style="font-size:9px;color:#777;text-transform:uppercase">CNPJ</div><div style="font-weight:600;border-bottom:1px solid #eee;padding-bottom:1px">${cliente.cnpj || ""}</div></div>
+          <div><div style="font-size:9px;color:#777;text-transform:uppercase">Cidade</div><div style="font-weight:600;border-bottom:1px solid #eee;padding-bottom:1px">${cliente.cidade || ""}</div></div>
+          <div style="grid-column:span 2"><div style="font-size:9px;color:#777;text-transform:uppercase">Endereço</div><div style="font-weight:600;border-bottom:1px solid #eee;padding-bottom:1px">${cliente.logradouro || ""}</div></div>
         </div>
       </div>
-      <div style="margin-bottom:14px">
-        <div style="background:#0D9488;color:white;font-size:10px;font-weight:bold;text-transform:uppercase;padding:4px 8px;border-radius:3px 3px 0 0">Transportador (Contratada)</div>
-        <div style="border:1px solid #ccc;border-top:none;padding:10px;display:grid;grid-template-columns:1fr 1fr;gap:8px">
-          <div><div style="font-size:9px;text-transform:uppercase;color:#777">Razão Social</div><div style="font-size:11px;font-weight:600;border-bottom:1px solid #ddd;padding-bottom:2px">BIO LOGUS AMBIENTAL LTDA - ME</div></div>
-          <div><div style="font-size:9px;text-transform:uppercase;color:#777">CNPJ</div><div style="font-size:11px;font-weight:600;border-bottom:1px solid #ddd;padding-bottom:2px">26.484.921/0001-60</div></div>
-          <div style="grid-column:span 2"><div style="font-size:9px;text-transform:uppercase;color:#777">Endereço</div><div style="font-size:11px;font-weight:600;border-bottom:1px solid #ddd;padding-bottom:2px">RUA DOS FERROVIARIOS, QD 01, LT 05 — PARQUE INDUSTRIAL JOÃO BRÁS 2 — Goiânia - GO</div></div>
+      <div style="margin-bottom:12px">
+        <div style="background:#0D9488;color:white;font-size:10px;font-weight:bold;text-transform:uppercase;padding:4px 8px">Transportador (Contratada)</div>
+        <div style="border:1px solid #ccc;border-top:none;padding:8px;display:grid;grid-template-columns:1fr 1fr;gap:6px">
+          <div><div style="font-size:9px;color:#777;text-transform:uppercase">Razão Social</div><div style="font-weight:600;border-bottom:1px solid #eee">BIO LOGUS AMBIENTAL LTDA - ME</div></div>
+          <div><div style="font-size:9px;color:#777;text-transform:uppercase">CNPJ</div><div style="font-weight:600;border-bottom:1px solid #eee">26.484.921/0001-60</div></div>
+          <div style="grid-column:span 2"><div style="font-size:9px;color:#777;text-transform:uppercase">Endereço</div><div style="font-weight:600;border-bottom:1px solid #eee">RUA DOS FERROVIARIOS, QD 01, LT 05 — PARQUE INDUSTRIAL JOÃO BRÁS 2 — Goiânia - GO</div></div>
         </div>
       </div>
-      <div style="margin-bottom:14px">
-        <div style="background:#0D9488;color:white;font-size:10px;font-weight:bold;text-transform:uppercase;padding:4px 8px;border-radius:3px 3px 0 0">Resíduos</div>
-        <div style="border:1px solid #ccc;border-top:none;padding:10px;display:grid;grid-template-columns:1fr 1fr;gap:8px">
-          <div><div style="font-size:9px;text-transform:uppercase;color:#777">Descrição</div><div style="font-size:11px;font-weight:600;border-bottom:1px solid #ddd;padding-bottom:2px">${mtr.descricao_residuo || "GRUPO A, B E INFECTANTES, QUÍMICOS E PERFURO CORTANTES"}</div></div>
-          <div><div style="font-size:9px;text-transform:uppercase;color:#777">Acondicionamento</div><div style="font-size:11px;font-weight:600;border-bottom:1px solid #ddd;padding-bottom:2px">${mtr.acondicionamento || "BOMBONA"}</div></div>
-          <div><div style="font-size:9px;text-transform:uppercase;color:#777">Quantidade</div><div style="font-size:11px;font-weight:600;border-bottom:1px solid #ddd;padding-bottom:2px">${mtr.quantidade || "___"} ${mtr.unidade || "kg"}</div></div>
-          <div><div style="font-size:9px;text-transform:uppercase;color:#777">Status</div><div style="font-size:11px;font-weight:600;border-bottom:1px solid #ddd;padding-bottom:2px">${mtr.status || "emitido"}</div></div>
+      <div style="margin-bottom:12px">
+        <div style="background:#0D9488;color:white;font-size:10px;font-weight:bold;text-transform:uppercase;padding:4px 8px">Resíduos</div>
+        <div style="border:1px solid #ccc;border-top:none;padding:8px;display:grid;grid-template-columns:1fr 1fr;gap:6px">
+          <div><div style="font-size:9px;color:#777;text-transform:uppercase">Descrição</div><div style="font-weight:600;border-bottom:1px solid #eee">${mtr.descricao_residuo || "GRUPO A, B E INFECTANTES"}</div></div>
+          <div><div style="font-size:9px;color:#777;text-transform:uppercase">Acondicionamento</div><div style="font-weight:600;border-bottom:1px solid #eee">${mtr.acondicionamento || "BOMBONA"}</div></div>
+          <div><div style="font-size:9px;color:#777;text-transform:uppercase">Quantidade</div><div style="font-weight:600;border-bottom:1px solid #eee">${mtr.quantidade || "___"} ${mtr.unidade || "kg"}</div></div>
+          <div><div style="font-size:9px;color:#777;text-transform:uppercase">Status</div><div style="font-weight:600;border-bottom:1px solid #eee">${mtr.status || "emitido"}</div></div>
         </div>
       </div>
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-top:16px">
-        <div style="border:1px solid #000;padding:12px;border-radius:3px;text-align:center"><div style="font-weight:bold;font-size:10px;text-transform:uppercase">Gerador</div><div style="border-top:1px solid #555;padding-top:4px;font-size:9px;color:#555;margin-top:30px">Assinatura / Carimbo</div></div>
-        <div style="border:1px solid #000;padding:12px;border-radius:3px;text-align:center"><div style="font-weight:bold;font-size:10px;text-transform:uppercase">Transportador</div><div style="border-top:1px solid #555;padding-top:4px;font-size:9px;color:#555;margin-top:30px">Assinatura / Carimbo</div></div>
+        <div style="border:1px solid #000;padding:10px;text-align:center"><div style="font-weight:bold;font-size:10px;text-transform:uppercase">Gerador</div><div style="margin-top:28px;border-top:1px solid #555;padding-top:4px;font-size:9px;color:#555">Assinatura / Carimbo</div></div>
+        <div style="border:1px solid #000;padding:10px;text-align:center"><div style="font-weight:bold;font-size:10px;text-transform:uppercase">Transportador</div><div style="margin-top:28px;border-top:1px solid #555;padding-top:4px;font-size:9px;color:#555">Assinatura / Carimbo</div></div>
       </div>
-      <div style="margin-top:16px;border-top:1px solid #ddd;padding-top:8px;font-size:9px;color:#999;text-align:center">SIGER PRO — Bio Logus Ambiental | ${new Date().toLocaleDateString("pt-BR")}</div>
+      <div style="margin-top:12px;border-top:1px solid #ddd;padding-top:6px;font-size:9px;color:#999;text-align:center">SIGER PRO — Bio Logus Ambiental | ${new Date().toLocaleDateString("pt-BR")}</div>
     </div>`;
   }).join("");
 
-  // Usar iframe para evitar bloqueio de popup
-  const existingFrame = document.getElementById("print-frame-mtr");
-  if (existingFrame) existingFrame.remove();
+  const html = `<!DOCTYPE html><html><head><meta charset="utf-8"><title>MTRs em Lote — ${mtrs.length} documentos</title>
+  <style>*{box-sizing:border-box;margin:0;padding:0} @media print{@page{margin:1cm;size:A4}}</style>
+  </head><body>${mtrsHtml}</body></html>`;
 
-  const iframe = document.createElement("iframe");
-  iframe.id = "print-frame-mtr";
-  iframe.style.cssText = "position:fixed;top:-9999px;left:-9999px;width:210mm;height:297mm;border:none;";
-  document.body.appendChild(iframe);
-
-  const doc = iframe.contentDocument || iframe.contentWindow?.document;
-  if (!doc) return;
-
-  doc.open();
-  doc.write(`<!DOCTYPE html><html><head><title>MTRs em Lote</title>
-  <style>
-    *{box-sizing:border-box;margin:0;padding:0}
-    body{font-family:Arial,sans-serif;font-size:11px;color:#000}
-    @media print{@page{margin:1cm;size:A4} body{margin:0}}
-  </style></head><body>${mtrsHtml}</body></html>`);
-  doc.close();
-
-  setTimeout(() => {
-    iframe.contentWindow?.focus();
-    iframe.contentWindow?.print();
-  }, 500);
+  const blob = new Blob([html], { type: "text/html;charset=utf-8" });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.target = "_blank";
+  a.rel = "noopener";
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  setTimeout(() => URL.revokeObjectURL(url), 10000);
 }
-
 
 
 
