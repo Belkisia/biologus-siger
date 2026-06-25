@@ -402,7 +402,48 @@ function RotaDetalhe({
             <Printer className="h-4 w-4 mr-1" /> Imprimir
           </Button>
           {mtrsHoje.length > 0 && (
-            <Button variant="outline" size="sm" onClick={() => imprimirMTRsLote(mtrsHoje, rotaClientes)}>
+            <Button variant="outline" size="sm" onClick={() => {
+              const win = window.open("about:blank", "_blank");
+              if (!win) { alert("Permita popups para este site"); return; }
+              const clienteMap = new Map(rotaClientes.map(rc => [rc.cliente.id, rc.cliente]));
+              const pages = mtrsHoje.map((mtr: any, idx: number) => {
+                const c = (clienteMap.get(mtr.cliente_id) || {}) as any;
+                const d = mtr.data_emissao ? new Date(mtr.data_emissao + "T12:00:00").toLocaleDateString("pt-BR") : "";
+                const pb = idx < mtrsHoje.length - 1 ? "page-break-after:always;" : "";
+                return `<div style="${pb}padding:20px;max-width:800px;margin:0 auto;font-family:Arial,sans-serif;font-size:11px;color:#000">
+                  <div style="display:flex;justify-content:space-between;border-bottom:3px solid #0D9488;padding-bottom:10px;margin-bottom:14px">
+                    <div><b style="font-size:18px;color:#0D9488">BIOLOGUS AMBIENTAL</b><br/><span style="font-size:10px;color:#555">Gestão de Resíduos de Saúde</span></div>
+                    <div style="text-align:center"><b style="font-size:13px;border:2px solid #000;padding:6px 14px;display:inline-block">MANIFESTO DE TRANSPORTE DE RESÍDUOS</b><br/><span style="font-size:11px;color:#555">Nº ${mtr.numero} | ${d}</span></div>
+                  </div>
+                  <div style="margin-bottom:10px"><div style="background:#0D9488;color:#fff;font-size:10px;font-weight:bold;padding:3px 8px;text-transform:uppercase">Gerador</div>
+                  <div style="border:1px solid #ccc;border-top:none;padding:8px;display:grid;grid-template-columns:1fr 1fr;gap:6px;font-size:10px">
+                    <div><div style="color:#777;text-transform:uppercase;font-size:9px">Razão Social</div><b>${c.razao_social || ""}</b></div>
+                    <div><div style="color:#777;text-transform:uppercase;font-size:9px">CNPJ</div><b>${c.cnpj || ""}</b></div>
+                    <div><div style="color:#777;text-transform:uppercase;font-size:9px">Endereço</div><b>${c.logradouro || ""}</b></div>
+                    <div><div style="color:#777;text-transform:uppercase;font-size:9px">Cidade</div><b>${c.cidade || ""}</b></div>
+                  </div></div>
+                  <div style="margin-bottom:10px"><div style="background:#0D9488;color:#fff;font-size:10px;font-weight:bold;padding:3px 8px;text-transform:uppercase">Transportador</div>
+                  <div style="border:1px solid #ccc;border-top:none;padding:8px;display:grid;grid-template-columns:1fr 1fr;gap:6px;font-size:10px">
+                    <div><div style="color:#777;text-transform:uppercase;font-size:9px">Razão Social</div><b>BIO LOGUS AMBIENTAL LTDA - ME</b></div>
+                    <div><div style="color:#777;text-transform:uppercase;font-size:9px">CNPJ</div><b>26.484.921/0001-60</b></div>
+                    <div style="grid-column:span 2"><div style="color:#777;text-transform:uppercase;font-size:9px">Endereço</div><b>RUA DOS FERROVIARIOS, QD 01, LT 05 — PARQUE INDUSTRIAL JOÃO BRÁS 2 — Goiânia - GO</b></div>
+                  </div></div>
+                  <div style="margin-bottom:10px"><div style="background:#0D9488;color:#fff;font-size:10px;font-weight:bold;padding:3px 8px;text-transform:uppercase">Resíduos</div>
+                  <div style="border:1px solid #ccc;border-top:none;padding:8px;display:grid;grid-template-columns:1fr 1fr;gap:6px;font-size:10px">
+                    <div><div style="color:#777;text-transform:uppercase;font-size:9px">Descrição</div><b>${mtr.descricao_residuo || "GRUPO A, B E INFECTANTES"}</b></div>
+                    <div><div style="color:#777;text-transform:uppercase;font-size:9px">Acondicionamento</div><b>${mtr.acondicionamento || "BOMBONA"}</b></div>
+                    <div><div style="color:#777;text-transform:uppercase;font-size:9px">Quantidade</div><b>${mtr.quantidade || "___"} ${mtr.unidade || "kg"}</b></div>
+                    <div><div style="color:#777;text-transform:uppercase;font-size:9px">Status</div><b>${mtr.status || "emitido"}</b></div>
+                  </div></div>
+                  <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-top:14px">
+                    <div style="border:1px solid #000;padding:10px;text-align:center;font-size:10px"><b>GERADOR</b><div style="margin-top:26px;border-top:1px solid #999;padding-top:4px;color:#555">Assinatura / Carimbo</div></div>
+                    <div style="border:1px solid #000;padding:10px;text-align:center;font-size:10px"><b>TRANSPORTADOR</b><div style="margin-top:26px;border-top:1px solid #999;padding-top:4px;color:#555">Assinatura / Carimbo</div></div>
+                  </div>
+                </div>`;
+              }).join("");
+              win.document.write(`<!DOCTYPE html><html><head><meta charset="utf-8"><title>MTRs em Lote</title><style>*{box-sizing:border-box;margin:0;padding:0}@media print{@page{margin:1cm;size:A4}}</style></head><body>${pages}<script>window.onload=function(){window.print()}<\/script></body></html>`);
+              win.document.close();
+            }}>
               <Printer className="h-4 w-4 mr-1" /> MTRs em lote
             </Button>
           )}
