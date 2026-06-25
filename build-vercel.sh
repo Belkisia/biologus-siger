@@ -102,3 +102,25 @@ cat > .vercel/output/config.json << 'EOF'
 EOF
 
 echo "=== Build Output pronto ==="
+
+echo "=== Patching React global reference ==="
+python3 << 'PYEOF'
+import re, glob
+
+for f in glob.glob("dist/client/_app/index-*.js"):
+    with open(f) as file:
+        content = file.read()
+    
+    matches = list(re.finditer(r'(\w+)\.startTransition\(\(\)=>\{(\w+)\.hydrateRoot\(document,React\.createElement', content))
+    if matches:
+        react_var = matches[0].group(1)
+        content_new = re.sub(
+            r'React\.createElement\((\w+)\.StrictMode,null,React\.createElement',
+            lambda m: f'{react_var}.createElement({m.group(1)}.StrictMode,null,{react_var}.createElement',
+            content
+        )
+        if content_new != content:
+            with open(f, 'w') as file:
+                file.write(content_new)
+            print(f"✓ Patched: {f}")
+PYEOF
