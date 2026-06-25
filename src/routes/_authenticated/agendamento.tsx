@@ -64,6 +64,80 @@ type RotaCliente = {
 };
 
 // ---- Componente de detalhe da rota ----
+function imprimirMTRAgendamento(mtr: any, cliente: any) {
+  const win = window.open("", "_blank");
+  if (!win) return;
+  const dataFmt = new Date(mtr.data_emissao + "T12:00:00").toLocaleDateString("pt-BR");
+  win.document.write(`<!DOCTYPE html><html><head><title>MTR ${mtr.numero}</title>
+  <style>
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:Arial,sans-serif;font-size:11px;color:#000;padding:20px;max-width:800px;margin:0 auto}
+    .header{display:flex;justify-content:space-between;align-items:flex-start;border-bottom:3px solid #0D9488;padding-bottom:12px;margin-bottom:16px}
+    .logo{font-size:20px;font-weight:bold;color:#0D9488}
+    .logo-sub{font-size:10px;color:#555;margin-top:2px}
+    .mtr-title{text-align:center;font-size:15px;font-weight:bold;border:2px solid #000;padding:8px 20px;border-radius:4px}
+    .mtr-num{font-size:12px;color:#555;margin-top:4px;text-align:center}
+    .section{margin-bottom:14px}
+    .section-title{background:#0D9488;color:white;font-size:10px;font-weight:bold;text-transform:uppercase;letter-spacing:1px;padding:4px 8px;border-radius:3px 3px 0 0}
+    .section-body{border:1px solid #ccc;border-top:none;padding:10px;border-radius:0 0 3px 3px}
+    .grid2{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+    .field-label{font-size:9px;text-transform:uppercase;color:#777;letter-spacing:.5px;margin-bottom:1px}
+    .field-value{font-size:11px;font-weight:600;border-bottom:1px solid #ddd;padding-bottom:2px;min-height:16px}
+    .assinaturas{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-top:16px}
+    .ass-box{border:1px solid #000;padding:12px;border-radius:3px;text-align:center}
+    .ass-title{font-weight:bold;font-size:10px;text-transform:uppercase;margin-bottom:2px}
+    .ass-line{border-top:1px solid #555;padding-top:4px;font-size:9px;color:#555;margin-top:30px}
+    .footer{margin-top:16px;border-top:1px solid #ddd;padding-top:8px;font-size:9px;color:#999;text-align:center}
+    @media print{body{padding:10px}@page{margin:1cm}}
+  </style></head><body>
+  <div class="header">
+    <div><div class="logo">BIOLOGUS AMBIENTAL</div><div class="logo-sub">Gestão de Resíduos de Saúde</div></div>
+    <div><div class="mtr-title">MANIFESTO DE TRANSPORTE DE RESÍDUOS</div><div class="mtr-num">Nº ${mtr.numero} &nbsp;|&nbsp; ${dataFmt}</div></div>
+  </div>
+  <div class="section">
+    <div class="section-title">Gerador (Contratante)</div>
+    <div class="section-body">
+      <div class="grid2">
+        <div><div class="field-label">Razão Social</div><div class="field-value">${cliente.razao_social || ""}</div></div>
+        <div><div class="field-label">Nome Fantasia</div><div class="field-value">${cliente.nome_fantasia || ""}</div></div>
+        <div><div class="field-label">CNPJ</div><div class="field-value">${cliente.cnpj || ""}</div></div>
+        <div><div class="field-label">Endereço</div><div class="field-value">${cliente.logradouro || ""}</div></div>
+        <div><div class="field-label">Cidade</div><div class="field-value">${cliente.cidade || ""}</div></div>
+      </div>
+    </div>
+  </div>
+  <div class="section">
+    <div class="section-title">Transportador (Contratada)</div>
+    <div class="section-body">
+      <div class="grid2">
+        <div><div class="field-label">Razão Social</div><div class="field-value">BIO LOGUS AMBIENTAL LTDA - ME</div></div>
+        <div><div class="field-label">CNPJ</div><div class="field-value">26.484.921/0001-60</div></div>
+        <div><div class="field-label">Endereço</div><div class="field-value">RUA DOS FERROVIARIOS, QD 01, LT 05 — PARQUE INDUSTRIAL JOÃO BRÁS 2</div></div>
+        <div><div class="field-label">Cidade</div><div class="field-value">Goiânia - GO</div></div>
+      </div>
+    </div>
+  </div>
+  <div class="section">
+    <div class="section-title">Resíduos</div>
+    <div class="section-body">
+      <div class="grid2">
+        <div><div class="field-label">Descrição</div><div class="field-value">${mtr.descricao_residuo || "GRUPO A, B E INFECTANTES, QUÍMICOS E PERFURO CORTANTES"}</div></div>
+        <div><div class="field-label">Acondicionamento</div><div class="field-value">${mtr.acondicionamento || "BOMBONA"}</div></div>
+        <div><div class="field-label">Quantidade</div><div class="field-value">${mtr.quantidade || "___"} ${mtr.unidade || "kg"}</div></div>
+        <div><div class="field-label">Status</div><div class="field-value">${mtr.status || "emitido"}</div></div>
+      </div>
+    </div>
+  </div>
+  <div class="assinaturas">
+    <div class="ass-box"><div class="ass-title">Gerador</div><div class="ass-line">Assinatura / Carimbo</div></div>
+    <div class="ass-box"><div class="ass-title">Transportador</div><div class="ass-line">Assinatura / Carimbo</div></div>
+  </div>
+  <div class="footer">Documento gerado pelo SIGER PRO — Bio Logus Ambiental | ${new Date().toLocaleDateString("pt-BR")}</div>
+  <script>window.onload=()=>window.print();</script>
+  </body></html>`);
+  win.document.close();
+}
+
 function RotaDetalhe({
   rota, dataSelecionada, onVoltar, user
 }: {
@@ -86,7 +160,7 @@ function RotaDetalhe({
     queryFn: async () => {
       const { data } = await supabase
         .from("rota_clientes")
-        .select("id, ordem, coletado, clientes(id, razao_social, nome_fantasia, logradouro, cidade, latitude, longitude)")
+        .select("id, ordem, coletado, clientes(id, razao_social, nome_fantasia, logradouro, cidade, cnpj, latitude, longitude)")
         .eq("rota_codigo", rota.id)
         .order("ordem");
       return (data ?? []).map((rc: any) => ({
@@ -348,7 +422,13 @@ function RotaDetalhe({
                     </div>
                     <div className="flex items-center gap-2 flex-shrink-0">
                       {mtr && (
-                        <Badge variant="secondary" className="text-xs">{mtr.numero}</Badge>
+                        <>
+                          <Badge variant="secondary" className="text-xs">{mtr.numero}</Badge>
+                          <Button variant="ghost" size="icon" className="h-7 w-7" title="Imprimir MTR"
+                            onClick={() => imprimirMTRAgendamento(mtr, rc.cliente)}>
+                            <Printer className="h-3.5 w-3.5 text-primary" />
+                          </Button>
+                        </>
                       )}
                       <Button variant="ghost" size="icon" className="h-7 w-7"
                         onClick={() => removerCliente.mutate(rc.id)}>
