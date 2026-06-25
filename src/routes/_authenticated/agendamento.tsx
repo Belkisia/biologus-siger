@@ -152,6 +152,7 @@ function imprimirMTRsLote(mtrs: any[], rotaClientes: any[]) {
 }
 
 
+function imprimirMTRAgendamento(mtr: any, cliente: any) {
   const win = window.open("", "_blank");
   if (!win) return;
   const dataFmt = new Date(mtr.data_emissao + "T12:00:00").toLocaleDateString("pt-BR");
