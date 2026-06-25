@@ -441,8 +441,10 @@ function RotaDetalhe({
                   </div>
                 </div>`;
               }).join("");
-              win.document.write(`<!DOCTYPE html><html><head><meta charset="utf-8"><title>MTRs em Lote</title><style>*{box-sizing:border-box;margin:0;padding:0}@media print{@page{margin:1cm;size:A4}}</style></head><body>${pages}<script>window.onload=function(){window.print()}<\/script></body></html>`);
+              win.document.write(`<!DOCTYPE html><html><head><meta charset="utf-8"><title>MTRs em Lote — ${mtrsHoje.length} docs</title><style>*{box-sizing:border-box;margin:0;padding:0}@media print{@page{margin:1cm;size:A4}}</style></head><body>${pages}</body></html>`);
               win.document.close();
+              win.focus();
+              setTimeout(() => win.print(), 800);
             }}>
               <Printer className="h-4 w-4 mr-1" /> MTRs em lote
             </Button>
