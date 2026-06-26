@@ -13,7 +13,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import {
   CalendarDays, MapPin, Plus, Printer, CheckCircle2, Circle,
   Loader2, Route as RouteIcon, ClipboardList, Layers, Trash2,
-  Scale, Search, ChevronLeft, Map, Users, FileText, ArrowRight, PenLine, RotateCcw
+  Scale, Search, ChevronLeft, Map, Users, FileText, ArrowRight, PenLine, RotateCcw, CheckCheck
 } from "lucide-react";
 import { toast } from "sonner";
 
@@ -324,6 +324,8 @@ function RotaDetalhe({
   const [descResiduo, setDescResiduo] = useState("GRUPO A, B, E INFECTANTES, QUIMICOS E PERFURO CORTANTES");
   const [abaAtiva, setAbaAtiva] = useState<"lista" | "mapa">("lista");
   const [openAssinatura, setOpenAssinatura] = useState<{ mtr: any; cliente: any; etapa: "gerador" | "transportador" } | null>(null);
+  const [openBaixa, setOpenBaixa] = useState<{ mtr: any; cliente: any } | null>(null);
+  const [pesoBaixa, setPesoBaixa] = useState("");
 
   // Clientes vinculados à rota
   const { data: rotaClientes = [], isLoading } = useQuery({
@@ -394,6 +396,23 @@ function RotaDetalhe({
       setSelecionados([]);
     },
     onError: (e: Error) => toast.error(e.message),
+  });
+
+  const baixarMTR = useMutation({
+    mutationFn: async ({ mtrId, peso }: { mtrId: string; peso: number }) => {
+      const { error } = await supabase.from("mtrs").update({
+        status: "baixado",
+        quantidade: peso,
+        data_baixa: new Date().toISOString().split("T")[0],
+      }).eq("id", mtrId);
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["mtrs-rota"] });
+      toast.success("MTR baixado com sucesso!");
+      setOpenBaixa(null);
+      setPesoBaixa("");
+    },
   });
 
   const salvarAssinatura = useMutation({
@@ -606,7 +625,15 @@ function RotaDetalhe({
                     <div className="flex items-center gap-2 flex-shrink-0">
                       {mtr && (
                         <>
-                          <Badge variant="secondary" className="text-xs">{mtr.numero}</Badge>
+                          <Badge variant={mtr.status === "baixado" ? "default" : "secondary"} className={`text-xs ${mtr.status === "baixado" ? "bg-green-500" : ""}`}>
+                            {mtr.status === "baixado" ? `${mtr.quantidade}kg ✓` : mtr.numero}
+                          </Badge>
+                          {mtr.status !== "baixado" && (
+                            <Button variant="ghost" size="icon" className="h-7 w-7" title="Dar baixa no MTR"
+                              onClick={() => { setOpenBaixa({ mtr, cliente: rc.cliente }); setPesoBaixa(""); }}>
+                              <CheckCheck className="h-3.5 w-3.5 text-orange-500" />
+                            </Button>
+                          )}
                           <Button variant="ghost" size="icon" className="h-7 w-7" title="Assinar MTR"
                             onClick={() => setOpenAssinatura({ mtr, cliente: rc.cliente, etapa: "gerador" })}>
                             <PenLine className={`h-3.5 w-3.5 ${mtr.assinatura_gerador ? "text-green-500" : "text-muted-foreground"}`} />
@@ -700,6 +727,50 @@ function RotaDetalhe({
               Adicionar {selecionados.length > 0 ? selecionados.length : ""} clientes
             </Button>
           </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Dialog: Baixa do MTR */}
+      <Dialog open={!!openBaixa} onOpenChange={(o) => !o && setOpenBaixa(null)}>
+        <DialogContent className="max-w-sm">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <CheckCheck className="h-5 w-5 text-orange-500" />
+              Baixar MTR — {openBaixa?.mtr?.numero}
+            </DialogTitle>
+          </DialogHeader>
+          {openBaixa && (
+            <div className="space-y-4">
+              <div className="bg-muted/50 rounded-md p-3 text-sm">
+                <p className="font-medium">{openBaixa.cliente.nome_fantasia || openBaixa.cliente.razao_social}</p>
+                <p className="text-muted-foreground text-xs mt-0.5">{openBaixa.cliente.cidade}</p>
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="peso-baixa">Peso coletado (kg)</Label>
+                <Input
+                  id="peso-baixa"
+                  type="number"
+                  step="0.01"
+                  min="0"
+                  placeholder="0.00"
+                  value={pesoBaixa}
+                  onChange={(e) => setPesoBaixa(e.target.value)}
+                  className="text-lg font-medium"
+                  autoFocus
+                />
+              </div>
+              <div className="flex gap-2 justify-end">
+                <Button variant="ghost" onClick={() => setOpenBaixa(null)}>Cancelar</Button>
+                <Button
+                  onClick={() => baixarMTR.mutate({ mtrId: openBaixa.mtr.id, peso: parseFloat(pesoBaixa) || 0 })}
+                  disabled={baixarMTR.isPending}
+                  className="bg-orange-500 hover:bg-orange-600">
+                  {baixarMTR.isPending && <Loader2 className="h-4 w-4 mr-1 animate-spin" />}
+                  <CheckCheck className="h-4 w-4 mr-1" /> Confirmar Baixa
+                </Button>
+              </div>
+            </div>
+          )}
         </DialogContent>
       </Dialog>
 
