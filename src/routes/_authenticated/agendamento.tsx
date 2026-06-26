@@ -731,14 +731,15 @@ function RotaDetalhe({
       </Dialog>
 
       {/* Dialog: Baixa do MTR */}
-      <Dialog open={!!openBaixa} onOpenChange={(o) => !o && setOpenBaixa(null)}>
-        <DialogContent className="max-w-sm">
+      <Dialog open={!!openBaixa} onOpenChange={(o) => { if (!o) { setOpenBaixa(null); setPesoBaixa(""); } }}>
+        <DialogContent className="max-w-sm" aria-describedby="baixa-desc">
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2">
               <CheckCheck className="h-5 w-5 text-orange-500" />
               Baixar MTR — {openBaixa?.mtr?.numero}
             </DialogTitle>
           </DialogHeader>
+          <p id="baixa-desc" className="sr-only">Registrar peso coletado e baixar MTR</p>
           {openBaixa && (
             <div className="space-y-4">
               <div className="bg-muted/50 rounded-md p-3 text-sm">
@@ -753,13 +754,13 @@ function RotaDetalhe({
                   step="0.01"
                   min="0"
                   placeholder="0.00"
-                  value={pesoBaixa}
-                  onChange={(e) => setPesoBaixa(e.target.value)}
+                  defaultValue=""
                   className="text-lg font-medium"
+                  onChange={(e) => setPesoBaixa(e.target.value)}
                 />
               </div>
               <div className="flex gap-2 justify-end">
-                <Button variant="ghost" onClick={() => setOpenBaixa(null)}>Cancelar</Button>
+                <Button variant="ghost" onClick={() => { setOpenBaixa(null); setPesoBaixa(""); }}>Cancelar</Button>
                 <Button
                   onClick={() => baixarMTR.mutate({ mtrId: openBaixa.mtr.id, peso: parseFloat(pesoBaixa) || 0 })}
                   disabled={baixarMTR.isPending}
