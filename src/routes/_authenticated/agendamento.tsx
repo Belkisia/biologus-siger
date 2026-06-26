@@ -90,6 +90,12 @@ function imprimirMTRsLote(mtrs: any[], rotaClientes: any[]) {
         <div><div style="color:#777;text-transform:uppercase;font-size:9px">CNPJ</div><b>26.484.921/0001-60</b></div>
         <div style="grid-column:span 2"><div style="color:#777;text-transform:uppercase;font-size:9px">Endereço</div><b>RUA DOS FERROVIARIOS, QD 01, LT 05 — PARQUE INDUSTRIAL JOÃO BRÁS 2 — Goiânia - GO</b></div>
       </div></div>
+      <div style="margin-bottom:10px"><div style="background:#0D9488;color:#fff;font-size:10px;font-weight:bold;padding:3px 8px;text-transform:uppercase">Receptor Final</div>
+      <div style="border:1px solid #ccc;border-top:none;padding:8px;display:grid;grid-template-columns:1fr 1fr;gap:6px;font-size:10px">
+        <div><div style="color:#777;text-transform:uppercase;font-size:9px">Razão Social</div><b>B-GREEN GESTAO AMBIENTAL S.A.</b></div>
+        <div><div style="color:#777;text-transform:uppercase;font-size:9px">CNPJ</div><b>01.568.077/0006-30</b></div>
+        <div style="grid-column:span 2"><div style="color:#777;text-transform:uppercase;font-size:9px">Endereço</div><b>SETOR INDUSTRIAL DA CEILANDIA QI 21 LOTE 51/53/55 — CEILANDIA — Brasília - DF — CEP 72265-210</b></div>
+      </div></div>
       <div style="margin-bottom:10px"><div style="background:#0D9488;color:#fff;font-size:10px;font-weight:bold;padding:3px 8px;text-transform:uppercase">Resíduos</div>
       <div style="border:1px solid #ccc;border-top:none;padding:8px;display:grid;grid-template-columns:1fr 1fr;gap:6px;font-size:10px">
         <div><div style="color:#777;text-transform:uppercase;font-size:9px">Descrição</div><b>${mtr.descricao_residuo || "GRUPO A, B E INFECTANTES"}</b></div>
@@ -162,6 +168,18 @@ function imprimirMTRAgendamento(mtr: any, cliente: any) {
         <div><div class="field-label">CNPJ</div><div class="field-value">26.484.921/0001-60</div></div>
         <div><div class="field-label">Endereço</div><div class="field-value">RUA DOS FERROVIARIOS, QD 01, LT 05 — PARQUE INDUSTRIAL JOÃO BRÁS 2</div></div>
         <div><div class="field-label">Cidade</div><div class="field-value">Goiânia - GO</div></div>
+      </div>
+    </div>
+  </div>
+  <div class="section">
+    <div class="section-title">Receptor Final</div>
+    <div class="section-body">
+      <div class="grid2">
+        <div><div class="field-label">Razão Social</div><div class="field-value">B-GREEN GESTAO AMBIENTAL S.A.</div></div>
+        <div><div class="field-label">CNPJ</div><div class="field-value">01.568.077/0006-30</div></div>
+        <div><div class="field-label">Responsável</div><div class="field-value">&nbsp;</div></div>
+        <div><div class="field-label">Telefone</div><div class="field-value">&nbsp;</div></div>
+        <div style="grid-column:span 2"><div class="field-label">Endereço</div><div class="field-value">SETOR INDUSTRIAL DA CEILANDIA QI 21 LOTE 51/53/55 — CEILANDIA — Brasília - DF — CEP 72265-210</div></div>
       </div>
     </div>
   </div>
