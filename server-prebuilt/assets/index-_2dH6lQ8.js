@@ -1,1 +1,0 @@
-import{r,a9 as s}from"./index-CgX_8_lb.js";import{b as o}from"./index-CEw8O0bo.js";var c=s[" useId ".trim().toString()]||(()=>{}),n=0;function d(t){const[e,u]=r.useState(c());return o(()=>{u(a=>a??String(n++))},[t]),t||(e?`radix-${e}`:"")}function m(t){const e=r.useRef(t);return r.useEffect(()=>{e.current=t}),r.useMemo(()=>(...u)=>e.current?.(...u),[])}export{m as a,d as u};

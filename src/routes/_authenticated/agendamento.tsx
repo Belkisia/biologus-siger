@@ -104,8 +104,8 @@ function imprimirMTRsLote(mtrs: any[], rotaClientes: any[]) {
         <div><div style="color:#777;text-transform:uppercase;font-size:9px">Status</div><b>${mtr.status || "emitido"}</b></div>
       </div></div>
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-top:14px">
-        <div style="border:1px solid #000;padding:10px;text-align:center;font-size:10px"><b>GERADOR</b><div style="margin-top:26px;border-top:1px solid #999;padding-top:4px;color:#555">Assinatura / Carimbo</div></div>
-        <div style="border:1px solid #000;padding:10px;text-align:center;font-size:10px"><b>TRANSPORTADOR</b><div style="margin-top:26px;border-top:1px solid #999;padding-top:4px;color:#555">Assinatura / Carimbo</div></div>
+        <div style="border:1px solid #000;padding:10px;text-align:center;font-size:10px"><b>GERADOR</b>${mtr.assinatura_gerador ? `<img src="${mtr.assinatura_gerador}" style="max-width:100%;max-height:70px;display:block;margin:4px auto"/>` : `<div style="margin-top:26px;border-top:1px solid #999;padding-top:4px;color:#555">Assinatura / Carimbo</div>`}</div>
+        <div style="border:1px solid #000;padding:10px;text-align:center;font-size:10px"><b>TRANSPORTADOR</b>${mtr.assinatura_transportador ? `<img src="${mtr.assinatura_transportador}" style="max-width:100%;max-height:70px;display:block;margin:4px auto"/>` : `<div style="margin-top:26px;border-top:1px solid #999;padding-top:4px;color:#555">Assinatura / Carimbo</div>`}</div>
       </div>
     </div>`;
   }).join("");
@@ -195,8 +195,14 @@ function imprimirMTRAgendamento(mtr: any, cliente: any) {
     </div>
   </div>
   <div class="assinaturas">
-    <div class="ass-box"><div class="ass-title">Gerador</div><div class="ass-line">Assinatura / Carimbo</div></div>
-    <div class="ass-box"><div class="ass-title">Transportador</div><div class="ass-line">Assinatura / Carimbo</div></div>
+    <div class="ass-box">
+      <div class="ass-title">Gerador</div>
+      ${mtr.assinatura_gerador ? `<img src="${mtr.assinatura_gerador}" style="max-width:100%;max-height:70px;display:block;margin:4px auto" /><div style="font-size:9px;color:#555;border-top:1px solid #555;padding-top:3px;margin-top:2px">${cliente.razao_social || ""}</div>` : `<div class="ass-line">Assinatura / Carimbo</div>`}
+    </div>
+    <div class="ass-box">
+      <div class="ass-title">Transportador</div>
+      ${mtr.assinatura_transportador ? `<img src="${mtr.assinatura_transportador}" style="max-width:100%;max-height:70px;display:block;margin:4px auto" /><div style="font-size:9px;color:#555;border-top:1px solid #555;padding-top:3px;margin-top:2px">BIO LOGUS AMBIENTAL LTDA - ME</div>` : `<div class="ass-line">Assinatura / Carimbo</div>`}
+    </div>
   </div>
   <div class="footer">Documento gerado pelo SIGER PRO — Bio Logus Ambiental | ${new Date().toLocaleDateString("pt-BR")}</div>
   <script>window.onload=()=>window.print();</script>
