@@ -1,5 +1,5 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { useState } from "react";
+import { useState, useRef, useCallback } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Card } from "@/components/ui/card";
@@ -13,7 +13,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import {
   CalendarDays, MapPin, Plus, Printer, CheckCircle2, Circle,
   Loader2, Route as RouteIcon, ClipboardList, Layers, Trash2,
-  Scale, Search, ChevronLeft, Map, Users, FileText, ArrowRight
+  Scale, Search, ChevronLeft, Map, Users, FileText, ArrowRight, PenLine, RotateCcw
 } from "lucide-react";
 import { toast } from "sonner";
 
@@ -204,6 +204,104 @@ function imprimirMTRAgendamento(mtr: any, cliente: any) {
   win.document.close();
 }
 
+// Componente de assinatura digital
+function AssinaturaPad({ onSave, onCancel, titulo }: { onSave: (dataUrl: string) => void; onCancel: () => void; titulo: string }) {
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const drawing = useRef(false);
+  const lastPos = useRef<{ x: number; y: number } | null>(null);
+
+  const getPos = (e: React.MouseEvent | React.TouchEvent, canvas: HTMLCanvasElement) => {
+    const rect = canvas.getBoundingClientRect();
+    const scaleX = canvas.width / rect.width;
+    const scaleY = canvas.height / rect.height;
+    if ('touches' in e) {
+      return {
+        x: (e.touches[0].clientX - rect.left) * scaleX,
+        y: (e.touches[0].clientY - rect.top) * scaleY,
+      };
+    }
+    return {
+      x: (e.clientX - rect.left) * scaleX,
+      y: (e.clientY - rect.top) * scaleY,
+    };
+  };
+
+  const startDraw = (e: React.MouseEvent | React.TouchEvent) => {
+    e.preventDefault();
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    drawing.current = true;
+    lastPos.current = getPos(e, canvas);
+  };
+
+  const draw = (e: React.MouseEvent | React.TouchEvent) => {
+    e.preventDefault();
+    if (!drawing.current) return;
+    const canvas = canvasRef.current;
+    const ctx = canvas?.getContext("2d");
+    if (!canvas || !ctx || !lastPos.current) return;
+    const pos = getPos(e, canvas);
+    ctx.beginPath();
+    ctx.moveTo(lastPos.current.x, lastPos.current.y);
+    ctx.lineTo(pos.x, pos.y);
+    ctx.strokeStyle = "#000";
+    ctx.lineWidth = 2.5;
+    ctx.lineCap = "round";
+    ctx.lineJoin = "round";
+    ctx.stroke();
+    lastPos.current = pos;
+  };
+
+  const stopDraw = () => { drawing.current = false; lastPos.current = null; };
+
+  const limpar = () => {
+    const canvas = canvasRef.current;
+    const ctx = canvas?.getContext("2d");
+    if (!canvas || !ctx) return;
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+  };
+
+  const salvar = () => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    onSave(canvas.toDataURL("image/png"));
+  };
+
+  return (
+    <div className="flex flex-col gap-3">
+      <p className="text-sm font-medium text-center">{titulo}</p>
+      <div className="border-2 border-dashed border-border rounded-lg bg-white touch-none" style={{ touchAction: "none" }}>
+        <canvas
+          ref={canvasRef}
+          width={600}
+          height={200}
+          className="w-full rounded-lg"
+          style={{ touchAction: "none" }}
+          onMouseDown={startDraw}
+          onMouseMove={draw}
+          onMouseUp={stopDraw}
+          onMouseLeave={stopDraw}
+          onTouchStart={startDraw}
+          onTouchMove={draw}
+          onTouchEnd={stopDraw}
+        />
+      </div>
+      <p className="text-xs text-muted-foreground text-center">Assine acima com o dedo ou caneta</p>
+      <div className="flex gap-2 justify-between">
+        <Button variant="outline" size="sm" onClick={limpar}>
+          <RotateCcw className="h-4 w-4 mr-1" /> Limpar
+        </Button>
+        <div className="flex gap-2">
+          <Button variant="ghost" size="sm" onClick={onCancel}>Cancelar</Button>
+          <Button size="sm" onClick={salvar}>
+            <PenLine className="h-4 w-4 mr-1" /> Salvar Assinatura
+          </Button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 function RotaDetalhe({
   rota, dataSelecionada, onVoltar, user
 }: {
@@ -219,6 +317,7 @@ function RotaDetalhe({
   const [openMTRLote, setOpenMTRLote] = useState(false);
   const [descResiduo, setDescResiduo] = useState("GRUPO A, B, E INFECTANTES, QUIMICOS E PERFURO CORTANTES");
   const [abaAtiva, setAbaAtiva] = useState<"lista" | "mapa">("lista");
+  const [openAssinatura, setOpenAssinatura] = useState<{ mtr: any; cliente: any; etapa: "gerador" | "transportador" } | null>(null);
 
   // Clientes vinculados à rota
   const { data: rotaClientes = [], isLoading } = useQuery({
@@ -246,7 +345,7 @@ function RotaDetalhe({
       if (!clienteIds.length) return [];
       const { data } = await supabase
         .from("mtrs")
-        .select("id, numero, cliente_id, status, quantidade, unidade, data_emissao, descricao_residuo, acondicionamento")
+        .select("id, numero, cliente_id, status, quantidade, unidade, data_emissao, descricao_residuo, acondicionamento, assinatura_gerador, assinatura_transportador")
         .in("cliente_id", clienteIds)
         .eq("data_emissao", dataSelecionada);
       return data ?? [];
@@ -290,6 +389,14 @@ function RotaDetalhe({
       setSelecionados([]);
     },
     onError: (e: Error) => toast.error(e.message),
+  });
+
+  const salvarAssinatura = useMutation({
+    mutationFn: async ({ mtrId, campo, dataUrl }: { mtrId: string; campo: string; dataUrl: string }) => {
+      const { error } = await supabase.from("mtrs").update({ [campo]: dataUrl }).eq("id", mtrId);
+      if (error) throw error;
+    },
+    onSuccess: () => { queryClient.invalidateQueries({ queryKey: ["mtrs-rota"] }); toast.success("Assinatura salva!"); },
   });
 
   const removerCliente = useMutation({
@@ -495,6 +602,10 @@ function RotaDetalhe({
                       {mtr && (
                         <>
                           <Badge variant="secondary" className="text-xs">{mtr.numero}</Badge>
+                          <Button variant="ghost" size="icon" className="h-7 w-7" title="Assinar MTR"
+                            onClick={() => setOpenAssinatura({ mtr, cliente: rc.cliente, etapa: "gerador" })}>
+                            <PenLine className={`h-3.5 w-3.5 ${mtr.assinatura_gerador ? "text-green-500" : "text-muted-foreground"}`} />
+                          </Button>
                           <Button variant="ghost" size="icon" className="h-7 w-7" title="Imprimir MTR"
                             onClick={() => imprimirMTRAgendamento(mtr, rc.cliente)}>
                             <Printer className="h-3.5 w-3.5 text-primary" />
@@ -584,6 +695,54 @@ function RotaDetalhe({
               Adicionar {selecionados.length > 0 ? selecionados.length : ""} clientes
             </Button>
           </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Dialog: Assinatura Digital */}
+      <Dialog open={!!openAssinatura} onOpenChange={(o) => !o && setOpenAssinatura(null)}>
+        <DialogContent className="max-w-lg">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <PenLine className="h-5 w-5 text-primary" />
+              Assinatura Digital — MTR {openAssinatura?.mtr?.numero}
+            </DialogTitle>
+          </DialogHeader>
+          {openAssinatura && (
+            <div className="space-y-4">
+              {openAssinatura.etapa === "gerador" ? (
+                <>
+                  <div className="bg-muted/50 rounded-md p-3 text-sm">
+                    <p className="font-medium">{openAssinatura.cliente.nome_fantasia || openAssinatura.cliente.razao_social}</p>
+                    <p className="text-muted-foreground text-xs mt-0.5">Gerador — assine como responsável pelo resíduo</p>
+                  </div>
+                  <AssinaturaPad
+                    titulo="Assinatura do Gerador"
+                    onCancel={() => setOpenAssinatura(null)}
+                    onSave={(dataUrl) => {
+                      salvarAssinatura.mutate({ mtrId: openAssinatura.mtr.id, campo: "assinatura_gerador", dataUrl });
+                      setOpenAssinatura({ ...openAssinatura, etapa: "transportador" });
+                    }}
+                  />
+                </>
+              ) : (
+                <>
+                  <div className="bg-muted/50 rounded-md p-3 text-sm">
+                    <p className="font-medium">BIO LOGUS AMBIENTAL LTDA - ME</p>
+                    <p className="text-muted-foreground text-xs mt-0.5">Transportador — assine como responsável pela coleta</p>
+                  </div>
+                  <AssinaturaPad
+                    titulo="Assinatura do Transportador"
+                    onCancel={() => setOpenAssinatura(null)}
+                    onSave={(dataUrl) => {
+                      salvarAssinatura.mutate({ mtrId: openAssinatura.mtr.id, campo: "assinatura_transportador", dataUrl });
+                      setOpenAssinatura(null);
+                      toast.success("MTR assinado com sucesso!");
+                    }}
+                  />
+                </>
+              )}
+            </div>
+          )}
         </DialogContent>
       </Dialog>
 
