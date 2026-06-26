@@ -105,7 +105,7 @@ function imprimirMTRsLote(mtrs: any[], rotaClientes: any[]) {
   }).join("");
 
   const html = `<!DOCTYPE html><html><head><meta charset="utf-8"><title>MTRs em Lote</title><style>*{box-sizing:border-box;margin:0;padding:0}@media print{@page{margin:1cm;size:A4}}</style></head><body>${pages}</body></html>`;
-  const win = window.open("about:blank", "_blank");
+  const win = window.open("", "_blank");
   if (!win) { alert("Permita popups para este site e tente novamente"); return; }
   win.document.write(html);
   win.document.close();
@@ -386,7 +386,6 @@ function RotaDetalhe({
             <Button variant="outline" size="sm" onClick={() => imprimirMTRsLote(mtrsHoje, rotaClientes)}>
               <Printer className="h-4 w-4 mr-1" /> MTRs em lote
             </Button>
-          )}
           )}
           <Button variant="outline" size="sm" onClick={() => setOpenAddClientes(true)}>
             <Plus className="h-4 w-4 mr-1" /> Clientes
@@ -669,3 +668,4 @@ function AgendamentoPage() {
     </div>
   );
 }
+
