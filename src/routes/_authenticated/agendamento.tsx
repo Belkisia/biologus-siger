@@ -347,12 +347,11 @@ function RotaDetalhe({
   const { data: mtrsHoje = [] } = useQuery({
     queryKey: ["mtrs-rota", rota.id, dataSelecionada],
     queryFn: async () => {
-      const clienteIds = rotaClientes.map(rc => rc.cliente.id);
-      if (!clienteIds.length) return [];
+      if (!rotaClientes.length) return [];
       const { data } = await supabase
         .from("mtrs")
         .select("id, numero, cliente_id, status, quantidade, unidade, data_emissao, descricao_residuo, acondicionamento, assinatura_gerador, assinatura_transportador")
-        .in("cliente_id", clienteIds)
+        .eq("rota_codigo", rota.id)
         .eq("data_emissao", dataSelecionada);
       return data ?? [];
     },
