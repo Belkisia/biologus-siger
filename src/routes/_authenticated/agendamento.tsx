@@ -398,18 +398,33 @@ function RotaDetalhe({
 
   const baixarMTR = useMutation({
     mutationFn: async ({ mtrId, peso }: { mtrId: string; peso: number }) => {
-      const { error } = await supabase.from("mtrs").update({
-        status: "baixado",
-        quantidade: peso,
-        data_baixa: new Date().toISOString().split("T")[0],
-      }).eq("id", mtrId);
+      const hoje = new Date().toISOString().split("T")[0];
+
+      // 1. Baixar o MTR
+      const { data: mtrData, error } = await supabase.from("mtrs")
+        .update({ status: "baixado", quantidade: peso, data_baixa: hoje })
+        .eq("id", mtrId)
+        .select("id, numero, cliente_id, rota_codigo, descricao_residuo, unidade")
+        .single();
       if (error) throw error;
+
+      // 2. Criar boletim de medição automaticamente
+      const { error: bolError } = await supabase.from("boletins_medicao").insert([{
+        owner_id: user.id,
+        mtr_id: mtrData.id,
+        cliente_id: mtrData.cliente_id,
+        data_coleta: hoje,
+        peso_coletado: peso,
+        unidade: mtrData.unidade || "kg",
+        status: "pendente",
+        pagamento_confirmado: false,
+        cdf_enviado: false,
+      }] as never[]);
+      if (bolError) throw bolError;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["mtrs-rota"] });
-      toast.success("MTR baixado com sucesso!");
-      setOpenBaixa(null);
-      setPesoBaixa("");
+      toast.success("MTR baixado e boletim criado!");
     },
   });
 
