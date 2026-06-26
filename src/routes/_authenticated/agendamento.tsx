@@ -646,7 +646,8 @@ function RotaDetalhe({
                               onClick={() => {
                                 const peso = window.prompt(`Peso coletado (kg) — ${rc.cliente.nome_fantasia || rc.cliente.razao_social}:`);
                                 if (peso === null) return;
-                                baixarMTR.mutate({ mtrId: mtr.id, peso: parseFloat(peso) || 0 });
+                                const pesoNum = parseFloat(peso.replace(",", ".")) || 0;
+                                baixarMTR.mutate({ mtrId: mtr.id, peso: pesoNum });
                               }}>
                               <CheckCheck className="h-3.5 w-3.5 text-orange-500" />
                             </Button>

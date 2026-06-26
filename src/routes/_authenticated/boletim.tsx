@@ -572,6 +572,11 @@ function BoletimPage() {
                   <DollarSign className="h-4 w-4 mr-1" /> Confirmar pagamento
                 </Button>
               )}
+              {openVer.cdf_id && (
+                <Button variant="outline" onClick={() => { window.open(`/cdf/${openVer.cdf_id}`, "_blank"); }}>
+                  <Eye className="h-4 w-4 mr-1" /> Visualizar CDF
+                </Button>
+              )}
               {openVer.pagamento_confirmado && !openVer.cdf_enviado && (
                 <Button onClick={() => { enviarCdf.mutate(openVer); setOpenVer(null); }}>
                   <Send className="h-4 w-4 mr-1" /> Enviar CDF
