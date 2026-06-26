@@ -756,7 +756,6 @@ function RotaDetalhe({
                   value={pesoBaixa}
                   onChange={(e) => setPesoBaixa(e.target.value)}
                   className="text-lg font-medium"
-                  autoFocus
                 />
               </div>
               <div className="flex gap-2 justify-end">
