@@ -36,10 +36,10 @@ type Boletim = {
   cdf_enviado: boolean;
   data_envio_cdf: string | null;
   mtrs?: { numero: string; descricao_residuo: string } | null;
-  clientes?: { razao_social: string; fantasia: string | null; email?: string | null } | null;
+  clientes?: { razao_social: string; nome_fantasia: string | null; email?: string | null } | null;
 };
 
-type MTR = { id: string; numero: string; descricao_residuo: string; cliente_id: string; quantidade: number; unidade: string; clientes?: { razao_social: string; fantasia: string | null } | null };
+type MTR = { id: string; numero: string; descricao_residuo: string; cliente_id: string; quantidade: number; unidade: string; clientes?: { razao_social: string; nome_fantasia: string | null } | null };
 
 const STATUS_CONFIG: Record<string, { label: string; color: string }> = {
   coletado:    { label: "Coletado",        color: "bg-blue-100 text-blue-800" },
@@ -157,7 +157,7 @@ function BoletimPage() {
     queryFn: async () => {
       const { data } = await supabase
         .from("mtrs")
-        .select("id, numero, descricao_residuo, cliente_id, quantidade, unidade, clientes(razao_social, fantasia)")
+        .select("id, numero, descricao_residuo, cliente_id, quantidade, unidade, clientes(razao_social, nome_fantasia)")
         .in("status", ["emitido", "em_transporte"])
         .order("data_emissao", { ascending: false });
       return (data ?? []) as MTR[];
@@ -169,7 +169,7 @@ function BoletimPage() {
     queryFn: async () => {
       const { data } = await supabase
         .from("boletins_medicao")
-        .select("*, mtrs(numero, descricao_residuo), clientes(razao_social, fantasia)")
+        .select("*, mtrs(numero, descricao_residuo), clientes(razao_social, nome_fantasia)")
         .eq("data_coleta", dataFiltro)
         .order("created_at", { ascending: false });
       return (data ?? []) as Boletim[];
@@ -261,7 +261,7 @@ function BoletimPage() {
       }).eq("id", boletim.id);
       if (error) throw error;
       // Abrir WhatsApp com mensagem
-      const cliente = boletim.clientes?.fantasia || boletim.clientes?.razao_social || "";
+      const cliente = boletim.clientes?.nome_fantasia || boletim.clientes?.razao_social || "";
       const msg = encodeURIComponent(
         `Olá! Segue o Certificado de Destinação Final (CDF ${boletim.cdf_id?.slice(0, 8)?.toUpperCase()}) referente à coleta de resíduos realizada em ${new Date(boletim.data_coleta + "T12:00:00").toLocaleDateString("pt-BR")}.\n\nPeso coletado: ${boletim.peso_coletado} ${boletim.unidade}\nGerador: ${cliente}\n\nQualquer dúvida, estamos à disposição.\n\nBiologus Ambiental`
       );
@@ -376,7 +376,7 @@ function BoletimPage() {
               {boletinsFiltrados.map((b) => (
                 <TableRow key={b.id}>
                   <TableCell className="font-medium text-sm">
-                    {b.clientes?.fantasia || b.clientes?.razao_social || "—"}
+                    {b.clientes?.nome_fantasia || b.clientes?.razao_social || "—"}
                   </TableCell>
                   <TableCell className="text-sm text-muted-foreground">{b.mtrs?.numero ?? "—"}</TableCell>
                   <TableCell className="text-sm font-semibold">{b.peso_coletado} {b.unidade}</TableCell>
@@ -447,7 +447,7 @@ function BoletimPage() {
                 <SelectContent>
                   {mtrsAbertos.map((m) => (
                     <SelectItem key={m.id} value={m.id}>
-                      {m.numero} — {m.clientes?.fantasia || m.clientes?.razao_social}
+                      {m.numero} — {m.clientes?.nome_fantasia || m.clientes?.razao_social}
                     </SelectItem>
                   ))}
                 </SelectContent>
@@ -455,7 +455,7 @@ function BoletimPage() {
               {mtrSelecionado && (
                 <div className="bg-muted/50 rounded-md p-3 text-xs space-y-1">
                   <p><span className="text-muted-foreground">Resíduo:</span> {mtrSelecionado.descricao_residuo}</p>
-                  <p><span className="text-muted-foreground">Cliente:</span> {mtrSelecionado.clientes?.fantasia || mtrSelecionado.clientes?.razao_social}</p>
+                  <p><span className="text-muted-foreground">Cliente:</span> {mtrSelecionado.clientes?.nome_fantasia || mtrSelecionado.clientes?.razao_social}</p>
                 </div>
               )}
             </div>
@@ -532,7 +532,7 @@ function BoletimPage() {
             </DialogHeader>
             <div className="space-y-4 py-2">
               <div className="grid grid-cols-2 gap-3 text-sm">
-                <div><p className="text-xs text-muted-foreground">Cliente</p><p className="font-medium">{openVer.clientes?.fantasia || openVer.clientes?.razao_social}</p></div>
+                <div><p className="text-xs text-muted-foreground">Cliente</p><p className="font-medium">{openVer.clientes?.nome_fantasia || openVer.clientes?.razao_social}</p></div>
                 <div><p className="text-xs text-muted-foreground">MTR</p><p className="font-medium">{openVer.mtrs?.numero}</p></div>
                 <div><p className="text-xs text-muted-foreground">Data</p><p className="font-medium">{new Date(openVer.data_coleta + "T12:00:00").toLocaleDateString("pt-BR")}</p></div>
                 <div><p className="text-xs text-muted-foreground">Peso</p><p className="font-bold text-primary">{openVer.peso_coletado} {openVer.unidade}</p></div>

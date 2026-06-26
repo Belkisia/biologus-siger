@@ -15,7 +15,7 @@ type Fatura = {
   id: string; numero: string; competencia: string; data_vencimento: string;
   data_pagamento: string | null; valor: number; valor_pago: number | null;
   status: string; cliente_id: string;
-  clientes?: { razao_social: string; fantasia: string | null; cidade: string | null } | null;
+  clientes?: { razao_social: string; nome_fantasia: string | null; cidade: string | null } | null;
 };
 
 type Coleta = {
@@ -26,7 +26,7 @@ type Coleta = {
 type Boletim = {
   id: string; data_coleta: string; peso_coletado: number; pagamento_confirmado: boolean;
   cdf_enviado: boolean; cliente_id: string;
-  clientes?: { razao_social: string; fantasia: string | null } | null;
+  clientes?: { razao_social: string; nome_fantasia: string | null } | null;
 };
 
 function RelatorioFinanceiroPage() {
@@ -70,7 +70,7 @@ function RelatorioFinanceiroPage() {
     queryFn: async () => {
       const { data } = await supabase
         .from("boletins_medicao")
-        .select("id, data_coleta, peso_coletado, pagamento_confirmado, cdf_enviado, cliente_id, clientes(razao_social, fantasia)")
+        .select("id, data_coleta, peso_coletado, pagamento_confirmado, cdf_enviado, cliente_id, clientes(razao_social, nome_fantasia)")
         .gte("data_coleta", mesInicio)
         .lte("data_coleta", mesFim);
       return (data ?? []) as Boletim[];
@@ -90,7 +90,7 @@ function RelatorioFinanceiroPage() {
   // Por cliente
   const porCliente = faturas.reduce<Record<string, { nome: string; total: number; pago: number; pendente: number; vencido: number }>>((acc, f) => {
     const id = f.cliente_id;
-    const nome = f.clientes?.fantasia || f.clientes?.razao_social || id;
+    const nome = f.clientes?.nome_fantasia || f.clientes?.razao_social || id;
     if (!acc[id]) acc[id] = { nome, total: 0, pago: 0, pendente: 0, vencido: 0 };
     acc[id].total += Number(f.valor);
     if (f.status === "pago") acc[id].pago += Number(f.valor_pago ?? f.valor);
