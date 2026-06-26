@@ -324,8 +324,6 @@ function RotaDetalhe({
   const [descResiduo, setDescResiduo] = useState("GRUPO A, B, E INFECTANTES, QUIMICOS E PERFURO CORTANTES");
   const [abaAtiva, setAbaAtiva] = useState<"lista" | "mapa">("lista");
   const [openAssinatura, setOpenAssinatura] = useState<{ mtr: any; cliente: any; etapa: "gerador" | "transportador" } | null>(null);
-  const [openBaixa, setOpenBaixa] = useState<{ mtr: any; cliente: any } | null>(null);
-  const [pesoBaixa, setPesoBaixa] = useState("");
 
   // Clientes vinculados à rota
   const { data: rotaClientes = [], isLoading } = useQuery({
@@ -630,7 +628,11 @@ function RotaDetalhe({
                           </Badge>
                           {mtr.status !== "baixado" && (
                             <Button variant="ghost" size="icon" className="h-7 w-7" title="Dar baixa no MTR"
-                              onClick={() => { setOpenBaixa({ mtr, cliente: rc.cliente }); setPesoBaixa(""); }}>
+                              onClick={() => {
+                                const peso = window.prompt(`Peso coletado (kg) — ${rc.cliente.nome_fantasia || rc.cliente.razao_social}:`);
+                                if (peso === null) return;
+                                baixarMTR.mutate({ mtrId: mtr.id, peso: parseFloat(peso) || 0 });
+                              }}>
                               <CheckCheck className="h-3.5 w-3.5 text-orange-500" />
                             </Button>
                           )}
@@ -731,49 +733,6 @@ function RotaDetalhe({
       </Dialog>
 
       {/* Dialog: Baixa do MTR */}
-      <Dialog open={!!openBaixa} onOpenChange={(o) => { if (!o) { setOpenBaixa(null); setPesoBaixa(""); } }}>
-        <DialogContent className="max-w-sm" aria-describedby="baixa-desc">
-          <DialogHeader>
-            <DialogTitle className="flex items-center gap-2">
-              <CheckCheck className="h-5 w-5 text-orange-500" />
-              Baixar MTR — {openBaixa?.mtr?.numero}
-            </DialogTitle>
-          </DialogHeader>
-          <p id="baixa-desc" className="sr-only">Registrar peso coletado e baixar MTR</p>
-          {openBaixa && (
-            <div className="space-y-4">
-              <div className="bg-muted/50 rounded-md p-3 text-sm">
-                <p className="font-medium">{openBaixa.cliente.nome_fantasia || openBaixa.cliente.razao_social}</p>
-                <p className="text-muted-foreground text-xs mt-0.5">{openBaixa.cliente.cidade}</p>
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="peso-baixa">Peso coletado (kg)</Label>
-                <Input
-                  id="peso-baixa"
-                  type="number"
-                  step="0.01"
-                  min="0"
-                  placeholder="0.00"
-                  defaultValue=""
-                  className="text-lg font-medium"
-                  onChange={(e) => setPesoBaixa(e.target.value)}
-                />
-              </div>
-              <div className="flex gap-2 justify-end">
-                <Button variant="ghost" onClick={() => { setOpenBaixa(null); setPesoBaixa(""); }}>Cancelar</Button>
-                <Button
-                  onClick={() => baixarMTR.mutate({ mtrId: openBaixa.mtr.id, peso: parseFloat(pesoBaixa) || 0 })}
-                  disabled={baixarMTR.isPending}
-                  className="bg-orange-500 hover:bg-orange-600">
-                  {baixarMTR.isPending && <Loader2 className="h-4 w-4 mr-1 animate-spin" />}
-                  <CheckCheck className="h-4 w-4 mr-1" /> Confirmar Baixa
-                </Button>
-              </div>
-            </div>
-          )}
-        </DialogContent>
-      </Dialog>
-
       {/* Dialog: Assinatura Digital */}
       <Dialog open={!!openAssinatura} onOpenChange={(o) => !o && setOpenAssinatura(null)}>
         <DialogContent className="max-w-lg">
@@ -796,7 +755,7 @@ function RotaDetalhe({
                     onCancel={() => setOpenAssinatura(null)}
                     onSave={(dataUrl) => {
                       salvarAssinatura.mutate({ mtrId: openAssinatura.mtr.id, campo: "assinatura_gerador", dataUrl });
-                      setOpenAssinatura({ ...openAssinatura, etapa: "transportador" });
+                      setOpenAssinatura(prev => prev ? { ...prev, etapa: "transportador" } : null);
                     }}
                   />
                 </>
