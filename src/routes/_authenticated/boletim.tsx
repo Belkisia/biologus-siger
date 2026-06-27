@@ -412,7 +412,9 @@ function BoletimPage() {
 
   // ── Abrir CDF a partir de um boletim ──
   const handleAbrirCDF = (b: Boletim) => {
-    const numeroCDF = b.numero || b.cdf_id || "SEM-NUMERO";
+    // Gera número temporário se não tiver — baseado na data + mtr
+    const numeroCDF = b.numero || b.cdf_id ||
+      `CDF-${b.data_coleta?.replace(/-/g, "") || new Date().toISOString().slice(0,10).replace(/-/g,"")}-${b.mtrs?.numero?.replace(/[^0-9]/g,"").slice(-4) || "0001"}`;
     const hoje = new Date().toISOString().split("T")[0];
     const cliente = {
       razao_social: b.clientes?.razao_social || "—",
@@ -632,14 +634,12 @@ function BoletimPage() {
                           <DollarSign className="h-3.5 w-3.5" /> Confirmar pgto
                         </Button>
                       )}
-                      {/* Botão Visualizar CDF — sempre visível se tiver cdf_id */}
-                      {(b.cdf_id || b.numero) && (
-                        <Button size="sm" variant="outline"
-                          className="h-8 text-xs gap-1 text-teal-700 border-teal-300 hover:bg-teal-50"
-                          onClick={() => handleAbrirCDF(b)}>
-                          <FileCheck className="h-3.5 w-3.5" /> Ver CDF
-                        </Button>
-                      )}
+                      {/* Botão Visualizar CDF — sempre visível */}
+                      <Button size="sm" variant="outline"
+                        className="h-8 text-xs gap-1 text-teal-700 border-teal-300 hover:bg-teal-50"
+                        onClick={() => handleAbrirCDF(b)}>
+                        <FileCheck className="h-3.5 w-3.5" /> Ver CDF
+                      </Button>
                       {b.pagamento_confirmado && !b.cdf_enviado && (
                         <Button size="sm" className="h-8 text-xs gap-1"
                           onClick={() => enviarCdf.mutate(b)} disabled={enviarCdf.isPending}>
@@ -764,7 +764,7 @@ function BoletimPage() {
                   <DollarSign className="h-4 w-4 mr-1" /> Confirmar pagamento
                 </Button>
               )}
-              {(openVer.cdf_id || openVer.numero) && (
+              {(openVer.cdf_id || openVer.numero || openVer.mtrs?.numero) && (
                 <Button variant="outline" onClick={() => { handleAbrirCDF(openVer); setOpenVer(null); }}>
                   <Eye className="h-4 w-4 mr-1" /> Visualizar CDF
                 </Button>
