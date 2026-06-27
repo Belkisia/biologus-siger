@@ -320,14 +320,13 @@ function gerarHTMLCDF(params: {
 }
 
 // ─────────────────────────────────────────────
-// Abrir CDF em nova janela
+// Abrir CDF — injeta em iframe via blob URL
+// (evita bloqueio de popup do navegador)
 // ─────────────────────────────────────────────
-function abrirCDF(params: Parameters<typeof gerarHTMLCDF>[0]) {
+function abrirCDFBlob(params: Parameters<typeof gerarHTMLCDF>[0]): string {
   const html = gerarHTMLCDF(params);
-  const win = window.open("", "_blank");
-  if (!win) { alert("Permita popups para este site"); return; }
-  win.document.write(html);
-  win.document.close();
+  const blob = new Blob([html], { type: "text/html;charset=utf-8" });
+  return URL.createObjectURL(blob);
 }
 
 // ─────────────────────────────────────────────
@@ -580,6 +579,7 @@ function RotaDetalhe({
   const [descResiduo, setDescResiduo] = useState("GRUPO A, B, E INFECTANTES, QUIMICOS E PERFURO CORTANTES");
   const [abaAtiva, setAbaAtiva] = useState<"lista" | "mapa">("lista");
   const [openAssinatura, setOpenAssinatura] = useState<{ mtr: any; cliente: any; etapa: "gerador" | "transportador" } | null>(null);
+  const [openCDF, setOpenCDF] = useState<{ blobUrl: string; numeroCDF: string } | null>(null);
 
   const { data: rotaClientes = [], isLoading } = useQuery({
     queryKey: ["rota-clientes", rota.id],
@@ -703,9 +703,9 @@ function RotaDetalhe({
       queryClient.invalidateQueries({ queryKey: ["cdfs-rota"] });
       toast.success("MTR baixado! Boletim e CDF gerados.");
 
-      // 3. Abrir CDF automaticamente em nova janela
+      // 3. Abrir CDF na modal interna (sem popup bloqueado)
       const hoje = new Date().toISOString().split("T")[0];
-      abrirCDF({
+      const blobUrl = abrirCDFBlob({
         numeroCDF,
         numeroMTR: mtrData.numero,
         dataEmissao: hoje,
@@ -713,6 +713,7 @@ function RotaDetalhe({
         periodoFim: hoje,
         cliente,
       });
+      setOpenCDF({ blobUrl, numeroCDF });
     },
     onError: (e: Error) => toast.error(e.message),
   });
@@ -951,7 +952,7 @@ function RotaDetalhe({
                               title={`Visualizar CDF ${boletim.cdf_id}`}
                               onClick={() => {
                                 const hoje = new Date().toISOString().split("T")[0];
-                                abrirCDF({
+                                const blobUrl = abrirCDFBlob({
                                   numeroCDF: boletim.cdf_id,
                                   numeroMTR: mtr.numero,
                                   dataEmissao: mtr.data_emissao || hoje,
@@ -959,6 +960,7 @@ function RotaDetalhe({
                                   periodoFim: mtr.data_baixa || hoje,
                                   cliente: rc.cliente,
                                 });
+                                setOpenCDF({ blobUrl, numeroCDF: boletim.cdf_id });
                               }}>
                               <Eye className="h-3.5 w-3.5 text-green-600" />
                             </Button>
@@ -1100,6 +1102,41 @@ function RotaDetalhe({
               )}
             </div>
           )}
+        </DialogContent>
+      </Dialog>
+
+      {/* Dialog: Visualizar CDF */}
+      <Dialog open={!!openCDF} onOpenChange={(o) => {
+        if (!o && openCDF?.blobUrl) URL.revokeObjectURL(openCDF.blobUrl);
+        if (!o) setOpenCDF(null);
+      }}>
+        <DialogContent className="max-w-4xl w-full h-[90vh] flex flex-col p-0 gap-0">
+          <DialogHeader className="px-6 py-4 border-b flex-shrink-0">
+            <DialogTitle className="flex items-center gap-2">
+              <FileText className="h-5 w-5 text-green-600" />
+              Certificado de Destinação Final — Nº {openCDF?.numeroCDF}
+            </DialogTitle>
+          </DialogHeader>
+          <div className="flex-1 overflow-hidden">
+            {openCDF && (
+              <iframe
+                src={openCDF.blobUrl}
+                className="w-full h-full border-0"
+                title={`CDF ${openCDF.numeroCDF}`}
+              />
+            )}
+          </div>
+          <div className="px-6 py-3 border-t flex-shrink-0 flex justify-between items-center bg-muted/30">
+            <p className="text-xs text-muted-foreground">
+              Use o botão "Imprimir / Salvar PDF" dentro do documento para exportar
+            </p>
+            <Button variant="outline" size="sm" onClick={() => {
+              if (openCDF?.blobUrl) URL.revokeObjectURL(openCDF.blobUrl);
+              setOpenCDF(null);
+            }}>
+              Fechar
+            </Button>
+          </div>
         </DialogContent>
       </Dialog>
 
