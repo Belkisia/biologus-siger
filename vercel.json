@@ -1,1 +1,4 @@
-{"outputDirectory":".vercel/output"}
+{
+  "buildCommand": "bun run build",
+  "installCommand": "bun install"
+}
