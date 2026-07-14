@@ -7,7 +7,7 @@ import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 // =============================
 export function renderTemplate(
   html: string,
-  vars: Record<string, string | number | null | undefined>,
+  vars: Record<string, string | number | boolean | null | undefined>,
 ) {
   return html.replace(/\{\{\s*([A-Z0-9_]+)\s*\}\}/g, (_, key) => {
     const v = vars[key];
