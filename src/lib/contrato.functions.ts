@@ -26,8 +26,8 @@ function dataBR(d: string | null | undefined) {
   return new Date(d + (d.length === 10 ? "T00:00:00" : "")).toLocaleDateString("pt-BR");
 }
 
-type ClienteVars = Record<string, string | number | null | undefined>;
-type ContratoVars = Record<string, string | number | null | undefined>;
+type ClienteVars = Record<string, string | number | boolean | null | undefined>;
+type ContratoVars = Record<string, string | number | boolean | null | undefined>;
 type PropostaVars = Record<string, string | number | boolean | null | undefined>;
 type ItemVars = {
   descricao?: string | null;
