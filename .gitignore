@@ -33,3 +33,6 @@ dist-ssr
 # .env
 
 # Incluir server-prebuilt (bundle pré-compilado)
+
+.vercel/
+server-prebuilt/
