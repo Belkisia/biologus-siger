@@ -720,7 +720,7 @@ function RotaDetalhe({
 
   const salvarAssinatura = useMutation({
     mutationFn: async ({ mtrId, campo, dataUrl }: { mtrId: string; campo: string; dataUrl: string }) => {
-      const { error } = await supabase.from("mtrs").update({ [campo]: dataUrl }).eq("id", mtrId);
+      const { error } = await supabase.from("mtrs").update({ [campo]: dataUrl } as never).eq("id", mtrId);
       if (error) throw error;
     },
     onSuccess: () => { queryClient.invalidateQueries({ queryKey: ["mtrs-rota"] }); toast.success("Assinatura salva!"); },
