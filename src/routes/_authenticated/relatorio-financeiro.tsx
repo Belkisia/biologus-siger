@@ -49,7 +49,7 @@ function RelatorioFinanceiroPage() {
         .gte("data_vencimento", mesInicio)
         .lte("data_vencimento", mesFim)
         .order("data_vencimento", { ascending: false });
-      return (data ?? []) as Fatura[];
+      return (data ?? []) as unknown as Fatura[];
     },
   });
 
