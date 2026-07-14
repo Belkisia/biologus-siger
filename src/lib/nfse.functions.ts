@@ -191,7 +191,7 @@ export const cancelarNfse = createServerFn({ method: "POST" })
         payload_retorno: retorno as any,
       }).eq("id", nota.id);
     } else {
-      await supabase.from("notas_fiscais").update({ mensagem_erro: mensagemErro, payload_retorno: retorno }).eq("id", nota.id);
+      await supabase.from("notas_fiscais").update({ mensagem_erro: mensagemErro, payload_retorno: retorno as any }).eq("id", nota.id);
     }
     return { status, mensagemErro };
   });
