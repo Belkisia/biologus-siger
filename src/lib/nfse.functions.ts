@@ -117,8 +117,8 @@ export const emitirNfseDeFatura = createServerFn({ method: "POST" })
       url_pdf: retorno.url_danfse ?? null,
       url_xml: retorno.caminho_xml_nota_fiscal ?? null,
       mensagem_erro: mensagemErro,
-      payload_envio: payload,
-      payload_retorno: retorno,
+      payload_envio: payload as unknown as Record<string, unknown>,
+      payload_retorno: retorno as unknown as Record<string, unknown>,
     }).eq("id", nota.id);
 
     return { id: nota.id, ref: nota.ref, status, mensagemErro };
@@ -157,7 +157,7 @@ export const consultarNfse = createServerFn({ method: "POST" })
       url_pdf: retorno.url_danfse ?? nota.url_pdf,
       url_xml: retorno.caminho_xml_nota_fiscal ?? nota.url_xml,
       mensagem_erro: mensagemErro,
-      payload_retorno: retorno,
+      payload_retorno: retorno as unknown as Record<string, unknown>,
     }).eq("id", nota.id);
 
     return { status, mensagemErro };
@@ -188,7 +188,7 @@ export const cancelarNfse = createServerFn({ method: "POST" })
         status: "cancelada",
         cancelada_em: new Date().toISOString(),
         justificativa_cancelamento: data.justificativa,
-        payload_retorno: retorno,
+        payload_retorno: retorno as unknown as Record<string, unknown>,
       }).eq("id", nota.id);
     } else {
       await supabase.from("notas_fiscais").update({ mensagem_erro: mensagemErro, payload_retorno: retorno }).eq("id", nota.id);
