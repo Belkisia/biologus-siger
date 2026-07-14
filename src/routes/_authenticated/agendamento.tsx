@@ -1043,7 +1043,7 @@ function RotaDetalhe({
                     if (jaVinculados.has(c.id)) return;
                     setSelecionados(prev => prev.includes(c.id) ? prev.filter(x => x !== c.id) : [...prev, c.id]);
                   }}>
-                  <Checkbox checked={selecionados.includes(c.id) || jaVinculados.has(c.id)} readOnly />
+                  <Checkbox checked={selecionados.includes(c.id) || jaVinculados.has(c.id)} />
                   <div className="flex-1 min-w-0">
                     <p className="text-sm font-medium truncate">{c.nome_fantasia || c.razao_social}</p>
                     <p className="text-xs text-muted-foreground">{c.cidade}</p>
