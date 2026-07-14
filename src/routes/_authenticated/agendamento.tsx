@@ -953,14 +953,14 @@ function RotaDetalhe({
                               onClick={() => {
                                 const hoje = new Date().toISOString().split("T")[0];
                                 const blobUrl = abrirCDFBlob({
-                                  numeroCDF: boletim.cdf_id,
+                                  numeroCDF: boletim.cdf_id ?? "",
                                   numeroMTR: mtr.numero,
                                   dataEmissao: mtr.data_emissao || hoje,
                                   periodoInicio: mtr.data_emissao || hoje,
                                   periodoFim: mtr.data_baixa || hoje,
                                   cliente: rc.cliente,
                                 });
-                                setOpenCDF({ blobUrl, numeroCDF: boletim.cdf_id });
+                                setOpenCDF({ blobUrl, numeroCDF: boletim.cdf_id ?? "" });
                               }}>
                               <Eye className="h-3.5 w-3.5 text-green-600" />
                             </Button>
