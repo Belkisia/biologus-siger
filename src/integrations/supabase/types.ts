@@ -736,6 +736,99 @@ export type Database = {
         }
         Relationships: []
       }
+      emitente_config: {
+        Row: {
+          aliquota: number
+          ambiente: string
+          cnpj: string
+          codigo_cnae: string | null
+          codigo_tributario_municipio: string | null
+          created_at: string
+          email: string | null
+          endereco_bairro: string | null
+          endereco_cep: string | null
+          endereco_codigo_municipio: string | null
+          endereco_complemento: string | null
+          endereco_logradouro: string | null
+          endereco_municipio: string | null
+          endereco_numero: string | null
+          endereco_uf: string | null
+          id: string
+          incentivador_cultural: boolean
+          inscricao_estadual: string | null
+          inscricao_municipal: string
+          iss_retido: boolean
+          item_lista_servico: string
+          natureza_operacao: number
+          optante_simples_nacional: boolean
+          owner_id: string
+          razao_social: string
+          regime_tributario: string
+          telefone: string | null
+          updated_at: string
+        }
+        Insert: {
+          aliquota?: number
+          ambiente?: string
+          cnpj: string
+          codigo_cnae?: string | null
+          codigo_tributario_municipio?: string | null
+          created_at?: string
+          email?: string | null
+          endereco_bairro?: string | null
+          endereco_cep?: string | null
+          endereco_codigo_municipio?: string | null
+          endereco_complemento?: string | null
+          endereco_logradouro?: string | null
+          endereco_municipio?: string | null
+          endereco_numero?: string | null
+          endereco_uf?: string | null
+          id?: string
+          incentivador_cultural?: boolean
+          inscricao_estadual?: string | null
+          inscricao_municipal: string
+          iss_retido?: boolean
+          item_lista_servico: string
+          natureza_operacao?: number
+          optante_simples_nacional?: boolean
+          owner_id: string
+          razao_social: string
+          regime_tributario?: string
+          telefone?: string | null
+          updated_at?: string
+        }
+        Update: {
+          aliquota?: number
+          ambiente?: string
+          cnpj?: string
+          codigo_cnae?: string | null
+          codigo_tributario_municipio?: string | null
+          created_at?: string
+          email?: string | null
+          endereco_bairro?: string | null
+          endereco_cep?: string | null
+          endereco_codigo_municipio?: string | null
+          endereco_complemento?: string | null
+          endereco_logradouro?: string | null
+          endereco_municipio?: string | null
+          endereco_numero?: string | null
+          endereco_uf?: string | null
+          id?: string
+          incentivador_cultural?: boolean
+          inscricao_estadual?: string | null
+          inscricao_municipal?: string
+          iss_retido?: boolean
+          item_lista_servico?: string
+          natureza_operacao?: number
+          optante_simples_nacional?: boolean
+          owner_id?: string
+          razao_social?: string
+          regime_tributario?: string
+          telefone?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
       extrato_lancamentos: {
         Row: {
           conciliado_em: string | null
@@ -1022,6 +1115,105 @@ export type Database = {
             columns: ["coleta_id"]
             isOneToOne: false
             referencedRelation: "coletas"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      notas_fiscais: {
+        Row: {
+          aliquota: number | null
+          ambiente: string
+          cancelada_em: string | null
+          cliente_id: string
+          codigo_verificacao: string | null
+          created_at: string
+          data_emissao: string | null
+          descricao: string
+          fatura_id: string | null
+          id: string
+          iss_valor: number | null
+          justificativa_cancelamento: string | null
+          mensagem_erro: string | null
+          numero_nfse: string | null
+          owner_id: string
+          payload_envio: Json | null
+          payload_retorno: Json | null
+          ref: string
+          rps_numero: string | null
+          rps_serie: string | null
+          status: string
+          updated_at: string
+          url_pdf: string | null
+          url_xml: string | null
+          valor_servicos: number
+        }
+        Insert: {
+          aliquota?: number | null
+          ambiente?: string
+          cancelada_em?: string | null
+          cliente_id: string
+          codigo_verificacao?: string | null
+          created_at?: string
+          data_emissao?: string | null
+          descricao: string
+          fatura_id?: string | null
+          id?: string
+          iss_valor?: number | null
+          justificativa_cancelamento?: string | null
+          mensagem_erro?: string | null
+          numero_nfse?: string | null
+          owner_id: string
+          payload_envio?: Json | null
+          payload_retorno?: Json | null
+          ref: string
+          rps_numero?: string | null
+          rps_serie?: string | null
+          status?: string
+          updated_at?: string
+          url_pdf?: string | null
+          url_xml?: string | null
+          valor_servicos: number
+        }
+        Update: {
+          aliquota?: number | null
+          ambiente?: string
+          cancelada_em?: string | null
+          cliente_id?: string
+          codigo_verificacao?: string | null
+          created_at?: string
+          data_emissao?: string | null
+          descricao?: string
+          fatura_id?: string | null
+          id?: string
+          iss_valor?: number | null
+          justificativa_cancelamento?: string | null
+          mensagem_erro?: string | null
+          numero_nfse?: string | null
+          owner_id?: string
+          payload_envio?: Json | null
+          payload_retorno?: Json | null
+          ref?: string
+          rps_numero?: string | null
+          rps_serie?: string | null
+          status?: string
+          updated_at?: string
+          url_pdf?: string | null
+          url_xml?: string | null
+          valor_servicos?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "notas_fiscais_cliente_id_fkey"
+            columns: ["cliente_id"]
+            isOneToOne: false
+            referencedRelation: "clientes"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "notas_fiscais_fatura_id_fkey"
+            columns: ["fatura_id"]
+            isOneToOne: false
+            referencedRelation: "faturas"
             referencedColumns: ["id"]
           },
         ]
