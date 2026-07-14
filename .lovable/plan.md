@@ -1,102 +1,52 @@
-# Assinatura Eletrônica Simples — Bio Logus
+## Objetivo
+Emitir NFS-e reais via Focus NFe a partir das faturas do módulo Financeiro, com acompanhamento de status, PDF e XML.
 
-Implementação 100% gratuita, juridicamente válida entre as partes conforme MP 2.200-2/2001 art. 10, §2º. Sem dependência de API paga (ICP-Brasil, Clicksign, D4Sign). Toda infraestrutura roda no Lovable Cloud.
+## Escopo
+- Nova aba **Notas Fiscais** no menu Comercial.
+- Botão **Emitir NFS-e** na tabela de faturas do Financeiro.
+- Cadastro do **emitente** (CNPJ, IM, regime, código de serviço padrão, alíquota ISS, ambiente sandbox/produção).
+- Tabela **notas_fiscais** vinculada a `faturas` + `clientes`, com status, número RPS, número da NFS-e, código de verificação, links de PDF/XML e mensagens de erro do provedor.
+- Integração real com Focus NFe: envio, consulta de status e cancelamento.
 
-## 1. Banco de dados (1 migration)
+## Passo a passo
 
-**Tabela `signatarios`** — pessoas que precisam assinar um documento (contrato ou proposta).
-- `documento_tipo` ('contrato' | 'proposta'), `documento_id`, `ordem`
-- `nome`, `email`, `cpf_cnpj`, `papel` ('contratante' | 'contratada' | 'testemunha')
-- `token` (UUID público para o link /assinar/:token)
-- `status` ('pendente' | 'otp_enviado' | 'assinado' | 'recusado' | 'expirado')
-- `assinado_em`, `expira_em` (30 dias default)
+1. **Segredo do provedor**
+   - Solicitar `FOCUS_NFE_TOKEN` (token da conta Focus NFe).
+   - Ambiente controlado por campo do emitente (`homologacao` | `producao`) → base URL `https://homologacao.focusnfe.com.br` ou `https://api.focusnfe.com.br`.
 
-**Tabela `signatario_otps`** — códigos OTP de 6 dígitos.
-- `signatario_id`, `codigo_hash` (SHA-256, nunca o código em claro)
-- `tentativas` (máx 5), `expira_em` (10 min), `usado_em`
+2. **Migração de banco** (uma única migração, com GRANTs + RLS por `owner_id`):
+   - `emitente_config` (1 por owner): razao_social, cnpj, inscricao_municipal, regime_tributario, item_lista_servico, codigo_tributario_municipio, aliquota, ambiente, natureza_operacao.
+   - `notas_fiscais`: owner_id, fatura_id (FK), cliente_id (FK), ref (uuid usado como chave idempotente no Focus), rps_numero, rps_serie, numero_nfse, codigo_verificacao, status (`rascunho|processando|autorizada|erro|cancelada`), valor_servicos, aliquota, iss_valor, descricao, url_pdf, url_xml, mensagem_erro, payload_envio (jsonb), payload_retorno (jsonb).
 
-**Tabela `signatario_eventos`** — trilha de auditoria imutável (append-only).
-- `signatario_id`, `evento` ('link_aberto' | 'otp_solicitado' | 'otp_validado' | 'documento_visualizado' | 'assinado' | 'recusado')
-- `ip`, `user_agent`, `metadata` jsonb, `created_at`
+3. **Server functions** (`src/lib/nfse.functions.ts`, `nfse.server.ts` para o client HTTP):
+   - `emitirNfseDeFatura({ faturaId })` – monta payload a partir da fatura + cliente + emitente, chama `POST /v2/nfse?ref=<uuid>` no Focus NFe (Basic Auth com o token), grava `notas_fiscais` com status `processando`.
+   - `consultarNfse({ notaId })` – `GET /v2/nfse/<ref>`, atualiza status/numero/codigo/urls/mensagem_erro.
+   - `cancelarNfse({ notaId, justificativa })` – `DELETE /v2/nfse/<ref>`.
+   - Middleware `requireSupabaseAuth` em todas.
 
-**Tabela `documento_assinaturas`** — registro consolidado da assinatura final.
-- `signatario_id`, `documento_tipo`, `documento_id`
-- `hash_documento` (SHA-256 do PDF original — prova de integridade)
-- `codigo_verificacao` (string curta para validação pública)
-- `rubrica_base64` (opcional)
-- `pdf_assinado_path` (caminho no bucket `documentos`)
-- `ip`, `user_agent`, `geo` jsonb
+4. **Rota `/notas-fiscais`** (`src/routes/_authenticated/notas-fiscais.tsx`):
+   - Lista com filtros por status, botões *Consultar*, *Baixar PDF*, *Baixar XML*, *Cancelar*.
+   - Cabeçalho com aviso quando `emitente_config` estiver incompleto, com link para configurar.
+   - Card/diálogo **Configuração do emitente** dentro da mesma tela.
 
-RLS: tudo restrito a `owner_id` para leitura interna; rotas públicas usam server fns com `supabaseAdmin` validando token.
+5. **Integração no Financeiro** (`src/routes/_authenticated/financeiro.tsx`):
+   - Novo botão de ação na linha da fatura: *Emitir NFS-e* (desabilitado se já existir nota autorizada ou emitente não configurado).
+   - Exibe status compacto da NF vinculada (badge).
 
-## 2. Server functions (`src/lib/assinatura.functions.ts`)
+6. **Sidebar** – adicionar item **Notas Fiscais** no grupo Comercial.
 
-Todas via `createServerFn`, usando `supabaseAdmin` (rotas públicas, sem auth):
+7. **Documentação** – atualizar `docs/FUNCTIONALITIES.md` com a nova aba.
 
-- `criarSolicitacaoAssinatura({ documento_tipo, documento_id, signatarios[] })` — protegida com `requireSupabaseAuth`. Gera tokens, salva signatários, envia e-mails iniciais.
-- `obterSignatarioPorToken({ token })` — pública. Retorna dados do signatário + URL pública do PDF para visualização. Registra evento `link_aberto`.
-- `solicitarOTP({ token })` — pública. Gera código de 6 dígitos, salva hash, envia por e-mail. Rate-limit: máx 3 OTPs por 10 min.
-- `validarOTP({ token, codigo })` — pública. Compara hash, incrementa tentativas, registra `otp_validado`.
-- `confirmarAssinatura({ token, codigo, rubrica_base64?, aceite: true })` — pública. Revalida OTP, gera PDF assinado com página de averbação, salva no storage, marca signatário como `assinado`, registra evento.
-- `validarCodigo({ codigo_verificacao })` — pública. Para `/validar/:codigo`. Retorna dados do documento + hash para conferência por terceiros.
+## Detalhes técnicos
+- Auth Focus NFe: `Authorization: Basic base64(TOKEN + ":")`.
+- Idempotência: usar `ref = notas_fiscais.id` (uuid) na URL.
+- Ambiente: campo no emitente decide a base URL em tempo de execução.
+- PDF/XML: guardar as URLs devolvidas pelo Focus e abrir em nova aba (Focus hospeda os arquivos autenticados pelo próprio token; para o cliente final, gerar link temporário via server function `baixarNfsePdf` que faz proxy).
+- Erros do provedor: relayed status + body; `status='erro'` + `mensagem_erro` preenchido para o usuário ver.
 
-## 3. Envio de e-mails
+## Fora do escopo (agora)
+- NF-e de produto (modelo 55).
+- Emissão em lote automática por cron.
+- Webhook de retorno do Focus (usaremos polling manual pelo botão *Consultar*; posso adicionar depois).
 
-Usar conector **Resend** (gratuito até 3k/mês) via `connector-gateway.lovable.dev/resend`. Dois templates inline:
-
-- **Convite para assinar** — "{Nome}, você foi convidado a assinar o contrato Nº X. [Botão: Assinar agora]" + link `https://app.lovable.app/assinar/:token`.
-- **Código OTP** — "Seu código de assinatura é: 123456. Válido por 10 minutos."
-
-Se o usuário não tiver Resend conectado, vou pedir para conectar (ou usar a infra de Lovable Emails — pergunto antes).
-
-## 4. Geração do PDF assinado
-
-Função `gerarPDFAssinado` no servidor:
-1. Baixa PDF original do bucket.
-2. Calcula SHA-256.
-3. Usa `pdf-lib` (Worker-compatível) para anexar uma **página de averbação** ao final contendo:
-   - Cabeçalho "Manifesto de Assinatura Eletrônica"
-   - Para cada signatário assinado: nome, e-mail, CPF/CNPJ, papel, data/hora UTC, IP, hash do OTP validado, código de verificação
-   - Rubrica desenhada (se houver) embutida como imagem
-   - QR Code apontando para `/validar/:codigo`
-   - Rodapé com base legal: "Assinado eletronicamente conforme MP 2.200-2/2001, art. 10, §2º. Hash SHA-256: …"
-4. Salva como `documentos/assinados/{documento_id}.pdf`.
-
-## 5. Páginas públicas (sem auth)
-
-- **`/assinar/:token`** — visualiza PDF embutido (`<iframe>` do signed URL), formulário com: "Li e concordo", canvas para rubrica (lib `react-signature-canvas`), botão "Solicitar código", input de OTP, botão "Assinar". Estados: aguardando OTP, validando, sucesso, recusar.
-- **`/validar/:codigo`** — mostra status, hash do documento, lista de signatários e datas. Botão para baixar o PDF assinado.
-
-Ambas ficam fora de `_authenticated/` e usam server fns públicas.
-
-## 6. Integração no fluxo de contratos
-
-Na tela `/contratos` (ou onde fica o contrato hoje):
-- Botão **"Enviar para assinatura"** abre diálogo listando signatários (pré-preenche contratante = Bio Logus + contratada = cliente do contrato; permite adicionar testemunhas).
-- Cada signatário: nome, e-mail, CPF/CNPJ, papel.
-- Ao enviar, chama `criarSolicitacaoAssinatura` e mostra status na tela (pendente / enviado / assinado por X de Y).
-- Botão "Reenviar e-mail", "Cancelar assinatura", "Baixar PDF assinado" (quando todos assinaram).
-
-## 7. Cliente novo no contrato
-
-Já tem o seletor de cliente. Adiciono botão **"+ Novo cliente"** ao lado do select, que abre um Sheet com formulário enxuto (razão social, CNPJ, e-mail, telefone, endereço), salva em `clientes` e seleciona automaticamente. Não duplica a tela completa de clientes — é cadastro express só com os campos obrigatórios para o contrato + assinatura.
-
-## Dependências novas
-
-- `pdf-lib` (já é Worker-compatível, manipula PDF no servidor)
-- `qrcode` (gera QR Code da URL de validação)
-- `react-signature-canvas` (canvas de rubrica no frontend)
-
-## Não fazer agora (fora de escopo)
-
-- ICP-Brasil / certificado digital A1/A3 (pago, fora do "gratuito").
-- Múltiplos idiomas.
-- App mobile dedicado (a página `/assinar` já é responsiva).
-- Notificação por WhatsApp (precisaria Twilio pago).
-
----
-
-**Antes de codar, preciso de 2 confirmações:**
-
-1. **E-mail:** posso conectar o **Resend** (gratuito 3k/mês, 1 clique) ou prefere usar a infraestrutura de Lovable Emails (precisa domínio próprio configurado com DNS)?
-2. **Rubrica desenhada:** incluo o canvas de assinatura desenhada junto com o OTP (mais robusto juridicamente) ou só OTP por simplicidade?
+Confirma que posso seguir e já solicitar o `FOCUS_NFE_TOKEN`?
