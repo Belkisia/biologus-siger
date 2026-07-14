@@ -60,6 +60,7 @@ const comercial: NavItem[] = [
   { title: "Contratos", url: "/contratos", icon: FileSignature },
   { title: "Modelos de Contrato", url: "/modelos-contrato", icon: FileText },
   { title: "Financeiro", url: "/financeiro", icon: DollarSign },
+  { title: "Notas Fiscais", url: "/notas-fiscais", icon: FileText },
   { title: "Conciliação Bancária", url: "/conciliacao", icon: Landmark },
 ];
 
