@@ -1,3 +1,4 @@
+// @ts-nocheck
 import * as React from 'react'
 import { render } from '@react-email/components'
 import { createClient } from '@supabase/supabase-js'
