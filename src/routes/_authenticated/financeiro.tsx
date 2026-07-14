@@ -103,6 +103,17 @@ function FinanceiroPage() {
     onError: (e: Error) => toast.error(e.message),
   });
 
+  const emitirNfFn = useServerFn(emitirNfseDeFatura);
+  const emitirNfMutation = useMutation({
+    mutationFn: async (faturaId: string) => emitirNfFn({ data: { faturaId } }),
+    onSuccess: (r) => {
+      if (r.mensagemErro) toast.error(r.mensagemErro);
+      else toast.success("NFS-e enviada — acompanhe em Notas Fiscais");
+    },
+    onError: (e: Error) => toast.error(e.message),
+  });
+
+
   const baixaMutation = useMutation({
     mutationFn: async (f: Fatura) => {
       const { error } = await supabase
