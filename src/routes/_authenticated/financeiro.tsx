@@ -345,6 +345,11 @@ function FinanceiroPage() {
                             <CheckCircle2 className="h-4 w-4 text-primary" />
                           </Button>
                         )}
+                        <Button variant="ghost" size="icon" title="Emitir NFS-e"
+                          disabled={emitirNfMutation.isPending}
+                          onClick={() => emitirNfMutation.mutate(f.id)}>
+                          <FileText className="h-4 w-4 text-blue-600" />
+                        </Button>
                         <Button variant="ghost" size="icon" onClick={() => {
                           if (confirm(`Remover fatura ${f.numero}?`)) deleteMutation.mutate(f.id);
                         }}>
