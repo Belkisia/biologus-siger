@@ -11,8 +11,10 @@ import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogFooter } from "@/components/ui/dialog";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Plus, DollarSign, Loader2, Trash2, CheckCircle2 } from "lucide-react";
+import { Plus, DollarSign, Loader2, Trash2, CheckCircle2, FileText } from "lucide-react";
 import { toast } from "sonner";
+import { useServerFn } from "@tanstack/react-start";
+import { emitirNfseDeFatura } from "@/lib/nfse.functions";
 
 export const Route = createFileRoute("/_authenticated/financeiro")({
   component: FinanceiroPage,
@@ -100,6 +102,17 @@ function FinanceiroPage() {
     },
     onError: (e: Error) => toast.error(e.message),
   });
+
+  const emitirNfFn = useServerFn(emitirNfseDeFatura);
+  const emitirNfMutation = useMutation({
+    mutationFn: async (faturaId: string) => emitirNfFn({ data: { faturaId } }),
+    onSuccess: (r) => {
+      if (r.mensagemErro) toast.error(r.mensagemErro);
+      else toast.success("NFS-e enviada — acompanhe em Notas Fiscais");
+    },
+    onError: (e: Error) => toast.error(e.message),
+  });
+
 
   const baixaMutation = useMutation({
     mutationFn: async (f: Fatura) => {
@@ -343,6 +356,11 @@ function FinanceiroPage() {
                             <CheckCircle2 className="h-4 w-4 text-primary" />
                           </Button>
                         )}
+                        <Button variant="ghost" size="icon" title="Emitir NFS-e"
+                          disabled={emitirNfMutation.isPending}
+                          onClick={() => emitirNfMutation.mutate(f.id)}>
+                          <FileText className="h-4 w-4 text-blue-600" />
+                        </Button>
                         <Button variant="ghost" size="icon" onClick={() => {
                           if (confirm(`Remover fatura ${f.numero}?`)) deleteMutation.mutate(f.id);
                         }}>

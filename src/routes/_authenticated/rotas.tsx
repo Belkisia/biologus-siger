@@ -359,7 +359,7 @@ function RotasPage() {
                 {clientesFiltrados.map((c) => (
                   <div key={c.id} className={`flex items-center gap-3 px-3 py-2.5 cursor-pointer hover:bg-muted/50 ${clientesJaVinculados.has(c.id) ? "bg-primary/5" : ""}`}
                     onClick={() => setSelecionados((prev) => prev.includes(c.id) ? prev.filter((x) => x !== c.id) : [...prev, c.id])}>
-                    <Checkbox checked={selecionados.includes(c.id)} readOnly />
+                    <Checkbox checked={selecionados.includes(c.id)} />
                     <div className="flex-1 min-w-0">
                       <p className="text-sm font-medium truncate">{c.fantasia || c.razao_social}</p>
                       <p className="text-xs text-muted-foreground">{c.cidade ?? ""}</p>

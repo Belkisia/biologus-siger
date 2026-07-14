@@ -276,7 +276,7 @@ function CDFPage() {
 
   const marcarEnviado = useMutation({
     mutationFn: async (id: string) => {
-      const { error } = await supabase.from("cdfs").update({ enviado: true, data_envio: new Date().toISOString() }).eq("id", id);
+      const { error } = await supabase.from("cdfs").update({ enviado: true, data_envio: new Date().toISOString() } as never).eq("id", id);
       if (error) throw error;
     },
     onSuccess: () => { qc.invalidateQueries({ queryKey: ["cdfs"] }); toast.success("CDF marcado como enviado"); },

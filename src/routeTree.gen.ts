@@ -28,6 +28,7 @@ import { Route as AuthenticatedPortalRouteImport } from './routes/_authenticated
 import { Route as AuthenticatedPgrssNovaRouteImport } from './routes/_authenticated/pgrss-nova'
 import { Route as AuthenticatedPgrssListaRouteImport } from './routes/_authenticated/pgrss-lista'
 import { Route as AuthenticatedPainelRouteImport } from './routes/_authenticated/painel'
+import { Route as AuthenticatedNotasFiscaisRouteImport } from './routes/_authenticated/notas-fiscais'
 import { Route as AuthenticatedMtrRouteImport } from './routes/_authenticated/mtr'
 import { Route as AuthenticatedModelosContratoRouteImport } from './routes/_authenticated/modelos-contrato'
 import { Route as AuthenticatedLicencasRouteImport } from './routes/_authenticated/licencas'
@@ -146,6 +147,12 @@ const AuthenticatedPainelRoute = AuthenticatedPainelRouteImport.update({
   path: '/painel',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedNotasFiscaisRoute =
+  AuthenticatedNotasFiscaisRouteImport.update({
+    id: '/notas-fiscais',
+    path: '/notas-fiscais',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 const AuthenticatedMtrRoute = AuthenticatedMtrRouteImport.update({
   id: '/mtr',
   path: '/mtr',
@@ -279,6 +286,7 @@ export interface FileRoutesByFullPath {
   '/licencas': typeof AuthenticatedLicencasRoute
   '/modelos-contrato': typeof AuthenticatedModelosContratoRoute
   '/mtr': typeof AuthenticatedMtrRoute
+  '/notas-fiscais': typeof AuthenticatedNotasFiscaisRoute
   '/painel': typeof AuthenticatedPainelRoute
   '/pgrss-lista': typeof AuthenticatedPgrssListaRoute
   '/pgrss-nova': typeof AuthenticatedPgrssNovaRoute
@@ -320,6 +328,7 @@ export interface FileRoutesByTo {
   '/licencas': typeof AuthenticatedLicencasRoute
   '/modelos-contrato': typeof AuthenticatedModelosContratoRoute
   '/mtr': typeof AuthenticatedMtrRoute
+  '/notas-fiscais': typeof AuthenticatedNotasFiscaisRoute
   '/painel': typeof AuthenticatedPainelRoute
   '/pgrss-lista': typeof AuthenticatedPgrssListaRoute
   '/pgrss-nova': typeof AuthenticatedPgrssNovaRoute
@@ -363,6 +372,7 @@ export interface FileRoutesById {
   '/_authenticated/licencas': typeof AuthenticatedLicencasRoute
   '/_authenticated/modelos-contrato': typeof AuthenticatedModelosContratoRoute
   '/_authenticated/mtr': typeof AuthenticatedMtrRoute
+  '/_authenticated/notas-fiscais': typeof AuthenticatedNotasFiscaisRoute
   '/_authenticated/painel': typeof AuthenticatedPainelRoute
   '/_authenticated/pgrss-lista': typeof AuthenticatedPgrssListaRoute
   '/_authenticated/pgrss-nova': typeof AuthenticatedPgrssNovaRoute
@@ -406,6 +416,7 @@ export interface FileRouteTypes {
     | '/licencas'
     | '/modelos-contrato'
     | '/mtr'
+    | '/notas-fiscais'
     | '/painel'
     | '/pgrss-lista'
     | '/pgrss-nova'
@@ -447,6 +458,7 @@ export interface FileRouteTypes {
     | '/licencas'
     | '/modelos-contrato'
     | '/mtr'
+    | '/notas-fiscais'
     | '/painel'
     | '/pgrss-lista'
     | '/pgrss-nova'
@@ -489,6 +501,7 @@ export interface FileRouteTypes {
     | '/_authenticated/licencas'
     | '/_authenticated/modelos-contrato'
     | '/_authenticated/mtr'
+    | '/_authenticated/notas-fiscais'
     | '/_authenticated/painel'
     | '/_authenticated/pgrss-lista'
     | '/_authenticated/pgrss-nova'
@@ -661,6 +674,13 @@ declare module '@tanstack/react-router' {
       path: '/painel'
       fullPath: '/painel'
       preLoaderRoute: typeof AuthenticatedPainelRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/notas-fiscais': {
+      id: '/_authenticated/notas-fiscais'
+      path: '/notas-fiscais'
+      fullPath: '/notas-fiscais'
+      preLoaderRoute: typeof AuthenticatedNotasFiscaisRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/mtr': {
@@ -858,6 +878,7 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedLicencasRoute: typeof AuthenticatedLicencasRoute
   AuthenticatedModelosContratoRoute: typeof AuthenticatedModelosContratoRoute
   AuthenticatedMtrRoute: typeof AuthenticatedMtrRoute
+  AuthenticatedNotasFiscaisRoute: typeof AuthenticatedNotasFiscaisRoute
   AuthenticatedPainelRoute: typeof AuthenticatedPainelRoute
   AuthenticatedPgrssListaRoute: typeof AuthenticatedPgrssListaRoute
   AuthenticatedPgrssNovaRoute: typeof AuthenticatedPgrssNovaRoute
@@ -885,6 +906,7 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedLicencasRoute: AuthenticatedLicencasRoute,
   AuthenticatedModelosContratoRoute: AuthenticatedModelosContratoRoute,
   AuthenticatedMtrRoute: AuthenticatedMtrRoute,
+  AuthenticatedNotasFiscaisRoute: AuthenticatedNotasFiscaisRoute,
   AuthenticatedPainelRoute: AuthenticatedPainelRoute,
   AuthenticatedPgrssListaRoute: AuthenticatedPgrssListaRoute,
   AuthenticatedPgrssNovaRoute: AuthenticatedPgrssNovaRoute,

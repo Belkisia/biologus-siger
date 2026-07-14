@@ -14,11 +14,93 @@ export type Database = {
   }
   public: {
     Tables: {
+      boletins_medicao: {
+        Row: {
+          assinatura_cliente: string | null
+          cdf_enviado: boolean
+          cdf_id: string | null
+          cliente_id: string | null
+          created_at: string
+          data_coleta: string
+          data_envio_cdf: string | null
+          data_pagamento: string | null
+          id: string
+          mtr_id: string | null
+          nome_responsavel: string | null
+          numero: string | null
+          observacoes: string | null
+          owner_id: string
+          pagamento_confirmado: boolean
+          peso_coletado: number | null
+          status: string
+          unidade: string | null
+          updated_at: string
+        }
+        Insert: {
+          assinatura_cliente?: string | null
+          cdf_enviado?: boolean
+          cdf_id?: string | null
+          cliente_id?: string | null
+          created_at?: string
+          data_coleta?: string
+          data_envio_cdf?: string | null
+          data_pagamento?: string | null
+          id?: string
+          mtr_id?: string | null
+          nome_responsavel?: string | null
+          numero?: string | null
+          observacoes?: string | null
+          owner_id: string
+          pagamento_confirmado?: boolean
+          peso_coletado?: number | null
+          status?: string
+          unidade?: string | null
+          updated_at?: string
+        }
+        Update: {
+          assinatura_cliente?: string | null
+          cdf_enviado?: boolean
+          cdf_id?: string | null
+          cliente_id?: string | null
+          created_at?: string
+          data_coleta?: string
+          data_envio_cdf?: string | null
+          data_pagamento?: string | null
+          id?: string
+          mtr_id?: string | null
+          nome_responsavel?: string | null
+          numero?: string | null
+          observacoes?: string | null
+          owner_id?: string
+          pagamento_confirmado?: boolean
+          peso_coletado?: number | null
+          status?: string
+          unidade?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "boletins_medicao_cliente_id_fkey"
+            columns: ["cliente_id"]
+            isOneToOne: false
+            referencedRelation: "clientes"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "boletins_medicao_mtr_id_fkey"
+            columns: ["mtr_id"]
+            isOneToOne: false
+            referencedRelation: "mtrs"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       cdfs: {
         Row: {
           created_at: string
           data_destinacao: string
           destinador: string | null
+          enviado: boolean
           id: string
           mtr_id: string
           numero: string
@@ -33,6 +115,7 @@ export type Database = {
           created_at?: string
           data_destinacao: string
           destinador?: string | null
+          enviado?: boolean
           id?: string
           mtr_id: string
           numero: string
@@ -47,6 +130,7 @@ export type Database = {
           created_at?: string
           data_destinacao?: string
           destinador?: string | null
+          enviado?: boolean
           id?: string
           mtr_id?: string
           numero?: string
@@ -175,6 +259,7 @@ export type Database = {
       }
       clientes: {
         Row: {
+          ativo: boolean
           bairro: string | null
           cep: string | null
           cidade: string | null
@@ -184,10 +269,12 @@ export type Database = {
           email: string | null
           endereco: string | null
           estado: string | null
+          fantasia: string | null
           id: string
           inscricao_estadual: string | null
           inscricao_municipal: string | null
           latitude: number | null
+          logradouro: string | null
           longitude: number | null
           nome_fantasia: string | null
           numero: string | null
@@ -205,6 +292,7 @@ export type Database = {
           whatsapp: string | null
         }
         Insert: {
+          ativo?: boolean
           bairro?: string | null
           cep?: string | null
           cidade?: string | null
@@ -214,10 +302,12 @@ export type Database = {
           email?: string | null
           endereco?: string | null
           estado?: string | null
+          fantasia?: string | null
           id?: string
           inscricao_estadual?: string | null
           inscricao_municipal?: string | null
           latitude?: number | null
+          logradouro?: string | null
           longitude?: number | null
           nome_fantasia?: string | null
           numero?: string | null
@@ -235,6 +325,7 @@ export type Database = {
           whatsapp?: string | null
         }
         Update: {
+          ativo?: boolean
           bairro?: string | null
           cep?: string | null
           cidade?: string | null
@@ -244,10 +335,12 @@ export type Database = {
           email?: string | null
           endereco?: string | null
           estado?: string | null
+          fantasia?: string | null
           id?: string
           inscricao_estadual?: string | null
           inscricao_municipal?: string | null
           latitude?: number | null
+          logradouro?: string | null
           longitude?: number | null
           nome_fantasia?: string | null
           numero?: string | null
@@ -279,6 +372,8 @@ export type Database = {
           owner_id: string
           peso_real: number | null
           quantidade_prevista: number | null
+          rota_codigo: string | null
+          rota_id: string | null
           status: string
           tipo_residuo: string
           unidade: string | null
@@ -297,6 +392,8 @@ export type Database = {
           owner_id: string
           peso_real?: number | null
           quantidade_prevista?: number | null
+          rota_codigo?: string | null
+          rota_id?: string | null
           status?: string
           tipo_residuo: string
           unidade?: string | null
@@ -315,6 +412,8 @@ export type Database = {
           owner_id?: string
           peso_real?: number | null
           quantidade_prevista?: number | null
+          rota_codigo?: string | null
+          rota_id?: string | null
           status?: string
           tipo_residuo?: string
           unidade?: string | null
@@ -327,6 +426,13 @@ export type Database = {
             columns: ["cliente_id"]
             isOneToOne: false
             referencedRelation: "clientes"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "coletas_rota_id_fkey"
+            columns: ["rota_id"]
+            isOneToOne: false
+            referencedRelation: "rotas"
             referencedColumns: ["id"]
           },
         ]
@@ -1035,11 +1141,14 @@ export type Database = {
       mtrs: {
         Row: {
           acondicionamento: string | null
+          assinatura_gerador: string | null
+          assinatura_transportador: string | null
           classe_ibama: string | null
           cliente_id: string
           codigo_residuo: string | null
           coleta_id: string | null
           created_at: string
+          data_baixa: string | null
           data_emissao: string
           descricao_residuo: string
           destinador: string | null
@@ -1049,6 +1158,7 @@ export type Database = {
           observacoes: string | null
           owner_id: string
           quantidade: number
+          rota_codigo: string | null
           status: string
           tecnologia_destinacao: string | null
           transportador: string | null
@@ -1058,11 +1168,14 @@ export type Database = {
         }
         Insert: {
           acondicionamento?: string | null
+          assinatura_gerador?: string | null
+          assinatura_transportador?: string | null
           classe_ibama?: string | null
           cliente_id: string
           codigo_residuo?: string | null
           coleta_id?: string | null
           created_at?: string
+          data_baixa?: string | null
           data_emissao?: string
           descricao_residuo: string
           destinador?: string | null
@@ -1072,6 +1185,7 @@ export type Database = {
           observacoes?: string | null
           owner_id: string
           quantidade?: number
+          rota_codigo?: string | null
           status?: string
           tecnologia_destinacao?: string | null
           transportador?: string | null
@@ -1081,11 +1195,14 @@ export type Database = {
         }
         Update: {
           acondicionamento?: string | null
+          assinatura_gerador?: string | null
+          assinatura_transportador?: string | null
           classe_ibama?: string | null
           cliente_id?: string
           codigo_residuo?: string | null
           coleta_id?: string | null
           created_at?: string
+          data_baixa?: string | null
           data_emissao?: string
           descricao_residuo?: string
           destinador?: string | null
@@ -1095,6 +1212,7 @@ export type Database = {
           observacoes?: string | null
           owner_id?: string
           quantidade?: number
+          rota_codigo?: string | null
           status?: string
           tecnologia_destinacao?: string | null
           transportador?: string | null
@@ -1465,6 +1583,102 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      rota_clientes: {
+        Row: {
+          cliente_id: string
+          coletado: boolean
+          created_at: string
+          frequencia: string
+          id: string
+          ordem: number
+          owner_id: string
+          rota_codigo: string | null
+          rota_id: string | null
+        }
+        Insert: {
+          cliente_id: string
+          coletado?: boolean
+          created_at?: string
+          frequencia?: string
+          id?: string
+          ordem?: number
+          owner_id: string
+          rota_codigo?: string | null
+          rota_id?: string | null
+        }
+        Update: {
+          cliente_id?: string
+          coletado?: boolean
+          created_at?: string
+          frequencia?: string
+          id?: string
+          ordem?: number
+          owner_id?: string
+          rota_codigo?: string | null
+          rota_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "rota_clientes_cliente_id_fkey"
+            columns: ["cliente_id"]
+            isOneToOne: false
+            referencedRelation: "clientes"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "rota_clientes_rota_id_fkey"
+            columns: ["rota_id"]
+            isOneToOne: false
+            referencedRelation: "rotas"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      rotas: {
+        Row: {
+          ativo: boolean
+          carro: string | null
+          codigo: string
+          created_at: string
+          dias_semana: string[] | null
+          duracao_dias: number | null
+          id: string
+          nome: string
+          observacoes: string | null
+          owner_id: string
+          semana: string | null
+          updated_at: string
+        }
+        Insert: {
+          ativo?: boolean
+          carro?: string | null
+          codigo: string
+          created_at?: string
+          dias_semana?: string[] | null
+          duracao_dias?: number | null
+          id?: string
+          nome: string
+          observacoes?: string | null
+          owner_id: string
+          semana?: string | null
+          updated_at?: string
+        }
+        Update: {
+          ativo?: boolean
+          carro?: string | null
+          codigo?: string
+          created_at?: string
+          dias_semana?: string[] | null
+          duracao_dias?: number | null
+          id?: string
+          nome?: string
+          observacoes?: string | null
+          owner_id?: string
+          semana?: string | null
+          updated_at?: string
+        }
+        Relationships: []
       }
       signatario_eventos: {
         Row: {

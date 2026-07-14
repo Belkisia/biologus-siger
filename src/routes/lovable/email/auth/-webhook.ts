@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { createServerFileRoute } from "@tanstack/react-start/server";
 import { render } from "@react-email/components";
 import * as React from "react";

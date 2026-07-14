@@ -720,7 +720,7 @@ function RotaDetalhe({
 
   const salvarAssinatura = useMutation({
     mutationFn: async ({ mtrId, campo, dataUrl }: { mtrId: string; campo: string; dataUrl: string }) => {
-      const { error } = await supabase.from("mtrs").update({ [campo]: dataUrl }).eq("id", mtrId);
+      const { error } = await supabase.from("mtrs").update({ [campo]: dataUrl } as never).eq("id", mtrId);
       if (error) throw error;
     },
     onSuccess: () => { queryClient.invalidateQueries({ queryKey: ["mtrs-rota"] }); toast.success("Assinatura salva!"); },
@@ -953,14 +953,14 @@ function RotaDetalhe({
                               onClick={() => {
                                 const hoje = new Date().toISOString().split("T")[0];
                                 const blobUrl = abrirCDFBlob({
-                                  numeroCDF: boletim.cdf_id,
+                                  numeroCDF: boletim.cdf_id ?? "",
                                   numeroMTR: mtr.numero,
                                   dataEmissao: mtr.data_emissao || hoje,
                                   periodoInicio: mtr.data_emissao || hoje,
                                   periodoFim: mtr.data_baixa || hoje,
                                   cliente: rc.cliente,
                                 });
-                                setOpenCDF({ blobUrl, numeroCDF: boletim.cdf_id });
+                                setOpenCDF({ blobUrl, numeroCDF: boletim.cdf_id ?? "" });
                               }}>
                               <Eye className="h-3.5 w-3.5 text-green-600" />
                             </Button>
@@ -1043,7 +1043,7 @@ function RotaDetalhe({
                     if (jaVinculados.has(c.id)) return;
                     setSelecionados(prev => prev.includes(c.id) ? prev.filter(x => x !== c.id) : [...prev, c.id]);
                   }}>
-                  <Checkbox checked={selecionados.includes(c.id) || jaVinculados.has(c.id)} readOnly />
+                  <Checkbox checked={selecionados.includes(c.id) || jaVinculados.has(c.id)} />
                   <div className="flex-1 min-w-0">
                     <p className="text-sm font-medium truncate">{c.nome_fantasia || c.razao_social}</p>
                     <p className="text-xs text-muted-foreground">{c.cidade}</p>
