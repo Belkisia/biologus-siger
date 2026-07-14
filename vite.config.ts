@@ -8,6 +8,7 @@ export default defineConfig({
     tsconfigPaths(),
     tailwindcss(),
     tanstackStart({
+      // @ts-expect-error target option accepted by plugin at runtime
       target: "vercel",
     }),
   ],
