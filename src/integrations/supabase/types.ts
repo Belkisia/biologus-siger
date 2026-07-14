@@ -100,6 +100,7 @@ export type Database = {
           created_at: string
           data_destinacao: string
           destinador: string | null
+          enviado: boolean
           id: string
           mtr_id: string
           numero: string
@@ -114,6 +115,7 @@ export type Database = {
           created_at?: string
           data_destinacao: string
           destinador?: string | null
+          enviado?: boolean
           id?: string
           mtr_id: string
           numero: string
@@ -128,6 +130,7 @@ export type Database = {
           created_at?: string
           data_destinacao?: string
           destinador?: string | null
+          enviado?: boolean
           id?: string
           mtr_id?: string
           numero?: string
@@ -369,6 +372,8 @@ export type Database = {
           owner_id: string
           peso_real: number | null
           quantidade_prevista: number | null
+          rota_codigo: string | null
+          rota_id: string | null
           status: string
           tipo_residuo: string
           unidade: string | null
@@ -387,6 +392,8 @@ export type Database = {
           owner_id: string
           peso_real?: number | null
           quantidade_prevista?: number | null
+          rota_codigo?: string | null
+          rota_id?: string | null
           status?: string
           tipo_residuo: string
           unidade?: string | null
@@ -405,6 +412,8 @@ export type Database = {
           owner_id?: string
           peso_real?: number | null
           quantidade_prevista?: number | null
+          rota_codigo?: string | null
+          rota_id?: string | null
           status?: string
           tipo_residuo?: string
           unidade?: string | null
@@ -417,6 +426,13 @@ export type Database = {
             columns: ["cliente_id"]
             isOneToOne: false
             referencedRelation: "clientes"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "coletas_rota_id_fkey"
+            columns: ["rota_id"]
+            isOneToOne: false
+            referencedRelation: "rotas"
             referencedColumns: ["id"]
           },
         ]
