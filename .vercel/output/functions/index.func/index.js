@@ -5,13 +5,13 @@ const path = require("path");
 
 const STATIC = path.join(__dirname, "..", "..", "static");
 const MIME = {
-  ".js":   "application/javascript; charset=utf-8",
-  ".css":  "text/css; charset=utf-8",
-  ".svg":  "image/svg+xml",
-  ".png":  "image/png",
-  ".ico":  "image/x-icon",
-  ".woff2":"font/woff2",
-  ".woff": "font/woff",
+  ".js":    "application/javascript; charset=utf-8",
+  ".css":   "text/css; charset=utf-8",
+  ".svg":   "image/svg+xml",
+  ".png":   "image/png",
+  ".ico":   "image/x-icon",
+  ".woff2": "font/woff2",
+  ".woff":  "font/woff",
 };
 
 module.exports = async function(req, res) {
