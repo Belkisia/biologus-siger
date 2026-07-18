@@ -40,6 +40,12 @@ module.exports = async function(req, res) {
     });
     const response = await app.fetch(request, { env: process.env });
     res.status(response.status);
+    res.setHeader('cache-control', 'no-store, no-cache, must-revalidate, max-age=0');
+    res.setHeader('surrogate-control', 'no-store');
+    res.setHeader('cdn-cache-control', 'no-store');
+    res.setHeader('vercel-cdn-cache-control', 'no-store');
+    res.setHeader('pragma', 'no-cache');
+    res.setHeader('expires', '-1');
     // Forçar no-cache para HTML
     const ct = response.headers.get('content-type') || '';
     if (ct.includes('text/html')) {
