@@ -16,6 +16,7 @@ const MIME = {
 
 module.exports = async function(req, res) {
   try {
+    // Servir assets estáticos direto do disco
     if (req.url.startsWith("/assets/")) {
       const filePath = path.join(STATIC, req.url);
       if (fs.existsSync(filePath)) {
@@ -25,7 +26,11 @@ module.exports = async function(req, res) {
         res.end(fs.readFileSync(filePath));
         return;
       }
+      // Asset não encontrado - retornar 404
+      res.status(404).end("Not found");
+      return;
     }
+
     const proto = req.headers["x-forwarded-proto"] || "https";
     const host  = req.headers["x-forwarded-host"] || req.headers.host || "localhost";
     const url   = new URL(req.url, `${proto}://${host}`);
@@ -39,22 +44,22 @@ module.exports = async function(req, res) {
       body: ["GET","HEAD"].includes(req.method) ? undefined : req,
     });
     const response = await app.fetch(request, { env: process.env });
+    
+    // Headers que impedem cache em todos os níveis
+    res.setHeader("x-vercel-cache", "MISS");
+    res.setHeader("cache-control", "no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0");
+    res.setHeader("surrogate-control", "no-store");
+    res.setHeader("cdn-cache-control", "no-store");
+    res.setHeader("vercel-cdn-cache-control", "no-store, no-cache");
+    res.setHeader("pragma", "no-cache");
+    res.setHeader("expires", "0");
+    res.setHeader("vary", "*");
+
     res.status(response.status);
-    res.setHeader('cache-control', 'no-store, no-cache, must-revalidate, max-age=0');
-    res.setHeader('surrogate-control', 'no-store');
-    res.setHeader('cdn-cache-control', 'no-store');
-    res.setHeader('vercel-cdn-cache-control', 'no-store');
-    res.setHeader('pragma', 'no-cache');
-    res.setHeader('expires', '-1');
-    // Forçar no-cache para HTML
-    const ct = response.headers.get('content-type') || '';
-    if (ct.includes('text/html')) {
-      res.setHeader('cache-control', 'no-cache, no-store, must-revalidate');
-      res.setHeader('pragma', 'no-cache');
-      res.setHeader('expires', '0');
-    }
     for (const [k, v] of response.headers.entries()) {
-      if (k !== "transfer-encoding" && k !== "connection") res.setHeader(k, v);
+      if (!["transfer-encoding","connection","cache-control","cdn-cache-control"].includes(k)) {
+        res.setHeader(k, v);
+      }
     }
     res.end(Buffer.from(await response.arrayBuffer()));
   } catch(e) {
