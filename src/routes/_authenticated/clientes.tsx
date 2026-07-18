@@ -31,6 +31,7 @@ type Cliente = {
   status: string;
   user_id: string | null;
   created_at: string;
+  transportadora: string | null;
 };
 
 function ClientesPage() {
@@ -149,6 +150,41 @@ function ClientesPage() {
                 <Field name="cidade" label="Cidade" />
                 <Field name="estado" label="UF" />
               </div>
+              <div className="space-y-2">
+                <Label htmlFor="transportadora">Transportadora</Label>
+                <select
+                  id="transportadora"
+                  name="transportadora"
+                  className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                >
+                  <option value="bio_logus">Bio Logus Ambiental Ltda - ME</option>
+                  <option value="ativa">Ativa Comercial Comércio e Serviços Ltda</option>
+                </select>
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="inscricao_municipal">Inscrição Municipal</Label>
+                <Input id="inscricao_municipal" name="inscricao_municipal" placeholder="Opcional — pessoa física deixar em branco" />
+              </div>
+
+              <div className="border rounded-lg p-4 space-y-3 bg-muted/30">
+                <p className="text-sm font-semibold text-foreground">Contrato / Valores</p>
+                <div className="grid grid-cols-3 gap-3">
+                  <div className="space-y-1.5">
+                    <Label htmlFor="valor_franquia">Valor franquia (R$)</Label>
+                    <Input id="valor_franquia" name="valor_franquia" type="number" step="0.01" min="0" placeholder="0,00" />
+                  </div>
+                  <div className="space-y-1.5">
+                    <Label htmlFor="peso_franquia">Peso franquia (kg)</Label>
+                    <Input id="peso_franquia" name="peso_franquia" type="number" step="0.001" min="0" placeholder="0,000" />
+                  </div>
+                  <div className="space-y-1.5">
+                    <Label htmlFor="valor_kg_excedente">Valor kg excedente (R$)</Label>
+                    <Input id="valor_kg_excedente" name="valor_kg_excedente" type="number" step="0.01" min="0" placeholder="0,00" />
+                  </div>
+                </div>
+                <p className="text-xs text-muted-foreground">Se o peso coletado ultrapassar a franquia, o excedente será cobrado pelo valor/kg definido.</p>
+              </div>
+
               <div className="space-y-2">
                 <Label htmlFor="observacoes">Observações</Label>
                 <Textarea id="observacoes" name="observacoes" rows={3} />
