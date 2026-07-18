@@ -1,1 +1,4 @@
-{}
+{
+  "buildCommand": "bash build-vercel.sh",
+  "installCommand": "npm install --legacy-peer-deps"
+}
