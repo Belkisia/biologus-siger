@@ -44,6 +44,12 @@ type Boletim = {
     cidade: string | null;
     cnpj: string | null;
     email?: string | null;
+    telefone?: string | null;
+    valor_franquia?: number | null;
+    peso_franquia?: number | null;
+    valor_kg_excedente?: number | null;
+    inscricao_municipal?: string | null;
+    transportadora?: string | null;
   } | null;
 };
 
@@ -291,6 +297,57 @@ function abrirCDFBlob(params: Parameters<typeof gerarHTMLCDF>[0]): string {
   return URL.createObjectURL(blob);
 }
 
+
+// ─────────────────────────────────────────────
+// Calcular valor da nota fiscal
+// ─────────────────────────────────────────────
+function calcularValorNF(peso: number, cliente: {
+  valor_franquia?: number | null;
+  peso_franquia?: number | null;
+  valor_kg_excedente?: number | null;
+}): { valorBase: number; pesoExcedente: number; valorExcedente: number; valorTotal: number } {
+  const franquia = cliente.valor_franquia || 0;
+  const pesoFranquia = cliente.peso_franquia || 0;
+  const valorKgExc = cliente.valor_kg_excedente || 0;
+
+  const pesoExcedente = Math.max(0, peso - pesoFranquia);
+  const valorExcedente = pesoExcedente * valorKgExc;
+  const valorTotal = franquia + valorExcedente;
+
+  return { valorBase: franquia, pesoExcedente, valorExcedente, valorTotal };
+}
+
+function getDadosPrestador(transportadora?: string | null) {
+  if (transportadora === 'ativa') {
+    return {
+      nome: 'Ativa Comercial Comercio e Servicos Ltda',
+      fantasia: 'Ativa Comercial',
+      cnpj: '51.480.805/0001-10',
+      inscricaoMunicipal: '6247989',
+      endereco: 'Rua José Gomes Bailão, 794 - SALA 02 - Lote: 02 - Quadra: 65',
+      cidade: 'Goiânia - GO',
+      cep: '74423-342',
+      telefone: '(62)3299-6483',
+      email: 'universocontabilidade.fiscal2@gmail.com',
+      regime: 'Simples Nacional',
+      aliquotaISSQN: 2.92,
+    };
+  }
+  return {
+    nome: 'Bio Logus Ambiental Ltda',
+    fantasia: 'Bio Logus Ambiental',
+    cnpj: '26.484.921/0001-60',
+    inscricaoMunicipal: '4322584',
+    endereco: 'Rua dos Ferroviarios, 00 - Lote: 05 - Quadra: 01',
+    cidade: 'Goiânia - GO',
+    cep: '74483-115',
+    telefone: '(62)3299-6483',
+    email: 'universocontabilidade.pessoal@gmail.com',
+    regime: 'Lucro Presumido',
+    aliquotaISSQN: 5,
+  };
+}
+
 // ─────────────────────────────────────────────
 // Canvas de assinatura
 // ─────────────────────────────────────────────
@@ -361,6 +418,51 @@ function AssinaturaCanvas({ onChange }: { onChange: (data: string) => void }) {
           onTouchStart={startDraw} onTouchMove={draw} onTouchEnd={stopDraw} />
       </div>
       <p className="text-xs text-muted-foreground">Assine acima com o dedo ou mouse</p>
+    {/* Dialog: Enviar CDF */}
+      {openEnvio && (
+        <Dialog open={!!openEnvio} onOpenChange={(o) => !o && setOpenEnvio(null)}>
+          <DialogContent className="max-w-sm">
+            <DialogHeader>
+              <DialogTitle className="flex items-center gap-2">
+                <Send className="h-5 w-5 text-primary" />
+                Enviar CDF — {openEnvio.numero || openEnvio.cdf_id}
+              </DialogTitle>
+            </DialogHeader>
+            <div className="space-y-3 py-2">
+              <p className="text-sm text-muted-foreground">
+                Cliente: <strong>{openEnvio.clientes?.nome_fantasia || openEnvio.clientes?.razao_social}</strong>
+              </p>
+              <p className="text-xs text-muted-foreground">Escolha como enviar o certificado:</p>
+              <div className="grid gap-3">
+                <Button
+                  className="w-full gap-2 bg-green-500 hover:bg-green-600"
+                  onClick={() => enviarWhatsApp(openEnvio)}
+                >
+                  <Send className="h-4 w-4" />
+                  Enviar por WhatsApp
+                  {openEnvio.clientes?.telefone && (
+                    <span className="text-xs opacity-80">({openEnvio.clientes.telefone})</span>
+                  )}
+                </Button>
+                <Button
+                  variant="outline"
+                  className="w-full gap-2"
+                  onClick={() => enviarEmail(openEnvio)}
+                >
+                  <Send className="h-4 w-4" />
+                  Enviar por E-mail
+                  {openEnvio.clientes?.email && (
+                    <span className="text-xs text-muted-foreground">({openEnvio.clientes.email})</span>
+                  )}
+                </Button>
+              </div>
+            </div>
+            <DialogFooter>
+              <Button variant="ghost" onClick={() => setOpenEnvio(null)}>Cancelar</Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
+      )}
     </div>
   );
 }
@@ -375,6 +477,8 @@ function BoletimPage() {
   const [openNovo, setOpenNovo] = useState(false);
   const [openVer, setOpenVer] = useState<Boletim | null>(null);
   const [openCDF, setOpenCDF] = useState<{ blobUrl: string; numeroCDF: string } | null>(null);
+  const [openEnvio, setOpenEnvio] = useState<Boletim | null>(null);
+  const [openNFSe, setOpenNFSe] = useState<Boletim | null>(null);
   const [filtroStatus, setFiltroStatus] = useState("todos");
   const [dataFiltro, setDataFiltro] = useState(() => new Date().toISOString().slice(0, 10));
 
@@ -401,7 +505,7 @@ function BoletimPage() {
     queryFn: async () => {
       const { data } = await supabase
         .from("boletins_medicao")
-        .select("*, mtrs(numero, descricao_residuo, data_emissao, data_baixa), clientes(razao_social, nome_fantasia, logradouro, cidade, cnpj)")
+        .select("*, mtrs(numero, descricao_residuo, data_emissao, data_baixa), clientes(razao_social, nome_fantasia, logradouro, cidade, cnpj, email, telefone, valor_franquia, peso_franquia, valor_kg_excedente, inscricao_municipal, transportadora)")
         .eq("data_coleta", dataFiltro)
         .order("created_at", { ascending: false });
       return (data ?? []) as Boletim[];
@@ -439,7 +543,7 @@ function BoletimPage() {
   const criarBoletim = useMutation({
     mutationFn: async () => {
       if (!mtrSelecionado || !peso) throw new Error("Preencha o peso");
-      const numeroCdf = `CDF-${dataFiltro.replace(/-/g, "")}-${mtrSelecionado.numero.replace(/[^0-9]/g, "").slice(-4)}`;
+      const numeroCdf = crypto.randomUUID();
 
       const { error: bolError } = await supabase.from("boletins_medicao").insert([{
         owner_id: user.id,
@@ -488,24 +592,67 @@ function BoletimPage() {
     onError: (e: Error) => toast.error(e.message),
   });
 
+  const marcarEnviado = async (boletim: Boletim) => {
+    const { error } = await supabase.from("boletins_medicao").update({
+      cdf_enviado: true,
+      status: "cdf_enviado",
+      data_envio_cdf: new Date().toISOString(),
+    }).eq("id", boletim.id);
+    if (error) throw error;
+    qc.invalidateQueries({ queryKey: ["boletins"] });
+  };
+
+  const enviarWhatsApp = async (boletim: Boletim) => {
+    await marcarEnviado(boletim);
+    const cliente = boletim.clientes?.nome_fantasia || boletim.clientes?.razao_social || "";
+    const numeroCDF = boletim.numero || boletim.cdf_id || "";
+    const telefone = boletim.clientes?.telefone?.replace(/\D/g, "") || "";
+    const msg = encodeURIComponent(
+      `Olá ${cliente}! Segue o Certificado de Destinação Final Nº ${numeroCDF} referente à coleta de resíduos realizada em ${new Date(boletim.data_coleta + "T12:00:00").toLocaleDateString("pt-BR")}.
+
+Peso coletado: ${boletim.peso_coletado} ${boletim.unidade}
+
+Qualquer dúvida, estamos à disposição.
+
+Biologus Ambiental
+(62) 3558-2791`
+    );
+    const url = telefone
+      ? `https://wa.me/55${telefone}?text=${msg}`
+      : `https://wa.me/?text=${msg}`;
+    window.open(url, "_blank");
+    toast.success("CDF marcado como enviado via WhatsApp");
+    setOpenEnvio(null);
+  };
+
+  const enviarEmail = async (boletim: Boletim) => {
+    await marcarEnviado(boletim);
+    const cliente = boletim.clientes?.nome_fantasia || boletim.clientes?.razao_social || "";
+    const numeroCDF = boletim.numero || boletim.cdf_id || "";
+    const email = boletim.clientes?.email || "";
+    const assunto = encodeURIComponent(`Certificado de Destinação Final Nº ${numeroCDF} - Biologus Ambiental`);
+    const corpo = encodeURIComponent(
+      `Prezado(a) ${cliente},
+
+Segue o Certificado de Destinação Final Nº ${numeroCDF} referente à coleta de resíduos realizada em ${new Date(boletim.data_coleta + "T12:00:00").toLocaleDateString("pt-BR")}.
+
+Peso coletado: ${boletim.peso_coletado} ${boletim.unidade}
+
+Qualquer dúvida, estamos à disposição.
+
+Atenciosamente,
+Biologus Ambiental
+(62) 3558-2791
+comercial@biologusambiental.com.br`
+    );
+    window.open(`mailto:${email}?subject=${assunto}&body=${corpo}`, "_blank");
+    toast.success("CDF marcado como enviado via E-mail");
+    setOpenEnvio(null);
+  };
+
   const enviarCdf = useMutation({
     mutationFn: async (boletim: Boletim) => {
-      const { error } = await supabase.from("boletins_medicao").update({
-        cdf_enviado: true,
-        status: "cdf_enviado",
-        data_envio_cdf: new Date().toISOString(),
-      }).eq("id", boletim.id);
-      if (error) throw error;
-      const cliente = boletim.clientes?.nome_fantasia || boletim.clientes?.razao_social || "";
-      const numeroCDF = boletim.numero || boletim.cdf_id || "";
-      const msg = encodeURIComponent(
-        `Olá! Segue o Certificado de Destinação Final (CDF ${numeroCDF}) referente à coleta de resíduos realizada em ${new Date(boletim.data_coleta + "T12:00:00").toLocaleDateString("pt-BR")}.\n\nPeso coletado: ${boletim.peso_coletado} ${boletim.unidade}\nGerador: ${cliente}\n\nQualquer dúvida, estamos à disposição.\n\nBiologus Ambiental`
-      );
-      window.open(`https://wa.me/?text=${msg}`, "_blank");
-    },
-    onSuccess: () => {
-      qc.invalidateQueries({ queryKey: ["boletins"] });
-      toast.success("CDF marcado como enviado");
+      setOpenEnvio(boletim);
     },
     onError: (e: Error) => toast.error(e.message),
   });
@@ -639,6 +786,12 @@ function BoletimPage() {
                         className="h-8 text-xs gap-1 text-teal-700 border-teal-300 hover:bg-teal-50"
                         onClick={() => handleAbrirCDF(b)}>
                         <FileCheck className="h-3.5 w-3.5" /> Ver CDF
+                      </Button>
+                      {/* Botão NFS-e */}
+                      <Button size="sm" variant="outline"
+                        className="h-8 text-xs gap-1 text-blue-700 border-blue-300 hover:bg-blue-50"
+                        onClick={() => setOpenNFSe(b)}>
+                        <FileText className="h-3.5 w-3.5" /> NFS-e
                       </Button>
                       {b.pagamento_confirmado && !b.cdf_enviado && (
                         <Button size="sm" className="h-8 text-xs gap-1"
@@ -814,6 +967,140 @@ function BoletimPage() {
           </div>
         </DialogContent>
       </Dialog>
-    </div>
-  );
+    {/* Dialog: Enviar CDF */}
+      {openEnvio && (
+        <Dialog open={!!openEnvio} onOpenChange={(o) => !o && setOpenEnvio(null)}>
+          <DialogContent className="max-w-sm">
+            <DialogHeader>
+              <DialogTitle className="flex items-center gap-2">
+                <Send className="h-5 w-5 text-primary" />
+                Enviar CDF — {openEnvio.numero || openEnvio.cdf_id}
+              </DialogTitle>
+            </DialogHeader>
+            <div className="space-y-3 py-2">
+              <p className="text-sm text-muted-foreground">
+                Cliente: <strong>{openEnvio.clientes?.nome_fantasia || openEnvio.clientes?.razao_social}</strong>
+              </p>
+              <p className="text-xs text-muted-foreground">Escolha como enviar o certificado:</p>
+              <div className="grid gap-3">
+                <Button
+                  className="w-full gap-2 bg-green-500 hover:bg-green-600"
+                  onClick={() => enviarWhatsApp(openEnvio)}
+                >
+                  <Send className="h-4 w-4" />
+                  Enviar por WhatsApp
+                  {openEnvio.clientes?.telefone && (
+                    <span className="text-xs opacity-80">({openEnvio.clientes.telefone})</span>
+                  )}
+                </Button>
+                <Button
+                  variant="outline"
+                  className="w-full gap-2"
+                  onClick={() => enviarEmail(openEnvio)}
+                >
+                  <Send className="h-4 w-4" />
+                  Enviar por E-mail
+                  {openEnvio.clientes?.email && (
+                    <span className="text-xs text-muted-foreground">({openEnvio.clientes.email})</span>
+                  )}
+                </Button>
+              </div>
+            </div>
+            <DialogFooter>
+              <Button variant="ghost" onClick={() => setOpenEnvio(null)}>Cancelar</Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
+      )}
+
+      {/* Dialog: NFS-e */}
+      {openNFSe && (() => {
+        const b = openNFSe;
+        const prestador = getDadosPrestador(b.clientes?.transportadora);
+        const calc = calcularValorNF(b.peso_coletado, {
+          valor_franquia: b.clientes?.valor_franquia,
+          peso_franquia: b.clientes?.peso_franquia,
+          valor_kg_excedente: b.clientes?.valor_kg_excedente,
+        });
+        const mesRef = new Date(b.data_coleta + "T12:00:00").toLocaleDateString("pt-BR", { month: "long", year: "numeric" }).toUpperCase();
+        const descricao = `COLETA, TRANSPORTE, TRATAMENTO E DESTINACAO DE RESIDUOS PERIGOSOS REFERENTE AO MES DE ${mesRef}`;
+        const valorFmt = (v: number) => v.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
+        const issqn = calc.valorTotal * prestador.aliquotaISSQN / 100;
+        const copyText = (text: string) => { navigator.clipboard.writeText(text); toast.success("Copiado!"); };
+        return (
+          <Dialog open={!!openNFSe} onOpenChange={(o) => !o && setOpenNFSe(null)}>
+            <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+              <DialogHeader>
+                <DialogTitle className="flex items-center gap-2">
+                  <FileText className="h-5 w-5 text-blue-600" />
+                  Emitir NFS-e — {b.clientes?.nome_fantasia || b.clientes?.razao_social}
+                </DialogTitle>
+              </DialogHeader>
+              <div className="space-y-4 py-2">
+                {calc.valorTotal === 0 && (
+                  <div className="bg-amber-50 border border-amber-200 rounded-md p-3 text-xs text-amber-800">
+                    ⚠️ Valores do contrato não cadastrados. Configure em Clientes → editar cliente.
+                  </div>
+                )}
+                <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 space-y-2">
+                  <p className="text-sm font-semibold text-blue-900">Cálculo do valor</p>
+                  <div className="grid grid-cols-2 gap-2 text-xs">
+                    <span className="text-muted-foreground">Peso coletado:</span>
+                    <span className="font-medium">{b.peso_coletado} {b.unidade}</span>
+                    <span className="text-muted-foreground">Franquia:</span>
+                    <span className="font-medium">{valorFmt(calc.valorBase)} ({b.clientes?.peso_franquia || 0} kg)</span>
+                    {calc.pesoExcedente > 0 && (
+                      <>
+                        <span className="text-muted-foreground">Excedente:</span>
+                        <span className="font-medium text-orange-600">{calc.pesoExcedente.toFixed(3)} kg × {valorFmt(b.clientes?.valor_kg_excedente || 0)} = {valorFmt(calc.valorExcedente)}</span>
+                      </>
+                    )}
+                    <span className="text-muted-foreground font-semibold">Valor total:</span>
+                    <span className="font-bold text-blue-700 text-sm">{valorFmt(calc.valorTotal)}</span>
+                    <span className="text-muted-foreground">ISSQN ({prestador.aliquotaISSQN}%):</span>
+                    <span className="font-medium">{valorFmt(issqn)}</span>
+                  </div>
+                </div>
+                <div className="space-y-3">
+                  <p className="text-sm font-semibold">Dados para preencher no portal</p>
+                  {([
+                    { label: "Tomador — CNPJ/CPF", value: b.clientes?.cnpj || "" },
+                    { label: "Tomador — Razão Social", value: b.clientes?.razao_social || "" },
+                    { label: "Tomador — Inscrição Municipal", value: b.clientes?.inscricao_municipal || "Não informado" },
+                    { label: "Código do Serviço", value: "07.09.01" },
+                    { label: "Descrição do Serviço", value: descricao },
+                    { label: "Valor do Serviço (R$)", value: calc.valorTotal.toFixed(2).replace(".", ",") },
+                    { label: "Competência", value: new Date(b.data_coleta + "T12:00:00").toLocaleDateString("pt-BR", { month: "2-digit", year: "numeric" }) },
+                  ] as {label: string; value: string}[]).map(({ label, value }) => (
+                    <div key={label} className="flex items-start justify-between gap-3 p-2.5 bg-muted/30 rounded-md border">
+                      <div className="flex-1 min-w-0">
+                        <p className="text-xs text-muted-foreground mb-0.5">{label}</p>
+                        <p className="text-sm font-medium break-all">{value}</p>
+                      </div>
+                      {value && value !== "Não informado" && (
+                        <Button variant="ghost" size="sm" className="h-7 px-2 flex-shrink-0" onClick={() => copyText(value)}>
+                          Copiar
+                        </Button>
+                      )}
+                    </div>
+                  ))}
+                </div>
+                <div className="text-xs text-muted-foreground bg-muted/20 rounded-md p-3">
+                  <p className="font-medium mb-1">Prestador: {prestador.fantasia}</p>
+                  <p>CNPJ: {prestador.cnpj} | IM: {prestador.inscricaoMunicipal}</p>
+                  <p>Regime: {prestador.regime} | ISSQN: {prestador.aliquotaISSQN}%</p>
+                </div>
+              </div>
+              <DialogFooter>
+                <Button variant="ghost" onClick={() => setOpenNFSe(null)}>Fechar</Button>
+                <Button className="gap-2 bg-blue-600 hover:bg-blue-700"
+                  onClick={() => window.open("https://www.isspnetonline.com.br/goiania/online/", "_blank")}>
+                  <FileText className="h-4 w-4" /> Abrir Portal NFS-e
+                </Button>
+              </DialogFooter>
+            </DialogContent>
+          </Dialog>
+        );
+      })()}
+    </div>  );
 }
