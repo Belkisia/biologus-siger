@@ -1,8 +1,19 @@
 {
   "version": 3,
   "routes": [
-    {"src":"^/assets/(.+)$","dest":"/assets/$1"},
-    {"handle":"filesystem"},
-    {"src":"^/(.*)$","dest":"/index"}
+    {
+      "src": "^/assets/(.+)$",
+      "dest": "/assets/$1"
+    },
+    {
+      "handle": "filesystem"
+    },
+    {
+      "src": "^/(.*)$",
+      "dest": "/index",
+      "headers": {
+        "cache-control": "no-cache, no-store, must-revalidate"
+      }
+    }
   ]
 }
