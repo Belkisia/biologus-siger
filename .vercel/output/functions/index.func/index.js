@@ -40,6 +40,13 @@ module.exports = async function(req, res) {
     });
     const response = await app.fetch(request, { env: process.env });
     res.status(response.status);
+    // Forçar no-cache para HTML
+    const ct = response.headers.get('content-type') || '';
+    if (ct.includes('text/html')) {
+      res.setHeader('cache-control', 'no-cache, no-store, must-revalidate');
+      res.setHeader('pragma', 'no-cache');
+      res.setHeader('expires', '0');
+    }
     for (const [k, v] of response.headers.entries()) {
       if (k !== "transfer-encoding" && k !== "connection") res.setHeader(k, v);
     }
