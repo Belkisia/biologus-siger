@@ -1,16 +1,1 @@
-{
-  "version": 3,
-  "routes": [
-    {
-      "src": "^/assets/(.+)$",
-      "dest": "/$1"
-    },
-    {
-      "handle": "filesystem"
-    },
-    {
-      "src": "^/(.*)$",
-      "dest": "/index"
-    }
-  ]
-}
+{"version":3,"routes":[{"src":"^/assets/(.+)$","dest":"/$1"},{"handle":"filesystem"},{"src":"^/(.*)$","dest":"/index"}]}
