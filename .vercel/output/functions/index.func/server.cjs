@@ -20153,25 +20153,25 @@ var init_tanstack_react_router = __esm({
   }
 });
 
-// .output/server/_tanstack-start-manifest_v-DH88GO-j.mjs
-var tanstack_start_manifest_v_DH88GO_j_exports = {};
-__export(tanstack_start_manifest_v_DH88GO_j_exports, {
+// .output/server/_tanstack-start-manifest_v-CMqS3Rpp.mjs
+var tanstack_start_manifest_v_CMqS3Rpp_exports = {};
+__export(tanstack_start_manifest_v_CMqS3Rpp_exports, {
   tsrStartManifest: () => tsrStartManifest
 });
 var tsrStartManifest;
-var init_tanstack_start_manifest_v_DH88GO_j = __esm({
-  ".output/server/_tanstack-start-manifest_v-DH88GO-j.mjs"() {
+var init_tanstack_start_manifest_v_CMqS3Rpp = __esm({
+  ".output/server/_tanstack-start-manifest_v-CMqS3Rpp.mjs"() {
     "use strict";
-    tsrStartManifest = () => ({ routes: { __root__: { filePath: "/tmp/siger-latest/Belkisia-biologus-siger-fa99cb9/src/routes/__root.tsx", children: ["/", "/_authenticated", "/auth", "/reset-password", "/unsubscribe", "/api/anthropic-proxy", "/api/send-email", "/assinar/$token", "/email/unsubscribe", "/validar/$codigo", "/lovable/email/auth/preview", "/lovable/email/transactional/preview", "/lovable/email/transactional/send"], preloads: ["/assets/index-CrbIuwa_.js"], scripts: [{ attrs: { type: "module", async: true, src: "/assets/index-CrbIuwa_.js" } }] }, "/": { filePath: "/tmp/siger-latest/Belkisia-biologus-siger-fa99cb9/src/routes/index.tsx", children: void 0, preloads: ["/assets/index-DBbm0zxN.js", "/assets/recycle-BLlV6xQR.js", "/assets/arrow-right-iWQExeet.js", "/assets/shield-BurVk5OC.js", "/assets/chart-column-BJXyguEZ.js"] }, "/_authenticated": { filePath: "/tmp/siger-latest/Belkisia-biologus-siger-fa99cb9/src/routes/_authenticated/route.tsx", children: ["/_authenticated/agendamento", "/_authenticated/boletim", "/_authenticated/cdf", "/_authenticated/clientes", "/_authenticated/coletas", "/_authenticated/conciliacao", "/_authenticated/contratos", "/_authenticated/dashboard", "/_authenticated/financeiro", "/_authenticated/historico", "/_authenticated/licencas", "/_authenticated/modelos-contrato", "/_authenticated/mtr", "/_authenticated/notas-fiscais", "/_authenticated/painel", "/_authenticated/pgrss-lista", "/_authenticated/pgrss-nova", "/_authenticated/portal", "/_authenticated/precos-pgrss", "/_authenticated/propostas", "/_authenticated/relatorio-financeiro", "/_authenticated/relatorios", "/_authenticated/rotas", "/_authenticated/usuarios", "/_authenticated/pgrss-ver/$id"], preloads: ["/assets/route-BquGOouP.js", "/assets/index-eS6Nqf-9.js", "/assets/index-CjDHM0Yd.js", "/assets/index-B_mRZ8Ng.js", "/assets/index-CIwdTnGa.js", "/assets/index-Dv7yg5yI.js", "/assets/index-Dj1sfxCJ.js", "/assets/recycle-BLlV6xQR.js", "/assets/external-link-DLU1Gkgd.js", "/assets/building-2-xTB6wnce.js", "/assets/check-check-BWPeM5TX.js", "/assets/file-text-DxLzbtIk.js", "/assets/award-CVR-6s2W.js", "/assets/shield-check-Vs8Pxr2Z.js", "/assets/users-DOwqrQzh.js", "/assets/dollar-sign-q9yzytag.js", "/assets/file-pen-line-CJ5CRUhR.js", "/assets/landmark-Dz1S8gE6.js", "/assets/trending-up-MKDiktGk.js", "/assets/chart-column-BJXyguEZ.js", "/assets/badge-BoKEXwkW.js", "/assets/index-DwN4xeWX.js", "/assets/loader-circle-NQBc4WPZ.js", "/assets/shield-BurVk5OC.js", "/assets/index-xzMD7PS_.js"] }, "/auth": { filePath: "/tmp/siger-latest/Belkisia-biologus-siger-fa99cb9/src/routes/auth.tsx", children: void 0, preloads: ["/assets/auth-bu5ue4v4.js", "/assets/label-BcD9cdE-.js", "/assets/tabs-de_EroWf.js", "/assets/recycle-BLlV6xQR.js", "/assets/loader-circle-NQBc4WPZ.js", "/assets/index-CjDHM0Yd.js", "/assets/index-BI1LDtyr.js", "/assets/index-CIwdTnGa.js", "/assets/index-DwN4xeWX.js", "/assets/index-Dj1sfxCJ.js"] }, "/reset-password": { filePath: "/tmp/siger-latest/Belkisia-biologus-siger-fa99cb9/src/routes/reset-password.tsx", children: void 0, preloads: ["/assets/reset-password-7UNBahUR.js", "/assets/label-BcD9cdE-.js", "/assets/recycle-BLlV6xQR.js", "/assets/loader-circle-NQBc4WPZ.js"] }, "/unsubscribe": { filePath: "/tmp/siger-latest/Belkisia-biologus-siger-fa99cb9/src/routes/unsubscribe.tsx", children: void 0, preloads: ["/assets/unsubscribe-DAaRwSpH.js", "/assets/loader-circle-NQBc4WPZ.js", "/assets/circle-x-DH4vfpB9.js"] }, "/_authenticated/agendamento": { filePath: "/tmp/siger-latest/Belkisia-biologus-siger-fa99cb9/src/routes/_authenticated/agendamento.tsx", children: void 0, preloads: ["/assets/agendamento-B5BDasWN.js", "/assets/label-BcD9cdE-.js", "/assets/dialog-DpJraCbT.js", "/assets/checkbox-B18kgYtg.js", "/assets/sendEmail-D8KygFD6.js", "/assets/arrow-right-iWQExeet.js", "/assets/printer-BUmfUf1p.js", "/assets/plus-D2jdXrHd.js", "/assets/eye-D4rfWs1a.js", "/assets/pen-line-BlWXFguE.js", "/assets/trash-2-Dkb6oYUS.js", "/assets/search-CgF9NIBP.js", "/assets/rotate-ccw-C_xWIbCJ.js", "/assets/index-Da_P8VG0.js", "/assets/check-Y1T7sRZm.js"] }, "/_authenticated/boletim": { filePath: "/tmp/siger-latest/Belkisia-biologus-siger-fa99cb9/src/routes/_authenticated/boletim.tsx", children: void 0, preloads: ["/assets/boletim-iNtpuL5h.js", "/assets/label-BcD9cdE-.js", "/assets/dialog-DpJraCbT.js", "/assets/table-CL7duU8J.js", "/assets/select-CDyhvA1V.js", "/assets/sendEmail-D8KygFD6.js", "/assets/plus-D2jdXrHd.js", "/assets/file-check-Dp9ipdYr.js", "/assets/eye-D4rfWs1a.js", "/assets/index-BI1LDtyr.js", "/assets/index-Da_P8VG0.js", "/assets/check-Y1T7sRZm.js"] }, "/_authenticated/cdf": { filePath: "/tmp/siger-latest/Belkisia-biologus-siger-fa99cb9/src/routes/_authenticated/cdf.tsx", children: void 0, preloads: ["/assets/cdf-xVBXfe7i.js", "/assets/label-BcD9cdE-.js", "/assets/textarea-BdDrkk2w.js", "/assets/select-CDyhvA1V.js", "/assets/dialog-DpJraCbT.js", "/assets/table-CL7duU8J.js", "/assets/document-upload-cT6iF9vf.js", "/assets/plus-D2jdXrHd.js", "/assets/search-CgF9NIBP.js", "/assets/file-check-Dp9ipdYr.js", "/assets/eye-D4rfWs1a.js", "/assets/printer-BUmfUf1p.js", "/assets/trash-2-Dkb6oYUS.js", "/assets/index-BI1LDtyr.js", "/assets/index-Da_P8VG0.js", "/assets/check-Y1T7sRZm.js", "/assets/upload-sFwfHuMA.js"] }, "/_authenticated/clientes": { filePath: "/tmp/siger-latest/Belkisia-biologus-siger-fa99cb9/src/routes/_authenticated/clientes.tsx", children: ["/_authenticated/clientes/$clienteId"], preloads: ["/assets/clientes-WUNG8Wrq.js", "/assets/auth-middleware-C4S2zpXi.js", "/assets/label-BcD9cdE-.js", "/assets/textarea-BdDrkk2w.js", "/assets/dialog-DpJraCbT.js", "/assets/table-CL7duU8J.js", "/assets/plus-D2jdXrHd.js", "/assets/search-CgF9NIBP.js", "/assets/folder-open-DYymBoy5.js", "/assets/trash-2-Dkb6oYUS.js"] }, "/_authenticated/coletas": { filePath: "/tmp/siger-latest/Belkisia-biologus-siger-fa99cb9/src/routes/_authenticated/coletas.tsx", children: void 0, preloads: ["/assets/coletas-CFu3lDML.js", "/assets/label-BcD9cdE-.js", "/assets/textarea-BdDrkk2w.js", "/assets/select-CDyhvA1V.js", "/assets/dialog-DpJraCbT.js", "/assets/table-CL7duU8J.js", "/assets/plus-D2jdXrHd.js", "/assets/index-BI1LDtyr.js", "/assets/index-Da_P8VG0.js", "/assets/check-Y1T7sRZm.js"] }, "/_authenticated/conciliacao": { filePath: "/tmp/siger-latest/Belkisia-biologus-siger-fa99cb9/src/routes/_authenticated/conciliacao.tsx", children: void 0, preloads: ["/assets/conciliacao-DDA3KneT.js", "/assets/label-BcD9cdE-.js", "/assets/select-CDyhvA1V.js", "/assets/dialog-DpJraCbT.js", "/assets/table-CL7duU8J.js", "/assets/plus-D2jdXrHd.js", "/assets/upload-sFwfHuMA.js", "/assets/trash-2-Dkb6oYUS.js", "/assets/index-BI1LDtyr.js", "/assets/index-Da_P8VG0.js", "/assets/check-Y1T7sRZm.js"] }, "/_authenticated/contratos": { filePath: "/tmp/siger-latest/Belkisia-biologus-siger-fa99cb9/src/routes/_authenticated/contratos.tsx", children: void 0, preloads: ["/assets/contratos-DaP8ceOh.js", "/assets/label-BcD9cdE-.js", "/assets/select-CDyhvA1V.js", "/assets/dialog-DpJraCbT.js", "/assets/auth-middleware-C4S2zpXi.js", "/assets/plus-D2jdXrHd.js", "/assets/eye-D4rfWs1a.js", "/assets/mail-BrE2Tb6-.js", "/assets/trash-2-Dkb6oYUS.js", "/assets/index-BI1LDtyr.js", "/assets/index-Da_P8VG0.js", "/assets/check-Y1T7sRZm.js"] }, "/_authenticated/dashboard": { filePath: "/tmp/siger-latest/Belkisia-biologus-siger-fa99cb9/src/routes/_authenticated/dashboard.tsx", children: void 0, preloads: ["/assets/dashboard-7xFDxuB_.js", "/assets/PieChart-CzWxK-LJ.js", "/assets/index-DeuVUQt8.js", "/assets/index-C7yKKq-w.js"] }, "/_authenticated/financeiro": { filePath: "/tmp/siger-latest/Belkisia-biologus-siger-fa99cb9/src/routes/_authenticated/financeiro.tsx", children: void 0, preloads: ["/assets/financeiro-BPho4LXh.js", "/assets/label-BcD9cdE-.js", "/assets/textarea-BdDrkk2w.js", "/assets/select-CDyhvA1V.js", "/assets/dialog-DpJraCbT.js", "/assets/table-CL7duU8J.js", "/assets/auth-middleware-C4S2zpXi.js", "/assets/nfse.functions-xIMugKWD.js", "/assets/plus-D2jdXrHd.js", "/assets/trash-2-Dkb6oYUS.js", "/assets/index-BI1LDtyr.js", "/assets/index-Da_P8VG0.js", "/assets/check-Y1T7sRZm.js"] }, "/_authenticated/historico": { filePath: "/tmp/siger-latest/Belkisia-biologus-siger-fa99cb9/src/routes/_authenticated/historico.tsx", children: void 0, preloads: ["/assets/historico-BUQNHH7A.js", "/assets/file-check-Dp9ipdYr.js", "/assets/search-CgF9NIBP.js"] }, "/_authenticated/licencas": { filePath: "/tmp/siger-latest/Belkisia-biologus-siger-fa99cb9/src/routes/_authenticated/licencas.tsx", children: void 0, preloads: ["/assets/licencas-DfNe7jR5.js", "/assets/label-BcD9cdE-.js", "/assets/textarea-BdDrkk2w.js", "/assets/select-CDyhvA1V.js", "/assets/dialog-DpJraCbT.js", "/assets/table-CL7duU8J.js", "/assets/document-upload-cT6iF9vf.js", "/assets/plus-D2jdXrHd.js", "/assets/trash-2-Dkb6oYUS.js", "/assets/index-BI1LDtyr.js", "/assets/index-Da_P8VG0.js", "/assets/check-Y1T7sRZm.js", "/assets/upload-sFwfHuMA.js"] }, "/_authenticated/modelos-contrato": { filePath: "/tmp/siger-latest/Belkisia-biologus-siger-fa99cb9/src/routes/_authenticated/modelos-contrato.tsx", children: void 0, preloads: ["/assets/modelos-contrato-CYvrlVhx.js", "/assets/auth-middleware-C4S2zpXi.js", "/assets/label-BcD9cdE-.js", "/assets/textarea-BdDrkk2w.js", "/assets/index-Da_P8VG0.js", "/assets/dialog-DpJraCbT.js", "/assets/table-CL7duU8J.js", "/assets/index-C7yKKq-w.js", "/assets/contrato-modelo.functions-Dq_7KQhg.js", "/assets/plus-D2jdXrHd.js", "/assets/eye-D4rfWs1a.js", "/assets/history-CQI2hUqj.js", "/assets/trash-2-Dkb6oYUS.js"] }, "/_authenticated/mtr": { filePath: "/tmp/siger-latest/Belkisia-biologus-siger-fa99cb9/src/routes/_authenticated/mtr.tsx", children: void 0, preloads: ["/assets/mtr-CToRSY0w.js", "/assets/label-BcD9cdE-.js", "/assets/textarea-BdDrkk2w.js", "/assets/select-CDyhvA1V.js", "/assets/dialog-DpJraCbT.js", "/assets/table-CL7duU8J.js", "/assets/document-upload-cT6iF9vf.js", "/assets/plus-D2jdXrHd.js", "/assets/search-CgF9NIBP.js", "/assets/printer-BUmfUf1p.js", "/assets/trash-2-Dkb6oYUS.js", "/assets/index-BI1LDtyr.js", "/assets/index-Da_P8VG0.js", "/assets/check-Y1T7sRZm.js", "/assets/upload-sFwfHuMA.js"] }, "/_authenticated/notas-fiscais": { filePath: "/tmp/siger-latest/Belkisia-biologus-siger-fa99cb9/src/routes/_authenticated/notas-fiscais.tsx", children: void 0, preloads: ["/assets/notas-fiscais-DA89Rq_p.js", "/assets/auth-middleware-C4S2zpXi.js", "/assets/label-BcD9cdE-.js", "/assets/textarea-BdDrkk2w.js", "/assets/table-CL7duU8J.js", "/assets/select-CDyhvA1V.js", "/assets/dialog-DpJraCbT.js", "/assets/nfse.functions-xIMugKWD.js", "/assets/download-BjzfWGYw.js", "/assets/circle-x-DH4vfpB9.js", "/assets/index-BI1LDtyr.js", "/assets/index-Da_P8VG0.js", "/assets/check-Y1T7sRZm.js"] }, "/_authenticated/pgrss-lista": { filePath: "/tmp/siger-latest/Belkisia-biologus-siger-fa99cb9/src/routes/_authenticated/pgrss-lista.tsx", children: void 0, preloads: ["/assets/pgrss-lista-B3ewmC7I.js", "/assets/plus-D2jdXrHd.js", "/assets/eye-D4rfWs1a.js"] }, "/_authenticated/pgrss-nova": { filePath: "/tmp/siger-latest/Belkisia-biologus-siger-fa99cb9/src/routes/_authenticated/pgrss-nova.tsx", children: void 0, preloads: ["/assets/pgrss-nova-CbYgA5Tq.js", "/assets/label-BcD9cdE-.js", "/assets/select-CDyhvA1V.js", "/assets/auth-middleware-C4S2zpXi.js", "/assets/pgrss.functions-CJhtV7vZ.js", "/assets/eye-D4rfWs1a.js", "/assets/printer-BUmfUf1p.js", "/assets/save-ppVFdYVE.js", "/assets/index-BI1LDtyr.js", "/assets/index-Da_P8VG0.js", "/assets/check-Y1T7sRZm.js"] }, "/_authenticated/portal": { filePath: "/tmp/siger-latest/Belkisia-biologus-siger-fa99cb9/src/routes/_authenticated/portal.tsx", children: void 0, preloads: ["/assets/portal-DUIgpiFw.js", "/assets/tabs-de_EroWf.js", "/assets/table-CL7duU8J.js", "/assets/circle-alert-BK2ws7OG.js", "/assets/index-BI1LDtyr.js"] }, "/_authenticated/precos-pgrss": { filePath: "/tmp/siger-latest/Belkisia-biologus-siger-fa99cb9/src/routes/_authenticated/precos-pgrss.tsx", children: void 0, preloads: ["/assets/precos-pgrss-BtaSWoCS.js", "/assets/auth-middleware-C4S2zpXi.js", "/assets/pgrss.functions-CJhtV7vZ.js", "/assets/label-BcD9cdE-.js"] }, "/_authenticated/propostas": { filePath: "/tmp/siger-latest/Belkisia-biologus-siger-fa99cb9/src/routes/_authenticated/propostas.tsx", children: ["/_authenticated/propostas/nova", "/_authenticated/propostas/pgrss/$id", "/_authenticated/propostas/pgrss/nova"], preloads: ["/assets/propostas-D9dYa9H5.js", "/assets/label-BcD9cdE-.js", "/assets/textarea-BdDrkk2w.js", "/assets/select-CDyhvA1V.js", "/assets/dialog-DpJraCbT.js", "/assets/table-CL7duU8J.js", "/assets/sendEmail-D8KygFD6.js", "/assets/auth-middleware-C4S2zpXi.js", "/assets/contrato-modelo.functions-Dq_7KQhg.js", "/assets/plus-D2jdXrHd.js", "/assets/trash-2-Dkb6oYUS.js", "/assets/eye-D4rfWs1a.js", "/assets/download-BjzfWGYw.js", "/assets/mail-BrE2Tb6-.js", "/assets/index-BI1LDtyr.js", "/assets/index-Da_P8VG0.js", "/assets/check-Y1T7sRZm.js"] }, "/_authenticated/relatorio-financeiro": { filePath: "/tmp/siger-latest/Belkisia-biologus-siger-fa99cb9/src/routes/_authenticated/relatorio-financeiro.tsx", children: void 0, preloads: ["/assets/relatorio-financeiro-DHXmTjiU.js", "/assets/download-BjzfWGYw.js"] }, "/_authenticated/relatorios": { filePath: "/tmp/siger-latest/Belkisia-biologus-siger-fa99cb9/src/routes/_authenticated/relatorios.tsx", children: void 0, preloads: ["/assets/relatorios-BJnuZvPt.js", "/assets/label-BcD9cdE-.js", "/assets/tabs-de_EroWf.js", "/assets/table-CL7duU8J.js", "/assets/download-BjzfWGYw.js", "/assets/PieChart-CzWxK-LJ.js", "/assets/index-BI1LDtyr.js", "/assets/index-DeuVUQt8.js", "/assets/index-C7yKKq-w.js"] }, "/_authenticated/rotas": { filePath: "/tmp/siger-latest/Belkisia-biologus-siger-fa99cb9/src/routes/_authenticated/rotas.tsx", children: void 0, preloads: ["/assets/rotas-y263xgvQ.js", "/assets/label-BcD9cdE-.js", "/assets/select-CDyhvA1V.js", "/assets/dialog-DpJraCbT.js", "/assets/checkbox-B18kgYtg.js", "/assets/plus-D2jdXrHd.js", "/assets/trash-2-Dkb6oYUS.js", "/assets/index-BI1LDtyr.js", "/assets/index-Da_P8VG0.js", "/assets/check-Y1T7sRZm.js"] }, "/_authenticated/usuarios": { filePath: "/tmp/siger-latest/Belkisia-biologus-siger-fa99cb9/src/routes/_authenticated/usuarios.tsx", children: void 0, preloads: ["/assets/usuarios-D3JZHMfA.js", "/assets/table-CL7duU8J.js", "/assets/select-CDyhvA1V.js", "/assets/trash-2-Dkb6oYUS.js", "/assets/plus-D2jdXrHd.js", "/assets/index-BI1LDtyr.js", "/assets/index-Da_P8VG0.js", "/assets/check-Y1T7sRZm.js"] }, "/assinar/$token": { filePath: "/tmp/siger-latest/Belkisia-biologus-siger-fa99cb9/src/routes/assinar.$token.tsx", children: void 0, preloads: ["/assets/assinar._token-aDkyn7kC.js", "/assets/assinar._token-XxStSKV5.js", "/assets/circle-alert-BK2ws7OG.js", "/assets/assinar._token-BnGC3kzA.js", "/assets/auth-middleware-C4S2zpXi.js", "/assets/typeof-QjJsDpFa.js", "/assets/index-DeuVUQt8.js", "/assets/label-BcD9cdE-.js", "/assets/checkbox-B18kgYtg.js", "/assets/assinatura.functions-OnVaW7DF.js", "/assets/loader-circle-NQBc4WPZ.js", "/assets/file-text-DxLzbtIk.js", "/assets/pen-line-BlWXFguE.js", "/assets/shield-check-Vs8Pxr2Z.js", "/assets/index-CjDHM0Yd.js", "/assets/index-Da_P8VG0.js", "/assets/index-xzMD7PS_.js", "/assets/index-Dj1sfxCJ.js", "/assets/check-Y1T7sRZm.js"] }, "/validar/$codigo": { filePath: "/tmp/siger-latest/Belkisia-biologus-siger-fa99cb9/src/routes/validar.$codigo.tsx", children: void 0, preloads: ["/assets/validar._codigo-Cz1r-iUO.js", "/assets/auth-middleware-C4S2zpXi.js", "/assets/badge-BoKEXwkW.js", "/assets/assinatura.functions-OnVaW7DF.js", "/assets/loader-circle-NQBc4WPZ.js", "/assets/shield-check-Vs8Pxr2Z.js", "/assets/download-BjzfWGYw.js"] }, "/_authenticated/clientes/$clienteId": { filePath: "/tmp/siger-latest/Belkisia-biologus-siger-fa99cb9/src/routes/_authenticated/clientes.$clienteId.tsx", children: void 0, preloads: ["/assets/clientes._clienteId-9AkVZJ6g.js", "/assets/clientes._clienteId-DDJvKLv9.js", "/assets/clientes._clienteId-LrP5057C.js", "/assets/select-CDyhvA1V.js", "/assets/tabs-de_EroWf.js", "/assets/arrow-left-BOALwHb6.js", "/assets/mail-BrE2Tb6-.js", "/assets/upload-sFwfHuMA.js", "/assets/history-CQI2hUqj.js", "/assets/rotate-ccw-C_xWIbCJ.js", "/assets/index-BI1LDtyr.js", "/assets/index-Da_P8VG0.js", "/assets/check-Y1T7sRZm.js"] }, "/_authenticated/pgrss-ver/$id": { filePath: "/tmp/siger-latest/Belkisia-biologus-siger-fa99cb9/src/routes/_authenticated/pgrss-ver.$id.tsx", children: void 0, preloads: ["/assets/pgrss-ver._id-D14_Q9ef.js", "/assets/auth-middleware-C4S2zpXi.js", "/assets/pgrss.functions-CJhtV7vZ.js"] }, "/_authenticated/propostas/nova": { filePath: "/tmp/siger-latest/Belkisia-biologus-siger-fa99cb9/src/routes/_authenticated/propostas.nova.tsx", children: void 0, preloads: ["/assets/propostas.nova-xECksCTM.js"] }, "/_authenticated/propostas/pgrss/$id": { filePath: "/tmp/siger-latest/Belkisia-biologus-siger-fa99cb9/src/routes/_authenticated/propostas.pgrss.$id.tsx", children: void 0, preloads: ["/assets/propostas.pgrss._id-DM0ppRma.js", "/assets/pgrss.functions-CJhtV7vZ.js", "/assets/arrow-left-BOALwHb6.js", "/assets/printer-BUmfUf1p.js"] }, "/_authenticated/propostas/pgrss/nova": { filePath: "/tmp/siger-latest/Belkisia-biologus-siger-fa99cb9/src/routes/_authenticated/propostas.pgrss.nova.tsx", children: void 0, preloads: ["/assets/propostas.pgrss.nova-Dh2LVPS0.js", "/assets/pgrss.functions-CJhtV7vZ.js", "/assets/printer-BUmfUf1p.js", "/assets/save-ppVFdYVE.js"] } } });
+    tsrStartManifest = () => ({ routes: { __root__: { filePath: "/tmp/siger-latest/Belkisia-biologus-siger-fa99cb9/src/routes/__root.tsx", children: ["/", "/_authenticated", "/auth", "/reset-password", "/unsubscribe", "/api/anthropic-proxy", "/api/send-email", "/assinar/$token", "/email/unsubscribe", "/validar/$codigo", "/lovable/email/auth/preview", "/lovable/email/transactional/preview", "/lovable/email/transactional/send"], preloads: ["/assets/index-C9_2v7pz.js"], scripts: [{ attrs: { type: "module", async: true, src: "/assets/index-C9_2v7pz.js" } }] }, "/": { filePath: "/tmp/siger-latest/Belkisia-biologus-siger-fa99cb9/src/routes/index.tsx", children: void 0, preloads: ["/assets/index--6cdjjJ-.js", "/assets/recycle-3rDxrKws.js", "/assets/arrow-right-DrZ7ft2P.js", "/assets/shield-BEp3oEHe.js", "/assets/chart-column-BMpR4ghf.js"] }, "/_authenticated": { filePath: "/tmp/siger-latest/Belkisia-biologus-siger-fa99cb9/src/routes/_authenticated/route.tsx", children: ["/_authenticated/agendamento", "/_authenticated/boletim", "/_authenticated/cdf", "/_authenticated/clientes", "/_authenticated/coletas", "/_authenticated/conciliacao", "/_authenticated/contratos", "/_authenticated/dashboard", "/_authenticated/financeiro", "/_authenticated/historico", "/_authenticated/licencas", "/_authenticated/modelos-contrato", "/_authenticated/mtr", "/_authenticated/notas-fiscais", "/_authenticated/painel", "/_authenticated/pgrss-lista", "/_authenticated/pgrss-nova", "/_authenticated/portal", "/_authenticated/precos-pgrss", "/_authenticated/propostas", "/_authenticated/relatorio-financeiro", "/_authenticated/relatorios", "/_authenticated/rotas", "/_authenticated/usuarios", "/_authenticated/pgrss-ver/$id"], preloads: ["/assets/route-DyuxEBYH.js", "/assets/index-lNCHZd04.js", "/assets/index-DhIDV8s9.js", "/assets/index-7gvzw5oQ.js", "/assets/index-B8RviqSE.js", "/assets/index-eZgJSIqH.js", "/assets/index-aI2jerDk.js", "/assets/recycle-3rDxrKws.js", "/assets/external-link-z2B8VHY-.js", "/assets/building-2-BUTd6ms1.js", "/assets/check-check-BWfsGuyA.js", "/assets/file-text-Bd3I4rsu.js", "/assets/award-CrZUigeJ.js", "/assets/shield-check-C0mFHq6l.js", "/assets/users-ZvpR-rMZ.js", "/assets/dollar-sign-BXiTqhXX.js", "/assets/file-pen-line-DVSJemjP.js", "/assets/landmark-DG2-doEn.js", "/assets/trending-up-qe3oTBXj.js", "/assets/chart-column-BMpR4ghf.js", "/assets/badge-CAUv28Kt.js", "/assets/index-CJL45VUn.js", "/assets/loader-circle-CwVPwZxj.js", "/assets/shield-BEp3oEHe.js", "/assets/index-CZX9gHcB.js"] }, "/auth": { filePath: "/tmp/siger-latest/Belkisia-biologus-siger-fa99cb9/src/routes/auth.tsx", children: void 0, preloads: ["/assets/auth-MklkpgeJ.js", "/assets/label-BHMzSQ32.js", "/assets/tabs-DB6burs7.js", "/assets/recycle-3rDxrKws.js", "/assets/loader-circle-CwVPwZxj.js", "/assets/index-DhIDV8s9.js", "/assets/index-mcEMciqf.js", "/assets/index-B8RviqSE.js", "/assets/index-CJL45VUn.js", "/assets/index-aI2jerDk.js"] }, "/reset-password": { filePath: "/tmp/siger-latest/Belkisia-biologus-siger-fa99cb9/src/routes/reset-password.tsx", children: void 0, preloads: ["/assets/reset-password-Bp2ZUmWa.js", "/assets/label-BHMzSQ32.js", "/assets/recycle-3rDxrKws.js", "/assets/loader-circle-CwVPwZxj.js"] }, "/unsubscribe": { filePath: "/tmp/siger-latest/Belkisia-biologus-siger-fa99cb9/src/routes/unsubscribe.tsx", children: void 0, preloads: ["/assets/unsubscribe-FByfCUwO.js", "/assets/loader-circle-CwVPwZxj.js", "/assets/circle-x-BZ9s9WUj.js"] }, "/_authenticated/agendamento": { filePath: "/tmp/siger-latest/Belkisia-biologus-siger-fa99cb9/src/routes/_authenticated/agendamento.tsx", children: void 0, preloads: ["/assets/agendamento-BBaThJsN.js", "/assets/label-BHMzSQ32.js", "/assets/dialog-B6MgW_kr.js", "/assets/checkbox-C9VQct6S.js", "/assets/sendEmail-DvW3jg5m.js", "/assets/arrow-right-DrZ7ft2P.js", "/assets/printer-DS8-KeDH.js", "/assets/plus-DKnNjOwn.js", "/assets/eye-KUbn11wo.js", "/assets/pen-line-BlEY8yzk.js", "/assets/trash-2-oKJqgkeS.js", "/assets/search-BRgmdj2Y.js", "/assets/rotate-ccw-jaflkToI.js", "/assets/index-B08KgGZw.js", "/assets/check-DgXwnz3F.js"] }, "/_authenticated/boletim": { filePath: "/tmp/siger-latest/Belkisia-biologus-siger-fa99cb9/src/routes/_authenticated/boletim.tsx", children: void 0, preloads: ["/assets/boletim-Djt5COCZ.js", "/assets/label-BHMzSQ32.js", "/assets/dialog-B6MgW_kr.js", "/assets/table-BzF6jKcI.js", "/assets/select-4Jyqvbsl.js", "/assets/sendEmail-DvW3jg5m.js", "/assets/plus-DKnNjOwn.js", "/assets/file-check-PG31Mewn.js", "/assets/eye-KUbn11wo.js", "/assets/index-mcEMciqf.js", "/assets/index-B08KgGZw.js", "/assets/check-DgXwnz3F.js"] }, "/_authenticated/cdf": { filePath: "/tmp/siger-latest/Belkisia-biologus-siger-fa99cb9/src/routes/_authenticated/cdf.tsx", children: void 0, preloads: ["/assets/cdf-BZLvjpDP.js", "/assets/label-BHMzSQ32.js", "/assets/textarea-DxSsN9aC.js", "/assets/select-4Jyqvbsl.js", "/assets/dialog-B6MgW_kr.js", "/assets/table-BzF6jKcI.js", "/assets/document-upload-D1wUQXUT.js", "/assets/plus-DKnNjOwn.js", "/assets/search-BRgmdj2Y.js", "/assets/file-check-PG31Mewn.js", "/assets/eye-KUbn11wo.js", "/assets/printer-DS8-KeDH.js", "/assets/trash-2-oKJqgkeS.js", "/assets/index-mcEMciqf.js", "/assets/index-B08KgGZw.js", "/assets/check-DgXwnz3F.js", "/assets/upload-BUxgIa_1.js"] }, "/_authenticated/clientes": { filePath: "/tmp/siger-latest/Belkisia-biologus-siger-fa99cb9/src/routes/_authenticated/clientes.tsx", children: ["/_authenticated/clientes/$clienteId"], preloads: ["/assets/clientes-D9Qrcnlp.js", "/assets/auth-middleware-BXMg-mmD.js", "/assets/label-BHMzSQ32.js", "/assets/textarea-DxSsN9aC.js", "/assets/dialog-B6MgW_kr.js", "/assets/table-BzF6jKcI.js", "/assets/plus-DKnNjOwn.js", "/assets/search-BRgmdj2Y.js", "/assets/folder-open-Cr2z3PHP.js", "/assets/trash-2-oKJqgkeS.js"] }, "/_authenticated/coletas": { filePath: "/tmp/siger-latest/Belkisia-biologus-siger-fa99cb9/src/routes/_authenticated/coletas.tsx", children: void 0, preloads: ["/assets/coletas-B1uVNhNO.js", "/assets/label-BHMzSQ32.js", "/assets/textarea-DxSsN9aC.js", "/assets/select-4Jyqvbsl.js", "/assets/dialog-B6MgW_kr.js", "/assets/table-BzF6jKcI.js", "/assets/plus-DKnNjOwn.js", "/assets/index-mcEMciqf.js", "/assets/index-B08KgGZw.js", "/assets/check-DgXwnz3F.js"] }, "/_authenticated/conciliacao": { filePath: "/tmp/siger-latest/Belkisia-biologus-siger-fa99cb9/src/routes/_authenticated/conciliacao.tsx", children: void 0, preloads: ["/assets/conciliacao-PJXfHjbR.js", "/assets/label-BHMzSQ32.js", "/assets/select-4Jyqvbsl.js", "/assets/dialog-B6MgW_kr.js", "/assets/table-BzF6jKcI.js", "/assets/plus-DKnNjOwn.js", "/assets/upload-BUxgIa_1.js", "/assets/trash-2-oKJqgkeS.js", "/assets/index-mcEMciqf.js", "/assets/index-B08KgGZw.js", "/assets/check-DgXwnz3F.js"] }, "/_authenticated/contratos": { filePath: "/tmp/siger-latest/Belkisia-biologus-siger-fa99cb9/src/routes/_authenticated/contratos.tsx", children: void 0, preloads: ["/assets/contratos-DJ-yHDcQ.js", "/assets/label-BHMzSQ32.js", "/assets/select-4Jyqvbsl.js", "/assets/dialog-B6MgW_kr.js", "/assets/auth-middleware-BXMg-mmD.js", "/assets/plus-DKnNjOwn.js", "/assets/eye-KUbn11wo.js", "/assets/mail-0oSLlHxe.js", "/assets/trash-2-oKJqgkeS.js", "/assets/index-mcEMciqf.js", "/assets/index-B08KgGZw.js", "/assets/check-DgXwnz3F.js"] }, "/_authenticated/dashboard": { filePath: "/tmp/siger-latest/Belkisia-biologus-siger-fa99cb9/src/routes/_authenticated/dashboard.tsx", children: void 0, preloads: ["/assets/dashboard-COSbQaDP.js", "/assets/PieChart-CnrfyLiK.js", "/assets/index-B9lbdagZ.js", "/assets/index-C7yKKq-w.js"] }, "/_authenticated/financeiro": { filePath: "/tmp/siger-latest/Belkisia-biologus-siger-fa99cb9/src/routes/_authenticated/financeiro.tsx", children: void 0, preloads: ["/assets/financeiro-jrOqnmOd.js", "/assets/label-BHMzSQ32.js", "/assets/textarea-DxSsN9aC.js", "/assets/select-4Jyqvbsl.js", "/assets/dialog-B6MgW_kr.js", "/assets/table-BzF6jKcI.js", "/assets/auth-middleware-BXMg-mmD.js", "/assets/nfse.functions-CIby7Z97.js", "/assets/plus-DKnNjOwn.js", "/assets/trash-2-oKJqgkeS.js", "/assets/index-mcEMciqf.js", "/assets/index-B08KgGZw.js", "/assets/check-DgXwnz3F.js"] }, "/_authenticated/historico": { filePath: "/tmp/siger-latest/Belkisia-biologus-siger-fa99cb9/src/routes/_authenticated/historico.tsx", children: void 0, preloads: ["/assets/historico-dYn97EZN.js", "/assets/file-check-PG31Mewn.js", "/assets/search-BRgmdj2Y.js"] }, "/_authenticated/licencas": { filePath: "/tmp/siger-latest/Belkisia-biologus-siger-fa99cb9/src/routes/_authenticated/licencas.tsx", children: void 0, preloads: ["/assets/licencas-COEGkZIq.js", "/assets/label-BHMzSQ32.js", "/assets/textarea-DxSsN9aC.js", "/assets/select-4Jyqvbsl.js", "/assets/dialog-B6MgW_kr.js", "/assets/table-BzF6jKcI.js", "/assets/document-upload-D1wUQXUT.js", "/assets/plus-DKnNjOwn.js", "/assets/trash-2-oKJqgkeS.js", "/assets/index-mcEMciqf.js", "/assets/index-B08KgGZw.js", "/assets/check-DgXwnz3F.js", "/assets/upload-BUxgIa_1.js"] }, "/_authenticated/modelos-contrato": { filePath: "/tmp/siger-latest/Belkisia-biologus-siger-fa99cb9/src/routes/_authenticated/modelos-contrato.tsx", children: void 0, preloads: ["/assets/modelos-contrato-CzNwcPxK.js", "/assets/auth-middleware-BXMg-mmD.js", "/assets/label-BHMzSQ32.js", "/assets/textarea-DxSsN9aC.js", "/assets/index-B08KgGZw.js", "/assets/dialog-B6MgW_kr.js", "/assets/table-BzF6jKcI.js", "/assets/index-C7yKKq-w.js", "/assets/contrato-modelo.functions-BJeN5-Br.js", "/assets/plus-DKnNjOwn.js", "/assets/eye-KUbn11wo.js", "/assets/history-yjUOKiSW.js", "/assets/trash-2-oKJqgkeS.js"] }, "/_authenticated/mtr": { filePath: "/tmp/siger-latest/Belkisia-biologus-siger-fa99cb9/src/routes/_authenticated/mtr.tsx", children: void 0, preloads: ["/assets/mtr-DejDyzj9.js", "/assets/label-BHMzSQ32.js", "/assets/textarea-DxSsN9aC.js", "/assets/select-4Jyqvbsl.js", "/assets/dialog-B6MgW_kr.js", "/assets/table-BzF6jKcI.js", "/assets/document-upload-D1wUQXUT.js", "/assets/plus-DKnNjOwn.js", "/assets/search-BRgmdj2Y.js", "/assets/printer-DS8-KeDH.js", "/assets/trash-2-oKJqgkeS.js", "/assets/index-mcEMciqf.js", "/assets/index-B08KgGZw.js", "/assets/check-DgXwnz3F.js", "/assets/upload-BUxgIa_1.js"] }, "/_authenticated/notas-fiscais": { filePath: "/tmp/siger-latest/Belkisia-biologus-siger-fa99cb9/src/routes/_authenticated/notas-fiscais.tsx", children: void 0, preloads: ["/assets/notas-fiscais-DrarYk38.js", "/assets/auth-middleware-BXMg-mmD.js", "/assets/label-BHMzSQ32.js", "/assets/textarea-DxSsN9aC.js", "/assets/table-BzF6jKcI.js", "/assets/select-4Jyqvbsl.js", "/assets/dialog-B6MgW_kr.js", "/assets/nfse.functions-CIby7Z97.js", "/assets/download-DRSfvNny.js", "/assets/circle-x-BZ9s9WUj.js", "/assets/index-mcEMciqf.js", "/assets/index-B08KgGZw.js", "/assets/check-DgXwnz3F.js"] }, "/_authenticated/pgrss-lista": { filePath: "/tmp/siger-latest/Belkisia-biologus-siger-fa99cb9/src/routes/_authenticated/pgrss-lista.tsx", children: void 0, preloads: ["/assets/pgrss-lista-BsZ4Kvq0.js", "/assets/plus-DKnNjOwn.js", "/assets/eye-KUbn11wo.js"] }, "/_authenticated/pgrss-nova": { filePath: "/tmp/siger-latest/Belkisia-biologus-siger-fa99cb9/src/routes/_authenticated/pgrss-nova.tsx", children: void 0, preloads: ["/assets/pgrss-nova-C4b89Zvr.js", "/assets/label-BHMzSQ32.js", "/assets/select-4Jyqvbsl.js", "/assets/auth-middleware-BXMg-mmD.js", "/assets/pgrss.functions-CA0T7Jna.js", "/assets/eye-KUbn11wo.js", "/assets/printer-DS8-KeDH.js", "/assets/save-CkYYWEOZ.js", "/assets/index-mcEMciqf.js", "/assets/index-B08KgGZw.js", "/assets/check-DgXwnz3F.js"] }, "/_authenticated/portal": { filePath: "/tmp/siger-latest/Belkisia-biologus-siger-fa99cb9/src/routes/_authenticated/portal.tsx", children: void 0, preloads: ["/assets/portal-DbTQ18Li.js", "/assets/tabs-DB6burs7.js", "/assets/table-BzF6jKcI.js", "/assets/circle-alert-BZ94hwVe.js", "/assets/index-mcEMciqf.js"] }, "/_authenticated/precos-pgrss": { filePath: "/tmp/siger-latest/Belkisia-biologus-siger-fa99cb9/src/routes/_authenticated/precos-pgrss.tsx", children: void 0, preloads: ["/assets/precos-pgrss-ZhigrIpe.js", "/assets/auth-middleware-BXMg-mmD.js", "/assets/pgrss.functions-CA0T7Jna.js", "/assets/label-BHMzSQ32.js"] }, "/_authenticated/propostas": { filePath: "/tmp/siger-latest/Belkisia-biologus-siger-fa99cb9/src/routes/_authenticated/propostas.tsx", children: ["/_authenticated/propostas/nova", "/_authenticated/propostas/pgrss/$id", "/_authenticated/propostas/pgrss/nova"], preloads: ["/assets/propostas-YsrrqRf-.js", "/assets/label-BHMzSQ32.js", "/assets/textarea-DxSsN9aC.js", "/assets/select-4Jyqvbsl.js", "/assets/dialog-B6MgW_kr.js", "/assets/table-BzF6jKcI.js", "/assets/sendEmail-DvW3jg5m.js", "/assets/auth-middleware-BXMg-mmD.js", "/assets/contrato-modelo.functions-BJeN5-Br.js", "/assets/plus-DKnNjOwn.js", "/assets/trash-2-oKJqgkeS.js", "/assets/eye-KUbn11wo.js", "/assets/download-DRSfvNny.js", "/assets/mail-0oSLlHxe.js", "/assets/index-mcEMciqf.js", "/assets/index-B08KgGZw.js", "/assets/check-DgXwnz3F.js"] }, "/_authenticated/relatorio-financeiro": { filePath: "/tmp/siger-latest/Belkisia-biologus-siger-fa99cb9/src/routes/_authenticated/relatorio-financeiro.tsx", children: void 0, preloads: ["/assets/relatorio-financeiro-NEWN0mIS.js", "/assets/download-DRSfvNny.js"] }, "/_authenticated/relatorios": { filePath: "/tmp/siger-latest/Belkisia-biologus-siger-fa99cb9/src/routes/_authenticated/relatorios.tsx", children: void 0, preloads: ["/assets/relatorios-BkrYVtBT.js", "/assets/label-BHMzSQ32.js", "/assets/tabs-DB6burs7.js", "/assets/table-BzF6jKcI.js", "/assets/download-DRSfvNny.js", "/assets/PieChart-CnrfyLiK.js", "/assets/index-mcEMciqf.js", "/assets/index-B9lbdagZ.js", "/assets/index-C7yKKq-w.js"] }, "/_authenticated/rotas": { filePath: "/tmp/siger-latest/Belkisia-biologus-siger-fa99cb9/src/routes/_authenticated/rotas.tsx", children: void 0, preloads: ["/assets/rotas-usyLdAJq.js", "/assets/label-BHMzSQ32.js", "/assets/select-4Jyqvbsl.js", "/assets/dialog-B6MgW_kr.js", "/assets/checkbox-C9VQct6S.js", "/assets/plus-DKnNjOwn.js", "/assets/trash-2-oKJqgkeS.js", "/assets/index-mcEMciqf.js", "/assets/index-B08KgGZw.js", "/assets/check-DgXwnz3F.js"] }, "/_authenticated/usuarios": { filePath: "/tmp/siger-latest/Belkisia-biologus-siger-fa99cb9/src/routes/_authenticated/usuarios.tsx", children: void 0, preloads: ["/assets/usuarios-DXV2IRM3.js", "/assets/table-BzF6jKcI.js", "/assets/select-4Jyqvbsl.js", "/assets/trash-2-oKJqgkeS.js", "/assets/plus-DKnNjOwn.js", "/assets/index-mcEMciqf.js", "/assets/index-B08KgGZw.js", "/assets/check-DgXwnz3F.js"] }, "/assinar/$token": { filePath: "/tmp/siger-latest/Belkisia-biologus-siger-fa99cb9/src/routes/assinar.$token.tsx", children: void 0, preloads: ["/assets/assinar._token-DVwgEQrU.js", "/assets/assinar._token-CHyItbgv.js", "/assets/circle-alert-BZ94hwVe.js", "/assets/assinar._token-C1Ya4Oal.js", "/assets/auth-middleware-BXMg-mmD.js", "/assets/typeof-QjJsDpFa.js", "/assets/index-B9lbdagZ.js", "/assets/label-BHMzSQ32.js", "/assets/checkbox-C9VQct6S.js", "/assets/assinatura.functions-DMkqxlmc.js", "/assets/loader-circle-CwVPwZxj.js", "/assets/file-text-Bd3I4rsu.js", "/assets/pen-line-BlEY8yzk.js", "/assets/shield-check-C0mFHq6l.js", "/assets/index-DhIDV8s9.js", "/assets/index-B08KgGZw.js", "/assets/index-CZX9gHcB.js", "/assets/index-aI2jerDk.js", "/assets/check-DgXwnz3F.js"] }, "/validar/$codigo": { filePath: "/tmp/siger-latest/Belkisia-biologus-siger-fa99cb9/src/routes/validar.$codigo.tsx", children: void 0, preloads: ["/assets/validar._codigo-BxNRikqQ.js", "/assets/auth-middleware-BXMg-mmD.js", "/assets/badge-CAUv28Kt.js", "/assets/assinatura.functions-DMkqxlmc.js", "/assets/loader-circle-CwVPwZxj.js", "/assets/shield-check-C0mFHq6l.js", "/assets/download-DRSfvNny.js"] }, "/_authenticated/clientes/$clienteId": { filePath: "/tmp/siger-latest/Belkisia-biologus-siger-fa99cb9/src/routes/_authenticated/clientes.$clienteId.tsx", children: void 0, preloads: ["/assets/clientes._clienteId-BOS-IR0_.js", "/assets/clientes._clienteId-Dd5FVmlU.js", "/assets/clientes._clienteId-6fPsFkg8.js", "/assets/select-4Jyqvbsl.js", "/assets/tabs-DB6burs7.js", "/assets/arrow-left-DTrZN7Qu.js", "/assets/mail-0oSLlHxe.js", "/assets/upload-BUxgIa_1.js", "/assets/history-yjUOKiSW.js", "/assets/rotate-ccw-jaflkToI.js", "/assets/index-mcEMciqf.js", "/assets/index-B08KgGZw.js", "/assets/check-DgXwnz3F.js"] }, "/_authenticated/pgrss-ver/$id": { filePath: "/tmp/siger-latest/Belkisia-biologus-siger-fa99cb9/src/routes/_authenticated/pgrss-ver.$id.tsx", children: void 0, preloads: ["/assets/pgrss-ver._id-EqmdmgQ3.js", "/assets/auth-middleware-BXMg-mmD.js", "/assets/pgrss.functions-CA0T7Jna.js"] }, "/_authenticated/propostas/nova": { filePath: "/tmp/siger-latest/Belkisia-biologus-siger-fa99cb9/src/routes/_authenticated/propostas.nova.tsx", children: void 0, preloads: ["/assets/propostas.nova-D-Wcw-p8.js"] }, "/_authenticated/propostas/pgrss/$id": { filePath: "/tmp/siger-latest/Belkisia-biologus-siger-fa99cb9/src/routes/_authenticated/propostas.pgrss.$id.tsx", children: void 0, preloads: ["/assets/propostas.pgrss._id-CUOldStR.js", "/assets/pgrss.functions-CA0T7Jna.js", "/assets/arrow-left-DTrZN7Qu.js", "/assets/printer-DS8-KeDH.js"] }, "/_authenticated/propostas/pgrss/nova": { filePath: "/tmp/siger-latest/Belkisia-biologus-siger-fa99cb9/src/routes/_authenticated/propostas.pgrss.nova.tsx", children: void 0, preloads: ["/assets/propostas.pgrss.nova-DlkVhRxm.js", "/assets/pgrss.functions-CA0T7Jna.js", "/assets/printer-DS8-KeDH.js", "/assets/save-CkYYWEOZ.js"] } } });
   }
 });
 
-// .output/server/_ssr/createServerRpc-CH_1R-eH.mjs
+// .output/server/_ssr/createServerRpc-C2vkpyKC.mjs
 var createServerRpc;
-var init_createServerRpc_CH_1R_eH = __esm({
-  ".output/server/_ssr/createServerRpc-CH_1R-eH.mjs"() {
+var init_createServerRpc_C2vkpyKC = __esm({
+  ".output/server/_ssr/createServerRpc-C2vkpyKC.mjs"() {
     "use strict";
-    init_server_Bx80w_OE();
+    init_server_C1IAtvil();
     createServerRpc = (serverFnMeta, splitImportFn) => {
       const url3 = "/_serverFn/" + serverFnMeta.id;
       return Object.assign(splitImportFn, {
@@ -41511,13 +41511,13 @@ var init_supabase_supabase_js = __esm({
   }
 });
 
-// .output/server/_ssr/auth-middleware-RcPdWPll.mjs
+// .output/server/_ssr/auth-middleware-Cg1fnevh.mjs
 var import_node_process4, requireSupabaseAuth;
-var init_auth_middleware_RcPdWPll = __esm({
-  ".output/server/_ssr/auth-middleware-RcPdWPll.mjs"() {
+var init_auth_middleware_Cg1fnevh = __esm({
+  ".output/server/_ssr/auth-middleware-Cg1fnevh.mjs"() {
     "use strict";
     import_node_process4 = __toESM(require("node:process"), 1);
-    init_server_Bx80w_OE();
+    init_server_C1IAtvil();
     init_supabase_supabase_js();
     requireSupabaseAuth = createMiddleware({ type: "function" }).server(
       async ({ next }) => {
@@ -45220,9 +45220,9 @@ var init_client_server_D5ro3rAQ = __esm({
   }
 });
 
-// .output/server/_ssr/contrato.functions-RSbL_PEA.mjs
-var contrato_functions_RSbL_PEA_exports = {};
-__export(contrato_functions_RSbL_PEA_exports, {
+// .output/server/_ssr/contrato.functions-BVX1nz9C.mjs
+var contrato_functions_BVX1nz9C_exports = {};
+__export(contrato_functions_BVX1nz9C_exports, {
   alternarAtivoModelo_createServerFn_handler: () => alternarAtivoModelo_createServerFn_handler,
   atualizarModelo_createServerFn_handler: () => atualizarModelo_createServerFn_handler,
   criarModelo_createServerFn_handler: () => criarModelo_createServerFn_handler,
@@ -45348,14 +45348,14 @@ function htmlToDataUrl(html4) {
   return `data:text/html;charset=utf-8;base64,${b64}`;
 }
 var import_node_buffer3, import_node_process6, listarModelos_createServerFn_handler, listarModelos, obterModelo_createServerFn_handler, obterModelo, listarVersoes_createServerFn_handler, listarVersoes, ModeloInput, criarModelo_createServerFn_handler, criarModelo, atualizarModelo_createServerFn_handler, atualizarModelo, duplicarModelo_createServerFn_handler, duplicarModelo, alternarAtivoModelo_createServerFn_handler, alternarAtivoModelo, excluirModelo_createServerFn_handler, excluirModelo, ContratoPadraoInput, gerarContratoPadraoBioLogus_createServerFn_handler, gerarContratoPadraoBioLogus, renderizarModelo_createServerFn_handler, renderizarModelo, gerarContratoDeModelo_createServerFn_handler, gerarContratoDeModelo, previewContratoRascunho_createServerFn_handler, previewContratoRascunho, visualizarContrato_createServerFn_handler, visualizarContrato, enviarContratoEmail_createServerFn_handler, enviarContratoEmail;
-var init_contrato_functions_RSbL_PEA = __esm({
-  ".output/server/_ssr/contrato.functions-RSbL_PEA.mjs"() {
+var init_contrato_functions_BVX1nz9C = __esm({
+  ".output/server/_ssr/contrato.functions-BVX1nz9C.mjs"() {
     "use strict";
     import_node_buffer3 = require("node:buffer");
     import_node_process6 = __toESM(require("node:process"), 1);
-    init_createServerRpc_CH_1R_eH();
-    init_server_Bx80w_OE();
-    init_auth_middleware_RcPdWPll();
+    init_createServerRpc_C2vkpyKC();
+    init_server_C1IAtvil();
+    init_auth_middleware_Cg1fnevh();
     init_seroval();
     init_react();
     init_zod();
@@ -80326,9 +80326,9 @@ var init_assinatura_email_server_DXlWiqaW = __esm({
   }
 });
 
-// .output/server/_ssr/assinatura.functions-C7XoqvOh.mjs
-var assinatura_functions_C7XoqvOh_exports = {};
-__export(assinatura_functions_C7XoqvOh_exports, {
+// .output/server/_ssr/assinatura.functions-BpHN2Yq-.mjs
+var assinatura_functions_BpHN2Yq_exports = {};
+__export(assinatura_functions_BpHN2Yq_exports, {
   confirmarAssinatura_createServerFn_handler: () => confirmarAssinatura_createServerFn_handler,
   criarSolicitacaoAssinatura_createServerFn_handler: () => criarSolicitacaoAssinatura_createServerFn_handler,
   listarSignatarios_createServerFn_handler: () => listarSignatarios_createServerFn_handler,
@@ -80351,12 +80351,12 @@ function randomCode(len) {
   return out;
 }
 var SignatarioInput, criarSolicitacaoAssinatura_createServerFn_handler, criarSolicitacaoAssinatura, obterSignatarioPorToken_createServerFn_handler, obterSignatarioPorToken, solicitarOTP_createServerFn_handler, solicitarOTP, confirmarAssinatura_createServerFn_handler, confirmarAssinatura, validarCodigoAssinatura_createServerFn_handler, validarCodigoAssinatura, listarSignatarios_createServerFn_handler, listarSignatarios;
-var init_assinatura_functions_C7XoqvOh = __esm({
-  ".output/server/_ssr/assinatura.functions-C7XoqvOh.mjs"() {
+var init_assinatura_functions_BpHN2Yq = __esm({
+  ".output/server/_ssr/assinatura.functions-BpHN2Yq-.mjs"() {
     "use strict";
-    init_createServerRpc_CH_1R_eH();
-    init_server_Bx80w_OE();
-    init_auth_middleware_RcPdWPll();
+    init_createServerRpc_C2vkpyKC();
+    init_server_C1IAtvil();
+    init_auth_middleware_Cg1fnevh();
     init_seroval();
     init_react();
     init_zod();
@@ -80820,9 +80820,9 @@ var init_assinatura_functions_C7XoqvOh = __esm({
   }
 });
 
-// .output/server/_ssr/contrato-modelo.functions-CUfRMXHt.mjs
-var contrato_modelo_functions_CUfRMXHt_exports = {};
-__export(contrato_modelo_functions_CUfRMXHt_exports, {
+// .output/server/_ssr/contrato-modelo.functions-n2xDRgAu.mjs
+var contrato_modelo_functions_n2xDRgAu_exports = {};
+__export(contrato_modelo_functions_n2xDRgAu_exports, {
   alternarAtivoModelo_createServerFn_handler: () => alternarAtivoModelo_createServerFn_handler2,
   atualizarModelo_createServerFn_handler: () => atualizarModelo_createServerFn_handler2,
   criarModelo_createServerFn_handler: () => criarModelo_createServerFn_handler2,
@@ -80922,12 +80922,12 @@ function buildVars2(args) {
   };
 }
 var listarModelos_createServerFn_handler2, listarModelos2, obterModelo_createServerFn_handler2, obterModelo2, listarVersoes_createServerFn_handler2, listarVersoes2, ModeloInput2, criarModelo_createServerFn_handler2, criarModelo2, atualizarModelo_createServerFn_handler2, atualizarModelo2, duplicarModelo_createServerFn_handler2, duplicarModelo2, alternarAtivoModelo_createServerFn_handler2, alternarAtivoModelo2, excluirModelo_createServerFn_handler2, excluirModelo2, renderizarModelo_createServerFn_handler2, renderizarModelo2, gerarContratoDeModelo_createServerFn_handler2, gerarContratoDeModelo2;
-var init_contrato_modelo_functions_CUfRMXHt = __esm({
-  ".output/server/_ssr/contrato-modelo.functions-CUfRMXHt.mjs"() {
+var init_contrato_modelo_functions_n2xDRgAu = __esm({
+  ".output/server/_ssr/contrato-modelo.functions-n2xDRgAu.mjs"() {
     "use strict";
-    init_createServerRpc_CH_1R_eH();
-    init_server_Bx80w_OE();
-    init_auth_middleware_RcPdWPll();
+    init_createServerRpc_C2vkpyKC();
+    init_server_C1IAtvil();
+    init_auth_middleware_Cg1fnevh();
     init_seroval();
     init_react();
     init_zod();
@@ -81335,19 +81335,19 @@ var init_contrato_modelo_functions_CUfRMXHt = __esm({
   }
 });
 
-// .output/server/_ssr/clientes.functions-DB2h9ZN2.mjs
-var clientes_functions_DB2h9ZN2_exports = {};
-__export(clientes_functions_DB2h9ZN2_exports, {
+// .output/server/_ssr/clientes.functions-BEkyoeno.mjs
+var clientes_functions_BEkyoeno_exports = {};
+__export(clientes_functions_BEkyoeno_exports, {
   desvincularClienteUsuario_createServerFn_handler: () => desvincularClienteUsuario_createServerFn_handler,
   vincularClienteUsuario_createServerFn_handler: () => vincularClienteUsuario_createServerFn_handler
 });
 var LinkSchema, vincularClienteUsuario_createServerFn_handler, vincularClienteUsuario, UnlinkSchema, desvincularClienteUsuario_createServerFn_handler, desvincularClienteUsuario;
-var init_clientes_functions_DB2h9ZN2 = __esm({
-  ".output/server/_ssr/clientes.functions-DB2h9ZN2.mjs"() {
+var init_clientes_functions_BEkyoeno = __esm({
+  ".output/server/_ssr/clientes.functions-BEkyoeno.mjs"() {
     "use strict";
-    init_createServerRpc_CH_1R_eH();
-    init_server_Bx80w_OE();
-    init_auth_middleware_RcPdWPll();
+    init_createServerRpc_C2vkpyKC();
+    init_server_C1IAtvil();
+    init_auth_middleware_Cg1fnevh();
     init_seroval();
     init_react();
     init_zod();
@@ -81519,20 +81519,20 @@ var init_nfse_server_rfc2ul9 = __esm({
   }
 });
 
-// .output/server/_ssr/nfse.functions-D_KE1CHC.mjs
-var nfse_functions_D_KE1CHC_exports = {};
-__export(nfse_functions_D_KE1CHC_exports, {
+// .output/server/_ssr/nfse.functions-tyuthhWq.mjs
+var nfse_functions_tyuthhWq_exports = {};
+__export(nfse_functions_tyuthhWq_exports, {
   cancelarNfse_createServerFn_handler: () => cancelarNfse_createServerFn_handler,
   consultarNfse_createServerFn_handler: () => consultarNfse_createServerFn_handler,
   emitirNfseDeFatura_createServerFn_handler: () => emitirNfseDeFatura_createServerFn_handler
 });
 var emitirNfseDeFatura_createServerFn_handler, emitirNfseDeFatura, consultarNfse_createServerFn_handler, consultarNfse2, cancelarNfse_createServerFn_handler, cancelarNfse2;
-var init_nfse_functions_D_KE1CHC = __esm({
-  ".output/server/_ssr/nfse.functions-D_KE1CHC.mjs"() {
+var init_nfse_functions_tyuthhWq = __esm({
+  ".output/server/_ssr/nfse.functions-tyuthhWq.mjs"() {
     "use strict";
-    init_createServerRpc_CH_1R_eH();
-    init_server_Bx80w_OE();
-    init_auth_middleware_RcPdWPll();
+    init_createServerRpc_C2vkpyKC();
+    init_server_C1IAtvil();
+    init_auth_middleware_Cg1fnevh();
     init_seroval();
     init_react();
     init_zod();
@@ -81776,9 +81776,9 @@ var init_nfse_functions_D_KE1CHC = __esm({
   }
 });
 
-// .output/server/_ssr/pgrss.functions-9ZlmntS2.mjs
-var pgrss_functions_9ZlmntS2_exports = {};
-__export(pgrss_functions_9ZlmntS2_exports, {
+// .output/server/_ssr/pgrss.functions-BozqW5fY.mjs
+var pgrss_functions_BozqW5fY_exports = {};
+__export(pgrss_functions_BozqW5fY_exports, {
   listarPropostasPgrss_createServerFn_handler: () => listarPropostasPgrss_createServerFn_handler,
   obterPrecosPgrss_createServerFn_handler: () => obterPrecosPgrss_createServerFn_handler,
   obterPropostaPgrss_createServerFn_handler: () => obterPropostaPgrss_createServerFn_handler,
@@ -81786,12 +81786,12 @@ __export(pgrss_functions_9ZlmntS2_exports, {
   salvarPropostaPgrss_createServerFn_handler: () => salvarPropostaPgrss_createServerFn_handler
 });
 var QuestionarioPgrss, obterPrecosPgrss_createServerFn_handler, obterPrecosPgrss, PrecosInput, salvarPrecosPgrss_createServerFn_handler, salvarPrecosPgrss, SalvarInput, salvarPropostaPgrss_createServerFn_handler, salvarPropostaPgrss, obterPropostaPgrss_createServerFn_handler, obterPropostaPgrss, listarPropostasPgrss_createServerFn_handler, listarPropostasPgrss;
-var init_pgrss_functions_9ZlmntS2 = __esm({
-  ".output/server/_ssr/pgrss.functions-9ZlmntS2.mjs"() {
+var init_pgrss_functions_BozqW5fY = __esm({
+  ".output/server/_ssr/pgrss.functions-BozqW5fY.mjs"() {
     "use strict";
-    init_createServerRpc_CH_1R_eH();
-    init_server_Bx80w_OE();
-    init_auth_middleware_RcPdWPll();
+    init_createServerRpc_C2vkpyKC();
+    init_server_C1IAtvil();
+    init_auth_middleware_Cg1fnevh();
     init_seroval();
     init_react();
     init_zod();
@@ -113313,9 +113313,9 @@ var init_lucide_react = __esm({
   }
 });
 
-// .output/server/_ssr/unsubscribe-D9d-3hDL.mjs
-var unsubscribe_D9d_3hDL_exports = {};
-__export(unsubscribe_D9d_3hDL_exports, {
+// .output/server/_ssr/unsubscribe-gpXvf_RO.mjs
+var unsubscribe_gpXvf_RO_exports = {};
+__export(unsubscribe_gpXvf_RO_exports, {
   component: () => UnsubscribePage
 });
 function UnsubscribePage() {
@@ -113374,11 +113374,11 @@ function UnsubscribePage() {
     ] })
   ] }) });
 }
-var init_unsubscribe_D9d_3hDL = __esm({
-  ".output/server/_ssr/unsubscribe-D9d-3hDL.mjs"() {
+var init_unsubscribe_gpXvf_RO = __esm({
+  ".output/server/_ssr/unsubscribe-gpXvf_RO.mjs"() {
     "use strict";
     init_react();
-    init_router_sVjfFkfy();
+    init_router_CzF9_lfs();
     init_sonner();
     init_nodemailer();
     init_lucide_react();
@@ -113575,15 +113575,15 @@ var init_radix_ui_react_label = __esm({
   }
 });
 
-// .output/server/_ssr/label-DY8q5O4C.mjs
+// .output/server/_ssr/label-B3YK-FX3.mjs
 var labelVariants, Label2;
-var init_label_DY8q5O4C = __esm({
-  ".output/server/_ssr/label-DY8q5O4C.mjs"() {
+var init_label_B3YK_FX3 = __esm({
+  ".output/server/_ssr/label-B3YK-FX3.mjs"() {
     "use strict";
     init_react();
     init_radix_ui_react_label();
     init_class_variance_authority();
-    init_router_sVjfFkfy();
+    init_router_CzF9_lfs();
     labelVariants = cva(
       "text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
     );
@@ -113592,9 +113592,9 @@ var init_label_DY8q5O4C = __esm({
   }
 });
 
-// .output/server/_ssr/reset-password-DraU11g_.mjs
-var reset_password_DraU11g_exports = {};
-__export(reset_password_DraU11g_exports, {
+// .output/server/_ssr/reset-password-D5M-biVT.mjs
+var reset_password_D5M_biVT_exports = {};
+__export(reset_password_D5M_biVT_exports, {
   component: () => ResetPasswordPage
 });
 function ResetPasswordPage() {
@@ -113734,14 +113734,14 @@ function ResetPasswordPage() {
     ] }) })
   ] }) });
 }
-var init_reset_password_DraU11g = __esm({
-  ".output/server/_ssr/reset-password-DraU11g_.mjs"() {
+var init_reset_password_D5M_biVT = __esm({
+  ".output/server/_ssr/reset-password-D5M-biVT.mjs"() {
     "use strict";
     init_react();
     init_tanstack_react_router();
     init_client_C11HiDux();
-    init_router_sVjfFkfy();
-    init_label_DY8q5O4C();
+    init_router_CzF9_lfs();
+    init_label_B3YK_FX3();
     init_sonner();
     init_nodemailer();
     init_lucide_react();
@@ -114653,14 +114653,14 @@ var init_radix_ui_react_tabs = __esm({
   }
 });
 
-// .output/server/_ssr/tabs-DOX1OmvH.mjs
+// .output/server/_ssr/tabs-r05xTrmW.mjs
 var Tabs2, TabsList2, TabsTrigger2, TabsContent2;
-var init_tabs_DOX1OmvH = __esm({
-  ".output/server/_ssr/tabs-DOX1OmvH.mjs"() {
+var init_tabs_r05xTrmW = __esm({
+  ".output/server/_ssr/tabs-r05xTrmW.mjs"() {
     "use strict";
     init_react();
     init_radix_ui_react_tabs();
-    init_router_sVjfFkfy();
+    init_router_CzF9_lfs();
     Tabs2 = Root22;
     TabsList2 = reactExports.forwardRef(({ className, ...props }, ref) => /* @__PURE__ */ jsxRuntimeExports.jsx(
       List2,
@@ -114701,9 +114701,9 @@ var init_tabs_DOX1OmvH = __esm({
   }
 });
 
-// .output/server/_ssr/auth-DTyicuOW.mjs
-var auth_DTyicuOW_exports = {};
-__export(auth_DTyicuOW_exports, {
+// .output/server/_ssr/auth-Bk0wnMKH.mjs
+var auth_Bk0wnMKH_exports = {};
+__export(auth_Bk0wnMKH_exports, {
   component: () => AuthPage
 });
 function AuthPage() {
@@ -114893,15 +114893,15 @@ function AuthPage() {
   ] }) });
 }
 var lovable;
-var init_auth_DTyicuOW = __esm({
-  ".output/server/_ssr/auth-DTyicuOW.mjs"() {
+var init_auth_Bk0wnMKH = __esm({
+  ".output/server/_ssr/auth-Bk0wnMKH.mjs"() {
     "use strict";
     init_react();
     init_tanstack_react_router();
     init_client_C11HiDux();
-    init_router_sVjfFkfy();
-    init_label_DY8q5O4C();
-    init_tabs_DOX1OmvH();
+    init_router_CzF9_lfs();
+    init_label_B3YK_FX3();
+    init_tabs_r05xTrmW();
     init_sonner();
     init_nodemailer();
     init_lucide_react();
@@ -119506,17 +119506,17 @@ var init_radix_ui_react_tooltip = __esm({
   }
 });
 
-// .output/server/_ssr/badge-BhbpyALm.mjs
+// .output/server/_ssr/badge-kyCkUY13.mjs
 function Badge({ className, variant, ...props }) {
   return /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: cn4(badgeVariants({ variant }), className), ...props });
 }
 var badgeVariants;
-var init_badge_BhbpyALm = __esm({
-  ".output/server/_ssr/badge-BhbpyALm.mjs"() {
+var init_badge_kyCkUY13 = __esm({
+  ".output/server/_ssr/badge-kyCkUY13.mjs"() {
     "use strict";
     init_react();
     init_class_variance_authority();
-    init_router_sVjfFkfy();
+    init_router_CzF9_lfs();
     badgeVariants = cva(
       "inline-flex items-center rounded-md border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2",
       {
@@ -121677,9 +121677,9 @@ var init_date_fns = __esm({
   }
 });
 
-// .output/server/_ssr/route-BeutWa3R.mjs
-var route_BeutWa3R_exports = {};
-__export(route_BeutWa3R_exports, {
+// .output/server/_ssr/route-CrgX3OZ0.mjs
+var route_CrgX3OZ0_exports = {};
+__export(route_CrgX3OZ0_exports, {
   component: () => AuthenticatedLayout
 });
 function useIsMobile() {
@@ -121914,20 +121914,20 @@ function AuthenticatedLayout() {
   ] }) });
 }
 var MOBILE_BREAKPOINT, Separator2, Sheet, SheetPortal, SheetOverlay, sheetVariants, SheetContent, SheetHeader, SheetTitle, SheetDescription, TooltipProvider2, Tooltip2, TooltipTrigger2, TooltipContent2, SIDEBAR_COOKIE_NAME, SIDEBAR_COOKIE_MAX_AGE, SIDEBAR_WIDTH, SIDEBAR_WIDTH_MOBILE, SIDEBAR_WIDTH_ICON, SIDEBAR_KEYBOARD_SHORTCUT, SidebarContext, SidebarProvider, Sidebar, SidebarTrigger, SidebarRail, SidebarInset, SidebarInput, SidebarHeader, SidebarFooter, SidebarSeparator, SidebarContent, SidebarGroup, SidebarGroupLabel, SidebarGroupAction, SidebarGroupContent, SidebarMenu, SidebarMenuItem, sidebarMenuButtonVariants, SidebarMenuButton, SidebarMenuAction, SidebarMenuBadge, SidebarMenuSkeleton, SidebarMenuSub, SidebarMenuSubItem, SidebarMenuSubButton, operacao, comercial, gestao, Popover2, PopoverTrigger2, PopoverContent2, ScrollArea2, ScrollBar, iconFor, linkFor;
-var init_route_BeutWa3R = __esm({
-  ".output/server/_ssr/route-BeutWa3R.mjs"() {
+var init_route_CrgX3OZ0 = __esm({
+  ".output/server/_ssr/route-CrgX3OZ0.mjs"() {
     "use strict";
     init_react();
     init_tanstack_react_router();
     init_client_C11HiDux();
     init_radix_ui_react_slot();
     init_class_variance_authority();
-    init_router_sVjfFkfy();
+    init_router_CzF9_lfs();
     init_radix_ui_react_separator();
     init_radix_ui_react_dialog();
     init_radix_ui_react_tooltip();
     init_tanstack_react_query();
-    init_badge_BhbpyALm();
+    init_badge_kyCkUY13();
     init_radix_ui_react_popover();
     init_radix_ui_react_scroll_area();
     init_sonner();
@@ -122768,9 +122768,9 @@ var init_route_BeutWa3R = __esm({
   }
 });
 
-// .output/server/_ssr/index-B94oZkGy.mjs
-var index_B94oZkGy_exports = {};
-__export(index_B94oZkGy_exports, {
+// .output/server/_ssr/index-BYYznbxB.mjs
+var index_BYYznbxB_exports = {};
+__export(index_BYYznbxB_exports, {
   component: () => Landing
 });
 function Landing() {
@@ -122828,12 +122828,12 @@ function Landing() {
   ] });
 }
 var features;
-var init_index_B94oZkGy = __esm({
-  ".output/server/_ssr/index-B94oZkGy.mjs"() {
+var init_index_BYYznbxB = __esm({
+  ".output/server/_ssr/index-BYYznbxB.mjs"() {
     "use strict";
     init_react();
     init_tanstack_react_router();
-    init_router_sVjfFkfy();
+    init_router_CzF9_lfs();
     init_sonner();
     init_nodemailer();
     init_lucide_react();
@@ -122908,7 +122908,7 @@ var init_index_B94oZkGy = __esm({
   }
 });
 
-// .output/server/_ssr/createSsrRpc-JzpFN0iC.mjs
+// .output/server/_ssr/createSsrRpc-BRBKaa30.mjs
 function useServerFn(serverFn) {
   const router2 = useRouter();
   return reactExports.useCallback(async (...args) => {
@@ -122926,13 +122926,13 @@ function useServerFn(serverFn) {
   }, [router2, serverFn]);
 }
 var createSsrRpc;
-var init_createSsrRpc_JzpFN0iC = __esm({
-  ".output/server/_ssr/createSsrRpc-JzpFN0iC.mjs"() {
+var init_createSsrRpc_BRBKaa30 = __esm({
+  ".output/server/_ssr/createSsrRpc-BRBKaa30.mjs"() {
     "use strict";
     init_react();
     init_tanstack_react_router();
     init_tanstack_router_core();
-    init_server_Bx80w_OE();
+    init_server_C1IAtvil();
     createSsrRpc = (functionId) => {
       const url3 = "/_serverFn/" + functionId;
       const serverFnMeta = { id: functionId };
@@ -122948,14 +122948,14 @@ var init_createSsrRpc_JzpFN0iC = __esm({
   }
 });
 
-// .output/server/_ssr/assinatura.functions-CsUpkbo9.mjs
+// .output/server/_ssr/assinatura.functions-Bo4rGh_A.mjs
 var SignatarioInput2, obterSignatarioPorToken2, solicitarOTP2, confirmarAssinatura2, validarCodigoAssinatura2;
-var init_assinatura_functions_CsUpkbo9 = __esm({
-  ".output/server/_ssr/assinatura.functions-CsUpkbo9.mjs"() {
+var init_assinatura_functions_Bo4rGh_A = __esm({
+  ".output/server/_ssr/assinatura.functions-Bo4rGh_A.mjs"() {
     "use strict";
-    init_createSsrRpc_JzpFN0iC();
-    init_server_Bx80w_OE();
-    init_auth_middleware_RcPdWPll();
+    init_createSsrRpc_BRBKaa30();
+    init_server_C1IAtvil();
+    init_auth_middleware_Cg1fnevh();
     init_zod();
     SignatarioInput2 = objectType({
       nome: stringType().trim().min(1).max(200),
@@ -123002,9 +123002,9 @@ var init_assinatura_functions_CsUpkbo9 = __esm({
   }
 });
 
-// .output/server/_ssr/validar._codigo-B-H9HfRe.mjs
-var validar_codigo_B_H9HfRe_exports = {};
-__export(validar_codigo_B_H9HfRe_exports, {
+// .output/server/_ssr/validar._codigo-0bisWPiP.mjs
+var validar_codigo_0bisWPiP_exports = {};
+__export(validar_codigo_0bisWPiP_exports, {
   component: () => ValidarPage
 });
 function ValidarPage() {
@@ -123087,14 +123087,14 @@ function ValidarPage() {
     /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-center text-xs text-muted-foreground", children: "Assinatura eletr\xF4nica simples conforme MP 2.200-2/2001, art. 10, \xA72\xBA \xB7 Validade jur\xEDdica entre as partes" })
   ] }) });
 }
-var init_validar_codigo_B_H9HfRe = __esm({
-  ".output/server/_ssr/validar._codigo-B-H9HfRe.mjs"() {
+var init_validar_codigo_0bisWPiP = __esm({
+  ".output/server/_ssr/validar._codigo-0bisWPiP.mjs"() {
     "use strict";
     init_react();
-    init_createSsrRpc_JzpFN0iC();
-    init_router_sVjfFkfy();
-    init_badge_BhbpyALm();
-    init_assinatura_functions_CsUpkbo9();
+    init_createSsrRpc_BRBKaa30();
+    init_router_CzF9_lfs();
+    init_badge_kyCkUY13();
+    init_assinatura_functions_Bo4rGh_A();
     init_seroval();
     init_sonner();
     init_nodemailer();
@@ -123106,7 +123106,7 @@ var init_validar_codigo_B_H9HfRe = __esm({
     init_seroval_plugins();
     init_react_dom();
     init_isbot();
-    init_server_Bx80w_OE();
+    init_server_C1IAtvil();
     init_h3_v2();
     init_unenv();
     init_rou3();
@@ -123154,7 +123154,7 @@ var init_validar_codigo_B_H9HfRe = __esm({
     init_react_email_button();
     init_react_email_link();
     init_react_email_img();
-    init_auth_middleware_RcPdWPll();
+    init_auth_middleware_Cg1fnevh();
     init_zod();
   }
 });
@@ -123173,17 +123173,17 @@ var init_assinar_token_DJh9UiE9 = __esm({
   }
 });
 
-// .output/server/_ssr/assinar._token-DtAI8JFz.mjs
-var assinar_token_DtAI8JFz_exports = {};
-__export(assinar_token_DtAI8JFz_exports, {
+// .output/server/_ssr/assinar._token-B6FbSoQd.mjs
+var assinar_token_B6FbSoQd_exports = {};
+__export(assinar_token_B6FbSoQd_exports, {
   errorComponent: () => SplitErrorComponent
 });
 var SplitErrorComponent;
-var init_assinar_token_DtAI8JFz = __esm({
-  ".output/server/_ssr/assinar._token-DtAI8JFz.mjs"() {
+var init_assinar_token_B6FbSoQd = __esm({
+  ".output/server/_ssr/assinar._token-B6FbSoQd.mjs"() {
     "use strict";
     init_react();
-    init_router_sVjfFkfy();
+    init_router_CzF9_lfs();
     init_sonner();
     init_nodemailer();
     init_lucide_react();
@@ -124454,14 +124454,14 @@ var init_radix_ui_react_checkbox = __esm({
   }
 });
 
-// .output/server/_ssr/checkbox-CwnYEV2z.mjs
+// .output/server/_ssr/checkbox-FzZgVNwu.mjs
 var Checkbox2;
-var init_checkbox_CwnYEV2z = __esm({
-  ".output/server/_ssr/checkbox-CwnYEV2z.mjs"() {
+var init_checkbox_FzZgVNwu = __esm({
+  ".output/server/_ssr/checkbox-FzZgVNwu.mjs"() {
     "use strict";
     init_react();
     init_radix_ui_react_checkbox();
-    init_router_sVjfFkfy();
+    init_router_CzF9_lfs();
     init_lucide_react();
     Checkbox2 = reactExports.forwardRef(({ className, ...props }, ref) => /* @__PURE__ */ jsxRuntimeExports.jsx(
       Checkbox,
@@ -124479,9 +124479,9 @@ var init_checkbox_CwnYEV2z = __esm({
   }
 });
 
-// .output/server/_ssr/assinar._token-BBc0uezp.mjs
-var assinar_token_BBc0uezp_exports = {};
-__export(assinar_token_BBc0uezp_exports, {
+// .output/server/_ssr/assinar._token-9cgkgZWm.mjs
+var assinar_token_9cgkgZWm_exports = {};
+__export(assinar_token_9cgkgZWm_exports, {
   component: () => AssinarPage
 });
 function StepIndicator({
@@ -124908,17 +124908,17 @@ function AssinarPage() {
     /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-center text-xs text-muted-foreground py-2", children: "Protegido por Bio Logus \xB7 Assinatura eletr\xF4nica com validade jur\xEDdica \xB7 MP 2.200-2/2001" })
   ] }) });
 }
-var init_assinar_token_BBc0uezp = __esm({
-  ".output/server/_ssr/assinar._token-BBc0uezp.mjs"() {
+var init_assinar_token_9cgkgZWm = __esm({
+  ".output/server/_ssr/assinar._token-9cgkgZWm.mjs"() {
     "use strict";
     init_react();
-    init_createSsrRpc_JzpFN0iC();
+    init_createSsrRpc_BRBKaa30();
     init_react_signature_canvas();
-    init_router_sVjfFkfy();
-    init_label_DY8q5O4C();
-    init_checkbox_CwnYEV2z();
+    init_router_CzF9_lfs();
+    init_label_B3YK_FX3();
+    init_checkbox_FzZgVNwu();
     init_sonner();
-    init_assinatura_functions_CsUpkbo9();
+    init_assinatura_functions_Bo4rGh_A();
     init_seroval();
     init_nodemailer();
     init_lucide_react();
@@ -124929,7 +124929,7 @@ var init_assinar_token_BBc0uezp = __esm({
     init_seroval_plugins();
     init_react_dom();
     init_isbot();
-    init_server_Bx80w_OE();
+    init_server_C1IAtvil();
     init_h3_v2();
     init_unenv();
     init_rou3();
@@ -124991,18 +124991,18 @@ var init_assinar_token_BBc0uezp = __esm({
     init_radix_ui_react_use_previous();
     init_radix_ui_react_use_size();
     init_radix_ui_react_presence();
-    init_auth_middleware_RcPdWPll();
+    init_auth_middleware_Cg1fnevh();
     init_zod();
   }
 });
 
-// .output/server/_ssr/table-Dgi6oyiT.mjs
+// .output/server/_ssr/table-D_rD_d7U.mjs
 var Table, TableHeader, TableBody, TableFooter, TableRow, TableHead, TableCell, TableCaption;
-var init_table_Dgi6oyiT = __esm({
-  ".output/server/_ssr/table-Dgi6oyiT.mjs"() {
+var init_table_D_rD_d7U = __esm({
+  ".output/server/_ssr/table-D_rD_d7U.mjs"() {
     "use strict";
     init_react();
-    init_router_sVjfFkfy();
+    init_router_CzF9_lfs();
     Table = reactExports.forwardRef(
       ({ className, ...props }, ref) => /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "relative w-full overflow-auto", children: /* @__PURE__ */ jsxRuntimeExports.jsx("table", { ref, className: cn4("w-full caption-bottom text-sm", className), ...props }) })
     );
@@ -126222,14 +126222,14 @@ var init_radix_ui_react_select = __esm({
   }
 });
 
-// .output/server/_ssr/select-DepjtyTR.mjs
+// .output/server/_ssr/select-C_CSR9Ir.mjs
 var Select2, SelectValue2, SelectTrigger2, SelectScrollUpButton2, SelectScrollDownButton2, SelectContent2, SelectLabel2, SelectItem2, SelectSeparator2;
-var init_select_DepjtyTR = __esm({
-  ".output/server/_ssr/select-DepjtyTR.mjs"() {
+var init_select_C_CSR9Ir = __esm({
+  ".output/server/_ssr/select-C_CSR9Ir.mjs"() {
     "use strict";
     init_react();
     init_radix_ui_react_select();
-    init_router_sVjfFkfy();
+    init_router_CzF9_lfs();
     init_lucide_react();
     Select2 = Root25;
     SelectValue2 = Value;
@@ -126334,9 +126334,9 @@ var init_select_DepjtyTR = __esm({
   }
 });
 
-// .output/server/_ssr/usuarios-D-2lAnHP.mjs
-var usuarios_D_2lAnHP_exports = {};
-__export(usuarios_D_2lAnHP_exports, {
+// .output/server/_ssr/usuarios-DchUl2U9.mjs
+var usuarios_DchUl2U9_exports = {};
+__export(usuarios_DchUl2U9_exports, {
   component: () => UsuariosPage
 });
 function UsuariosPage() {
@@ -126508,16 +126508,16 @@ function UsuariosPage() {
   ] });
 }
 var ROLES, ROLE_LABEL;
-var init_usuarios_D_2lAnHP = __esm({
-  ".output/server/_ssr/usuarios-D-2lAnHP.mjs"() {
+var init_usuarios_DchUl2U9 = __esm({
+  ".output/server/_ssr/usuarios-DchUl2U9.mjs"() {
     "use strict";
     init_react();
     init_tanstack_react_query();
     init_client_C11HiDux();
-    init_router_sVjfFkfy();
-    init_badge_BhbpyALm();
-    init_table_Dgi6oyiT();
-    init_select_DepjtyTR();
+    init_router_CzF9_lfs();
+    init_badge_kyCkUY13();
+    init_table_D_rD_d7U();
+    init_select_C_CSR9Ir();
     init_sonner();
     init_nodemailer();
     init_lucide_react();
@@ -126636,14 +126636,14 @@ var init_usuarios_D_2lAnHP = __esm({
   }
 });
 
-// .output/server/_ssr/dialog-Bxumy1RM.mjs
+// .output/server/_ssr/dialog-CRBNMKgX.mjs
 var Dialog2, DialogTrigger2, DialogPortal2, DialogOverlay2, DialogContent2, DialogHeader, DialogFooter, DialogTitle2, DialogDescription2;
-var init_dialog_Bxumy1RM = __esm({
-  ".output/server/_ssr/dialog-Bxumy1RM.mjs"() {
+var init_dialog_CRBNMKgX = __esm({
+  ".output/server/_ssr/dialog-CRBNMKgX.mjs"() {
     "use strict";
     init_react();
     init_radix_ui_react_dialog();
-    init_router_sVjfFkfy();
+    init_router_CzF9_lfs();
     init_lucide_react();
     Dialog2 = Root5;
     DialogTrigger2 = Trigger2;
@@ -126713,9 +126713,9 @@ var init_dialog_Bxumy1RM = __esm({
   }
 });
 
-// .output/server/_ssr/rotas-Ev9zUFjT.mjs
-var rotas_Ev9zUFjT_exports = {};
-__export(rotas_Ev9zUFjT_exports, {
+// .output/server/_ssr/rotas-sK9fo8jB.mjs
+var rotas_sK9fo8jB_exports = {};
+__export(rotas_sK9fo8jB_exports, {
   component: () => RotasPage
 });
 function RotasPage() {
@@ -127081,18 +127081,18 @@ function RotasPage() {
   ] });
 }
 var SEMANAS, DIAS, SEMANA_COLOR, ROTAS_PADRAO;
-var init_rotas_Ev9zUFjT = __esm({
-  ".output/server/_ssr/rotas-Ev9zUFjT.mjs"() {
+var init_rotas_sK9fo8jB = __esm({
+  ".output/server/_ssr/rotas-sK9fo8jB.mjs"() {
     "use strict";
     init_react();
     init_tanstack_react_query();
     init_client_C11HiDux();
-    init_router_sVjfFkfy();
-    init_label_DY8q5O4C();
-    init_select_DepjtyTR();
-    init_dialog_Bxumy1RM();
-    init_checkbox_CwnYEV2z();
-    init_badge_BhbpyALm();
+    init_router_CzF9_lfs();
+    init_label_B3YK_FX3();
+    init_select_C_CSR9Ir();
+    init_dialog_CRBNMKgX();
+    init_checkbox_FzZgVNwu();
+    init_badge_kyCkUY13();
     init_sonner();
     init_nodemailer();
     init_lucide_react();
@@ -151642,9 +151642,9 @@ var init_recharts = __esm({
   }
 });
 
-// .output/server/_ssr/relatorios-DgV4sLa_.mjs
-var relatorios_DgV4sLa_exports = {};
-__export(relatorios_DgV4sLa_exports, {
+// .output/server/_ssr/relatorios-BlVFcyHe.mjs
+var relatorios_BlVFcyHe_exports = {};
+__export(relatorios_BlVFcyHe_exports, {
   component: () => RelatoriosPage
 });
 function brl4(v5) {
@@ -151945,16 +151945,16 @@ function RelatoriosPage() {
   ] });
 }
 var CHART_COLORS;
-var init_relatorios_DgV4sLa = __esm({
-  ".output/server/_ssr/relatorios-DgV4sLa_.mjs"() {
+var init_relatorios_BlVFcyHe = __esm({
+  ".output/server/_ssr/relatorios-BlVFcyHe.mjs"() {
     "use strict";
     init_react();
     init_tanstack_react_query();
     init_client_C11HiDux();
-    init_router_sVjfFkfy();
-    init_label_DY8q5O4C();
-    init_tabs_DOX1OmvH();
-    init_table_Dgi6oyiT();
+    init_router_CzF9_lfs();
+    init_label_B3YK_FX3();
+    init_tabs_r05xTrmW();
+    init_table_D_rD_d7U();
     init_sonner();
     init_nodemailer();
     init_lucide_react();
@@ -152046,9 +152046,9 @@ var init_relatorios_DgV4sLa = __esm({
   }
 });
 
-// .output/server/_ssr/relatorio-financeiro-Dh4dr0JH.mjs
-var relatorio_financeiro_Dh4dr0JH_exports = {};
-__export(relatorio_financeiro_Dh4dr0JH_exports, {
+// .output/server/_ssr/relatorio-financeiro-DeYI7mOo.mjs
+var relatorio_financeiro_DeYI7mOo_exports = {};
+__export(relatorio_financeiro_DeYI7mOo_exports, {
   component: () => RelatorioFinanceiroPage
 });
 function RelatorioFinanceiroPage() {
@@ -152369,13 +152369,13 @@ function RelatorioFinanceiroPage() {
     ] }) })
   ] });
 }
-var init_relatorio_financeiro_Dh4dr0JH = __esm({
-  ".output/server/_ssr/relatorio-financeiro-Dh4dr0JH.mjs"() {
+var init_relatorio_financeiro_DeYI7mOo = __esm({
+  ".output/server/_ssr/relatorio-financeiro-DeYI7mOo.mjs"() {
     "use strict";
     init_react();
     init_tanstack_react_query();
     init_client_C11HiDux();
-    init_router_sVjfFkfy();
+    init_router_CzF9_lfs();
     init_sonner();
     init_nodemailer();
     init_lucide_react();
@@ -152432,13 +152432,13 @@ var init_relatorio_financeiro_Dh4dr0JH = __esm({
   }
 });
 
-// .output/server/_ssr/textarea-BGMWC_QI.mjs
+// .output/server/_ssr/textarea-CfS6GJr9.mjs
 var Textarea;
-var init_textarea_BGMWC_QI = __esm({
-  ".output/server/_ssr/textarea-BGMWC_QI.mjs"() {
+var init_textarea_CfS6GJr9 = __esm({
+  ".output/server/_ssr/textarea-CfS6GJr9.mjs"() {
     "use strict";
     init_react();
-    init_router_sVjfFkfy();
+    init_router_CzF9_lfs();
     Textarea = reactExports.forwardRef(
       ({ className, ...props }, ref) => {
         return /* @__PURE__ */ jsxRuntimeExports.jsx(
@@ -152638,7 +152638,7 @@ var init_sendEmail_DAvK9KR7 = __esm({
   }
 });
 
-// .output/server/_ssr/contrato-modelo.functions-rIO7Wk5i.mjs
+// .output/server/_ssr/contrato-modelo.functions-CHHxK1_U.mjs
 function renderTemplate3(html4, vars) {
   return html4.replace(/\{\{\s*([A-Z0-9_]+)\s*\}\}/g, (_5, key) => {
     const v5 = vars[key];
@@ -152727,12 +152727,12 @@ function buildVars3(args) {
   };
 }
 var listarModelos3, obterModelo3, listarVersoes3, ModeloInput3, criarModelo3, atualizarModelo3, duplicarModelo3, alternarAtivoModelo3, excluirModelo3, renderizarModelo3, gerarContratoDeModelo3;
-var init_contrato_modelo_functions_rIO7Wk5i = __esm({
-  ".output/server/_ssr/contrato-modelo.functions-rIO7Wk5i.mjs"() {
+var init_contrato_modelo_functions_CHHxK1_U = __esm({
+  ".output/server/_ssr/contrato-modelo.functions-CHHxK1_U.mjs"() {
     "use strict";
-    init_createSsrRpc_JzpFN0iC();
-    init_server_Bx80w_OE();
-    init_auth_middleware_RcPdWPll();
+    init_createSsrRpc_BRBKaa30();
+    init_server_C1IAtvil();
+    init_auth_middleware_Cg1fnevh();
     init_zod();
     listarModelos3 = createServerFn({
       method: "GET"
@@ -181352,9 +181352,9 @@ var init_jspdf = __esm({
   }
 });
 
-// .output/server/_ssr/propostas-JcizcCel.mjs
-var propostas_JcizcCel_exports = {};
-__export(propostas_JcizcCel_exports, {
+// .output/server/_ssr/propostas-BmKz_4mA.mjs
+var propostas_BmKz_4mA_exports = {};
+__export(propostas_BmKz_4mA_exports, {
   component: () => PropostasPage
 });
 function brl6(v5) {
@@ -182678,24 +182678,24 @@ function PropostasPage() {
   ] });
 }
 var STATUS_MAP, UNIDADES;
-var init_propostas_JcizcCel = __esm({
-  ".output/server/_ssr/propostas-JcizcCel.mjs"() {
+var init_propostas_BmKz_4mA = __esm({
+  ".output/server/_ssr/propostas-BmKz_4mA.mjs"() {
     "use strict";
     init_react();
     init_tanstack_react_router();
     init_tanstack_react_query();
     init_client_C11HiDux();
-    init_router_sVjfFkfy();
-    init_label_DY8q5O4C();
-    init_textarea_BGMWC_QI();
-    init_badge_BhbpyALm();
-    init_select_DepjtyTR();
-    init_dialog_Bxumy1RM();
-    init_table_Dgi6oyiT();
+    init_router_CzF9_lfs();
+    init_label_B3YK_FX3();
+    init_textarea_CfS6GJr9();
+    init_badge_kyCkUY13();
+    init_select_C_CSR9Ir();
+    init_dialog_CRBNMKgX();
+    init_table_D_rD_d7U();
     init_sonner();
     init_sendEmail_DAvK9KR7();
-    init_createSsrRpc_JzpFN0iC();
-    init_contrato_modelo_functions_rIO7Wk5i();
+    init_createSsrRpc_BRBKaa30();
+    init_contrato_modelo_functions_CHHxK1_U();
     init_nodemailer();
     init_seroval();
     init_lucide_react();
@@ -182782,11 +182782,11 @@ var init_propostas_JcizcCel = __esm({
     init_use_callback_ref();
     init_radix_ui_react_dialog();
     init_radix_ui_react_presence();
-    init_server_Bx80w_OE();
+    init_server_C1IAtvil();
     init_h3_v2();
     init_rou3();
     init_srvx();
-    init_auth_middleware_RcPdWPll();
+    init_auth_middleware_Cg1fnevh();
     init_zod();
     STATUS_MAP = {
       rascunho: {
@@ -182818,14 +182818,14 @@ var init_propostas_JcizcCel = __esm({
   }
 });
 
-// .output/server/_ssr/pgrss.functions-DHZosbFB.mjs
+// .output/server/_ssr/pgrss.functions-D9KeVzcu.mjs
 var QuestionarioPgrss2, obterPrecosPgrss2, PrecosInput2, salvarPrecosPgrss2, SalvarInput2, salvarPropostaPgrss2, obterPropostaPgrss2;
-var init_pgrss_functions_DHZosbFB = __esm({
-  ".output/server/_ssr/pgrss.functions-DHZosbFB.mjs"() {
+var init_pgrss_functions_D9KeVzcu = __esm({
+  ".output/server/_ssr/pgrss.functions-D9KeVzcu.mjs"() {
     "use strict";
-    init_createSsrRpc_JzpFN0iC();
-    init_server_Bx80w_OE();
-    init_auth_middleware_RcPdWPll();
+    init_createSsrRpc_BRBKaa30();
+    init_server_C1IAtvil();
+    init_auth_middleware_Cg1fnevh();
     init_zod();
     QuestionarioPgrss2 = objectType({
       // Identificação
@@ -182906,9 +182906,9 @@ var init_pgrss_functions_DHZosbFB = __esm({
   }
 });
 
-// .output/server/_ssr/precos-pgrss-BdVm1R_h.mjs
-var precos_pgrss_BdVm1R_h_exports = {};
-__export(precos_pgrss_BdVm1R_h_exports, {
+// .output/server/_ssr/precos-pgrss-Be55IuQl.mjs
+var precos_pgrss_Be55IuQl_exports = {};
+__export(precos_pgrss_Be55IuQl_exports, {
   component: () => PrecosPgrssPage
 });
 function PrecosPgrssPage() {
@@ -182974,15 +182974,15 @@ function PrecosPgrssPage() {
   ] });
 }
 var fields;
-var init_precos_pgrss_BdVm1R_h = __esm({
-  ".output/server/_ssr/precos-pgrss-BdVm1R_h.mjs"() {
+var init_precos_pgrss_Be55IuQl = __esm({
+  ".output/server/_ssr/precos-pgrss-Be55IuQl.mjs"() {
     "use strict";
     init_react();
     init_tanstack_react_router();
-    init_createSsrRpc_JzpFN0iC();
-    init_pgrss_functions_DHZosbFB();
-    init_router_sVjfFkfy();
-    init_label_DY8q5O4C();
+    init_createSsrRpc_BRBKaa30();
+    init_pgrss_functions_D9KeVzcu();
+    init_router_CzF9_lfs();
+    init_label_B3YK_FX3();
     init_sonner();
     init_seroval();
     init_nodemailer();
@@ -182992,12 +182992,12 @@ var init_precos_pgrss_BdVm1R_h = __esm({
     init_seroval_plugins();
     init_react_dom();
     init_isbot();
-    init_server_Bx80w_OE();
+    init_server_C1IAtvil();
     init_h3_v2();
     init_unenv();
     init_rou3();
     init_srvx();
-    init_auth_middleware_RcPdWPll();
+    init_auth_middleware_Cg1fnevh();
     init_supabase_supabase_js();
     init_supabase_postgrest_js();
     init_supabase_realtime_js();
@@ -183080,9 +183080,9 @@ var init_precos_pgrss_BdVm1R_h = __esm({
   }
 });
 
-// .output/server/_ssr/portal-BgdVqYdI.mjs
-var portal_BgdVqYdI_exports = {};
-__export(portal_BgdVqYdI_exports, {
+// .output/server/_ssr/portal-CAsYqlFT.mjs
+var portal_CAsYqlFT_exports = {};
+__export(portal_CAsYqlFT_exports, {
   component: () => PortalPage
 });
 function PortalPage() {
@@ -183337,16 +183337,16 @@ function PortalPage() {
   ] });
 }
 var brl7, dt4;
-var init_portal_BgdVqYdI = __esm({
-  ".output/server/_ssr/portal-BgdVqYdI.mjs"() {
+var init_portal_CAsYqlFT = __esm({
+  ".output/server/_ssr/portal-CAsYqlFT.mjs"() {
     "use strict";
     init_react();
     init_tanstack_react_query();
     init_client_C11HiDux();
-    init_router_sVjfFkfy();
-    init_badge_BhbpyALm();
-    init_tabs_DOX1OmvH();
-    init_table_Dgi6oyiT();
+    init_router_CzF9_lfs();
+    init_badge_kyCkUY13();
+    init_tabs_r05xTrmW();
+    init_table_D_rD_d7U();
     init_sonner();
     init_nodemailer();
     init_lucide_react();
@@ -183420,9 +183420,9 @@ var init_portal_BgdVqYdI = __esm({
   }
 });
 
-// .output/server/_ssr/pgrss-nova-DqIEMSwS.mjs
-var pgrss_nova_DqIEMSwS_exports = {};
-__export(pgrss_nova_DqIEMSwS_exports, {
+// .output/server/_ssr/pgrss-nova-9Zce37jR.mjs
+var pgrss_nova_9Zce37jR_exports = {};
+__export(pgrss_nova_9Zce37jR_exports, {
   component: () => NovaPgrssSimples
 });
 function fmtBRL(v5) {
@@ -183740,18 +183740,18 @@ function NovaPgrssSimples() {
   ] });
 }
 var EMPRESA;
-var init_pgrss_nova_DqIEMSwS = __esm({
-  ".output/server/_ssr/pgrss-nova-DqIEMSwS.mjs"() {
+var init_pgrss_nova_9Zce37jR = __esm({
+  ".output/server/_ssr/pgrss-nova-9Zce37jR.mjs"() {
     "use strict";
     init_react();
     init_tanstack_react_router();
     init_client_C11HiDux();
-    init_router_sVjfFkfy();
-    init_label_DY8q5O4C();
-    init_select_DepjtyTR();
+    init_router_CzF9_lfs();
+    init_label_B3YK_FX3();
+    init_select_C_CSR9Ir();
     init_sonner();
-    init_createSsrRpc_JzpFN0iC();
-    init_pgrss_functions_DHZosbFB();
+    init_createSsrRpc_BRBKaa30();
+    init_pgrss_functions_D9KeVzcu();
     init_nodemailer();
     init_seroval();
     init_lucide_react();
@@ -183837,11 +183837,11 @@ var init_pgrss_nova_DqIEMSwS = __esm({
     init_get_nonce();
     init_use_sidecar();
     init_use_callback_ref();
-    init_server_Bx80w_OE();
+    init_server_C1IAtvil();
     init_h3_v2();
     init_rou3();
     init_srvx();
-    init_auth_middleware_RcPdWPll();
+    init_auth_middleware_Cg1fnevh();
     init_zod();
     EMPRESA = {
       nome: "BIO LOGUS AMBIENTAL LTDA \u2013 ME",
@@ -184154,14 +184154,14 @@ var init_pgrss_lista_DfSQ3yQM = __esm({
   }
 });
 
-// .output/server/_ssr/nfse.functions-a9ysbkQ5.mjs
+// .output/server/_ssr/nfse.functions-sWP_eNHZ.mjs
 var emitirNfseDeFatura2, consultarNfse3, cancelarNfse3;
-var init_nfse_functions_a9ysbkQ5 = __esm({
-  ".output/server/_ssr/nfse.functions-a9ysbkQ5.mjs"() {
+var init_nfse_functions_sWP_eNHZ = __esm({
+  ".output/server/_ssr/nfse.functions-sWP_eNHZ.mjs"() {
     "use strict";
-    init_createSsrRpc_JzpFN0iC();
-    init_server_Bx80w_OE();
-    init_auth_middleware_RcPdWPll();
+    init_createSsrRpc_BRBKaa30();
+    init_server_C1IAtvil();
+    init_auth_middleware_Cg1fnevh();
     init_zod();
     emitirNfseDeFatura2 = createServerFn({
       method: "POST"
@@ -184183,9 +184183,9 @@ var init_nfse_functions_a9ysbkQ5 = __esm({
   }
 });
 
-// .output/server/_ssr/notas-fiscais-BCNsNc3v.mjs
-var notas_fiscais_BCNsNc3v_exports = {};
-__export(notas_fiscais_BCNsNc3v_exports, {
+// .output/server/_ssr/notas-fiscais-Cvr3CVyf.mjs
+var notas_fiscais_Cvr3CVyf_exports = {};
+__export(notas_fiscais_Cvr3CVyf_exports, {
   component: () => NotasFiscaisPage
 });
 function brl8(v5) {
@@ -184460,22 +184460,22 @@ function NotasFiscaisPage() {
   ] });
 }
 var STATUS, REGIMES;
-var init_notas_fiscais_BCNsNc3v = __esm({
-  ".output/server/_ssr/notas-fiscais-BCNsNc3v.mjs"() {
+var init_notas_fiscais_Cvr3CVyf = __esm({
+  ".output/server/_ssr/notas-fiscais-Cvr3CVyf.mjs"() {
     "use strict";
     init_react();
     init_tanstack_react_query();
-    init_createSsrRpc_JzpFN0iC();
+    init_createSsrRpc_BRBKaa30();
     init_client_C11HiDux();
-    init_router_sVjfFkfy();
-    init_label_DY8q5O4C();
-    init_badge_BhbpyALm();
-    init_textarea_BGMWC_QI();
-    init_table_Dgi6oyiT();
-    init_select_DepjtyTR();
-    init_dialog_Bxumy1RM();
+    init_router_CzF9_lfs();
+    init_label_B3YK_FX3();
+    init_badge_kyCkUY13();
+    init_textarea_CfS6GJr9();
+    init_table_D_rD_d7U();
+    init_select_C_CSR9Ir();
+    init_dialog_CRBNMKgX();
     init_sonner();
-    init_nfse_functions_a9ysbkQ5();
+    init_nfse_functions_sWP_eNHZ();
     init_seroval();
     init_nodemailer();
     init_lucide_react();
@@ -184487,7 +184487,7 @@ var init_notas_fiscais_BCNsNc3v = __esm({
     init_seroval_plugins();
     init_react_dom();
     init_isbot();
-    init_server_Bx80w_OE();
+    init_server_C1IAtvil();
     init_h3_v2();
     init_unenv();
     init_rou3();
@@ -184567,7 +184567,7 @@ var init_notas_fiscais_BCNsNc3v = __esm({
     init_use_callback_ref();
     init_radix_ui_react_dialog();
     init_radix_ui_react_presence();
-    init_auth_middleware_RcPdWPll();
+    init_auth_middleware_Cg1fnevh();
     init_zod();
     STATUS = {
       processando: {
@@ -184604,7 +184604,7 @@ var init_notas_fiscais_BCNsNc3v = __esm({
   }
 });
 
-// .output/server/_ssr/document-upload-WlYGwjhO.mjs
+// .output/server/_ssr/document-upload-CabO4ixl.mjs
 function DocumentUpload({
   folder,
   value,
@@ -184731,22 +184731,22 @@ function OpenDocumentButton({ path: path2 }) {
   ] });
 }
 var BUCKET;
-var init_document_upload_WlYGwjhO = __esm({
-  ".output/server/_ssr/document-upload-WlYGwjhO.mjs"() {
+var init_document_upload_CabO4ixl = __esm({
+  ".output/server/_ssr/document-upload-CabO4ixl.mjs"() {
     "use strict";
     init_react();
     init_client_C11HiDux();
-    init_router_sVjfFkfy();
-    init_dialog_Bxumy1RM();
+    init_router_CzF9_lfs();
+    init_dialog_CRBNMKgX();
     init_sonner();
     init_lucide_react();
     BUCKET = "documentos";
   }
 });
 
-// .output/server/_ssr/mtr-OZaLgR48.mjs
-var mtr_OZaLgR48_exports = {};
-__export(mtr_OZaLgR48_exports, {
+// .output/server/_ssr/mtr-DYFOzCFa.mjs
+var mtr_DYFOzCFa_exports = {};
+__export(mtr_DYFOzCFa_exports, {
   component: () => MTRPage
 });
 function imprimirMTR(m5) {
@@ -185151,19 +185151,19 @@ function MTRPage() {
   ] });
 }
 var STATUS_MAP2, CLASSES_IBAMA, TECNOLOGIAS;
-var init_mtr_OZaLgR48 = __esm({
-  ".output/server/_ssr/mtr-OZaLgR48.mjs"() {
+var init_mtr_DYFOzCFa = __esm({
+  ".output/server/_ssr/mtr-DYFOzCFa.mjs"() {
     "use strict";
     init_react();
     init_tanstack_react_query();
     init_client_C11HiDux();
-    init_router_sVjfFkfy();
-    init_label_DY8q5O4C();
-    init_textarea_BGMWC_QI();
-    init_select_DepjtyTR();
-    init_dialog_Bxumy1RM();
-    init_table_Dgi6oyiT();
-    init_document_upload_WlYGwjhO();
+    init_router_CzF9_lfs();
+    init_label_B3YK_FX3();
+    init_textarea_CfS6GJr9();
+    init_select_C_CSR9Ir();
+    init_dialog_CRBNMKgX();
+    init_table_D_rD_d7U();
+    init_document_upload_CabO4ixl();
     init_sonner();
     init_nodemailer();
     init_lucide_react();
@@ -211668,9 +211668,9 @@ var init_tiptap_starter_kit = __esm({
   }
 });
 
-// .output/server/_ssr/modelos-contrato-Bjr5bAYC.mjs
-var modelos_contrato_Bjr5bAYC_exports = {};
-__export(modelos_contrato_Bjr5bAYC_exports, {
+// .output/server/_ssr/modelos-contrato-CqXOKkjo.mjs
+var modelos_contrato_CqXOKkjo_exports = {};
+__export(modelos_contrato_CqXOKkjo_exports, {
   component: () => ModelosPage
 });
 function RichTextEditor({ value, onChange, minHeight = 320 }) {
@@ -212126,23 +212126,23 @@ function PreviewPane({
   ] });
 }
 var Switch2, SAMPLE_CLIENTE, SAMPLE_ITENS, SAMPLE_CONTRATO;
-var init_modelos_contrato_Bjr5bAYC = __esm({
-  ".output/server/_ssr/modelos-contrato-Bjr5bAYC.mjs"() {
+var init_modelos_contrato_CqXOKkjo = __esm({
+  ".output/server/_ssr/modelos-contrato-CqXOKkjo.mjs"() {
     "use strict";
     init_react();
     init_tanstack_react_query();
-    init_createSsrRpc_JzpFN0iC();
-    init_router_sVjfFkfy();
-    init_label_DY8q5O4C();
-    init_textarea_BGMWC_QI();
-    init_badge_BhbpyALm();
+    init_createSsrRpc_BRBKaa30();
+    init_router_CzF9_lfs();
+    init_label_B3YK_FX3();
+    init_textarea_CfS6GJr9();
+    init_badge_kyCkUY13();
     init_radix_ui_react_switch();
-    init_dialog_Bxumy1RM();
-    init_table_Dgi6oyiT();
+    init_dialog_CRBNMKgX();
+    init_table_D_rD_d7U();
     init_sonner();
     init_tiptap_react();
     init_tiptap_starter_kit();
-    init_contrato_modelo_functions_rIO7Wk5i();
+    init_contrato_modelo_functions_CHHxK1_U();
     init_seroval();
     init_nodemailer();
     init_lucide_react();
@@ -212154,7 +212154,7 @@ var init_modelos_contrato_Bjr5bAYC = __esm({
     init_seroval_plugins();
     init_react_dom();
     init_isbot();
-    init_server_Bx80w_OE();
+    init_server_C1IAtvil();
     init_h3_v2();
     init_unenv();
     init_rou3();
@@ -212257,7 +212257,7 @@ var init_modelos_contrato_Bjr5bAYC = __esm({
     init_prosemirror_gapcursor();
     init_prosemirror_history();
     init_rope_sequence();
-    init_auth_middleware_RcPdWPll();
+    init_auth_middleware_Cg1fnevh();
     init_zod();
     Switch2 = reactExports.forwardRef(({ className, ...props }, ref) => /* @__PURE__ */ jsxRuntimeExports.jsx(
       Root9,
@@ -212331,9 +212331,9 @@ var init_modelos_contrato_Bjr5bAYC = __esm({
   }
 });
 
-// .output/server/_ssr/licencas-DuW7yKLE.mjs
-var licencas_DuW7yKLE_exports = {};
-__export(licencas_DuW7yKLE_exports, {
+// .output/server/_ssr/licencas-DKmaxLrG.mjs
+var licencas_DKmaxLrG_exports = {};
+__export(licencas_DKmaxLrG_exports, {
   component: () => LicencasPage
 });
 function diasParaVencer(validade) {
@@ -212636,20 +212636,20 @@ function LicencasPage() {
   ] });
 }
 var TIPOS, ORGAOS, STATUS_MAP3;
-var init_licencas_DuW7yKLE = __esm({
-  ".output/server/_ssr/licencas-DuW7yKLE.mjs"() {
+var init_licencas_DKmaxLrG = __esm({
+  ".output/server/_ssr/licencas-DKmaxLrG.mjs"() {
     "use strict";
     init_react();
     init_tanstack_react_query();
     init_client_C11HiDux();
-    init_router_sVjfFkfy();
-    init_label_DY8q5O4C();
-    init_textarea_BGMWC_QI();
-    init_badge_BhbpyALm();
-    init_select_DepjtyTR();
-    init_dialog_Bxumy1RM();
-    init_table_Dgi6oyiT();
-    init_document_upload_WlYGwjhO();
+    init_router_CzF9_lfs();
+    init_label_B3YK_FX3();
+    init_textarea_CfS6GJr9();
+    init_badge_kyCkUY13();
+    init_select_C_CSR9Ir();
+    init_dialog_CRBNMKgX();
+    init_table_D_rD_d7U();
+    init_document_upload_CabO4ixl();
     init_sonner();
     init_nodemailer();
     init_lucide_react();
@@ -212765,9 +212765,9 @@ var init_licencas_DuW7yKLE = __esm({
   }
 });
 
-// .output/server/_ssr/historico-C3G8g0zC.mjs
-var historico_C3G8g0zC_exports = {};
-__export(historico_C3G8g0zC_exports, {
+// .output/server/_ssr/historico-DjWA6K07.mjs
+var historico_DjWA6K07_exports = {};
+__export(historico_DjWA6K07_exports, {
   component: () => HistoricoPage
 });
 function HistoricoPage() {
@@ -213038,13 +213038,13 @@ function HistoricoPage() {
   ] });
 }
 var STATUS_BADGE;
-var init_historico_C3G8g0zC = __esm({
-  ".output/server/_ssr/historico-C3G8g0zC.mjs"() {
+var init_historico_DjWA6K07 = __esm({
+  ".output/server/_ssr/historico-DjWA6K07.mjs"() {
     "use strict";
     init_react();
     init_tanstack_react_query();
     init_client_C11HiDux();
-    init_router_sVjfFkfy();
+    init_router_CzF9_lfs();
     init_sonner();
     init_nodemailer();
     init_lucide_react();
@@ -213112,9 +213112,9 @@ var init_historico_C3G8g0zC = __esm({
   }
 });
 
-// .output/server/_ssr/financeiro-C2gnCHrN.mjs
-var financeiro_C2gnCHrN_exports = {};
-__export(financeiro_C2gnCHrN_exports, {
+// .output/server/_ssr/financeiro-BFHG0gqD.mjs
+var financeiro_BFHG0gqD_exports = {};
+__export(financeiro_BFHG0gqD_exports, {
   component: () => FinanceiroPage
 });
 function brl9(v5) {
@@ -213431,22 +213431,22 @@ function FinanceiroPage() {
   ] });
 }
 var STATUS_MAP4, FORMAS;
-var init_financeiro_C2gnCHrN = __esm({
-  ".output/server/_ssr/financeiro-C2gnCHrN.mjs"() {
+var init_financeiro_BFHG0gqD = __esm({
+  ".output/server/_ssr/financeiro-BFHG0gqD.mjs"() {
     "use strict";
     init_react();
     init_tanstack_react_query();
     init_client_C11HiDux();
-    init_router_sVjfFkfy();
-    init_label_DY8q5O4C();
-    init_textarea_BGMWC_QI();
-    init_badge_BhbpyALm();
-    init_select_DepjtyTR();
-    init_dialog_Bxumy1RM();
-    init_table_Dgi6oyiT();
+    init_router_CzF9_lfs();
+    init_label_B3YK_FX3();
+    init_textarea_CfS6GJr9();
+    init_badge_kyCkUY13();
+    init_select_C_CSR9Ir();
+    init_dialog_CRBNMKgX();
+    init_table_D_rD_d7U();
     init_sonner();
-    init_createSsrRpc_JzpFN0iC();
-    init_nfse_functions_a9ysbkQ5();
+    init_createSsrRpc_BRBKaa30();
+    init_nfse_functions_sWP_eNHZ();
     init_nodemailer();
     init_seroval();
     init_lucide_react();
@@ -213534,11 +213534,11 @@ var init_financeiro_C2gnCHrN = __esm({
     init_use_callback_ref();
     init_radix_ui_react_dialog();
     init_radix_ui_react_presence();
-    init_server_Bx80w_OE();
+    init_server_C1IAtvil();
     init_h3_v2();
     init_rou3();
     init_srvx();
-    init_auth_middleware_RcPdWPll();
+    init_auth_middleware_Cg1fnevh();
     init_zod();
     STATUS_MAP4 = {
       pendente: {
@@ -213562,9 +213562,9 @@ var init_financeiro_C2gnCHrN = __esm({
   }
 });
 
-// .output/server/_ssr/dashboard-CzfTNtix.mjs
-var dashboard_CzfTNtix_exports = {};
-__export(dashboard_CzfTNtix_exports, {
+// .output/server/_ssr/dashboard-JR3cKqBT.mjs
+var dashboard_JR3cKqBT_exports = {};
+__export(dashboard_JR3cKqBT_exports, {
   component: () => Dashboard
 });
 function useDashboard() {
@@ -213696,13 +213696,13 @@ function Dashboard() {
   ] });
 }
 var COLORS2;
-var init_dashboard_CzfTNtix = __esm({
-  ".output/server/_ssr/dashboard-CzfTNtix.mjs"() {
+var init_dashboard_JR3cKqBT = __esm({
+  ".output/server/_ssr/dashboard-JR3cKqBT.mjs"() {
     "use strict";
     init_react();
     init_tanstack_react_query();
     init_client_C11HiDux();
-    init_router_sVjfFkfy();
+    init_router_CzF9_lfs();
     init_sonner();
     init_nodemailer();
     init_lucide_react();
@@ -213781,9 +213781,9 @@ var init_dashboard_CzfTNtix = __esm({
   }
 });
 
-// .output/server/_ssr/contratos-ExjECphG.mjs
-var contratos_ExjECphG_exports = {};
-__export(contratos_ExjECphG_exports, {
+// .output/server/_ssr/contratos-3uhuqPlC.mjs
+var contratos_3uhuqPlC_exports = {};
+__export(contratos_3uhuqPlC_exports, {
   component: () => ContratosPage
 });
 function injectCSS() {
@@ -214973,20 +214973,20 @@ function ContratosPage() {
   ] });
 }
 var ModeloInput4, ContratoPadraoInput2, gerarContratoPadraoBioLogus2, visualizarContrato2, enviarContratoEmail2, ECO_CSS;
-var init_contratos_ExjECphG = __esm({
-  ".output/server/_ssr/contratos-ExjECphG.mjs"() {
+var init_contratos_3uhuqPlC = __esm({
+  ".output/server/_ssr/contratos-3uhuqPlC.mjs"() {
     "use strict";
     init_react();
     init_tanstack_react_query();
     init_client_C11HiDux();
-    init_router_sVjfFkfy();
-    init_label_DY8q5O4C();
-    init_select_DepjtyTR();
-    init_dialog_Bxumy1RM();
+    init_router_CzF9_lfs();
+    init_label_B3YK_FX3();
+    init_select_C_CSR9Ir();
+    init_dialog_CRBNMKgX();
     init_sonner();
-    init_createSsrRpc_JzpFN0iC();
-    init_server_Bx80w_OE();
-    init_auth_middleware_RcPdWPll();
+    init_createSsrRpc_BRBKaa30();
+    init_server_C1IAtvil();
+    init_auth_middleware_Cg1fnevh();
     init_nodemailer();
     init_seroval();
     init_lucide_react();
@@ -215256,9 +215256,9 @@ var init_contratos_ExjECphG = __esm({
   }
 });
 
-// .output/server/_ssr/conciliacao-mnVVM9Dw.mjs
-var conciliacao_mnVVM9Dw_exports = {};
-__export(conciliacao_mnVVM9Dw_exports, {
+// .output/server/_ssr/conciliacao-cduKqU7u.mjs
+var conciliacao_cduKqU7u_exports = {};
+__export(conciliacao_cduKqU7u_exports, {
   component: () => ConciliacaoPage
 });
 function parseOfxDate(raw) {
@@ -215690,18 +215690,18 @@ function ConciliacaoPage() {
     ] }) })
   ] });
 }
-var init_conciliacao_mnVVM9Dw = __esm({
-  ".output/server/_ssr/conciliacao-mnVVM9Dw.mjs"() {
+var init_conciliacao_cduKqU7u = __esm({
+  ".output/server/_ssr/conciliacao-cduKqU7u.mjs"() {
     "use strict";
     init_react();
     init_tanstack_react_query();
     init_client_C11HiDux();
-    init_router_sVjfFkfy();
-    init_label_DY8q5O4C();
-    init_badge_BhbpyALm();
-    init_select_DepjtyTR();
-    init_dialog_Bxumy1RM();
-    init_table_Dgi6oyiT();
+    init_router_CzF9_lfs();
+    init_label_B3YK_FX3();
+    init_badge_kyCkUY13();
+    init_select_C_CSR9Ir();
+    init_dialog_CRBNMKgX();
+    init_table_D_rD_d7U();
     init_sonner();
     init_nodemailer();
     init_lucide_react();
@@ -215793,9 +215793,9 @@ var init_conciliacao_mnVVM9Dw = __esm({
   }
 });
 
-// .output/server/_ssr/coletas-DCE08RS_.mjs
-var coletas_DCE08RS_exports = {};
-__export(coletas_DCE08RS_exports, {
+// .output/server/_ssr/coletas-anCprj8D.mjs
+var coletas_anCprj8D_exports = {};
+__export(coletas_anCprj8D_exports, {
   component: () => ColetasPage
 });
 function ColetasPage() {
@@ -216003,19 +216003,19 @@ function ColetasPage() {
   ] });
 }
 var STATUS_MAP5, GRUPOS;
-var init_coletas_DCE08RS = __esm({
-  ".output/server/_ssr/coletas-DCE08RS_.mjs"() {
+var init_coletas_anCprj8D = __esm({
+  ".output/server/_ssr/coletas-anCprj8D.mjs"() {
     "use strict";
     init_react();
     init_tanstack_react_query();
     init_client_C11HiDux();
-    init_router_sVjfFkfy();
-    init_label_DY8q5O4C();
-    init_textarea_BGMWC_QI();
-    init_badge_BhbpyALm();
-    init_select_DepjtyTR();
-    init_dialog_Bxumy1RM();
-    init_table_Dgi6oyiT();
+    init_router_CzF9_lfs();
+    init_label_B3YK_FX3();
+    init_textarea_CfS6GJr9();
+    init_badge_kyCkUY13();
+    init_select_C_CSR9Ir();
+    init_dialog_CRBNMKgX();
+    init_table_D_rD_d7U();
     init_sonner();
     init_nodemailer();
     init_lucide_react();
@@ -216130,9 +216130,9 @@ var init_coletas_DCE08RS = __esm({
   }
 });
 
-// .output/server/_ssr/clientes-CFNeD-4S.mjs
-var clientes_CFNeD_4S_exports = {};
-__export(clientes_CFNeD_4S_exports, {
+// .output/server/_ssr/clientes-B-40nzA5.mjs
+var clientes_B_40nzA5_exports = {};
+__export(clientes_B_40nzA5_exports, {
   component: () => ClientesPage
 });
 function ClientesPage() {
@@ -216401,23 +216401,23 @@ function Field({
   ] });
 }
 var LinkSchema2, vincularClienteUsuario2, UnlinkSchema2, desvincularClienteUsuario2;
-var init_clientes_CFNeD_4S = __esm({
-  ".output/server/_ssr/clientes-CFNeD-4S.mjs"() {
+var init_clientes_B_40nzA5 = __esm({
+  ".output/server/_ssr/clientes-B-40nzA5.mjs"() {
     "use strict";
     init_react();
     init_tanstack_react_router();
     init_tanstack_react_query();
-    init_createSsrRpc_JzpFN0iC();
+    init_createSsrRpc_BRBKaa30();
     init_client_C11HiDux();
-    init_router_sVjfFkfy();
-    init_label_DY8q5O4C();
-    init_textarea_BGMWC_QI();
-    init_badge_BhbpyALm();
-    init_dialog_Bxumy1RM();
-    init_table_Dgi6oyiT();
+    init_router_CzF9_lfs();
+    init_label_B3YK_FX3();
+    init_textarea_CfS6GJr9();
+    init_badge_kyCkUY13();
+    init_dialog_CRBNMKgX();
+    init_table_D_rD_d7U();
     init_sonner();
-    init_server_Bx80w_OE();
-    init_auth_middleware_RcPdWPll();
+    init_server_C1IAtvil();
+    init_auth_middleware_Cg1fnevh();
     init_nodemailer();
     init_seroval();
     init_lucide_react();
@@ -216511,9 +216511,9 @@ var init_clientes_CFNeD_4S = __esm({
   }
 });
 
-// .output/server/_ssr/cdf-BrxhKDkf.mjs
-var cdf_BrxhKDkf_exports = {};
-__export(cdf_BrxhKDkf_exports, {
+// .output/server/_ssr/cdf-Bz9oI9JM.mjs
+var cdf_Bz9oI9JM_exports = {};
+__export(cdf_Bz9oI9JM_exports, {
   component: () => CDFPage
 });
 function imprimirCDF(c7) {
@@ -216990,19 +216990,19 @@ function CDFPage() {
   ] });
 }
 var TECNOLOGIAS2;
-var init_cdf_BrxhKDkf = __esm({
-  ".output/server/_ssr/cdf-BrxhKDkf.mjs"() {
+var init_cdf_Bz9oI9JM = __esm({
+  ".output/server/_ssr/cdf-Bz9oI9JM.mjs"() {
     "use strict";
     init_react();
     init_tanstack_react_query();
     init_client_C11HiDux();
-    init_router_sVjfFkfy();
-    init_label_DY8q5O4C();
-    init_textarea_BGMWC_QI();
-    init_select_DepjtyTR();
-    init_dialog_Bxumy1RM();
-    init_table_Dgi6oyiT();
-    init_document_upload_WlYGwjhO();
+    init_router_CzF9_lfs();
+    init_label_B3YK_FX3();
+    init_textarea_CfS6GJr9();
+    init_select_C_CSR9Ir();
+    init_dialog_CRBNMKgX();
+    init_table_D_rD_d7U();
+    init_document_upload_CabO4ixl();
     init_sonner();
     init_nodemailer();
     init_lucide_react();
@@ -217095,9 +217095,9 @@ var init_cdf_BrxhKDkf = __esm({
   }
 });
 
-// .output/server/_ssr/boletim-CIdMOlgM.mjs
-var boletim_CIdMOlgM_exports = {};
-__export(boletim_CIdMOlgM_exports, {
+// .output/server/_ssr/boletim-D5JVBRKm.mjs
+var boletim_D5JVBRKm_exports = {};
+__export(boletim_D5JVBRKm_exports, {
   component: () => BoletimPage
 });
 function gerarHTMLCDF(params) {
@@ -218190,17 +218190,17 @@ comercial@biologusambiental.com.br`);
   ] });
 }
 var STATUS_CONFIG;
-var init_boletim_CIdMOlgM = __esm({
-  ".output/server/_ssr/boletim-CIdMOlgM.mjs"() {
+var init_boletim_D5JVBRKm = __esm({
+  ".output/server/_ssr/boletim-D5JVBRKm.mjs"() {
     "use strict";
     init_react();
     init_tanstack_react_query();
     init_client_C11HiDux();
-    init_router_sVjfFkfy();
-    init_label_DY8q5O4C();
-    init_dialog_Bxumy1RM();
-    init_table_Dgi6oyiT();
-    init_select_DepjtyTR();
+    init_router_CzF9_lfs();
+    init_label_B3YK_FX3();
+    init_dialog_CRBNMKgX();
+    init_table_D_rD_d7U();
+    init_select_C_CSR9Ir();
     init_sonner();
     init_sendEmail_DAvK9KR7();
     init_nodemailer();
@@ -218315,9 +218315,9 @@ var init_boletim_CIdMOlgM = __esm({
   }
 });
 
-// .output/server/_ssr/agendamento-B9ZQcq0g.mjs
-var agendamento_B9ZQcq0g_exports = {};
-__export(agendamento_B9ZQcq0g_exports, {
+// .output/server/_ssr/agendamento-WFwGIezB.mjs
+var agendamento_WFwGIezB_exports = {};
+__export(agendamento_WFwGIezB_exports, {
   component: () => AgendamentoPage
 });
 function getDadosTransportadora(transportadora) {
@@ -219050,6 +219050,37 @@ function RotaDetalhe({
       queryKey: ["rota-clientes"]
     })
   });
+  const criarMTRIndividual = useMutation({
+    mutationFn: async ({
+      clienteId,
+      ordem
+    }) => {
+      const numero = `MTR-${dataSelecionada.replace(/-/g, "")}-${String(ordem).padStart(3, "0")}`;
+      const {
+        error: error2
+      } = await supabase.from("mtrs").insert([{
+        owner_id: user.id,
+        cliente_id: clienteId,
+        numero,
+        data_emissao: dataSelecionada,
+        descricao_residuo: "GRUPO A, B, E INFECTANTES, QUIMICOS E PERFURO CORTANTES",
+        quantidade: 0,
+        unidade: "kg",
+        acondicionamento: "BOMBONA",
+        status: "emitido",
+        rota_codigo: rota.id
+      }]);
+      if (error2) throw error2;
+      return numero;
+    },
+    onSuccess: (numero) => {
+      qc.invalidateQueries({
+        queryKey: ["mtrs-rota"]
+      });
+      toast.success(`MTR ${numero} gerado!`);
+    },
+    onError: (e6) => toast.error(e6.message)
+  });
   const criarMTRsLote = useMutation({
     mutationFn: async () => {
       const rows = rotaClientes.map((rc, i3) => ({
@@ -219230,6 +219261,10 @@ function RotaDetalhe({
           ] })
         ] }),
         /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center gap-2 flex-shrink-0", children: [
+          !mtr && /* @__PURE__ */ jsxRuntimeExports.jsx(Button2, { variant: "ghost", size: "icon", className: "h-7 w-7", title: "Gerar MTR individual", onClick: () => criarMTRIndividual.mutate({
+            clienteId: rc.cliente.id,
+            ordem: i3 + 1
+          }), disabled: criarMTRIndividual.isPending, children: /* @__PURE__ */ jsxRuntimeExports.jsx(FileText, { className: "h-3.5 w-3.5 text-teal-600" }) }),
           mtr && /* @__PURE__ */ jsxRuntimeExports.jsxs(jsxRuntimeExports.Fragment, { children: [
             /* @__PURE__ */ jsxRuntimeExports.jsx(Badge, { variant: mtr.status === "baixado" ? "default" : "secondary", className: `text-xs ${mtr.status === "baixado" ? "bg-green-500" : ""}`, children: mtr.status === "baixado" ? `${mtr.quantidade}kg \u2713` : mtr.numero }),
             mtr.status !== "baixado" && /* @__PURE__ */ jsxRuntimeExports.jsx(Button2, { variant: "ghost", size: "icon", className: "h-7 w-7", title: "Dar baixa no MTR", onClick: () => {
@@ -219494,17 +219529,17 @@ function AgendamentoPage() {
   ] });
 }
 var ROTAS, SEMANA_COLOR2;
-var init_agendamento_B9ZQcq0g = __esm({
-  ".output/server/_ssr/agendamento-B9ZQcq0g.mjs"() {
+var init_agendamento_WFwGIezB = __esm({
+  ".output/server/_ssr/agendamento-WFwGIezB.mjs"() {
     "use strict";
     init_react();
     init_tanstack_react_query();
     init_client_C11HiDux();
-    init_router_sVjfFkfy();
-    init_label_DY8q5O4C();
-    init_badge_BhbpyALm();
-    init_dialog_Bxumy1RM();
-    init_checkbox_CwnYEV2z();
+    init_router_CzF9_lfs();
+    init_label_B3YK_FX3();
+    init_badge_kyCkUY13();
+    init_dialog_CRBNMKgX();
+    init_checkbox_FzZgVNwu();
     init_sonner();
     init_sendEmail_DAvK9KR7();
     init_nodemailer();
@@ -220458,9 +220493,9 @@ Grupo D:               PNRS Lei 12.305/2010
   }
 });
 
-// .output/server/_ssr/pgrss-ver._id-BpFA9d99.mjs
-var pgrss_ver_id_BpFA9d99_exports = {};
-__export(pgrss_ver_id_BpFA9d99_exports, {
+// .output/server/_ssr/pgrss-ver._id-c40U8tj9.mjs
+var pgrss_ver_id_c40U8tj9_exports = {};
+__export(pgrss_ver_id_c40U8tj9_exports, {
   component: () => VerPgrssSimples
 });
 function VerPgrssSimples() {
@@ -220709,13 +220744,13 @@ comercial@biologusambiental.com.br
     }, title: numero })
   ] });
 }
-var init_pgrss_ver_id_BpFA9d99 = __esm({
-  ".output/server/_ssr/pgrss-ver._id-BpFA9d99.mjs"() {
+var init_pgrss_ver_id_c40U8tj9 = __esm({
+  ".output/server/_ssr/pgrss-ver._id-c40U8tj9.mjs"() {
     "use strict";
     init_react();
-    init_createSsrRpc_JzpFN0iC();
-    init_pgrss_functions_DHZosbFB();
-    init_router_sVjfFkfy();
+    init_createSsrRpc_BRBKaa30();
+    init_pgrss_functions_D9KeVzcu();
+    init_router_CzF9_lfs();
     init_seroval();
     init_sonner();
     init_nodemailer();
@@ -220726,12 +220761,12 @@ var init_pgrss_ver_id_BpFA9d99 = __esm({
     init_seroval_plugins();
     init_react_dom();
     init_isbot();
-    init_server_Bx80w_OE();
+    init_server_C1IAtvil();
     init_h3_v2();
     init_unenv();
     init_rou3();
     init_srvx();
-    init_auth_middleware_RcPdWPll();
+    init_auth_middleware_Cg1fnevh();
     init_supabase_supabase_js();
     init_supabase_postgrest_js();
     init_supabase_realtime_js();
@@ -220813,9 +220848,9 @@ var init_clientes_clienteId_DYPBdBcs = __esm({
   }
 });
 
-// .output/server/_ssr/clientes._clienteId-C7Elzm96.mjs
-var clientes_clienteId_C7Elzm96_exports = {};
-__export(clientes_clienteId_C7Elzm96_exports, {
+// .output/server/_ssr/clientes._clienteId-NXJOj3BG.mjs
+var clientes_clienteId_NXJOj3BG_exports = {};
+__export(clientes_clienteId_NXJOj3BG_exports, {
   component: () => PastaDigitalPage
 });
 function PastaDigitalPage() {
@@ -221581,21 +221616,21 @@ function OpenInline({
   ] });
 }
 var BUCKET2, fmtBRL4, fmtDate, CATEGORIAS;
-var init_clientes_clienteId_C7Elzm96 = __esm({
-  ".output/server/_ssr/clientes._clienteId-C7Elzm96.mjs"() {
+var init_clientes_clienteId_NXJOj3BG = __esm({
+  ".output/server/_ssr/clientes._clienteId-NXJOj3BG.mjs"() {
     "use strict";
     init_react();
     init_tanstack_react_router();
     init_tanstack_react_query();
     init_client_C11HiDux();
-    init_router_sVjfFkfy();
-    init_badge_BhbpyALm();
-    init_label_DY8q5O4C();
-    init_textarea_BGMWC_QI();
-    init_select_DepjtyTR();
-    init_dialog_Bxumy1RM();
-    init_tabs_DOX1OmvH();
-    init_table_Dgi6oyiT();
+    init_router_CzF9_lfs();
+    init_badge_kyCkUY13();
+    init_label_B3YK_FX3();
+    init_textarea_CfS6GJr9();
+    init_select_C_CSR9Ir();
+    init_dialog_CRBNMKgX();
+    init_tabs_r05xTrmW();
+    init_table_D_rD_d7U();
     init_sonner();
     init_nodemailer();
     init_lucide_react();
@@ -221716,9 +221751,9 @@ var init_clientes_clienteId_C7Elzm96 = __esm({
   }
 });
 
-// .output/server/_ssr/propostas.pgrss.nova-yL4qItMy.mjs
-var propostas_pgrss_nova_yL4qItMy_exports = {};
-__export(propostas_pgrss_nova_yL4qItMy_exports, {
+// .output/server/_ssr/propostas.pgrss.nova-LF7gvNOp.mjs
+var propostas_pgrss_nova_LF7gvNOp_exports = {};
+__export(propostas_pgrss_nova_LF7gvNOp_exports, {
   component: () => NovaPgrssSimples2
 });
 function fmtBRL5(v5) {
@@ -222038,18 +222073,18 @@ function NovaPgrssSimples2() {
   ] });
 }
 var EMPRESA2;
-var init_propostas_pgrss_nova_yL4qItMy = __esm({
-  ".output/server/_ssr/propostas.pgrss.nova-yL4qItMy.mjs"() {
+var init_propostas_pgrss_nova_LF7gvNOp = __esm({
+  ".output/server/_ssr/propostas.pgrss.nova-LF7gvNOp.mjs"() {
     "use strict";
     init_react();
     init_tanstack_react_router();
     init_client_C11HiDux();
-    init_router_sVjfFkfy();
-    init_label_DY8q5O4C();
-    init_select_DepjtyTR();
+    init_router_CzF9_lfs();
+    init_label_B3YK_FX3();
+    init_select_C_CSR9Ir();
     init_sonner();
-    init_createSsrRpc_JzpFN0iC();
-    init_pgrss_functions_DHZosbFB();
+    init_createSsrRpc_BRBKaa30();
+    init_pgrss_functions_D9KeVzcu();
     init_nodemailer();
     init_seroval();
     init_lucide_react();
@@ -222135,11 +222170,11 @@ var init_propostas_pgrss_nova_yL4qItMy = __esm({
     init_get_nonce();
     init_use_sidecar();
     init_use_callback_ref();
-    init_server_Bx80w_OE();
+    init_server_C1IAtvil();
     init_h3_v2();
     init_rou3();
     init_srvx();
-    init_auth_middleware_RcPdWPll();
+    init_auth_middleware_Cg1fnevh();
     init_zod();
     EMPRESA2 = {
       nome: "Bio Logus Solu\xE7\xF5es Ambientais",
@@ -222149,9 +222184,9 @@ var init_propostas_pgrss_nova_yL4qItMy = __esm({
   }
 });
 
-// .output/server/_ssr/propostas.pgrss._id-Cki2t3ul.mjs
-var propostas_pgrss_id_Cki2t3ul_exports = {};
-__export(propostas_pgrss_id_Cki2t3ul_exports, {
+// .output/server/_ssr/propostas.pgrss._id-B9XPOMbx.mjs
+var propostas_pgrss_id_B9XPOMbx_exports = {};
+__export(propostas_pgrss_id_B9XPOMbx_exports, {
   component: () => VerPgrss
 });
 function VerPgrss() {
@@ -222218,14 +222253,14 @@ function VerPgrss() {
     } }) })
   ] });
 }
-var init_propostas_pgrss_id_Cki2t3ul = __esm({
-  ".output/server/_ssr/propostas.pgrss._id-Cki2t3ul.mjs"() {
+var init_propostas_pgrss_id_B9XPOMbx = __esm({
+  ".output/server/_ssr/propostas.pgrss._id-B9XPOMbx.mjs"() {
     "use strict";
     init_react();
     init_tanstack_react_router();
-    init_createSsrRpc_JzpFN0iC();
-    init_pgrss_functions_DHZosbFB();
-    init_router_sVjfFkfy();
+    init_createSsrRpc_BRBKaa30();
+    init_pgrss_functions_D9KeVzcu();
+    init_router_CzF9_lfs();
     init_seroval();
     init_sonner();
     init_nodemailer();
@@ -222236,12 +222271,12 @@ var init_propostas_pgrss_id_Cki2t3ul = __esm({
     init_seroval_plugins();
     init_react_dom();
     init_isbot();
-    init_server_Bx80w_OE();
+    init_server_C1IAtvil();
     init_h3_v2();
     init_unenv();
     init_rou3();
     init_srvx();
-    init_auth_middleware_RcPdWPll();
+    init_auth_middleware_Cg1fnevh();
     init_supabase_supabase_js();
     init_supabase_postgrest_js();
     init_supabase_realtime_js();
@@ -222289,9 +222324,9 @@ var init_propostas_pgrss_id_Cki2t3ul = __esm({
   }
 });
 
-// .output/server/_ssr/router-sVjfFkfy.mjs
-var router_sVjfFkfy_exports = {};
-__export(router_sVjfFkfy_exports, {
+// .output/server/_ssr/router-CzF9_lfs.mjs
+var router_CzF9_lfs_exports = {};
+__export(router_CzF9_lfs_exports, {
   B: () => Button2,
   C: () => Card,
   I: () => Input,
@@ -222673,8 +222708,8 @@ function generateToken() {
   return Array.from(bytes).map((b4) => b4.toString(16).padStart(2, "0")).join("");
 }
 var import_node_process13, appCss, Toaster3, Route$G, $$splitComponentImporter$y, Route$F, $$splitComponentImporter$x, Route$E, $$splitComponentImporter$w, Route$D, $$splitComponentImporter$v, Route$C, $$splitComponentImporter$u, Route$B, $$splitComponentImporter$t, Route$A, Route$z, $$splitNotFoundComponentImporter$1, $$splitErrorComponentImporter$1, $$splitComponentImporter$s, Route$y, Route$x, Route$w, $$splitComponentImporter$r, Route$v, $$splitComponentImporter$q, Route$u, $$splitComponentImporter$p, Route$t, $$splitComponentImporter$o, Route$s, $$splitComponentImporter$n, Route$r, $$splitComponentImporter$m, Route$q, $$splitComponentImporter$l, Route$p, $$splitComponentImporter$k, Route$o, $$splitComponentImporter$j, Route$n, Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter, buttonVariants, Button2, Input, Route$m, STATUS_COLETA, $$splitComponentImporter$i, Route$l, $$splitComponentImporter$h, Route$k, $$splitComponentImporter$g, Route$j, $$splitComponentImporter$f, Route$i, $$splitComponentImporter$e, Route$h, $$splitComponentImporter$d, Route$g, $$splitComponentImporter$c, Route$f, $$splitComponentImporter$b, Route$e, $$splitComponentImporter$a, Route$d, $$splitComponentImporter$9, Route$c, $$splitComponentImporter$8, Route$b, $$splitComponentImporter$7, Route$a, $$splitComponentImporter$6, Route$9, $$splitComponentImporter$5, Route$8, $$splitComponentImporter$4, Route$7, $$splitComponentImporter$3, Route$6, $$splitNotFoundComponentImporter, $$splitErrorComponentImporter, $$splitComponentImporter$2, Route$5, Email2, template, main$1, container$1, header, brand, tagline, hr3, h1$1, text$1, textSmall, infoBox, infoLabel, infoValue, infoValueSmall, btnWrap, button$1, link$1, footer, TEMPLATES, SITE_NAME$1, SENDER_DOMAIN, FROM_DOMAIN, Route$4, Route$3, url2, logoAsset, PROJECT_URL, LOGO_URL, BRAND, main, container, headerStyle, brandText, brandTagline, body, h1, text2, link, button, codeStyle, Header, Footer, SignupEmail, InviteEmail, MagicLinkEmail, RecoveryEmail, EmailChangeEmail, ReauthenticationEmail, EMAIL_TEMPLATES, SITE_NAME, SAMPLE_PROJECT_URL, SAMPLE_EMAIL, SAMPLE_DATA, Route$2, $$splitComponentImporter$1, Route$1, $$splitComponentImporter, Route2, UnsubscribeRoute, ResetPasswordRoute, AuthRoute, AuthenticatedRouteRoute, IndexRoute, ValidarCodigoRoute, EmailUnsubscribeRoute, AssinarTokenRoute, ApiSendEmailRoute, ApiAnthropicProxyRoute, AuthenticatedUsuariosRoute, AuthenticatedRotasRoute, AuthenticatedRelatoriosRoute, AuthenticatedRelatorioFinanceiroRoute, AuthenticatedPropostasRoute, AuthenticatedPrecosPgrssRoute, AuthenticatedPortalRoute, AuthenticatedPgrssNovaRoute, AuthenticatedPgrssListaRoute, AuthenticatedPainelRoute, AuthenticatedNotasFiscaisRoute, AuthenticatedMtrRoute, AuthenticatedModelosContratoRoute, AuthenticatedLicencasRoute, AuthenticatedHistoricoRoute, AuthenticatedFinanceiroRoute, AuthenticatedDashboardRoute, AuthenticatedContratosRoute, AuthenticatedConciliacaoRoute, AuthenticatedColetasRoute, AuthenticatedClientesRoute, AuthenticatedCdfRoute, AuthenticatedBoletimRoute, AuthenticatedAgendamentoRoute, AuthenticatedPropostasNovaRoute, AuthenticatedPgrssVerIdRoute, AuthenticatedClientesClienteIdRoute, LovableEmailTransactionalSendRoute, LovableEmailTransactionalPreviewRoute, LovableEmailAuthPreviewRoute, AuthenticatedPropostasPgrssNovaRoute, AuthenticatedPropostasPgrssIdRoute, AuthenticatedClientesRouteChildren, AuthenticatedClientesRouteWithChildren, AuthenticatedPropostasRouteChildren, AuthenticatedPropostasRouteWithChildren, AuthenticatedRouteRouteChildren, AuthenticatedRouteRouteWithChildren, rootRouteChildren, routeTree, getRouter, router;
-var init_router_sVjfFkfy = __esm({
-  ".output/server/_ssr/router-sVjfFkfy.mjs"() {
+var init_router_CzF9_lfs = __esm({
+  ".output/server/_ssr/router-CzF9_lfs.mjs"() {
     "use strict";
     import_node_process13 = __toESM(require("node:process"), 1);
     init_tanstack_query_core();
@@ -222781,11 +222816,11 @@ var init_router_sVjfFkfy = __esm({
       notFoundComponent: NotFoundComponent,
       errorComponent: ErrorComponent2
     });
-    $$splitComponentImporter$y = () => Promise.resolve().then(() => (init_unsubscribe_D9d_3hDL(), unsubscribe_D9d_3hDL_exports));
+    $$splitComponentImporter$y = () => Promise.resolve().then(() => (init_unsubscribe_gpXvf_RO(), unsubscribe_gpXvf_RO_exports));
     Route$F = createFileRoute("/unsubscribe")({
       component: lazyRouteComponent($$splitComponentImporter$y, "component")
     });
-    $$splitComponentImporter$x = () => Promise.resolve().then(() => (init_reset_password_DraU11g(), reset_password_DraU11g_exports));
+    $$splitComponentImporter$x = () => Promise.resolve().then(() => (init_reset_password_D5M_biVT(), reset_password_D5M_biVT_exports));
     Route$E = createFileRoute("/reset-password")({
       ssr: false,
       head: () => ({
@@ -222798,7 +222833,7 @@ var init_router_sVjfFkfy = __esm({
       }),
       component: lazyRouteComponent($$splitComponentImporter$x, "component")
     });
-    $$splitComponentImporter$w = () => Promise.resolve().then(() => (init_auth_DTyicuOW(), auth_DTyicuOW_exports));
+    $$splitComponentImporter$w = () => Promise.resolve().then(() => (init_auth_Bk0wnMKH(), auth_Bk0wnMKH_exports));
     Route$D = createFileRoute("/auth")({
       ssr: false,
       head: () => ({
@@ -222811,7 +222846,7 @@ var init_router_sVjfFkfy = __esm({
       }),
       component: lazyRouteComponent($$splitComponentImporter$w, "component")
     });
-    $$splitComponentImporter$v = () => Promise.resolve().then(() => (init_route_BeutWa3R(), route_BeutWa3R_exports));
+    $$splitComponentImporter$v = () => Promise.resolve().then(() => (init_route_CrgX3OZ0(), route_CrgX3OZ0_exports));
     Route$C = createFileRoute("/_authenticated")({
       ssr: false,
       beforeLoad: async () => {
@@ -222828,7 +222863,7 @@ var init_router_sVjfFkfy = __esm({
       },
       component: lazyRouteComponent($$splitComponentImporter$v, "component")
     });
-    $$splitComponentImporter$u = () => Promise.resolve().then(() => (init_index_B94oZkGy(), index_B94oZkGy_exports));
+    $$splitComponentImporter$u = () => Promise.resolve().then(() => (init_index_BYYznbxB(), index_BYYznbxB_exports));
     Route$B = createFileRoute("/")({
       head: () => ({
         meta: [{
@@ -222846,7 +222881,7 @@ var init_router_sVjfFkfy = __esm({
       }),
       component: lazyRouteComponent($$splitComponentImporter$u, "component")
     });
-    $$splitComponentImporter$t = () => Promise.resolve().then(() => (init_validar_codigo_B_H9HfRe(), validar_codigo_B_H9HfRe_exports));
+    $$splitComponentImporter$t = () => Promise.resolve().then(() => (init_validar_codigo_0bisWPiP(), validar_codigo_0bisWPiP_exports));
     Route$A = createFileRoute("/validar/$codigo")({
       component: lazyRouteComponent($$splitComponentImporter$t, "component")
     });
@@ -222940,8 +222975,8 @@ var init_router_sVjfFkfy = __esm({
       }
     });
     $$splitNotFoundComponentImporter$1 = () => Promise.resolve().then(() => (init_assinar_token_DJh9UiE9(), assinar_token_DJh9UiE9_exports));
-    $$splitErrorComponentImporter$1 = () => Promise.resolve().then(() => (init_assinar_token_DtAI8JFz(), assinar_token_DtAI8JFz_exports));
-    $$splitComponentImporter$s = () => Promise.resolve().then(() => (init_assinar_token_BBc0uezp(), assinar_token_BBc0uezp_exports));
+    $$splitErrorComponentImporter$1 = () => Promise.resolve().then(() => (init_assinar_token_B6FbSoQd(), assinar_token_B6FbSoQd_exports));
+    $$splitComponentImporter$s = () => Promise.resolve().then(() => (init_assinar_token_9cgkgZWm(), assinar_token_9cgkgZWm_exports));
     Route$y = createFileRoute("/assinar/$token")({
       component: lazyRouteComponent($$splitComponentImporter$s, "component"),
       errorComponent: lazyRouteComponent($$splitErrorComponentImporter$1, "errorComponent"),
@@ -223064,35 +223099,35 @@ var init_router_sVjfFkfy = __esm({
         }
       }
     });
-    $$splitComponentImporter$r = () => Promise.resolve().then(() => (init_usuarios_D_2lAnHP(), usuarios_D_2lAnHP_exports));
+    $$splitComponentImporter$r = () => Promise.resolve().then(() => (init_usuarios_DchUl2U9(), usuarios_DchUl2U9_exports));
     Route$v = createFileRoute("/_authenticated/usuarios")({
       component: lazyRouteComponent($$splitComponentImporter$r, "component")
     });
-    $$splitComponentImporter$q = () => Promise.resolve().then(() => (init_rotas_Ev9zUFjT(), rotas_Ev9zUFjT_exports));
+    $$splitComponentImporter$q = () => Promise.resolve().then(() => (init_rotas_sK9fo8jB(), rotas_sK9fo8jB_exports));
     Route$u = createFileRoute("/_authenticated/rotas")({
       component: lazyRouteComponent($$splitComponentImporter$q, "component")
     });
-    $$splitComponentImporter$p = () => Promise.resolve().then(() => (init_relatorios_DgV4sLa(), relatorios_DgV4sLa_exports));
+    $$splitComponentImporter$p = () => Promise.resolve().then(() => (init_relatorios_BlVFcyHe(), relatorios_BlVFcyHe_exports));
     Route$t = createFileRoute("/_authenticated/relatorios")({
       component: lazyRouteComponent($$splitComponentImporter$p, "component")
     });
-    $$splitComponentImporter$o = () => Promise.resolve().then(() => (init_relatorio_financeiro_Dh4dr0JH(), relatorio_financeiro_Dh4dr0JH_exports));
+    $$splitComponentImporter$o = () => Promise.resolve().then(() => (init_relatorio_financeiro_DeYI7mOo(), relatorio_financeiro_DeYI7mOo_exports));
     Route$s = createFileRoute("/_authenticated/relatorio-financeiro")({
       component: lazyRouteComponent($$splitComponentImporter$o, "component")
     });
-    $$splitComponentImporter$n = () => Promise.resolve().then(() => (init_propostas_JcizcCel(), propostas_JcizcCel_exports));
+    $$splitComponentImporter$n = () => Promise.resolve().then(() => (init_propostas_BmKz_4mA(), propostas_BmKz_4mA_exports));
     Route$r = createFileRoute("/_authenticated/propostas")({
       component: lazyRouteComponent($$splitComponentImporter$n, "component")
     });
-    $$splitComponentImporter$m = () => Promise.resolve().then(() => (init_precos_pgrss_BdVm1R_h(), precos_pgrss_BdVm1R_h_exports));
+    $$splitComponentImporter$m = () => Promise.resolve().then(() => (init_precos_pgrss_Be55IuQl(), precos_pgrss_Be55IuQl_exports));
     Route$q = createFileRoute("/_authenticated/precos-pgrss")({
       component: lazyRouteComponent($$splitComponentImporter$m, "component")
     });
-    $$splitComponentImporter$l = () => Promise.resolve().then(() => (init_portal_BgdVqYdI(), portal_BgdVqYdI_exports));
+    $$splitComponentImporter$l = () => Promise.resolve().then(() => (init_portal_CAsYqlFT(), portal_CAsYqlFT_exports));
     Route$p = createFileRoute("/_authenticated/portal")({
       component: lazyRouteComponent($$splitComponentImporter$l, "component")
     });
-    $$splitComponentImporter$k = () => Promise.resolve().then(() => (init_pgrss_nova_DqIEMSwS(), pgrss_nova_DqIEMSwS_exports));
+    $$splitComponentImporter$k = () => Promise.resolve().then(() => (init_pgrss_nova_9Zce37jR(), pgrss_nova_9Zce37jR_exports));
     Route$o = createFileRoute("/_authenticated/pgrss-nova")({
       component: lazyRouteComponent($$splitComponentImporter$k, "component")
     });
@@ -223197,59 +223232,59 @@ var init_router_sVjfFkfy = __esm({
       nao_coletada: { label: "N\xE3o coletada", color: "text-red-600", icon: TriangleAlert },
       cancelada: { label: "Cancelada", color: "text-gray-400", icon: Circle }
     };
-    $$splitComponentImporter$i = () => Promise.resolve().then(() => (init_notas_fiscais_BCNsNc3v(), notas_fiscais_BCNsNc3v_exports));
+    $$splitComponentImporter$i = () => Promise.resolve().then(() => (init_notas_fiscais_Cvr3CVyf(), notas_fiscais_Cvr3CVyf_exports));
     Route$l = createFileRoute("/_authenticated/notas-fiscais")({
       component: lazyRouteComponent($$splitComponentImporter$i, "component")
     });
-    $$splitComponentImporter$h = () => Promise.resolve().then(() => (init_mtr_OZaLgR48(), mtr_OZaLgR48_exports));
+    $$splitComponentImporter$h = () => Promise.resolve().then(() => (init_mtr_DYFOzCFa(), mtr_DYFOzCFa_exports));
     Route$k = createFileRoute("/_authenticated/mtr")({
       component: lazyRouteComponent($$splitComponentImporter$h, "component")
     });
-    $$splitComponentImporter$g = () => Promise.resolve().then(() => (init_modelos_contrato_Bjr5bAYC(), modelos_contrato_Bjr5bAYC_exports));
+    $$splitComponentImporter$g = () => Promise.resolve().then(() => (init_modelos_contrato_CqXOKkjo(), modelos_contrato_CqXOKkjo_exports));
     Route$j = createFileRoute("/_authenticated/modelos-contrato")({
       component: lazyRouteComponent($$splitComponentImporter$g, "component")
     });
-    $$splitComponentImporter$f = () => Promise.resolve().then(() => (init_licencas_DuW7yKLE(), licencas_DuW7yKLE_exports));
+    $$splitComponentImporter$f = () => Promise.resolve().then(() => (init_licencas_DKmaxLrG(), licencas_DKmaxLrG_exports));
     Route$i = createFileRoute("/_authenticated/licencas")({
       component: lazyRouteComponent($$splitComponentImporter$f, "component")
     });
-    $$splitComponentImporter$e = () => Promise.resolve().then(() => (init_historico_C3G8g0zC(), historico_C3G8g0zC_exports));
+    $$splitComponentImporter$e = () => Promise.resolve().then(() => (init_historico_DjWA6K07(), historico_DjWA6K07_exports));
     Route$h = createFileRoute("/_authenticated/historico")({
       component: lazyRouteComponent($$splitComponentImporter$e, "component")
     });
-    $$splitComponentImporter$d = () => Promise.resolve().then(() => (init_financeiro_C2gnCHrN(), financeiro_C2gnCHrN_exports));
+    $$splitComponentImporter$d = () => Promise.resolve().then(() => (init_financeiro_BFHG0gqD(), financeiro_BFHG0gqD_exports));
     Route$g = createFileRoute("/_authenticated/financeiro")({
       component: lazyRouteComponent($$splitComponentImporter$d, "component")
     });
-    $$splitComponentImporter$c = () => Promise.resolve().then(() => (init_dashboard_CzfTNtix(), dashboard_CzfTNtix_exports));
+    $$splitComponentImporter$c = () => Promise.resolve().then(() => (init_dashboard_JR3cKqBT(), dashboard_JR3cKqBT_exports));
     Route$f = createFileRoute("/_authenticated/dashboard")({
       component: lazyRouteComponent($$splitComponentImporter$c, "component")
     });
-    $$splitComponentImporter$b = () => Promise.resolve().then(() => (init_contratos_ExjECphG(), contratos_ExjECphG_exports));
+    $$splitComponentImporter$b = () => Promise.resolve().then(() => (init_contratos_3uhuqPlC(), contratos_3uhuqPlC_exports));
     Route$e = createFileRoute("/_authenticated/contratos")({
       component: lazyRouteComponent($$splitComponentImporter$b, "component")
     });
-    $$splitComponentImporter$a = () => Promise.resolve().then(() => (init_conciliacao_mnVVM9Dw(), conciliacao_mnVVM9Dw_exports));
+    $$splitComponentImporter$a = () => Promise.resolve().then(() => (init_conciliacao_cduKqU7u(), conciliacao_cduKqU7u_exports));
     Route$d = createFileRoute("/_authenticated/conciliacao")({
       component: lazyRouteComponent($$splitComponentImporter$a, "component")
     });
-    $$splitComponentImporter$9 = () => Promise.resolve().then(() => (init_coletas_DCE08RS(), coletas_DCE08RS_exports));
+    $$splitComponentImporter$9 = () => Promise.resolve().then(() => (init_coletas_anCprj8D(), coletas_anCprj8D_exports));
     Route$c = createFileRoute("/_authenticated/coletas")({
       component: lazyRouteComponent($$splitComponentImporter$9, "component")
     });
-    $$splitComponentImporter$8 = () => Promise.resolve().then(() => (init_clientes_CFNeD_4S(), clientes_CFNeD_4S_exports));
+    $$splitComponentImporter$8 = () => Promise.resolve().then(() => (init_clientes_B_40nzA5(), clientes_B_40nzA5_exports));
     Route$b = createFileRoute("/_authenticated/clientes")({
       component: lazyRouteComponent($$splitComponentImporter$8, "component")
     });
-    $$splitComponentImporter$7 = () => Promise.resolve().then(() => (init_cdf_BrxhKDkf(), cdf_BrxhKDkf_exports));
+    $$splitComponentImporter$7 = () => Promise.resolve().then(() => (init_cdf_Bz9oI9JM(), cdf_Bz9oI9JM_exports));
     Route$a = createFileRoute("/_authenticated/cdf")({
       component: lazyRouteComponent($$splitComponentImporter$7, "component")
     });
-    $$splitComponentImporter$6 = () => Promise.resolve().then(() => (init_boletim_CIdMOlgM(), boletim_CIdMOlgM_exports));
+    $$splitComponentImporter$6 = () => Promise.resolve().then(() => (init_boletim_D5JVBRKm(), boletim_D5JVBRKm_exports));
     Route$9 = createFileRoute("/_authenticated/boletim")({
       component: lazyRouteComponent($$splitComponentImporter$6, "component")
     });
-    $$splitComponentImporter$5 = () => Promise.resolve().then(() => (init_agendamento_B9ZQcq0g(), agendamento_B9ZQcq0g_exports));
+    $$splitComponentImporter$5 = () => Promise.resolve().then(() => (init_agendamento_WFwGIezB(), agendamento_WFwGIezB_exports));
     Route$8 = createFileRoute("/_authenticated/agendamento")({
       component: lazyRouteComponent($$splitComponentImporter$5, "component")
     });
@@ -223257,13 +223292,13 @@ var init_router_sVjfFkfy = __esm({
     Route$7 = createFileRoute("/_authenticated/propostas/nova")({
       component: lazyRouteComponent($$splitComponentImporter$4, "component")
     });
-    $$splitComponentImporter$3 = () => Promise.resolve().then(() => (init_pgrss_ver_id_BpFA9d99(), pgrss_ver_id_BpFA9d99_exports));
+    $$splitComponentImporter$3 = () => Promise.resolve().then(() => (init_pgrss_ver_id_c40U8tj9(), pgrss_ver_id_c40U8tj9_exports));
     Route$6 = createFileRoute("/_authenticated/pgrss-ver/$id")({
       component: lazyRouteComponent($$splitComponentImporter$3, "component")
     });
     $$splitNotFoundComponentImporter = () => Promise.resolve().then(() => (init_clientes_clienteId_C23Ritm3(), clientes_clienteId_C23Ritm3_exports));
     $$splitErrorComponentImporter = () => Promise.resolve().then(() => (init_clientes_clienteId_DYPBdBcs(), clientes_clienteId_DYPBdBcs_exports));
-    $$splitComponentImporter$2 = () => Promise.resolve().then(() => (init_clientes_clienteId_C7Elzm96(), clientes_clienteId_C7Elzm96_exports));
+    $$splitComponentImporter$2 = () => Promise.resolve().then(() => (init_clientes_clienteId_NXJOj3BG(), clientes_clienteId_NXJOj3BG_exports));
     Route$5 = createFileRoute("/_authenticated/clientes/$clienteId")({
       component: lazyRouteComponent($$splitComponentImporter$2, "component"),
       errorComponent: lazyRouteComponent($$splitErrorComponentImporter, "errorComponent"),
@@ -223988,11 +224023,11 @@ var init_router_sVjfFkfy = __esm({
         }
       }
     });
-    $$splitComponentImporter$1 = () => Promise.resolve().then(() => (init_propostas_pgrss_nova_yL4qItMy(), propostas_pgrss_nova_yL4qItMy_exports));
+    $$splitComponentImporter$1 = () => Promise.resolve().then(() => (init_propostas_pgrss_nova_LF7gvNOp(), propostas_pgrss_nova_LF7gvNOp_exports));
     Route$1 = createFileRoute("/_authenticated/propostas/pgrss/nova")({
       component: lazyRouteComponent($$splitComponentImporter$1, "component")
     });
-    $$splitComponentImporter = () => Promise.resolve().then(() => (init_propostas_pgrss_id_Cki2t3ul(), propostas_pgrss_id_Cki2t3ul_exports));
+    $$splitComponentImporter = () => Promise.resolve().then(() => (init_propostas_pgrss_id_B9XPOMbx(), propostas_pgrss_id_B9XPOMbx_exports));
     Route2 = createFileRoute("/_authenticated/propostas/pgrss/$id")({
       component: lazyRouteComponent($$splitComponentImporter, "component")
     });
@@ -224280,9 +224315,9 @@ var init_router_sVjfFkfy = __esm({
   }
 });
 
-// .output/server/_ssr/start-WBrmyvRu.mjs
-var start_WBrmyvRu_exports = {};
-__export(start_WBrmyvRu_exports, {
+// .output/server/_ssr/start-jD9UUL54.mjs
+var start_jD9UUL54_exports = {};
+__export(start_jD9UUL54_exports, {
   startInstance: () => startInstance
 });
 function dedupeSerializationAdapters(deduped, serializationAdapters) {
@@ -224295,10 +224330,10 @@ function dedupeSerializationAdapters(deduped, serializationAdapters) {
   }
 }
 var createStart, attachSupabaseAuth, errorMiddleware, startInstance;
-var init_start_WBrmyvRu = __esm({
-  ".output/server/_ssr/start-WBrmyvRu.mjs"() {
+var init_start_jD9UUL54 = __esm({
+  ".output/server/_ssr/start-jD9UUL54.mjs"() {
     "use strict";
-    init_server_Bx80w_OE();
+    init_server_C1IAtvil();
     init_client_C11HiDux();
     init_ssr();
     init_seroval();
@@ -224382,9 +224417,9 @@ var init_empty_plugin_adapters_BFgPZ6_d = __esm({
   }
 });
 
-// .output/server/_ssr/server-Bx80w-OE.mjs
-var server_Bx80w_OE_exports = {};
-__export(server_Bx80w_OE_exports, {
+// .output/server/_ssr/server-C1IAtvil.mjs
+var server_C1IAtvil_exports = {};
+__export(server_C1IAtvil_exports, {
   T: () => TSS_SERVER_FUNCTION,
   a: () => createServerFn,
   b: () => getRequestIP2,
@@ -224459,7 +224494,7 @@ function getResponse() {
   return getH3Event().res;
 }
 async function getStartManifest(matchedRoutes) {
-  const { tsrStartManifest: tsrStartManifest2 } = await Promise.resolve().then(() => (init_tanstack_start_manifest_v_DH88GO_j(), tanstack_start_manifest_v_DH88GO_j_exports));
+  const { tsrStartManifest: tsrStartManifest2 } = await Promise.resolve().then(() => (init_tanstack_start_manifest_v_CMqS3Rpp(), tanstack_start_manifest_v_CMqS3Rpp_exports));
   const startManifest = tsrStartManifest2();
   let routes = startManifest.routes;
   routes[rootRouteId];
@@ -225342,8 +225377,8 @@ function getStartResponseHeaders(opts) {
 }
 async function loadEntries() {
   const [routerEntry, startEntry, pluginAdapters] = await Promise.all([
-    Promise.resolve().then(() => (init_router_sVjfFkfy(), router_sVjfFkfy_exports)).then((n4) => n4.x),
-    Promise.resolve().then(() => (init_start_WBrmyvRu(), start_WBrmyvRu_exports)),
+    Promise.resolve().then(() => (init_router_CzF9_lfs(), router_CzF9_lfs_exports)).then((n4) => n4.x),
+    Promise.resolve().then(() => (init_start_jD9UUL54(), start_jD9UUL54_exports)),
     Promise.resolve().then(() => (init_empty_plugin_adapters_BFgPZ6_d(), empty_plugin_adapters_BFgPZ6_d_exports))
   ]);
   return {
@@ -225676,8 +225711,8 @@ function createServerEntry(entry) {
   } };
 }
 var import_node_process14, import_node_async_hooks, defaultStreamHandler, GLOBAL_EVENT_STORAGE_KEY, globalObj$1, eventStorage, HEADERS, manifest, TSS_FORMDATA_CONTEXT, TSS_SERVER_FUNCTION, TSS_SERVER_FUNCTION_FACTORY, X_TSS_SERIALIZED, X_TSS_RAW_RESPONSE, TSS_CONTENT_TYPE_FRAMED, FrameType, FRAME_HEADER_SIZE, TSS_CONTENT_TYPE_FRAMED_VERSIONED, GLOBAL_STORAGE_KEY, globalObj, startStorage, getStartOptions, getStartContextServerOnly, createServerFn, createMiddleware, innerCreateCsrfMiddleware, createCsrfMiddleware, textEncoder2, EMPTY_PAYLOAD, serovalPlugins, FORM_DATA_CONTENT_TYPES, MAX_PAYLOAD_SIZE, handleServerAction, LINK_PARAM_TOKEN_RE, PRELOAD_AS_VALUES, ServerFunctionSerializationAdapter, entriesPromise, defaultCsrfMiddleware, getCachedBaseManifest, getProdBaseManifest, getBaseManifest, createEarlyHintsForRequest, ROUTER_BASEPATH, SERVER_FN_BASE, IS_PRERENDERING, IS_SHELL_ENV, ERR_NO_RESPONSE, ERR_NO_DEFER, fetch3, server_default, server2;
-var init_server_Bx80w_OE = __esm({
-  ".output/server/_ssr/server-Bx80w-OE.mjs"() {
+var init_server_C1IAtvil = __esm({
+  ".output/server/_ssr/server-C1IAtvil.mjs"() {
     "use strict";
     import_node_process14 = __toESM(require("node:process"), 1);
     import_node_async_hooks = require("node:async_hooks");
@@ -225708,163 +225743,163 @@ var init_server_Bx80w_OE = __esm({
     manifest = {
       "066295009017b2a335cf90a7d56cf617daa6d1dc4c171693db0a8e6124724178": {
         functionName: "visualizarContrato_createServerFn_handler",
-        importer: () => Promise.resolve().then(() => (init_contrato_functions_RSbL_PEA(), contrato_functions_RSbL_PEA_exports))
+        importer: () => Promise.resolve().then(() => (init_contrato_functions_BVX1nz9C(), contrato_functions_BVX1nz9C_exports))
       },
       "067d55e22b93dd3cc1e036cdffd83a29b74032b371a02661293b01a07e5ede0d": {
         functionName: "solicitarOTP_createServerFn_handler",
-        importer: () => Promise.resolve().then(() => (init_assinatura_functions_C7XoqvOh(), assinatura_functions_C7XoqvOh_exports))
+        importer: () => Promise.resolve().then(() => (init_assinatura_functions_BpHN2Yq(), assinatura_functions_BpHN2Yq_exports))
       },
       "0c3fa9208fca3e88851428b6a8ce333e7b5ee033eb2d0c07f60b9d2b413be729": {
         functionName: "obterModelo_createServerFn_handler",
-        importer: () => Promise.resolve().then(() => (init_contrato_modelo_functions_CUfRMXHt(), contrato_modelo_functions_CUfRMXHt_exports))
+        importer: () => Promise.resolve().then(() => (init_contrato_modelo_functions_n2xDRgAu(), contrato_modelo_functions_n2xDRgAu_exports))
       },
       "1158c0d8a04388b81d5447a2b359b01c12a5d6efe0b879255cbd0e736da500e2": {
         functionName: "criarModelo_createServerFn_handler",
-        importer: () => Promise.resolve().then(() => (init_contrato_functions_RSbL_PEA(), contrato_functions_RSbL_PEA_exports))
+        importer: () => Promise.resolve().then(() => (init_contrato_functions_BVX1nz9C(), contrato_functions_BVX1nz9C_exports))
       },
       "15048fd2d8bb480287965e8e1e2e059668afca61e90f271342f1f7b188c14f32": {
         functionName: "alternarAtivoModelo_createServerFn_handler",
-        importer: () => Promise.resolve().then(() => (init_contrato_modelo_functions_CUfRMXHt(), contrato_modelo_functions_CUfRMXHt_exports))
+        importer: () => Promise.resolve().then(() => (init_contrato_modelo_functions_n2xDRgAu(), contrato_modelo_functions_n2xDRgAu_exports))
       },
       "2120ac5baeef404eb6338021dc57395fca68779353a036a9241389f3a57b62b7": {
         functionName: "validarCodigoAssinatura_createServerFn_handler",
-        importer: () => Promise.resolve().then(() => (init_assinatura_functions_C7XoqvOh(), assinatura_functions_C7XoqvOh_exports))
+        importer: () => Promise.resolve().then(() => (init_assinatura_functions_BpHN2Yq(), assinatura_functions_BpHN2Yq_exports))
       },
       "26f02819e37ffc88b8d38a70a2bb2d51ee404d77337cb8e05482d2661ce378c4": {
         functionName: "desvincularClienteUsuario_createServerFn_handler",
-        importer: () => Promise.resolve().then(() => (init_clientes_functions_DB2h9ZN2(), clientes_functions_DB2h9ZN2_exports))
+        importer: () => Promise.resolve().then(() => (init_clientes_functions_BEkyoeno(), clientes_functions_BEkyoeno_exports))
       },
       "2704ec097cf6707350169c03e0deee296aa5a1294f9ee770ecc2c2cc1797b5ea": {
         functionName: "gerarContratoDeModelo_createServerFn_handler",
-        importer: () => Promise.resolve().then(() => (init_contrato_modelo_functions_CUfRMXHt(), contrato_modelo_functions_CUfRMXHt_exports))
+        importer: () => Promise.resolve().then(() => (init_contrato_modelo_functions_n2xDRgAu(), contrato_modelo_functions_n2xDRgAu_exports))
       },
       "2e9e72466dd309a9f3d1555dc2baac9b7a64605d54d1e98e12defac78403a632": {
         functionName: "emitirNfseDeFatura_createServerFn_handler",
-        importer: () => Promise.resolve().then(() => (init_nfse_functions_D_KE1CHC(), nfse_functions_D_KE1CHC_exports))
+        importer: () => Promise.resolve().then(() => (init_nfse_functions_tyuthhWq(), nfse_functions_tyuthhWq_exports))
       },
       "35ac119a4ce8a3d14efbadcd0fc6b9800bc3115a1999b5b4cc75e8a3e3eaeef3": {
         functionName: "salvarPrecosPgrss_createServerFn_handler",
-        importer: () => Promise.resolve().then(() => (init_pgrss_functions_9ZlmntS2(), pgrss_functions_9ZlmntS2_exports))
+        importer: () => Promise.resolve().then(() => (init_pgrss_functions_BozqW5fY(), pgrss_functions_BozqW5fY_exports))
       },
       "38e347ad4d04617aa0f0d2b14c4095fb351137b9d9dfea11bbc7d892f0c4a965": {
         functionName: "obterModelo_createServerFn_handler",
-        importer: () => Promise.resolve().then(() => (init_contrato_functions_RSbL_PEA(), contrato_functions_RSbL_PEA_exports))
+        importer: () => Promise.resolve().then(() => (init_contrato_functions_BVX1nz9C(), contrato_functions_BVX1nz9C_exports))
       },
       "3cf1dee16975f7f98a34bde22b09cf110ac4600dec478ad60b0b35abbac0bf15": {
         functionName: "duplicarModelo_createServerFn_handler",
-        importer: () => Promise.resolve().then(() => (init_contrato_functions_RSbL_PEA(), contrato_functions_RSbL_PEA_exports))
+        importer: () => Promise.resolve().then(() => (init_contrato_functions_BVX1nz9C(), contrato_functions_BVX1nz9C_exports))
       },
       "40168f5e83671b5c2f1cebfe8d34c3b68d281ecbbb2007acc9be596b1cdfe82b": {
         functionName: "vincularClienteUsuario_createServerFn_handler",
-        importer: () => Promise.resolve().then(() => (init_clientes_functions_DB2h9ZN2(), clientes_functions_DB2h9ZN2_exports))
+        importer: () => Promise.resolve().then(() => (init_clientes_functions_BEkyoeno(), clientes_functions_BEkyoeno_exports))
       },
       "43b66e7129105ec561983f192b810d5e1ae47478d62b16edabae5f8f21ab732e": {
         functionName: "consultarNfse_createServerFn_handler",
-        importer: () => Promise.resolve().then(() => (init_nfse_functions_D_KE1CHC(), nfse_functions_D_KE1CHC_exports))
+        importer: () => Promise.resolve().then(() => (init_nfse_functions_tyuthhWq(), nfse_functions_tyuthhWq_exports))
       },
       "52c61120ed27b3c63784a807998409eceb76ccae37476c20cb1f1217760bd1ac": {
         functionName: "criarModelo_createServerFn_handler",
-        importer: () => Promise.resolve().then(() => (init_contrato_modelo_functions_CUfRMXHt(), contrato_modelo_functions_CUfRMXHt_exports))
+        importer: () => Promise.resolve().then(() => (init_contrato_modelo_functions_n2xDRgAu(), contrato_modelo_functions_n2xDRgAu_exports))
       },
       "56cd0f49bf2c47011642eb64c36aa16aea120ec46f9f56f76b86c6896ac33f1f": {
         functionName: "alternarAtivoModelo_createServerFn_handler",
-        importer: () => Promise.resolve().then(() => (init_contrato_functions_RSbL_PEA(), contrato_functions_RSbL_PEA_exports))
+        importer: () => Promise.resolve().then(() => (init_contrato_functions_BVX1nz9C(), contrato_functions_BVX1nz9C_exports))
       },
       "5829c0d020e4bf9059cb9fa044e3b3484f0f42d08967888808c6d71b16b33084": {
         functionName: "listarModelos_createServerFn_handler",
-        importer: () => Promise.resolve().then(() => (init_contrato_functions_RSbL_PEA(), contrato_functions_RSbL_PEA_exports))
+        importer: () => Promise.resolve().then(() => (init_contrato_functions_BVX1nz9C(), contrato_functions_BVX1nz9C_exports))
       },
       "65909b0c38988fea884026e36282df34d9a8cbf6122b8bfb120f61819485f399": {
         functionName: "listarSignatarios_createServerFn_handler",
-        importer: () => Promise.resolve().then(() => (init_assinatura_functions_C7XoqvOh(), assinatura_functions_C7XoqvOh_exports))
+        importer: () => Promise.resolve().then(() => (init_assinatura_functions_BpHN2Yq(), assinatura_functions_BpHN2Yq_exports))
       },
       "659e071f0ba25ea3d1bf66cc6cc459e903fa9ccf64578cafb0c36895639ba896": {
         functionName: "gerarContratoDeModelo_createServerFn_handler",
-        importer: () => Promise.resolve().then(() => (init_contrato_functions_RSbL_PEA(), contrato_functions_RSbL_PEA_exports))
+        importer: () => Promise.resolve().then(() => (init_contrato_functions_BVX1nz9C(), contrato_functions_BVX1nz9C_exports))
       },
       "77ba7f45a3f95fa55c416ab32b918db316ac13750afee67f94e5ba097fbb92c7": {
         functionName: "listarVersoes_createServerFn_handler",
-        importer: () => Promise.resolve().then(() => (init_contrato_functions_RSbL_PEA(), contrato_functions_RSbL_PEA_exports))
+        importer: () => Promise.resolve().then(() => (init_contrato_functions_BVX1nz9C(), contrato_functions_BVX1nz9C_exports))
       },
       "7a2f1943bddd61850ccc0d24c8516fdb1a86c9327697dd26482a4bd08e921fd1": {
         functionName: "enviarContratoEmail_createServerFn_handler",
-        importer: () => Promise.resolve().then(() => (init_contrato_functions_RSbL_PEA(), contrato_functions_RSbL_PEA_exports))
+        importer: () => Promise.resolve().then(() => (init_contrato_functions_BVX1nz9C(), contrato_functions_BVX1nz9C_exports))
       },
       "7ab357b9363acfbd995a47e41e983ff7ec7ffbe82c01014c8be91ba09b85d9bc": {
         functionName: "gerarContratoPadraoBioLogus_createServerFn_handler",
-        importer: () => Promise.resolve().then(() => (init_contrato_functions_RSbL_PEA(), contrato_functions_RSbL_PEA_exports))
+        importer: () => Promise.resolve().then(() => (init_contrato_functions_BVX1nz9C(), contrato_functions_BVX1nz9C_exports))
       },
       "83655a93d421bd6b67848a58d02665df4f5428d760510c1dcd1c87030b9ebc82": {
         functionName: "criarSolicitacaoAssinatura_createServerFn_handler",
-        importer: () => Promise.resolve().then(() => (init_assinatura_functions_C7XoqvOh(), assinatura_functions_C7XoqvOh_exports))
+        importer: () => Promise.resolve().then(() => (init_assinatura_functions_BpHN2Yq(), assinatura_functions_BpHN2Yq_exports))
       },
       "94259e3b6ed5340dd268bcfd29b4118ec97b9a5d9499af8d84329d3c8a68a7d7": {
         functionName: "obterPrecosPgrss_createServerFn_handler",
-        importer: () => Promise.resolve().then(() => (init_pgrss_functions_9ZlmntS2(), pgrss_functions_9ZlmntS2_exports))
+        importer: () => Promise.resolve().then(() => (init_pgrss_functions_BozqW5fY(), pgrss_functions_BozqW5fY_exports))
       },
       "94295acc08eb6df1e62cda7367a396952adba2fb959551638fe361cd04018237": {
         functionName: "renderizarModelo_createServerFn_handler",
-        importer: () => Promise.resolve().then(() => (init_contrato_modelo_functions_CUfRMXHt(), contrato_modelo_functions_CUfRMXHt_exports))
+        importer: () => Promise.resolve().then(() => (init_contrato_modelo_functions_n2xDRgAu(), contrato_modelo_functions_n2xDRgAu_exports))
       },
       "9c5626f0680457386cddf7e2aeec933f3cf0c6024d9de6a61151fe1bf064be4e": {
         functionName: "confirmarAssinatura_createServerFn_handler",
-        importer: () => Promise.resolve().then(() => (init_assinatura_functions_C7XoqvOh(), assinatura_functions_C7XoqvOh_exports))
+        importer: () => Promise.resolve().then(() => (init_assinatura_functions_BpHN2Yq(), assinatura_functions_BpHN2Yq_exports))
       },
       "9db03075f9cf0355e479da8997636708b7e893d1426641e57cdd6224d91df84a": {
         functionName: "obterPropostaPgrss_createServerFn_handler",
-        importer: () => Promise.resolve().then(() => (init_pgrss_functions_9ZlmntS2(), pgrss_functions_9ZlmntS2_exports))
+        importer: () => Promise.resolve().then(() => (init_pgrss_functions_BozqW5fY(), pgrss_functions_BozqW5fY_exports))
       },
       "a21ba06c4cbfe990cb8b18b602f404d1fe174cc4b087ad28c1247e68b3cc84fe": {
         functionName: "atualizarModelo_createServerFn_handler",
-        importer: () => Promise.resolve().then(() => (init_contrato_functions_RSbL_PEA(), contrato_functions_RSbL_PEA_exports))
+        importer: () => Promise.resolve().then(() => (init_contrato_functions_BVX1nz9C(), contrato_functions_BVX1nz9C_exports))
       },
       "ac818235b56e6ff19009df1c10389c6746e1ac854e34be78148670defd963608": {
         functionName: "listarModelos_createServerFn_handler",
-        importer: () => Promise.resolve().then(() => (init_contrato_modelo_functions_CUfRMXHt(), contrato_modelo_functions_CUfRMXHt_exports))
+        importer: () => Promise.resolve().then(() => (init_contrato_modelo_functions_n2xDRgAu(), contrato_modelo_functions_n2xDRgAu_exports))
       },
       "aea65713b1619c04dbdbb42e00208831b017a38eb4a04325d571afb70053b2b3": {
         functionName: "excluirModelo_createServerFn_handler",
-        importer: () => Promise.resolve().then(() => (init_contrato_functions_RSbL_PEA(), contrato_functions_RSbL_PEA_exports))
+        importer: () => Promise.resolve().then(() => (init_contrato_functions_BVX1nz9C(), contrato_functions_BVX1nz9C_exports))
       },
       "af5259153a681aac2ec6ba67ddaf9c61b11cbf102631be9c95946a9c0c309717": {
         functionName: "previewContratoRascunho_createServerFn_handler",
-        importer: () => Promise.resolve().then(() => (init_contrato_functions_RSbL_PEA(), contrato_functions_RSbL_PEA_exports))
+        importer: () => Promise.resolve().then(() => (init_contrato_functions_BVX1nz9C(), contrato_functions_BVX1nz9C_exports))
       },
       "bafe344eda0eb197b43b1d7ed2f73f86d855686d80e8b533d8a9b6f84b5ce163": {
         functionName: "listarVersoes_createServerFn_handler",
-        importer: () => Promise.resolve().then(() => (init_contrato_modelo_functions_CUfRMXHt(), contrato_modelo_functions_CUfRMXHt_exports))
+        importer: () => Promise.resolve().then(() => (init_contrato_modelo_functions_n2xDRgAu(), contrato_modelo_functions_n2xDRgAu_exports))
       },
       "bdd7874075fa6fef2719db66823f2f6082a482b0772c7366e178a8536e059a0a": {
         functionName: "atualizarModelo_createServerFn_handler",
-        importer: () => Promise.resolve().then(() => (init_contrato_modelo_functions_CUfRMXHt(), contrato_modelo_functions_CUfRMXHt_exports))
+        importer: () => Promise.resolve().then(() => (init_contrato_modelo_functions_n2xDRgAu(), contrato_modelo_functions_n2xDRgAu_exports))
       },
       "c501cdab6126fde20aa3601da99528d1a8e644b1a69ec6a6b2f4248a64d37c7b": {
         functionName: "cancelarNfse_createServerFn_handler",
-        importer: () => Promise.resolve().then(() => (init_nfse_functions_D_KE1CHC(), nfse_functions_D_KE1CHC_exports))
+        importer: () => Promise.resolve().then(() => (init_nfse_functions_tyuthhWq(), nfse_functions_tyuthhWq_exports))
       },
       "c580e4b6af573fa21a63a6a3c11d7074cc8c16d8634fed85001951b4961734fc": {
         functionName: "renderizarModelo_createServerFn_handler",
-        importer: () => Promise.resolve().then(() => (init_contrato_functions_RSbL_PEA(), contrato_functions_RSbL_PEA_exports))
+        importer: () => Promise.resolve().then(() => (init_contrato_functions_BVX1nz9C(), contrato_functions_BVX1nz9C_exports))
       },
       "c5d144bef12d808f9e051f369ca698c145dbf54c4e576f2a460101a10dca56b0": {
         functionName: "excluirModelo_createServerFn_handler",
-        importer: () => Promise.resolve().then(() => (init_contrato_modelo_functions_CUfRMXHt(), contrato_modelo_functions_CUfRMXHt_exports))
+        importer: () => Promise.resolve().then(() => (init_contrato_modelo_functions_n2xDRgAu(), contrato_modelo_functions_n2xDRgAu_exports))
       },
       "c9084d01d035daa187089bbd5d080d18052f0a46143e332533d5e8a9b416375e": {
         functionName: "duplicarModelo_createServerFn_handler",
-        importer: () => Promise.resolve().then(() => (init_contrato_modelo_functions_CUfRMXHt(), contrato_modelo_functions_CUfRMXHt_exports))
+        importer: () => Promise.resolve().then(() => (init_contrato_modelo_functions_n2xDRgAu(), contrato_modelo_functions_n2xDRgAu_exports))
       },
       "e341824bab77462edc4e3195cdf2836d0208766050e43ee36ab54a5404edabbd": {
         functionName: "listarPropostasPgrss_createServerFn_handler",
-        importer: () => Promise.resolve().then(() => (init_pgrss_functions_9ZlmntS2(), pgrss_functions_9ZlmntS2_exports))
+        importer: () => Promise.resolve().then(() => (init_pgrss_functions_BozqW5fY(), pgrss_functions_BozqW5fY_exports))
       },
       "f80da38ce677a5357a9dfd887333027c5aa1214da261521f4e64519312bc6939": {
         functionName: "salvarPropostaPgrss_createServerFn_handler",
-        importer: () => Promise.resolve().then(() => (init_pgrss_functions_9ZlmntS2(), pgrss_functions_9ZlmntS2_exports))
+        importer: () => Promise.resolve().then(() => (init_pgrss_functions_BozqW5fY(), pgrss_functions_BozqW5fY_exports))
       },
       "f914cbc722e050a95c4bae026ae0f220bf0e93f601f15964b03cd9ca877515b8": {
         functionName: "obterSignatarioPorToken_createServerFn_handler",
-        importer: () => Promise.resolve().then(() => (init_assinatura_functions_C7XoqvOh(), assinatura_functions_C7XoqvOh_exports))
+        importer: () => Promise.resolve().then(() => (init_assinatura_functions_BpHN2Yq(), assinatura_functions_BpHN2Yq_exports))
       }
     };
     TSS_FORMDATA_CONTEXT = "__TSS_CONTEXT";
@@ -226306,7 +226341,7 @@ function renderErrorPage() {
 }
 async function getServerEntry() {
   if (!serverEntryPromise) {
-    serverEntryPromise = Promise.resolve().then(() => (init_server_Bx80w_OE(), server_Bx80w_OE_exports)).then((n4) => n4.s).then(
+    serverEntryPromise = Promise.resolve().then(() => (init_server_C1IAtvil(), server_C1IAtvil_exports)).then((n4) => n4.s).then(
       (m5) => m5.default ?? m5
     );
   }
@@ -226457,761 +226492,761 @@ init_rou3();
 var import_meta = {};
 globalThis.__nitro_main__ = import_meta.url;
 var assets = {
-  "/assets/PieChart-CzWxK-LJ.js": {
+  "/assets/PieChart-CnrfyLiK.js": {
     "type": "text/javascript; charset=utf-8",
-    "etag": '"624e3-pNG7zEnQ7tvpyL6S7gxEaTrYFMo"',
-    "mtime": "2026-07-24T01:15:36.749Z",
+    "etag": '"624e3-wVt3YF1z7aY0lpzS4k3IDfXFI4g"',
+    "mtime": "2026-07-25T13:49:58.178Z",
     "size": 402659,
-    "path": "../public/assets/PieChart-CzWxK-LJ.js"
+    "path": "../public/assets/PieChart-CnrfyLiK.js"
   },
-  "/assets/agendamento-B5BDasWN.js": {
+  "/assets/agendamento-BBaThJsN.js": {
     "type": "text/javascript; charset=utf-8",
-    "etag": '"cac9-UqoLrXZnHgUOgckH9JbZYID+F9Y"',
-    "mtime": "2026-07-24T01:15:36.749Z",
-    "size": 51913,
-    "path": "../public/assets/agendamento-B5BDasWN.js"
+    "etag": '"cdb3-r4bQGwDbRp5VPup5IJXyNFm53Mc"',
+    "mtime": "2026-07-25T13:49:58.182Z",
+    "size": 52659,
+    "path": "../public/assets/agendamento-BBaThJsN.js"
   },
-  "/assets/arrow-left-BOALwHb6.js": {
+  "/assets/arrow-left-DTrZN7Qu.js": {
     "type": "text/javascript; charset=utf-8",
-    "etag": '"a6-X4RFMKeifEng55c6xqCppp1Kh4M"',
-    "mtime": "2026-07-24T01:15:36.749Z",
+    "etag": '"a6-dx/9MzYRwoKnoU+BQywyR2wELf8"',
+    "mtime": "2026-07-25T13:49:58.182Z",
     "size": 166,
-    "path": "../public/assets/arrow-left-BOALwHb6.js"
+    "path": "../public/assets/arrow-left-DTrZN7Qu.js"
   },
-  "/assets/arrow-right-iWQExeet.js": {
+  "/assets/arrow-right-DrZ7ft2P.js": {
     "type": "text/javascript; charset=utf-8",
-    "etag": '"a6-cYxGCSvBJm8kbj10SH4RY1LxSxE"',
-    "mtime": "2026-07-24T01:15:36.749Z",
+    "etag": '"a6-Ax9pY+jIzTE2+umC8GaEH8+bRYM"',
+    "mtime": "2026-07-25T13:49:58.182Z",
     "size": 166,
-    "path": "../public/assets/arrow-right-iWQExeet.js"
+    "path": "../public/assets/arrow-right-DrZ7ft2P.js"
   },
-  "/assets/assinar._token-BnGC3kzA.js": {
+  "/assets/assinar._token-C1Ya4Oal.js": {
     "type": "text/javascript; charset=utf-8",
-    "etag": '"7a6a-PIdi3TLZFNWKcVmvcVI3FrcQQ3w"',
-    "mtime": "2026-07-24T01:15:36.745Z",
+    "etag": '"7a6a-5EN+sYvcoFs6jigdGpTHro5O6jw"',
+    "mtime": "2026-07-25T13:49:58.174Z",
     "size": 31338,
-    "path": "../public/assets/assinar._token-BnGC3kzA.js"
+    "path": "../public/assets/assinar._token-C1Ya4Oal.js"
   },
-  "/assets/assinar._token-XxStSKV5.js": {
+  "/assets/assinar._token-CHyItbgv.js": {
     "type": "text/javascript; charset=utf-8",
-    "etag": '"213-dq4GWgpx5rGtsT6Tqjl8YOUb1dI"',
-    "mtime": "2026-07-24T01:15:36.745Z",
+    "etag": '"213-pXPHXxDnDPhQ+61ExuKk2718/Rk"',
+    "mtime": "2026-07-25T13:49:58.174Z",
     "size": 531,
-    "path": "../public/assets/assinar._token-XxStSKV5.js"
+    "path": "../public/assets/assinar._token-CHyItbgv.js"
   },
-  "/assets/assinar._token-aDkyn7kC.js": {
+  "/assets/assinar._token-DVwgEQrU.js": {
     "type": "text/javascript; charset=utf-8",
-    "etag": '"a5-+Uc4JS6p7c19iyIuQ1dKzU2KZd0"',
-    "mtime": "2026-07-24T01:15:36.745Z",
+    "etag": '"a5-fPlCRfkJyr+KFeOOBgtQFFGFpxE"',
+    "mtime": "2026-07-25T13:49:58.174Z",
     "size": 165,
-    "path": "../public/assets/assinar._token-aDkyn7kC.js"
+    "path": "../public/assets/assinar._token-DVwgEQrU.js"
   },
-  "/assets/assinatura.functions-OnVaW7DF.js": {
+  "/assets/assinatura.functions-DMkqxlmc.js": {
     "type": "text/javascript; charset=utf-8",
-    "etag": '"300-Ipm+OByiQtu9Tt7C4atsNmxFHGc"',
-    "mtime": "2026-07-24T01:15:36.745Z",
+    "etag": '"300-+A9Tx8C827hQlnqLMmti24XqtmE"',
+    "mtime": "2026-07-25T13:49:58.174Z",
     "size": 768,
-    "path": "../public/assets/assinatura.functions-OnVaW7DF.js"
+    "path": "../public/assets/assinatura.functions-DMkqxlmc.js"
   },
-  "/assets/auth-bu5ue4v4.js": {
+  "/assets/auth-MklkpgeJ.js": {
     "type": "text/javascript; charset=utf-8",
-    "etag": '"19f5-CiJORbdjaM3wgjWWRWZSxwR5SBE"',
-    "mtime": "2026-07-24T01:15:36.745Z",
+    "etag": '"19f5-uB3GdTDJYPl1TTyDOZPICQXxhSw"',
+    "mtime": "2026-07-25T13:49:58.174Z",
     "size": 6645,
-    "path": "../public/assets/auth-bu5ue4v4.js"
+    "path": "../public/assets/auth-MklkpgeJ.js"
   },
-  "/assets/auth-middleware-C4S2zpXi.js": {
+  "/assets/auth-middleware-BXMg-mmD.js": {
     "type": "text/javascript; charset=utf-8",
-    "etag": '"1246-WN/BPj8sSXjgc/uDc98axOL4eJ0"',
-    "mtime": "2026-07-24T01:15:36.749Z",
+    "etag": '"1246-krsr1cAb+VEdd1Ncbkw4lTWzG8c"',
+    "mtime": "2026-07-25T13:49:58.182Z",
     "size": 4678,
-    "path": "../public/assets/auth-middleware-C4S2zpXi.js"
+    "path": "../public/assets/auth-middleware-BXMg-mmD.js"
   },
-  "/assets/award-CVR-6s2W.js": {
+  "/assets/award-CrZUigeJ.js": {
     "type": "text/javascript; charset=utf-8",
-    "etag": '"113-LEs466FdawGGixEzYQqsiwhFYMg"',
-    "mtime": "2026-07-24T01:15:36.749Z",
+    "etag": '"113-PKhvEFRxG0V/m09dsQisd2rAiDw"',
+    "mtime": "2026-07-25T13:49:58.182Z",
     "size": 275,
-    "path": "../public/assets/award-CVR-6s2W.js"
+    "path": "../public/assets/award-CrZUigeJ.js"
   },
-  "/assets/badge-BoKEXwkW.js": {
+  "/assets/badge-CAUv28Kt.js": {
     "type": "text/javascript; charset=utf-8",
-    "etag": '"2d1-p0iNxYHHw6Kcxz1QUw7878FVzis"',
-    "mtime": "2026-07-24T01:15:36.749Z",
+    "etag": '"2d1-MEg67rPHqbILNNTYUt93EHUU8ik"',
+    "mtime": "2026-07-25T13:49:58.182Z",
     "size": 721,
-    "path": "../public/assets/badge-BoKEXwkW.js"
+    "path": "../public/assets/badge-CAUv28Kt.js"
   },
-  "/assets/boletim-iNtpuL5h.js": {
+  "/assets/boletim-Djt5COCZ.js": {
     "type": "text/javascript; charset=utf-8",
-    "etag": '"a2ed-P5PhbxL+4GeeE9/pOANIc5Tjp30"',
-    "mtime": "2026-07-24T01:15:36.749Z",
+    "etag": '"a2ed-/Y9jywBV8s8Yjb1GZC226pJ67pU"',
+    "mtime": "2026-07-25T13:49:58.182Z",
     "size": 41709,
-    "path": "../public/assets/boletim-iNtpuL5h.js"
+    "path": "../public/assets/boletim-Djt5COCZ.js"
   },
-  "/assets/building-2-xTB6wnce.js": {
+  "/assets/building-2-BUTd6ms1.js": {
     "type": "text/javascript; charset=utf-8",
-    "etag": '"180-zjBkDppFYfbSC5TyfCwwbvPEEBE"',
-    "mtime": "2026-07-24T01:15:36.749Z",
+    "etag": '"180-TgTbrofbyrG23t4VB3c+E1oSoCQ"',
+    "mtime": "2026-07-25T13:49:58.182Z",
     "size": 384,
-    "path": "../public/assets/building-2-xTB6wnce.js"
+    "path": "../public/assets/building-2-BUTd6ms1.js"
   },
-  "/assets/cdf-xVBXfe7i.js": {
+  "/assets/cdf-BZLvjpDP.js": {
     "type": "text/javascript; charset=utf-8",
-    "etag": '"535f-jPxxykyps9sK+CmbfiZzuPTQ2UQ"',
-    "mtime": "2026-07-24T01:15:36.749Z",
+    "etag": '"535f-9fTC1C5Ty5fJClLT7BNgL8A0kRA"',
+    "mtime": "2026-07-25T13:49:58.182Z",
     "size": 21343,
-    "path": "../public/assets/cdf-xVBXfe7i.js"
+    "path": "../public/assets/cdf-BZLvjpDP.js"
   },
-  "/assets/chart-column-BJXyguEZ.js": {
+  "/assets/chart-column-BMpR4ghf.js": {
     "type": "text/javascript; charset=utf-8",
-    "etag": '"fc-9MJsKskFGDOfqsrC7N8BR3bm/Rs"',
-    "mtime": "2026-07-24T01:15:36.745Z",
+    "etag": '"fc-vhIHqcBvr22yB4yZESE7cBaaUnM"',
+    "mtime": "2026-07-25T13:49:58.174Z",
     "size": 252,
-    "path": "../public/assets/chart-column-BJXyguEZ.js"
+    "path": "../public/assets/chart-column-BMpR4ghf.js"
   },
-  "/assets/check-Y1T7sRZm.js": {
+  "/assets/check-DgXwnz3F.js": {
     "type": "text/javascript; charset=utf-8",
-    "etag": '"7d-43D0B8655M8TgMbuIQzrL110LNA"',
-    "mtime": "2026-07-24T01:15:36.749Z",
+    "etag": '"7d-mMYM3YaK0CqPXHN/Cm/BJoMJ5C8"',
+    "mtime": "2026-07-25T13:49:58.182Z",
     "size": 125,
-    "path": "../public/assets/check-Y1T7sRZm.js"
+    "path": "../public/assets/check-DgXwnz3F.js"
   },
-  "/assets/check-check-BWPeM5TX.js": {
+  "/assets/check-check-BWfsGuyA.js": {
     "type": "text/javascript; charset=utf-8",
-    "etag": '"272-ciRMV4aNAQOPakwhBnRM+Pv2834"',
-    "mtime": "2026-07-24T01:15:36.749Z",
+    "etag": '"272-FkkzlGXIuOP1s4MVN9FaEWrBeoc"',
+    "mtime": "2026-07-25T13:49:58.182Z",
     "size": 626,
-    "path": "../public/assets/check-check-BWPeM5TX.js"
+    "path": "../public/assets/check-check-BWfsGuyA.js"
   },
-  "/assets/checkbox-B18kgYtg.js": {
+  "/assets/checkbox-C9VQct6S.js": {
     "type": "text/javascript; charset=utf-8",
-    "etag": '"f7c-cqu4FcWUJJWLZE7vHj85xHGUbgs"',
-    "mtime": "2026-07-24T01:15:36.749Z",
+    "etag": '"f7c-pCf2az/nfgrMtvANPOY1+Ytetno"',
+    "mtime": "2026-07-25T13:49:58.182Z",
     "size": 3964,
-    "path": "../public/assets/checkbox-B18kgYtg.js"
+    "path": "../public/assets/checkbox-C9VQct6S.js"
   },
-  "/assets/circle-alert-BK2ws7OG.js": {
+  "/assets/circle-alert-BZ94hwVe.js": {
     "type": "text/javascript; charset=utf-8",
-    "etag": '"fb-n8B+NZrhOXo97RwO31ciKRIMedg"',
-    "mtime": "2026-07-24T01:15:36.745Z",
+    "etag": '"fb-F2i2uEckMCLjzPiKdTeo83bV6nk"',
+    "mtime": "2026-07-25T13:49:58.174Z",
     "size": 251,
-    "path": "../public/assets/circle-alert-BK2ws7OG.js"
+    "path": "../public/assets/circle-alert-BZ94hwVe.js"
   },
-  "/assets/circle-x-DH4vfpB9.js": {
+  "/assets/circle-x-BZ9s9WUj.js": {
     "type": "text/javascript; charset=utf-8",
-    "etag": '"d0-KBCAGJrFeAymS6SACbAouwQZxbM"',
-    "mtime": "2026-07-24T01:15:36.745Z",
+    "etag": '"d0-FXnr+UiFtbVJ0spOMysnL5k0GlI"',
+    "mtime": "2026-07-25T13:49:58.174Z",
     "size": 208,
-    "path": "../public/assets/circle-x-DH4vfpB9.js"
+    "path": "../public/assets/circle-x-BZ9s9WUj.js"
   },
-  "/assets/clientes-WUNG8Wrq.js": {
+  "/assets/clientes-D9Qrcnlp.js": {
     "type": "text/javascript; charset=utf-8",
-    "etag": '"2943-KjMb94vmLDUZLrKld9VHzJJ6EOk"',
-    "mtime": "2026-07-24T01:15:36.749Z",
+    "etag": '"2943-m7hwOh214d+Zn7gz65puMQl3DI0"',
+    "mtime": "2026-07-25T13:49:58.178Z",
     "size": 10563,
-    "path": "../public/assets/clientes-WUNG8Wrq.js"
+    "path": "../public/assets/clientes-D9Qrcnlp.js"
   },
-  "/assets/clientes._clienteId-9AkVZJ6g.js": {
+  "/assets/clientes._clienteId-6fPsFkg8.js": {
     "type": "text/javascript; charset=utf-8",
-    "etag": '"97-GYCNuuHqKz9R5kDbYk2EG7GTI0o"',
-    "mtime": "2026-07-24T01:15:36.749Z",
-    "size": 151,
-    "path": "../public/assets/clientes._clienteId-9AkVZJ6g.js"
-  },
-  "/assets/clientes._clienteId-DDJvKLv9.js": {
-    "type": "text/javascript; charset=utf-8",
-    "etag": '"b1-ry9U1syxQw9Q8G1i/YKytrd2nkM"',
-    "mtime": "2026-07-24T01:15:36.749Z",
-    "size": 177,
-    "path": "../public/assets/clientes._clienteId-DDJvKLv9.js"
-  },
-  "/assets/clientes._clienteId-LrP5057C.js": {
-    "type": "text/javascript; charset=utf-8",
-    "etag": '"5556-00VWU8TNv4JysswYzCvsZLWwN3s"',
-    "mtime": "2026-07-24T01:15:36.749Z",
+    "etag": '"5556-RzUeX0zTLfQXf9GYFL2j/1DOiIk"',
+    "mtime": "2026-07-25T13:49:58.182Z",
     "size": 21846,
-    "path": "../public/assets/clientes._clienteId-LrP5057C.js"
+    "path": "../public/assets/clientes._clienteId-6fPsFkg8.js"
   },
-  "/assets/coletas-CFu3lDML.js": {
+  "/assets/clientes._clienteId-BOS-IR0_.js": {
     "type": "text/javascript; charset=utf-8",
-    "etag": '"1c03-W+xvgPbYrx6KsqLBTowlzVO+wLI"',
-    "mtime": "2026-07-24T01:15:36.749Z",
+    "etag": '"97-kfE8EQwheVELEfghP6bB8hlaDMI"',
+    "mtime": "2026-07-25T13:49:58.182Z",
+    "size": 151,
+    "path": "../public/assets/clientes._clienteId-BOS-IR0_.js"
+  },
+  "/assets/clientes._clienteId-Dd5FVmlU.js": {
+    "type": "text/javascript; charset=utf-8",
+    "etag": '"b1-vdt6aeS89MQ8vF0Y5M677mNgAQk"',
+    "mtime": "2026-07-25T13:49:58.182Z",
+    "size": 177,
+    "path": "../public/assets/clientes._clienteId-Dd5FVmlU.js"
+  },
+  "/assets/coletas-B1uVNhNO.js": {
+    "type": "text/javascript; charset=utf-8",
+    "etag": '"1c03-Gu89tDjV0FjBGFtDk/Y8wertMBI"',
+    "mtime": "2026-07-25T13:49:58.178Z",
     "size": 7171,
-    "path": "../public/assets/coletas-CFu3lDML.js"
+    "path": "../public/assets/coletas-B1uVNhNO.js"
   },
-  "/assets/conciliacao-DDA3KneT.js": {
+  "/assets/conciliacao-PJXfHjbR.js": {
     "type": "text/javascript; charset=utf-8",
-    "etag": '"34cc-5coeKcPiwDkAUDFjTeSk6qch9t4"',
-    "mtime": "2026-07-24T01:15:36.749Z",
+    "etag": '"34cc-A6eFRiAIGdwJMBaSjiUmzPaElhU"',
+    "mtime": "2026-07-25T13:49:58.178Z",
     "size": 13516,
-    "path": "../public/assets/conciliacao-DDA3KneT.js"
+    "path": "../public/assets/conciliacao-PJXfHjbR.js"
   },
-  "/assets/contrato-modelo.functions-Dq_7KQhg.js": {
+  "/assets/contrato-modelo.functions-BJeN5-Br.js": {
     "type": "text/javascript; charset=utf-8",
-    "etag": '"14ec-MOzC43krWAfH5OPqF9rgxR3LPFg"',
-    "mtime": "2026-07-24T01:15:36.749Z",
+    "etag": '"14ec-M2orzyn7rSnDieC50yI5p7mNv+E"',
+    "mtime": "2026-07-25T13:49:58.178Z",
     "size": 5356,
-    "path": "../public/assets/contrato-modelo.functions-Dq_7KQhg.js"
+    "path": "../public/assets/contrato-modelo.functions-BJeN5-Br.js"
   },
-  "/assets/contratos-DaP8ceOh.js": {
+  "/assets/contratos-DJ-yHDcQ.js": {
     "type": "text/javascript; charset=utf-8",
-    "etag": '"991a-Utfrnja4teadhVujXwMUjmdIa6c"',
-    "mtime": "2026-07-24T01:15:36.749Z",
+    "etag": '"991a-ZAVb8RtBF5Nz/48hplojvcCuxpk"',
+    "mtime": "2026-07-25T13:49:58.178Z",
     "size": 39194,
-    "path": "../public/assets/contratos-DaP8ceOh.js"
+    "path": "../public/assets/contratos-DJ-yHDcQ.js"
   },
-  "/assets/dashboard-7xFDxuB_.js": {
+  "/assets/dashboard-COSbQaDP.js": {
     "type": "text/javascript; charset=utf-8",
-    "etag": '"1267-ahveLZCgfU2IkrTRa/LvuC8GvPM"',
-    "mtime": "2026-07-24T01:15:36.749Z",
+    "etag": '"1267-LK76QTsc91KB8I4XU3JiYi+JDL0"',
+    "mtime": "2026-07-25T13:49:58.178Z",
     "size": 4711,
-    "path": "../public/assets/dashboard-7xFDxuB_.js"
+    "path": "../public/assets/dashboard-COSbQaDP.js"
   },
-  "/assets/dialog-DpJraCbT.js": {
+  "/assets/dialog-B6MgW_kr.js": {
     "type": "text/javascript; charset=utf-8",
-    "etag": '"7d6-NIvJhw5DgZn38II0h25VhlTUNgU"',
-    "mtime": "2026-07-24T01:15:36.749Z",
+    "etag": '"7d6-wSOyaW8gAblWSe05qo/ANOo2m1w"',
+    "mtime": "2026-07-25T13:49:58.182Z",
     "size": 2006,
-    "path": "../public/assets/dialog-DpJraCbT.js"
+    "path": "../public/assets/dialog-B6MgW_kr.js"
   },
-  "/assets/document-upload-cT6iF9vf.js": {
+  "/assets/document-upload-D1wUQXUT.js": {
     "type": "text/javascript; charset=utf-8",
-    "etag": '"e3c-5Em9rPvqHa7ppeqXXuldOhQdQpg"',
-    "mtime": "2026-07-24T01:15:36.749Z",
+    "etag": '"e3c-YtrGROWq4dNSU74d1C3gC95TlhU"',
+    "mtime": "2026-07-25T13:49:58.182Z",
     "size": 3644,
-    "path": "../public/assets/document-upload-cT6iF9vf.js"
+    "path": "../public/assets/document-upload-D1wUQXUT.js"
   },
-  "/assets/dollar-sign-q9yzytag.js": {
+  "/assets/dollar-sign-BXiTqhXX.js": {
     "type": "text/javascript; charset=utf-8",
-    "etag": '"dc-jYE88I65U2UpFvU6HLspXZ2258s"',
-    "mtime": "2026-07-24T01:15:36.749Z",
+    "etag": '"dc-FmOm3G/Vo+ei6THgdFe3iLBTNOA"',
+    "mtime": "2026-07-25T13:49:58.182Z",
     "size": 220,
-    "path": "../public/assets/dollar-sign-q9yzytag.js"
+    "path": "../public/assets/dollar-sign-BXiTqhXX.js"
   },
-  "/assets/download-BjzfWGYw.js": {
+  "/assets/download-DRSfvNny.js": {
     "type": "text/javascript; charset=utf-8",
-    "etag": '"e9-OeRbjyAWuxMxrDNIVD8JFSdc1Nk"',
-    "mtime": "2026-07-24T01:15:36.745Z",
+    "etag": '"e9-Eto37Nhmxvbn+Xk3RguUdPLHuQ4"',
+    "mtime": "2026-07-25T13:49:58.174Z",
     "size": 233,
-    "path": "../public/assets/download-BjzfWGYw.js"
+    "path": "../public/assets/download-DRSfvNny.js"
   },
-  "/assets/external-link-DLU1Gkgd.js": {
+  "/assets/external-link-z2B8VHY-.js": {
     "type": "text/javascript; charset=utf-8",
-    "etag": '"fc-mqcBwEG1qrmwbqa0i1dNWy9NMqo"',
-    "mtime": "2026-07-24T01:15:36.749Z",
+    "etag": '"fc-o4sJyro8OwhOweuSE4PHs6lqZrY"',
+    "mtime": "2026-07-25T13:49:58.182Z",
     "size": 252,
-    "path": "../public/assets/external-link-DLU1Gkgd.js"
+    "path": "../public/assets/external-link-z2B8VHY-.js"
   },
-  "/assets/eye-D4rfWs1a.js": {
+  "/assets/eye-KUbn11wo.js": {
     "type": "text/javascript; charset=utf-8",
-    "etag": '"101-l8wIb/JEKrl3CVZt8lZ5qHYSMcE"',
-    "mtime": "2026-07-24T01:15:36.749Z",
+    "etag": '"101-tQlNTtCBqsO5EDmP3QssxiIW2EM"',
+    "mtime": "2026-07-25T13:49:58.182Z",
     "size": 257,
-    "path": "../public/assets/eye-D4rfWs1a.js"
+    "path": "../public/assets/eye-KUbn11wo.js"
   },
-  "/assets/file-check-Dp9ipdYr.js": {
+  "/assets/file-check-PG31Mewn.js": {
     "type": "text/javascript; charset=utf-8",
-    "etag": '"13f-XqvF6q8zF6zP9PaBHhg4G9SWeM4"',
-    "mtime": "2026-07-24T01:15:36.749Z",
+    "etag": '"13f-PHWc2ZlBNZOg5Cp8Abb3fkh194I"',
+    "mtime": "2026-07-25T13:49:58.182Z",
     "size": 319,
-    "path": "../public/assets/file-check-Dp9ipdYr.js"
+    "path": "../public/assets/file-check-PG31Mewn.js"
   },
-  "/assets/file-pen-line-CJ5CRUhR.js": {
+  "/assets/file-pen-line-DVSJemjP.js": {
     "type": "text/javascript; charset=utf-8",
-    "etag": '"1d2-5fzRiwfEgJ2xYgx7Jbyi3inDKqA"',
-    "mtime": "2026-07-24T01:15:36.749Z",
+    "etag": '"1d2-vMllXuyiqEmW+DIH4Ok5AKBjPDM"',
+    "mtime": "2026-07-25T13:49:58.182Z",
     "size": 466,
-    "path": "../public/assets/file-pen-line-CJ5CRUhR.js"
+    "path": "../public/assets/file-pen-line-DVSJemjP.js"
   },
-  "/assets/file-text-DxLzbtIk.js": {
+  "/assets/file-text-Bd3I4rsu.js": {
     "type": "text/javascript; charset=utf-8",
-    "etag": '"182-T7uwOLgw8KhyeWZSHOg0yJ57SUI"',
-    "mtime": "2026-07-24T01:15:36.749Z",
+    "etag": '"182-z450sCoEBtF1vNmAR3Am4wFA4h8"',
+    "mtime": "2026-07-25T13:49:58.182Z",
     "size": 386,
-    "path": "../public/assets/file-text-DxLzbtIk.js"
+    "path": "../public/assets/file-text-Bd3I4rsu.js"
   },
-  "/assets/financeiro-BPho4LXh.js": {
+  "/assets/financeiro-jrOqnmOd.js": {
     "type": "text/javascript; charset=utf-8",
-    "etag": '"2b0b-vqLeIc4yF0rr0txNxAUXFYuilB4"',
-    "mtime": "2026-07-24T01:15:36.749Z",
+    "etag": '"2b0b-UykxwE7v8kOf3OsgrpChEdW/FNc"',
+    "mtime": "2026-07-25T13:49:58.178Z",
     "size": 11019,
-    "path": "../public/assets/financeiro-BPho4LXh.js"
+    "path": "../public/assets/financeiro-jrOqnmOd.js"
   },
-  "/assets/folder-open-DYymBoy5.js": {
+  "/assets/folder-open-Cr2z3PHP.js": {
     "type": "text/javascript; charset=utf-8",
-    "etag": '"125-H4DLqyJOt7Xep4Pf9hmc8FtEiwY"',
-    "mtime": "2026-07-24T01:15:36.749Z",
+    "etag": '"125-RBa3oSsw/JSqI6iTq7TFynhfR2A"',
+    "mtime": "2026-07-25T13:49:58.182Z",
     "size": 293,
-    "path": "../public/assets/folder-open-DYymBoy5.js"
+    "path": "../public/assets/folder-open-Cr2z3PHP.js"
   },
-  "/assets/historico-BUQNHH7A.js": {
+  "/assets/historico-dYn97EZN.js": {
     "type": "text/javascript; charset=utf-8",
-    "etag": '"3079-2BXrQoxf/2jEBucHZ5Fhcol0d4o"',
-    "mtime": "2026-07-24T01:15:36.749Z",
+    "etag": '"3079-Hnpx3oE23MnLeYiw6Qju39XoI18"',
+    "mtime": "2026-07-25T13:49:58.178Z",
     "size": 12409,
-    "path": "../public/assets/historico-BUQNHH7A.js"
+    "path": "../public/assets/historico-dYn97EZN.js"
   },
-  "/assets/history-CQI2hUqj.js": {
+  "/assets/history-yjUOKiSW.js": {
     "type": "text/javascript; charset=utf-8",
-    "etag": '"ee-qbhg30IVbIMNwuoCSumjJmCdxXI"',
-    "mtime": "2026-07-24T01:15:36.749Z",
+    "etag": '"ee-/EP5ie9i2/lgO/6VNqWWTSzTgoQ"',
+    "mtime": "2026-07-25T13:49:58.182Z",
     "size": 238,
-    "path": "../public/assets/history-CQI2hUqj.js"
+    "path": "../public/assets/history-yjUOKiSW.js"
   },
   "/assets/html2canvas.esm-DXEQVQnt.js": {
     "type": "text/javascript; charset=utf-8",
     "etag": '"31151-TyUyRNm9rR2JDwpyAxcruTmmr6A"',
-    "mtime": "2026-07-24T01:15:36.773Z",
+    "mtime": "2026-07-25T13:49:58.186Z",
     "size": 201041,
     "path": "../public/assets/html2canvas.esm-DXEQVQnt.js"
   },
-  "/assets/index-BI1LDtyr.js": {
+  "/assets/index--6cdjjJ-.js": {
     "type": "text/javascript; charset=utf-8",
-    "etag": '"a06-ey/md9+uuaf787eqTBoRHnGONjs"',
-    "mtime": "2026-07-24T01:15:36.749Z",
-    "size": 2566,
-    "path": "../public/assets/index-BI1LDtyr.js"
+    "etag": '"fda-YAjtQYw83FwHQHkvVT6/Wm/8mjY"',
+    "mtime": "2026-07-25T13:49:58.174Z",
+    "size": 4058,
+    "path": "../public/assets/index--6cdjjJ-.js"
   },
-  "/assets/index-B_mRZ8Ng.js": {
+  "/assets/index-7gvzw5oQ.js": {
     "type": "text/javascript; charset=utf-8",
-    "etag": '"4d05-f+kONtrpNv2psZxwqmM1swSUWYk"',
-    "mtime": "2026-07-24T01:15:36.749Z",
+    "etag": '"4d05-Ov792STb8kZVRJhlpxYPworH7Bc"',
+    "mtime": "2026-07-25T13:49:58.182Z",
     "size": 19717,
-    "path": "../public/assets/index-B_mRZ8Ng.js"
+    "path": "../public/assets/index-7gvzw5oQ.js"
+  },
+  "/assets/index-B08KgGZw.js": {
+    "type": "text/javascript; charset=utf-8",
+    "etag": '"e8-EdyDfki8nEJzNqSkIGdfGGyMCqU"',
+    "mtime": "2026-07-25T13:49:58.182Z",
+    "size": 232,
+    "path": "../public/assets/index-B08KgGZw.js"
+  },
+  "/assets/index-B8RviqSE.js": {
+    "type": "text/javascript; charset=utf-8",
+    "etag": '"17a-c84bT2NR/YqfLY2TgCJFmEdAxOs"',
+    "mtime": "2026-07-25T13:49:58.182Z",
+    "size": 378,
+    "path": "../public/assets/index-B8RviqSE.js"
+  },
+  "/assets/index-B9lbdagZ.js": {
+    "type": "text/javascript; charset=utf-8",
+    "etag": '"3a0-DP0liPiXjUNUnf8YaUtxyjXcla0"',
+    "mtime": "2026-07-25T13:49:58.178Z",
+    "size": 928,
+    "path": "../public/assets/index-B9lbdagZ.js"
   },
   "/assets/index-C7yKKq-w.js": {
     "type": "text/javascript; charset=utf-8",
     "etag": '"182c-2nd84valRxfTgtoo+uWpOfRRwJs"',
-    "mtime": "2026-07-24T01:15:36.749Z",
+    "mtime": "2026-07-25T13:49:58.178Z",
     "size": 6188,
     "path": "../public/assets/index-C7yKKq-w.js"
   },
-  "/assets/index-CIwdTnGa.js": {
+  "/assets/index-CJL45VUn.js": {
     "type": "text/javascript; charset=utf-8",
-    "etag": '"17a-5iE8h1U8cwM0+qwwDI9qlREi8jA"',
-    "mtime": "2026-07-24T01:15:36.749Z",
-    "size": 378,
-    "path": "../public/assets/index-CIwdTnGa.js"
-  },
-  "/assets/index-CjDHM0Yd.js": {
-    "type": "text/javascript; charset=utf-8",
-    "etag": '"108f-NuUgh/x5rChyr1xIGPyDBkUriak"',
-    "mtime": "2026-07-24T01:15:36.749Z",
-    "size": 4239,
-    "path": "../public/assets/index-CjDHM0Yd.js"
-  },
-  "/assets/index-CrbIuwa_.js": {
-    "type": "text/javascript; charset=utf-8",
-    "etag": '"a2920-kvqZMCtRLWo2rBAygYRTZ66HIzc"',
-    "mtime": "2026-07-24T01:15:36.777Z",
-    "size": 665888,
-    "path": "../public/assets/index-CrbIuwa_.js"
-  },
-  "/assets/index-DBbm0zxN.js": {
-    "type": "text/javascript; charset=utf-8",
-    "etag": '"fda-NNkiN886sU2vAZQ/6pB0PVvkFf0"',
-    "mtime": "2026-07-24T01:15:36.745Z",
-    "size": 4058,
-    "path": "../public/assets/index-DBbm0zxN.js"
-  },
-  "/assets/index-Da_P8VG0.js": {
-    "type": "text/javascript; charset=utf-8",
-    "etag": '"e8-OS/1yEn+Gr44dloVFbY0a/utelc"',
-    "mtime": "2026-07-24T01:15:36.749Z",
-    "size": 232,
-    "path": "../public/assets/index-Da_P8VG0.js"
-  },
-  "/assets/index-DeuVUQt8.js": {
-    "type": "text/javascript; charset=utf-8",
-    "etag": '"3a0-umyOXUhqeSYhAFZekDW/1hpfvtE"',
-    "mtime": "2026-07-24T01:15:36.749Z",
-    "size": 928,
-    "path": "../public/assets/index-DeuVUQt8.js"
-  },
-  "/assets/index-Dj1sfxCJ.js": {
-    "type": "text/javascript; charset=utf-8",
-    "etag": '"810-4SMlg2Cs+1nR7T0S8IDGZ6cm12Y"',
-    "mtime": "2026-07-24T01:15:36.749Z",
-    "size": 2064,
-    "path": "../public/assets/index-Dj1sfxCJ.js"
-  },
-  "/assets/index-Dv7yg5yI.js": {
-    "type": "text/javascript; charset=utf-8",
-    "etag": '"6ace-R9lN7cOCNBfOagq7wvMg50Wis8Y"',
-    "mtime": "2026-07-24T01:15:36.749Z",
-    "size": 27342,
-    "path": "../public/assets/index-Dv7yg5yI.js"
-  },
-  "/assets/index-DwN4xeWX.js": {
-    "type": "text/javascript; charset=utf-8",
-    "etag": '"8f-Torkums3oIUBAuObyCNxtSKFjEU"',
-    "mtime": "2026-07-24T01:15:36.749Z",
+    "etag": '"8f-sw74k8xxfKA4PKItj8rGWbQGKdM"',
+    "mtime": "2026-07-25T13:49:58.182Z",
     "size": 143,
-    "path": "../public/assets/index-DwN4xeWX.js"
+    "path": "../public/assets/index-CJL45VUn.js"
   },
-  "/assets/index-eS6Nqf-9.js": {
+  "/assets/index-DhIDV8s9.js": {
     "type": "text/javascript; charset=utf-8",
-    "etag": '"1a20-bbyg2AVKS2RC8C1taS8U2v6WzVE"',
-    "mtime": "2026-07-24T01:15:36.749Z",
-    "size": 6688,
-    "path": "../public/assets/index-eS6Nqf-9.js"
+    "etag": '"108f-ixAk/BiIydhXrAztx9MJOgpb+AI"',
+    "mtime": "2026-07-25T13:49:58.182Z",
+    "size": 4239,
+    "path": "../public/assets/index-DhIDV8s9.js"
   },
-  "/assets/index-xzMD7PS_.js": {
+  "/assets/index-CZX9gHcB.js": {
     "type": "text/javascript; charset=utf-8",
-    "etag": '"220-aB1aXB95EmkHPt3U+S6q6/Z+sxU"',
-    "mtime": "2026-07-24T01:15:36.749Z",
+    "etag": '"220-8bSyNmh2uyzwn1YQeSBy43l16JE"',
+    "mtime": "2026-07-25T13:49:58.182Z",
     "size": 544,
-    "path": "../public/assets/index-xzMD7PS_.js"
+    "path": "../public/assets/index-CZX9gHcB.js"
   },
-  "/assets/index.es-0-jNHeTg.js": {
+  "/assets/index-aI2jerDk.js": {
     "type": "text/javascript; charset=utf-8",
-    "etag": '"26c6a-eYH8o0gdPz3sn9A2rxVy5nt1QT0"',
-    "mtime": "2026-07-24T01:15:36.773Z",
+    "etag": '"810-okOlq9AywPow/ODY+YBI4fzPm+U"',
+    "mtime": "2026-07-25T13:49:58.182Z",
+    "size": 2064,
+    "path": "../public/assets/index-aI2jerDk.js"
+  },
+  "/assets/index-eZgJSIqH.js": {
+    "type": "text/javascript; charset=utf-8",
+    "etag": '"6ace-UIC4rIJVCiYu5McwoAbUcubihvA"',
+    "mtime": "2026-07-25T13:49:58.182Z",
+    "size": 27342,
+    "path": "../public/assets/index-eZgJSIqH.js"
+  },
+  "/assets/index-lNCHZd04.js": {
+    "type": "text/javascript; charset=utf-8",
+    "etag": '"1a20-SptqENw3e7LT8eXm+TmUY5Inxjk"',
+    "mtime": "2026-07-25T13:49:58.182Z",
+    "size": 6688,
+    "path": "../public/assets/index-lNCHZd04.js"
+  },
+  "/assets/index-mcEMciqf.js": {
+    "type": "text/javascript; charset=utf-8",
+    "etag": '"a06-/FW5Yp4PwYuSc5XxZTd51wnxfGE"',
+    "mtime": "2026-07-25T13:49:58.182Z",
+    "size": 2566,
+    "path": "../public/assets/index-mcEMciqf.js"
+  },
+  "/assets/index.es-xZYXD3cx.js": {
+    "type": "text/javascript; charset=utf-8",
+    "etag": '"26c6a-of/ATC7xD/IlurjrgV9zY9Ynjz4"',
+    "mtime": "2026-07-25T13:49:58.186Z",
     "size": 158826,
-    "path": "../public/assets/index.es-0-jNHeTg.js"
+    "path": "../public/assets/index.es-xZYXD3cx.js"
   },
-  "/assets/jspdf.es.min-YGLn_LzA.js": {
+  "/assets/jspdf.es.min-Bwq2hvit.js": {
     "type": "text/javascript; charset=utf-8",
-    "etag": '"5e372-Pn4mCaeph216Xg1l4JzwwiO9nts"',
-    "mtime": "2026-07-24T01:15:36.773Z",
+    "etag": '"5e372-3mU+FZEbw1BTEucsHs5FBgNZ/GE"',
+    "mtime": "2026-07-25T13:49:58.182Z",
     "size": 385906,
-    "path": "../public/assets/jspdf.es.min-YGLn_LzA.js"
+    "path": "../public/assets/jspdf.es.min-Bwq2hvit.js"
   },
-  "/assets/label-BcD9cdE-.js": {
+  "/assets/label-BHMzSQ32.js": {
     "type": "text/javascript; charset=utf-8",
-    "etag": '"372-oF560BzyJe5jT74+POdSa2DuHQo"',
-    "mtime": "2026-07-24T01:15:36.749Z",
+    "etag": '"372-k/MtuRHBIbD2kMVjxqwuHflkGec"',
+    "mtime": "2026-07-25T13:49:58.182Z",
     "size": 882,
-    "path": "../public/assets/label-BcD9cdE-.js"
+    "path": "../public/assets/label-BHMzSQ32.js"
   },
-  "/assets/landmark-Dz1S8gE6.js": {
+  "/assets/landmark-DG2-doEn.js": {
     "type": "text/javascript; charset=utf-8",
-    "etag": '"191-niSZI5tzO0rSjlu6ThsQOl0gcDQ"',
-    "mtime": "2026-07-24T01:15:36.749Z",
+    "etag": '"191-4hxrPB7uDl8dKX4HXhFiFBmbyVw"',
+    "mtime": "2026-07-25T13:49:58.178Z",
     "size": 401,
-    "path": "../public/assets/landmark-Dz1S8gE6.js"
+    "path": "../public/assets/landmark-DG2-doEn.js"
   },
-  "/assets/licencas-DfNe7jR5.js": {
+  "/assets/licencas-COEGkZIq.js": {
     "type": "text/javascript; charset=utf-8",
-    "etag": '"24fc-djn/KTHnFOeYa5CMcvrnQWLoG+M"',
-    "mtime": "2026-07-24T01:15:36.749Z",
+    "etag": '"24fc-Zj8CYrWAIC2Rv5l+1zBO8l9yRGY"',
+    "mtime": "2026-07-25T13:49:58.178Z",
     "size": 9468,
-    "path": "../public/assets/licencas-DfNe7jR5.js"
+    "path": "../public/assets/licencas-COEGkZIq.js"
   },
-  "/assets/loader-circle-NQBc4WPZ.js": {
+  "/assets/loader-circle-CwVPwZxj.js": {
     "type": "text/javascript; charset=utf-8",
-    "etag": '"91-Qsd4f3T+fjHkm50gv02eXqnH9D8"',
-    "mtime": "2026-07-24T01:15:36.749Z",
+    "etag": '"91-8ynmIL44hbbrNylrJZF8JrNoLEo"',
+    "mtime": "2026-07-25T13:49:58.182Z",
     "size": 145,
-    "path": "../public/assets/loader-circle-NQBc4WPZ.js"
+    "path": "../public/assets/loader-circle-CwVPwZxj.js"
   },
-  "/assets/mail-BrE2Tb6-.js": {
+  "/assets/mail-0oSLlHxe.js": {
     "type": "text/javascript; charset=utf-8",
-    "etag": '"d6-eINUnqr1P87UGNrioIl8g0hfjQI"',
-    "mtime": "2026-07-24T01:15:36.749Z",
+    "etag": '"d6-4k+F87dWWgK99njpmuvkQdO9Fd0"',
+    "mtime": "2026-07-25T13:49:58.182Z",
     "size": 214,
-    "path": "../public/assets/mail-BrE2Tb6-.js"
+    "path": "../public/assets/mail-0oSLlHxe.js"
   },
-  "/assets/modelos-contrato-CYvrlVhx.js": {
+  "/assets/modelos-contrato-CzNwcPxK.js": {
     "type": "text/javascript; charset=utf-8",
-    "etag": '"66484-PmLYfqb+ro69jrfPb791+UraxRo"',
-    "mtime": "2026-07-24T01:15:36.745Z",
+    "etag": '"66484-IOgMk18lprw80rTC08zJS1BUetc"',
+    "mtime": "2026-07-25T13:49:58.174Z",
     "size": 418948,
-    "path": "../public/assets/modelos-contrato-CYvrlVhx.js"
+    "path": "../public/assets/modelos-contrato-CzNwcPxK.js"
   },
-  "/assets/mtr-CToRSY0w.js": {
+  "/assets/mtr-DejDyzj9.js": {
     "type": "text/javascript; charset=utf-8",
-    "etag": '"499c-/enLCprYC9Y/FS08NfXb1ixyar0"',
-    "mtime": "2026-07-24T01:15:36.745Z",
+    "etag": '"499c-OoxVc7aENtwtoU2y1iUJi6zR8e0"',
+    "mtime": "2026-07-25T13:49:58.174Z",
     "size": 18844,
-    "path": "../public/assets/mtr-CToRSY0w.js"
+    "path": "../public/assets/mtr-DejDyzj9.js"
   },
-  "/assets/nfse.functions-xIMugKWD.js": {
+  "/assets/nfse.functions-CIby7Z97.js": {
     "type": "text/javascript; charset=utf-8",
-    "etag": '"1e1-QZgJJ8J+D3eltURM69F2Anjpiyc"',
-    "mtime": "2026-07-24T01:15:36.749Z",
+    "etag": '"1e1-OML1c4V4WHHt6TihqcQHnnLoVGk"',
+    "mtime": "2026-07-25T13:49:58.178Z",
     "size": 481,
-    "path": "../public/assets/nfse.functions-xIMugKWD.js"
+    "path": "../public/assets/nfse.functions-CIby7Z97.js"
   },
-  "/assets/notas-fiscais-DA89Rq_p.js": {
+  "/assets/notas-fiscais-DrarYk38.js": {
     "type": "text/javascript; charset=utf-8",
-    "etag": '"2a50-GN/x+bz7XxyY/mJ3zwVfqlkdDPA"',
-    "mtime": "2026-07-24T01:15:36.745Z",
+    "etag": '"2a50-zAEvM1gyK3CsdGNz9qaZ8cH3+PA"',
+    "mtime": "2026-07-25T13:49:58.174Z",
     "size": 10832,
-    "path": "../public/assets/notas-fiscais-DA89Rq_p.js"
+    "path": "../public/assets/notas-fiscais-DrarYk38.js"
   },
-  "/assets/pen-line-BlWXFguE.js": {
+  "/assets/pen-line-BlEY8yzk.js": {
     "type": "text/javascript; charset=utf-8",
-    "etag": '"116-u6+gu6PQe3hmUaaUK4Tgbz4IiPk"',
-    "mtime": "2026-07-24T01:15:36.749Z",
+    "etag": '"116-+Vc0R1YuQChffRC0em4M3UwSrh0"',
+    "mtime": "2026-07-25T13:49:58.182Z",
     "size": 278,
-    "path": "../public/assets/pen-line-BlWXFguE.js"
+    "path": "../public/assets/pen-line-BlEY8yzk.js"
   },
-  "/assets/pgrss-lista-B3ewmC7I.js": {
+  "/assets/pgrss-lista-BsZ4Kvq0.js": {
     "type": "text/javascript; charset=utf-8",
-    "etag": '"1686-mTDGU4lhs68XG/RFulYRMLkEZjg"',
-    "mtime": "2026-07-24T01:15:36.745Z",
+    "etag": '"1686-FOhSl6Q4IL3rDZR41uyrmlDlQIY"',
+    "mtime": "2026-07-25T13:49:58.174Z",
     "size": 5766,
-    "path": "../public/assets/pgrss-lista-B3ewmC7I.js"
+    "path": "../public/assets/pgrss-lista-BsZ4Kvq0.js"
   },
-  "/assets/pgrss-nova-CbYgA5Tq.js": {
+  "/assets/pgrss-nova-C4b89Zvr.js": {
     "type": "text/javascript; charset=utf-8",
-    "etag": '"342d-ZJcaTZuXEG2veM9wL0C4ftr9hz8"',
-    "mtime": "2026-07-24T01:15:36.745Z",
+    "etag": '"342d-7pky9KbjSs3OkvuN51fWS27rLGM"',
+    "mtime": "2026-07-25T13:49:58.174Z",
     "size": 13357,
-    "path": "../public/assets/pgrss-nova-CbYgA5Tq.js"
+    "path": "../public/assets/pgrss-nova-C4b89Zvr.js"
   },
-  "/assets/pgrss-ver._id-D14_Q9ef.js": {
+  "/assets/pgrss-ver._id-EqmdmgQ3.js": {
     "type": "text/javascript; charset=utf-8",
-    "etag": '"15f3-hmHnVWC9+sm8N3KVYtw0r3k7/fc"',
-    "mtime": "2026-07-24T01:15:36.749Z",
+    "etag": '"15f3-YUpZh0tWbl6U9IqrAuWy9bqUwxg"',
+    "mtime": "2026-07-25T13:49:58.182Z",
     "size": 5619,
-    "path": "../public/assets/pgrss-ver._id-D14_Q9ef.js"
+    "path": "../public/assets/pgrss-ver._id-EqmdmgQ3.js"
   },
-  "/assets/pgrss.functions-CJhtV7vZ.js": {
+  "/assets/pgrss.functions-CA0T7Jna.js": {
     "type": "text/javascript; charset=utf-8",
-    "etag": '"d6ca-r4gmjiTW0drbXpjJgdATUJfseVo"',
-    "mtime": "2026-07-24T01:15:36.749Z",
+    "etag": '"d6ca-X+iyr6HwxCMGGuXj3PO+gV6T5bk"',
+    "mtime": "2026-07-25T13:49:58.182Z",
     "size": 54986,
-    "path": "../public/assets/pgrss.functions-CJhtV7vZ.js"
+    "path": "../public/assets/pgrss.functions-CA0T7Jna.js"
   },
-  "/assets/plus-D2jdXrHd.js": {
+  "/assets/plus-DKnNjOwn.js": {
     "type": "text/javascript; charset=utf-8",
-    "etag": '"9a-64FIGBvr/nW6EQH25uByWkb2jDY"',
-    "mtime": "2026-07-24T01:15:36.749Z",
+    "etag": '"9a-GGiaYOe10cIkONKVMH9+YoWvM+0"',
+    "mtime": "2026-07-25T13:49:58.182Z",
     "size": 154,
-    "path": "../public/assets/plus-D2jdXrHd.js"
+    "path": "../public/assets/plus-DKnNjOwn.js"
   },
-  "/assets/portal-DUIgpiFw.js": {
+  "/assets/index-C9_2v7pz.js": {
     "type": "text/javascript; charset=utf-8",
-    "etag": '"2010-5wicaW9/n3fFgo25RZUmab00kTk"',
-    "mtime": "2026-07-24T01:15:36.745Z",
+    "etag": '"a2920-yu5n2EGBhy3z2d9gUc8zBUUy1bo"',
+    "mtime": "2026-07-25T13:49:58.190Z",
+    "size": 665888,
+    "path": "../public/assets/index-C9_2v7pz.js"
+  },
+  "/assets/portal-DbTQ18Li.js": {
+    "type": "text/javascript; charset=utf-8",
+    "etag": '"2010-WKVNFpgRgLoCYUKgpnYqG3HIcug"',
+    "mtime": "2026-07-25T13:49:58.174Z",
     "size": 8208,
-    "path": "../public/assets/portal-DUIgpiFw.js"
+    "path": "../public/assets/portal-DbTQ18Li.js"
   },
-  "/assets/precos-pgrss-BtaSWoCS.js": {
+  "/assets/precos-pgrss-ZhigrIpe.js": {
     "type": "text/javascript; charset=utf-8",
-    "etag": '"bb9-Ighb9bHYzR4Mj77am9wjIDQW6qU"',
-    "mtime": "2026-07-24T01:15:36.745Z",
+    "etag": '"bb9-0g7iopoAj8q5B4YcERFmx3qgBhY"',
+    "mtime": "2026-07-25T13:49:58.174Z",
     "size": 3001,
-    "path": "../public/assets/precos-pgrss-BtaSWoCS.js"
+    "path": "../public/assets/precos-pgrss-ZhigrIpe.js"
   },
-  "/assets/printer-BUmfUf1p.js": {
+  "/assets/printer-DS8-KeDH.js": {
     "type": "text/javascript; charset=utf-8",
-    "etag": '"140-voPqiGSRamCYWqPKGFiUS1Coupw"',
-    "mtime": "2026-07-24T01:15:36.749Z",
+    "etag": '"140-BN6jc7wZV1Yo9Ljnq54xPxBiFcI"',
+    "mtime": "2026-07-25T13:49:58.182Z",
     "size": 320,
-    "path": "../public/assets/printer-BUmfUf1p.js"
+    "path": "../public/assets/printer-DS8-KeDH.js"
   },
-  "/assets/propostas-D9dYa9H5.js": {
+  "/assets/propostas-YsrrqRf-.js": {
     "type": "text/javascript; charset=utf-8",
-    "etag": '"9878-m4cAmx/Q0E1LI8EmqRWqJYdW89k"',
-    "mtime": "2026-07-24T01:15:36.745Z",
+    "etag": '"9878-bXSVktmLwvaKuza0rxtYDOZISXU"',
+    "mtime": "2026-07-25T13:49:58.174Z",
     "size": 39032,
-    "path": "../public/assets/propostas-D9dYa9H5.js"
+    "path": "../public/assets/propostas-YsrrqRf-.js"
   },
-  "/assets/propostas.nova-xECksCTM.js": {
+  "/assets/propostas.nova-D-Wcw-p8.js": {
     "type": "text/javascript; charset=utf-8",
-    "etag": '"4b28-YDH/G4LJWFm0BgUMpD4UYog1CQ0"',
-    "mtime": "2026-07-24T01:15:36.749Z",
+    "etag": '"4b28-613lEmU+nJP+FgJjDP6sasVgrNw"',
+    "mtime": "2026-07-25T13:49:58.182Z",
     "size": 19240,
-    "path": "../public/assets/propostas.nova-xECksCTM.js"
+    "path": "../public/assets/propostas.nova-D-Wcw-p8.js"
   },
-  "/assets/propostas.pgrss._id-DM0ppRma.js": {
+  "/assets/propostas.pgrss._id-CUOldStR.js": {
     "type": "text/javascript; charset=utf-8",
-    "etag": '"802-ICQb5hpp7Aa2KQ6tgNmgqAdZrcg"',
-    "mtime": "2026-07-24T01:15:36.749Z",
+    "etag": '"802-1+cn/FaY8yznOxWmsWJYvm2v4Xs"',
+    "mtime": "2026-07-25T13:49:58.182Z",
     "size": 2050,
-    "path": "../public/assets/propostas.pgrss._id-DM0ppRma.js"
+    "path": "../public/assets/propostas.pgrss._id-CUOldStR.js"
   },
-  "/assets/propostas.pgrss.nova-Dh2LVPS0.js": {
+  "/assets/propostas.pgrss.nova-DlkVhRxm.js": {
     "type": "text/javascript; charset=utf-8",
-    "etag": '"30b6-NyFQz6ULBcnNefhDQNZ7iXdxlvY"',
-    "mtime": "2026-07-24T01:15:36.749Z",
+    "etag": '"30b6-Kk2umJdzrxSxMxfoC5qCvm442eE"',
+    "mtime": "2026-07-25T13:49:58.182Z",
     "size": 12470,
-    "path": "../public/assets/propostas.pgrss.nova-Dh2LVPS0.js"
+    "path": "../public/assets/propostas.pgrss.nova-DlkVhRxm.js"
   },
   "/assets/purify.es-CC4Brkr_.js": {
     "type": "text/javascript; charset=utf-8",
     "etag": '"6d2e-2hLeKeMzBLvyKsjs4nyXOoNsJTU"',
-    "mtime": "2026-07-24T01:15:36.773Z",
+    "mtime": "2026-07-25T13:49:58.186Z",
     "size": 27950,
     "path": "../public/assets/purify.es-CC4Brkr_.js"
   },
-  "/assets/recycle-BLlV6xQR.js": {
+  "/assets/recycle-3rDxrKws.js": {
     "type": "text/javascript; charset=utf-8",
-    "etag": '"247-8GzDNxE0s7JljM/2Dgq0+RyzFZI"',
-    "mtime": "2026-07-24T01:15:36.745Z",
+    "etag": '"247-5TxW7Yp1g7Le58p7nhl1bM0V0rg"',
+    "mtime": "2026-07-25T13:49:58.174Z",
     "size": 583,
-    "path": "../public/assets/recycle-BLlV6xQR.js"
+    "path": "../public/assets/recycle-3rDxrKws.js"
   },
-  "/assets/relatorio-financeiro-DHXmTjiU.js": {
+  "/assets/relatorio-financeiro-NEWN0mIS.js": {
     "type": "text/javascript; charset=utf-8",
-    "etag": '"3185-EgevpCuaBJBhRD9EYqom7uqATxI"',
-    "mtime": "2026-07-24T01:15:36.745Z",
+    "etag": '"3185-rWaqgL4xWCB5TU5lSNWtM2KFdrs"',
+    "mtime": "2026-07-25T13:49:58.174Z",
     "size": 12677,
-    "path": "../public/assets/relatorio-financeiro-DHXmTjiU.js"
+    "path": "../public/assets/relatorio-financeiro-NEWN0mIS.js"
   },
-  "/assets/relatorios-BJnuZvPt.js": {
+  "/assets/relatorios-BkrYVtBT.js": {
     "type": "text/javascript; charset=utf-8",
-    "etag": '"54bd-eep0BxSDUCyKcr/84qqcEcGGIEA"',
-    "mtime": "2026-07-24T01:15:36.745Z",
+    "etag": '"54bd-rVzurk2RELLYkbdYEvt3yBs7yeo"',
+    "mtime": "2026-07-25T13:49:58.174Z",
     "size": 21693,
-    "path": "../public/assets/relatorios-BJnuZvPt.js"
+    "path": "../public/assets/relatorios-BkrYVtBT.js"
   },
-  "/assets/reset-password-7UNBahUR.js": {
+  "/assets/reset-password-Bp2ZUmWa.js": {
     "type": "text/javascript; charset=utf-8",
-    "etag": '"103d-xvlfPTb3UJ4k+zRcryKGwyQJRag"',
-    "mtime": "2026-07-24T01:15:36.745Z",
+    "etag": '"103d-+YsL3JRcqx7owrU3w2OLJzJv6xM"',
+    "mtime": "2026-07-25T13:49:58.174Z",
     "size": 4157,
-    "path": "../public/assets/reset-password-7UNBahUR.js"
+    "path": "../public/assets/reset-password-Bp2ZUmWa.js"
   },
-  "/assets/rotas-y263xgvQ.js": {
+  "/assets/rotas-usyLdAJq.js": {
     "type": "text/javascript; charset=utf-8",
-    "etag": '"3b26-go11GBAUCMfTAi07tSvBoXA5djo"',
-    "mtime": "2026-07-24T01:15:36.745Z",
+    "etag": '"3b26-aNbz4jkaWdgK62A4LiMu1XTrQ7Q"',
+    "mtime": "2026-07-25T13:49:58.174Z",
     "size": 15142,
-    "path": "../public/assets/rotas-y263xgvQ.js"
+    "path": "../public/assets/rotas-usyLdAJq.js"
   },
-  "/assets/rotate-ccw-C_xWIbCJ.js": {
+  "/assets/rotate-ccw-jaflkToI.js": {
     "type": "text/javascript; charset=utf-8",
-    "etag": '"c9-RIVvHVO/2Cbbf+fl1OV8wj2mIoM"',
-    "mtime": "2026-07-24T01:15:36.749Z",
+    "etag": '"c9-Q27c7D8aHzwB+QK8Q+UJCd9Za4o"',
+    "mtime": "2026-07-25T13:49:58.182Z",
     "size": 201,
-    "path": "../public/assets/rotate-ccw-C_xWIbCJ.js"
+    "path": "../public/assets/rotate-ccw-jaflkToI.js"
   },
-  "/assets/route-BquGOouP.js": {
+  "/assets/route-DyuxEBYH.js": {
     "type": "text/javascript; charset=utf-8",
-    "etag": '"1171e-Q6Y1E43+laA29ywmwOoU8NnNGwo"',
-    "mtime": "2026-07-24T01:15:36.745Z",
+    "etag": '"1171e-dSIZS7Mc3tneuCaF107kUNwNkh8"',
+    "mtime": "2026-07-25T13:49:58.174Z",
     "size": 71454,
-    "path": "../public/assets/route-BquGOouP.js"
+    "path": "../public/assets/route-DyuxEBYH.js"
   },
-  "/assets/save-ppVFdYVE.js": {
+  "/assets/save-CkYYWEOZ.js": {
     "type": "text/javascript; charset=utf-8",
-    "etag": '"148-HkcpyXa9A6fsEjyZyMJq3tBGIUA"',
-    "mtime": "2026-07-24T01:15:36.749Z",
+    "etag": '"148-xshu1evPPVbmgHxnSd67Mv9r9rc"',
+    "mtime": "2026-07-25T13:49:58.182Z",
     "size": 328,
-    "path": "../public/assets/save-ppVFdYVE.js"
+    "path": "../public/assets/save-CkYYWEOZ.js"
   },
-  "/assets/search-CgF9NIBP.js": {
+  "/assets/search-BRgmdj2Y.js": {
     "type": "text/javascript; charset=utf-8",
-    "etag": '"af-8JiYIjLlWiY2XVTkQgNyeK+EJHE"',
-    "mtime": "2026-07-24T01:15:36.749Z",
+    "etag": '"af-po+qy73q0cdPdQQTUSdN/6nWw5E"',
+    "mtime": "2026-07-25T13:49:58.182Z",
     "size": 175,
-    "path": "../public/assets/search-CgF9NIBP.js"
+    "path": "../public/assets/search-BRgmdj2Y.js"
   },
-  "/assets/select-CDyhvA1V.js": {
+  "/assets/select-4Jyqvbsl.js": {
     "type": "text/javascript; charset=utf-8",
-    "etag": '"579e-FYbM/xyL71WeJYX4Rj1u8mQDwLI"',
-    "mtime": "2026-07-24T01:15:36.749Z",
+    "etag": '"579e-iQVOuO6qvo2/+wk5cAe4GUxHAcc"',
+    "mtime": "2026-07-25T13:49:58.182Z",
     "size": 22430,
-    "path": "../public/assets/select-CDyhvA1V.js"
+    "path": "../public/assets/select-4Jyqvbsl.js"
   },
-  "/assets/sendEmail-D8KygFD6.js": {
+  "/assets/sendEmail-DvW3jg5m.js": {
     "type": "text/javascript; charset=utf-8",
-    "etag": '"1d22-78NPP4jIrVFZAK130OMwSQSkczs"',
-    "mtime": "2026-07-24T01:15:36.749Z",
+    "etag": '"1d22-XHFbPdlpbcWgj+Zawh2xsE/9L3o"',
+    "mtime": "2026-07-25T13:49:58.182Z",
     "size": 7458,
-    "path": "../public/assets/sendEmail-D8KygFD6.js"
+    "path": "../public/assets/sendEmail-DvW3jg5m.js"
   },
-  "/assets/shield-BurVk5OC.js": {
+  "/assets/shield-BEp3oEHe.js": {
     "type": "text/javascript; charset=utf-8",
-    "etag": '"111-WVTRmyKg8zgmQezqjSXMfAPq+Co"',
-    "mtime": "2026-07-24T01:15:36.749Z",
+    "etag": '"111-vrHpgFcgRuXEZKfOZmqI6v8Y5Xk"',
+    "mtime": "2026-07-25T13:49:58.178Z",
     "size": 273,
-    "path": "../public/assets/shield-BurVk5OC.js"
+    "path": "../public/assets/shield-BEp3oEHe.js"
   },
-  "/assets/shield-check-Vs8Pxr2Z.js": {
+  "/assets/shield-check-C0mFHq6l.js": {
     "type": "text/javascript; charset=utf-8",
-    "etag": '"141-YBoD7ym7xGhmph+y+TH4k4IqZaU"',
-    "mtime": "2026-07-24T01:15:36.749Z",
+    "etag": '"141-aICqhAAdyj7jz0Vh5l1bbL3QibI"',
+    "mtime": "2026-07-25T13:49:58.182Z",
     "size": 321,
-    "path": "../public/assets/shield-check-Vs8Pxr2Z.js"
+    "path": "../public/assets/shield-check-C0mFHq6l.js"
   },
   "/assets/styles-sBFn0ras.css": {
     "type": "text/css; charset=utf-8",
     "etag": '"18716-0k+S3Vv3kPZOtEBXY9q8bQLzSjU"',
-    "mtime": "2026-07-24T01:15:36.705Z",
+    "mtime": "2026-07-25T13:49:58.162Z",
     "size": 100118,
     "path": "../public/assets/styles-sBFn0ras.css"
   },
-  "/assets/table-CL7duU8J.js": {
+  "/assets/table-BzF6jKcI.js": {
     "type": "text/javascript; charset=utf-8",
-    "etag": '"61a-KtwsmGP2Jxc+WEFHFcdfVeR8dig"',
-    "mtime": "2026-07-24T01:15:36.749Z",
+    "etag": '"61a-U4ZQWkV1NAJC54jDoTrjj6mKuVo"',
+    "mtime": "2026-07-25T13:49:58.182Z",
     "size": 1562,
-    "path": "../public/assets/table-CL7duU8J.js"
+    "path": "../public/assets/table-BzF6jKcI.js"
   },
-  "/assets/tabs-de_EroWf.js": {
+  "/assets/tabs-DB6burs7.js": {
     "type": "text/javascript; charset=utf-8",
-    "etag": '"1a62-qBaBa/rMvMikpwfKiaBfsMpQnTc"',
-    "mtime": "2026-07-24T01:15:36.749Z",
+    "etag": '"1a62-+HvY7e8FcolzJpPbWOLWGT1s9dk"',
+    "mtime": "2026-07-25T13:49:58.182Z",
     "size": 6754,
-    "path": "../public/assets/tabs-de_EroWf.js"
+    "path": "../public/assets/tabs-DB6burs7.js"
   },
-  "/assets/textarea-BdDrkk2w.js": {
+  "/assets/textarea-DxSsN9aC.js": {
     "type": "text/javascript; charset=utf-8",
-    "etag": '"1c7-Ycl3DAG6BqBFhH167giQzMBL+Y8"',
-    "mtime": "2026-07-24T01:15:36.749Z",
+    "etag": '"1c7-s6XWtPNogOEMjlXMlYmwfe+SGM8"',
+    "mtime": "2026-07-25T13:49:58.182Z",
     "size": 455,
-    "path": "../public/assets/textarea-BdDrkk2w.js"
+    "path": "../public/assets/textarea-DxSsN9aC.js"
   },
-  "/assets/trash-2-Dkb6oYUS.js": {
+  "/assets/trash-2-oKJqgkeS.js": {
     "type": "text/javascript; charset=utf-8",
-    "etag": '"149-PAazIf5Ch3vsic8IY/Wn6jXOu54"',
-    "mtime": "2026-07-24T01:15:36.749Z",
+    "etag": '"149-7uNIV8ITIhlsl7GAyBi85L5t874"',
+    "mtime": "2026-07-25T13:49:58.182Z",
     "size": 329,
-    "path": "../public/assets/trash-2-Dkb6oYUS.js"
+    "path": "../public/assets/trash-2-oKJqgkeS.js"
   },
-  "/assets/trending-up-MKDiktGk.js": {
+  "/assets/trending-up-qe3oTBXj.js": {
     "type": "text/javascript; charset=utf-8",
-    "etag": '"b0-gtWGZlpfv2SFQzonc4M+ap6RiuI"',
-    "mtime": "2026-07-24T01:15:36.749Z",
+    "etag": '"b0-a9FHbzb85xLxjWFEZguGDQ1GUvY"',
+    "mtime": "2026-07-25T13:49:58.178Z",
     "size": 176,
-    "path": "../public/assets/trending-up-MKDiktGk.js"
+    "path": "../public/assets/trending-up-qe3oTBXj.js"
   },
   "/assets/typeof-QjJsDpFa.js": {
     "type": "text/javascript; charset=utf-8",
     "etag": '"110-HKkwwiceUQV0on5Ppy2/lT93DFM"',
-    "mtime": "2026-07-24T01:15:36.749Z",
+    "mtime": "2026-07-25T13:49:58.182Z",
     "size": 272,
     "path": "../public/assets/typeof-QjJsDpFa.js"
   },
-  "/assets/unsubscribe-DAaRwSpH.js": {
+  "/assets/unsubscribe-FByfCUwO.js": {
     "type": "text/javascript; charset=utf-8",
-    "etag": '"7dc-Zm5NIvTgl5EVIMqa5e/mHPtqxJA"',
-    "mtime": "2026-07-24T01:15:36.745Z",
+    "etag": '"7dc-XLV3q1WkiLUbDmLrcePSZlWuEwc"',
+    "mtime": "2026-07-25T13:49:58.174Z",
     "size": 2012,
-    "path": "../public/assets/unsubscribe-DAaRwSpH.js"
+    "path": "../public/assets/unsubscribe-FByfCUwO.js"
   },
-  "/assets/upload-sFwfHuMA.js": {
+  "/assets/upload-BUxgIa_1.js": {
     "type": "text/javascript; charset=utf-8",
-    "etag": '"e7-jMlR6vGF5I/xGIE6swIOtzzm+SU"',
-    "mtime": "2026-07-24T01:15:36.749Z",
+    "etag": '"e7-LYBFkwz68S9/OuP+hoEKUvpFuis"',
+    "mtime": "2026-07-25T13:49:58.182Z",
     "size": 231,
-    "path": "../public/assets/upload-sFwfHuMA.js"
+    "path": "../public/assets/upload-BUxgIa_1.js"
   },
-  "/assets/users-DOwqrQzh.js": {
+  "/assets/users-ZvpR-rMZ.js": {
     "type": "text/javascript; charset=utf-8",
-    "etag": '"133-Dwz8DwYulKBFiOFEmd83f+C5ag8"',
-    "mtime": "2026-07-24T01:15:36.749Z",
+    "etag": '"133-KsMlLvSwyGSuDY3iKZnX1cRx8NI"',
+    "mtime": "2026-07-25T13:49:58.182Z",
     "size": 307,
-    "path": "../public/assets/users-DOwqrQzh.js"
+    "path": "../public/assets/users-ZvpR-rMZ.js"
   },
-  "/assets/usuarios-D3JZHMfA.js": {
+  "/assets/usuarios-DXV2IRM3.js": {
     "type": "text/javascript; charset=utf-8",
-    "etag": '"1a35-tPXWDjaUqZRZAiYR3ldt2mT5f+k"',
-    "mtime": "2026-07-24T01:15:36.745Z",
+    "etag": '"1a35-g3H6azcLSM93kRblsl9ocmywD7g"',
+    "mtime": "2026-07-25T13:49:58.174Z",
     "size": 6709,
-    "path": "../public/assets/usuarios-D3JZHMfA.js"
+    "path": "../public/assets/usuarios-DXV2IRM3.js"
   },
-  "/assets/validar._codigo-Cz1r-iUO.js": {
+  "/assets/validar._codigo-BxNRikqQ.js": {
     "type": "text/javascript; charset=utf-8",
-    "etag": '"fc5-KQB+quB1Gg0H0tNvmbMgGmkNLA0"',
-    "mtime": "2026-07-24T01:15:36.745Z",
+    "etag": '"fc5-Yi47K5jHYL3TKUCHnUkxmfzzX50"',
+    "mtime": "2026-07-25T13:49:58.174Z",
     "size": 4037,
-    "path": "../public/assets/validar._codigo-Cz1r-iUO.js"
+    "path": "../public/assets/validar._codigo-BxNRikqQ.js"
   }
 };
 var publicAssetBases = {};
