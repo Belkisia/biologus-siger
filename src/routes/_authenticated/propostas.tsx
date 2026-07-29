@@ -64,6 +64,9 @@ type Item = {
   unidade: string;
   valor_unitario: number;
   valor_total: number;
+  valor_franquia?: number;
+  peso_franquia?: number;
+  valor_kg_excedente?: number;
 };
 
 type Proposta = {
@@ -131,6 +134,9 @@ function emptyItem(): Item {
     unidade: "kg",
     valor_unitario: 0,
     valor_total: 0,
+    valor_franquia: 0,
+    peso_franquia: 0,
+    valor_kg_excedente: 0,
   };
 }
 
@@ -344,6 +350,9 @@ function PropostasPage() {
         valor_unitario: Number(i.valor_unitario) || 0,
         valor_total: Number(i.valor_total) || 0,
         ordem: idx,
+        valor_franquia: Number(i.valor_franquia) || 0,
+        peso_franquia: Number(i.peso_franquia) || 0,
+        valor_kg_excedente: Number(i.valor_kg_excedente) || 0,
       }));
       const { error: itErr } = await supabase.from("proposta_itens").insert(rows);
       if (itErr) throw itErr;
@@ -1274,6 +1283,7 @@ function PropostasPage() {
                         <TableHead className="w-24">Qtd</TableHead>
                         <TableHead className="w-28">Unid.</TableHead>
                         <TableHead className="w-32">Vlr. Unit.</TableHead>
+                        <TableHead className="w-28">R$/kg exc.</TableHead>
                         <TableHead className="w-32">Total</TableHead>
                         <TableHead className="w-10"></TableHead>
                       </TableRow>
@@ -1327,6 +1337,18 @@ function PropostasPage() {
                               value={it.valor_unitario}
                               onChange={(e) =>
                                 setItem(idx, { valor_unitario: Number(e.target.value) })
+                              }
+                            />
+                          </TableCell>
+                          <TableCell>
+                            <Input
+                              type="number"
+                              step="0.01"
+                              min="0"
+                              placeholder="R$/kg"
+                              value={it.valor_kg_excedente || ""}
+                              onChange={(e) =>
+                                setItem(idx, { valor_kg_excedente: Number(e.target.value) })
                               }
                             />
                           </TableCell>
