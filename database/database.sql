@@ -708,7 +708,7 @@ CREATE TABLE public.proposta_itens (
 CREATE TABLE public.propostas (
     id uuid DEFAULT gen_random_uuid() NOT NULL,
     owner_id uuid NOT NULL,
-    cliente_id uuid NOT NULL,
+    cliente_id uuid,
     numero text NOT NULL,
     data_emissao date DEFAULT CURRENT_DATE NOT NULL,
     validade date,
@@ -720,8 +720,16 @@ CREATE TABLE public.propostas (
     contrato_id uuid,
     enviada_em timestamp with time zone,
     respondida_em timestamp with time zone,
+    cliente_avulso_nome text,
+    cliente_avulso_cnpj text,
+    cliente_avulso_cidade text,
+    cliente_avulso_estado text,
+    cliente_avulso_email text,
+    cliente_avulso_telefone text,
+    cliente_avulso_endereco text,
     created_at timestamp with time zone DEFAULT now() NOT NULL,
-    updated_at timestamp with time zone DEFAULT now() NOT NULL
+    updated_at timestamp with time zone DEFAULT now() NOT NULL,
+    CONSTRAINT propostas_cliente_check CHECK ((cliente_id IS NOT NULL) OR (cliente_avulso_nome IS NOT NULL))
 );
 
 

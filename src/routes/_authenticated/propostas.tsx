@@ -71,7 +71,7 @@ type Item = {
 
 type Proposta = {
   id: string;
-  cliente_id: string;
+  cliente_id: string | null;
   numero: string;
   data_emissao: string;
   validade: string | null;
@@ -82,6 +82,13 @@ type Proposta = {
   observacoes: string | null;
   contrato_id: string | null;
   enviada_em: string | null;
+  cliente_avulso_nome: string | null;
+  cliente_avulso_cnpj: string | null;
+  cliente_avulso_cidade: string | null;
+  cliente_avulso_estado: string | null;
+  cliente_avulso_email: string | null;
+  cliente_avulso_telefone: string | null;
+  cliente_avulso_endereco: string | null;
   clientes?: {
     razao_social: string;
     nome_fantasia: string | null;
@@ -96,6 +103,41 @@ type Proposta = {
     estado: string | null;
   } | null;
 };
+
+// Dados do cliente normalizados, seja ele cadastrado ou avulso
+type ClienteExibicao = {
+  razao_social: string;
+  nome_fantasia: string | null;
+  cnpj: string | null;
+  email: string | null;
+  telefone: string | null;
+  whatsapp: string | null;
+  endereco: string | null;
+  numero: string | null;
+  bairro: string | null;
+  cidade: string | null;
+  estado: string | null;
+};
+
+function getClienteExibicao(p: Proposta): ClienteExibicao | null {
+  if (p.clientes) return p.clientes;
+  if (p.cliente_avulso_nome) {
+    return {
+      razao_social: p.cliente_avulso_nome,
+      nome_fantasia: null,
+      cnpj: p.cliente_avulso_cnpj,
+      email: p.cliente_avulso_email,
+      telefone: p.cliente_avulso_telefone,
+      whatsapp: p.cliente_avulso_telefone,
+      endereco: p.cliente_avulso_endereco,
+      numero: null,
+      bairro: null,
+      cidade: p.cliente_avulso_cidade,
+      estado: p.cliente_avulso_estado,
+    };
+  }
+  return null;
+}
 
 type ModeloContratoAtivo = {
   id: string;
@@ -155,7 +197,15 @@ function PropostasPage() {
   });
 
   const [form, setForm] = useState({
+    tipo_cliente: "cadastrado" as "cadastrado" | "avulso",
     cliente_id: "",
+    cliente_avulso_nome: "",
+    cliente_avulso_cnpj: "",
+    cliente_avulso_cidade: "",
+    cliente_avulso_estado: "",
+    cliente_avulso_email: "",
+    cliente_avulso_telefone: "",
+    cliente_avulso_endereco: "",
     contrato_id: "",
     numero: "",
     data_emissao: new Date().toISOString().slice(0, 10),
@@ -206,7 +256,7 @@ function PropostasPage() {
         )
         .order("created_at", { ascending: false });
       if (error) throw error;
-      return data as Proposta[];
+      return data as unknown as Proposta[];
     },
   });
 
@@ -218,7 +268,15 @@ function PropostasPage() {
   const resetForm = () => {
     setEditing(null);
     setForm({
+      tipo_cliente: "cadastrado",
       cliente_id: "",
+      cliente_avulso_nome: "",
+      cliente_avulso_cnpj: "",
+      cliente_avulso_cidade: "",
+      cliente_avulso_estado: "",
+      cliente_avulso_email: "",
+      cliente_avulso_telefone: "",
+      cliente_avulso_endereco: "",
       contrato_id: "",
       numero: `PROP-${new Date().getFullYear()}-${String((propostas.length || 0) + 1).padStart(4, "0")}`,
       data_emissao: new Date().toISOString().slice(0, 10),
@@ -258,6 +316,7 @@ function PropostasPage() {
 
     setForm((f) => ({
       ...f,
+      tipo_cliente: "cadastrado",
       cliente_id: c.cliente_id,
       contrato_id: contratoId,
       condicoes_pagamento: c.forma_pagamento || f.condicoes_pagamento,
@@ -290,7 +349,15 @@ function PropostasPage() {
   const openEdit = async (p: Proposta) => {
     setEditing(p);
     setForm({
-      cliente_id: p.cliente_id,
+      tipo_cliente: p.cliente_id ? "cadastrado" : "avulso",
+      cliente_id: p.cliente_id ?? "",
+      cliente_avulso_nome: p.cliente_avulso_nome ?? "",
+      cliente_avulso_cnpj: p.cliente_avulso_cnpj ?? "",
+      cliente_avulso_cidade: p.cliente_avulso_cidade ?? "",
+      cliente_avulso_estado: p.cliente_avulso_estado ?? "",
+      cliente_avulso_email: p.cliente_avulso_email ?? "",
+      cliente_avulso_telefone: p.cliente_avulso_telefone ?? "",
+      cliente_avulso_endereco: p.cliente_avulso_endereco ?? "",
       contrato_id: p.contrato_id ?? "",
       numero: p.numero,
       data_emissao: p.data_emissao,
@@ -310,12 +377,23 @@ function PropostasPage() {
 
   const saveMutation = useMutation({
     mutationFn: async () => {
-      if (!form.cliente_id || !form.numero) throw new Error("Cliente e número são obrigatórios");
+      const isAvulso = form.tipo_cliente === "avulso";
+      if (isAvulso && !form.cliente_avulso_nome.trim())
+        throw new Error("Informe o nome do cliente avulso");
+      if (!isAvulso && !form.cliente_id) throw new Error("Cliente e número são obrigatórios");
+      if (!form.numero) throw new Error("Cliente e número são obrigatórios");
       const itensClean = items.filter((i) => i.descricao.trim() !== "");
       if (itensClean.length === 0) throw new Error("Adicione pelo menos um item");
 
       const payload = {
-        cliente_id: form.cliente_id,
+        cliente_id: isAvulso ? null : form.cliente_id,
+        cliente_avulso_nome: isAvulso ? form.cliente_avulso_nome.trim() : null,
+        cliente_avulso_cnpj: isAvulso ? form.cliente_avulso_cnpj.trim() || null : null,
+        cliente_avulso_cidade: isAvulso ? form.cliente_avulso_cidade.trim() || null : null,
+        cliente_avulso_estado: isAvulso ? form.cliente_avulso_estado.trim() || null : null,
+        cliente_avulso_email: isAvulso ? form.cliente_avulso_email.trim() || null : null,
+        cliente_avulso_telefone: isAvulso ? form.cliente_avulso_telefone.trim() || null : null,
+        cliente_avulso_endereco: isAvulso ? form.cliente_avulso_endereco.trim() || null : null,
         contrato_id: form.contrato_id || null,
         numero: form.numero,
         data_emissao: form.data_emissao,
@@ -394,6 +472,10 @@ function PropostasPage() {
 
   const convertToContract = useMutation({
     mutationFn: async (p: Proposta) => {
+      if (!p.cliente_id)
+        throw new Error(
+          "Cliente avulso: cadastre o cliente antes de converter esta proposta em contrato",
+        );
       const numeroContrato = `CTR-${new Date().getFullYear()}-${String(Date.now()).slice(-4)}`;
       const { data, error } = await supabase
         .from("contratos")
@@ -454,6 +536,10 @@ function PropostasPage() {
   });
 
   async function abrirModeloDlg(p: Proposta) {
+    if (!p.cliente_id) {
+      toast.error("Cliente avulso: cadastre o cliente antes de gerar contrato por modelo");
+      return;
+    }
     setModeloDlg({
       open: true,
       proposta: p,
@@ -474,7 +560,7 @@ function PropostasPage() {
       const r = await fnRender({
         data: {
           modelo_id: modeloDlg.modelo_id,
-          cliente_id: modeloDlg.proposta.cliente_id,
+          cliente_id: modeloDlg.proposta.cliente_id!,
           proposta_id: modeloDlg.proposta.id,
         },
       });
@@ -491,7 +577,7 @@ function PropostasPage() {
       return fnGerar({
         data: {
           modelo_id: modeloDlg.modelo_id,
-          cliente_id: modeloDlg.proposta.cliente_id,
+          cliente_id: modeloDlg.proposta.cliente_id!,
           proposta_id: modeloDlg.proposta.id,
           numero: modeloDlg.numero,
           data_inicio: modeloDlg.data_inicio,
@@ -539,7 +625,7 @@ function PropostasPage() {
     const MUTED: [number, number, number] = [102, 102, 102];
     const BORDER: [number, number, number] = [210, 215, 212];
 
-    const cli = p.clientes;
+    const cli = getClienteExibicao(p);
     const dataEmissao = new Date(p.data_emissao).toLocaleDateString("pt-BR");
     const ano = new Date(p.data_emissao).getFullYear();
     const cidadeCli = cli?.cidade ? `${cli.cidade}${cli.estado ? ` – ${cli.estado}` : ""}` : "";
@@ -1098,7 +1184,7 @@ function PropostasPage() {
     setEmailDialog({
       open: true,
       proposta: p,
-      email: p.clientes?.email ?? "",
+      email: p.clientes?.email ?? p.cliente_avulso_email ?? "",
       mensagem: "",
       sending: false,
     });
@@ -1134,7 +1220,7 @@ function PropostasPage() {
           recipientEmail: emailDialog.email.trim(),
           idempotencyKey: `proposta-${p.id}-${Date.now()}`,
           templateData: {
-            clienteNome: p.clientes?.razao_social ?? "Cliente",
+            clienteNome: p.clientes?.razao_social ?? p.cliente_avulso_nome ?? "Cliente",
             numero: p.numero,
             valorTotal: brl(Number(p.valor_total)),
             validade: p.validade ? new Date(p.validade).toLocaleDateString("pt-BR") : "",
@@ -1163,7 +1249,12 @@ function PropostasPage() {
   };
 
   const shareWhatsApp = (p: Proposta) => {
-    const tel = (p.clientes?.whatsapp ?? p.clientes?.telefone ?? "").replace(/\D/g, "");
+    const tel = (
+      p.clientes?.whatsapp ??
+      p.clientes?.telefone ??
+      p.cliente_avulso_telefone ??
+      ""
+    ).replace(/\D/g, "");
     if (!tel) return toast.error("Cliente sem telefone/WhatsApp cadastrado");
     const msg = encodeURIComponent(
       `Olá! Segue a Proposta Comercial Nº ${p.numero} no valor de ${brl(Number(p.valor_total))}. Qualquer dúvida estamos à disposição. — Biologus Ambiental`,
@@ -1199,24 +1290,125 @@ function PropostasPage() {
               <div className="grid md:grid-cols-2 gap-4">
                 <div className="space-y-2 md:col-span-2">
                   <Label>Cliente *</Label>
-                  <Select
-                    value={form.cliente_id}
-                    onValueChange={(v) => setForm({ ...form, cliente_id: v })}
-                  >
-                    <SelectTrigger>
-                      <SelectValue placeholder="Selecione o cliente" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {clientes.map((c) => (
-                        <SelectItem key={c.id} value={c.id}>
-                          {c.razao_social}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
+                  <div className="flex gap-2 mb-2">
+                    <Button
+                      type="button"
+                      size="sm"
+                      variant={form.tipo_cliente === "cadastrado" ? "default" : "outline"}
+                      onClick={() => setForm({ ...form, tipo_cliente: "cadastrado" })}
+                    >
+                      Cliente cadastrado
+                    </Button>
+                    <Button
+                      type="button"
+                      size="sm"
+                      variant={form.tipo_cliente === "avulso" ? "default" : "outline"}
+                      onClick={() =>
+                        setForm({ ...form, tipo_cliente: "avulso", cliente_id: "" })
+                      }
+                    >
+                      Cliente avulso
+                    </Button>
+                  </div>
+
+                  {form.tipo_cliente === "cadastrado" ? (
+                    <Select
+                      value={form.cliente_id}
+                      onValueChange={(v) => setForm({ ...form, cliente_id: v })}
+                    >
+                      <SelectTrigger>
+                        <SelectValue placeholder="Selecione o cliente" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {clientes.map((c) => (
+                          <SelectItem key={c.id} value={c.id}>
+                            {c.razao_social}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  ) : (
+                    <div className="grid md:grid-cols-2 gap-3 rounded-md border p-3">
+                      <div className="space-y-1 md:col-span-2">
+                        <Label className="text-xs">Nome / Razão social *</Label>
+                        <Input
+                          placeholder="Nome do cliente avulso"
+                          value={form.cliente_avulso_nome}
+                          onChange={(e) =>
+                            setForm({ ...form, cliente_avulso_nome: e.target.value })
+                          }
+                        />
+                      </div>
+                      <div className="space-y-1">
+                        <Label className="text-xs">CNPJ / CPF</Label>
+                        <Input
+                          placeholder="00.000.000/0000-00"
+                          value={form.cliente_avulso_cnpj}
+                          onChange={(e) =>
+                            setForm({ ...form, cliente_avulso_cnpj: e.target.value })
+                          }
+                        />
+                      </div>
+                      <div className="space-y-1">
+                        <Label className="text-xs">Telefone / WhatsApp</Label>
+                        <Input
+                          placeholder="(62) 9 9999-9999"
+                          value={form.cliente_avulso_telefone}
+                          onChange={(e) =>
+                            setForm({ ...form, cliente_avulso_telefone: e.target.value })
+                          }
+                        />
+                      </div>
+                      <div className="space-y-1">
+                        <Label className="text-xs">Cidade</Label>
+                        <Input
+                          placeholder="Goiânia"
+                          value={form.cliente_avulso_cidade}
+                          onChange={(e) =>
+                            setForm({ ...form, cliente_avulso_cidade: e.target.value })
+                          }
+                        />
+                      </div>
+                      <div className="space-y-1">
+                        <Label className="text-xs">Estado (UF)</Label>
+                        <Input
+                          placeholder="GO"
+                          maxLength={2}
+                          value={form.cliente_avulso_estado}
+                          onChange={(e) =>
+                            setForm({
+                              ...form,
+                              cliente_avulso_estado: e.target.value.toUpperCase(),
+                            })
+                          }
+                        />
+                      </div>
+                      <div className="space-y-1">
+                        <Label className="text-xs">E-mail</Label>
+                        <Input
+                          type="email"
+                          placeholder="contato@cliente.com"
+                          value={form.cliente_avulso_email}
+                          onChange={(e) =>
+                            setForm({ ...form, cliente_avulso_email: e.target.value })
+                          }
+                        />
+                      </div>
+                      <div className="space-y-1">
+                        <Label className="text-xs">Endereço</Label>
+                        <Input
+                          placeholder="Rua, número, bairro"
+                          value={form.cliente_avulso_endereco}
+                          onChange={(e) =>
+                            setForm({ ...form, cliente_avulso_endereco: e.target.value })
+                          }
+                        />
+                      </div>
+                    </div>
+                  )}
                 </div>
                 <div className="space-y-2 md:col-span-2">
-                  {!showContratoImport ? (
+                  {form.tipo_cliente === "avulso" ? null : !showContratoImport ? (
                     <button
                       type="button"
                       onClick={() => setShowContratoImport(true)}
@@ -1540,7 +1732,7 @@ function PropostasPage() {
                 return (
                   <TableRow key={p.id}>
                     <TableCell className="font-medium">{p.numero}</TableCell>
-                    <TableCell>{p.clientes?.razao_social ?? "—"}</TableCell>
+                    <TableCell>{p.clientes?.razao_social ?? p.cliente_avulso_nome ?? "—"}</TableCell>
                     <TableCell className="text-sm">
                       {new Date(p.data_emissao).toLocaleDateString("pt-BR")}
                     </TableCell>
