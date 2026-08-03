@@ -552,6 +552,9 @@ function PropostasPage() {
       unidade: string;
       valor_unitario: number;
       valor_total: number;
+      valor_franquia?: number | null;
+      peso_franquia?: number | null;
+      valor_kg_excedente?: number | null;
     }>;
     const totalQtd = itensList.reduce((s, i) => s + Number(i.quantidade || 0), 0);
     const totalKg = itensList
@@ -561,6 +564,19 @@ function PropostasPage() {
     const precoKg = totalKg > 0 ? valorTotal / totalKg : 0;
     const volMax = totalKg > 0 ? totalKg : totalQtd;
     const volMin = Math.max(0, Math.round(volMax * 0.4));
+
+    // Franquia + kg excedente: usa o primeiro item que tiver franquia configurada
+    const itemFranquia = itensList.find(
+      (i) => Number(i.peso_franquia) > 0 && Number(i.valor_franquia) > 0,
+    );
+    const pesoFranquia = Number(itemFranquia?.peso_franquia || 0);
+    const valorFranquia = Number(itemFranquia?.valor_franquia || 0);
+    const valorKgExcedente = Number(
+      itemFranquia?.valor_kg_excedente ||
+        itensList.find((i) => Number(i.valor_kg_excedente) > 0)?.valor_kg_excedente ||
+        0,
+    );
+    const temFranquia = pesoFranquia > 0 && valorFranquia > 0;
 
     type Tier = {
       h2: number;
@@ -820,34 +836,72 @@ function PropostasPage() {
         yi += t.bulletGap;
       }
 
-      // Col 3: PREÇO POR KG COLETADO (fundo verde escuro)
+      // Col 3: FRANQUIA + KG EXCEDENTE (fundo verde escuro)
       doc.setFillColor(...BRAND);
       doc.rect(x3c, y, w3, h3, "F");
       doc.setTextColor(255);
-      doc.setFont("helvetica", "bold");
-      doc.setFontSize(7);
-      doc.text("PREÇO POR KG COLETADO", x3c + w3 / 2, y + 4, { align: "center" });
-      doc.setFontSize(precoKg > 0 ? 22 : 14);
-      const precoStr = precoKg > 0 ? `R$ ${brl(precoKg).replace("R$\u00A0", "")}` : "Sob consulta";
-      doc.text(precoStr, x3c + w3 / 2, y + 16, { align: "center" });
-      doc.setFont("helvetica", "italic");
-      doc.setFontSize(7);
-      doc.text("por quilo coletado", x3c + w3 / 2, y + 20, { align: "center" });
-      doc.setDrawColor(255);
-      doc.setLineWidth(0.2);
-      doc.line(x3c + 4, y + 23.5, x3c + w3 - 4, y + 23.5);
-      doc.setFont("helvetica", "normal");
-      doc.setFontSize(7.2);
-      doc.text("Máximo estimado", x3c + w3 / 2, y + 28, { align: "center" });
-      doc.setFont("helvetica", "bold");
-      doc.setFontSize(12);
-      doc.text(brl(valorTotal), x3c + w3 / 2, y + 34, { align: "center" });
-      doc.setFont("helvetica", "normal");
-      doc.setFontSize(6.6);
-      if (precoKg > 0 && volMax > 0) {
-        doc.text(`(${Math.round(volMax)} kg × ${brl(precoKg)})`, x3c + w3 / 2, y + 38, {
-          align: "center",
-        });
+
+      if (temFranquia) {
+        // Header
+        doc.setFont("helvetica", "bold");
+        doc.setFontSize(7);
+        doc.text("VALOR DA FRANQUIA", x3c + w3 / 2, y + 4, { align: "center" });
+
+        // Franquia: "até X kg"
+        doc.setFont("helvetica", "italic");
+        doc.setFontSize(7.2);
+        doc.text(`até ${Math.round(pesoFranquia)} kg`, x3c + w3 / 2, y + 10, { align: "center" });
+
+        // Valor da franquia (destaque)
+        doc.setFont("helvetica", "bold");
+        doc.setFontSize(20);
+        doc.text(brl(valorFranquia), x3c + w3 / 2, y + 20, { align: "center" });
+
+        // Divisor
+        doc.setDrawColor(255);
+        doc.setLineWidth(0.2);
+        doc.line(x3c + 4, y + 25, x3c + w3 - 4, y + 25);
+
+        // Kg excedente
+        doc.setFont("helvetica", "normal");
+        doc.setFontSize(7.2);
+        doc.text("KG EXCEDENTE", x3c + w3 / 2, y + 30, { align: "center" });
+        doc.setFont("helvetica", "bold");
+        doc.setFontSize(valorKgExcedente > 0 ? 16 : 11);
+        const excStr = valorKgExcedente > 0 ? `${brl(valorKgExcedente)}` : "Sob consulta";
+        doc.text(excStr, x3c + w3 / 2, y + 39, { align: "center" });
+        if (valorKgExcedente > 0) {
+          doc.setFont("helvetica", "italic");
+          doc.setFontSize(6.6);
+          doc.text("por kg excedente", x3c + w3 / 2, y + 43, { align: "center" });
+        }
+      } else {
+        // Fallback: preço por kg coletado (propostas sem franquia configurada)
+        doc.setFont("helvetica", "bold");
+        doc.setFontSize(7);
+        doc.text("PREÇO POR KG COLETADO", x3c + w3 / 2, y + 4, { align: "center" });
+        doc.setFontSize(precoKg > 0 ? 22 : 14);
+        const precoStr = precoKg > 0 ? `R$ ${brl(precoKg).replace("R$\u00A0", "")}` : "Sob consulta";
+        doc.text(precoStr, x3c + w3 / 2, y + 16, { align: "center" });
+        doc.setFont("helvetica", "italic");
+        doc.setFontSize(7);
+        doc.text("por quilo coletado", x3c + w3 / 2, y + 20, { align: "center" });
+        doc.setDrawColor(255);
+        doc.setLineWidth(0.2);
+        doc.line(x3c + 4, y + 23.5, x3c + w3 - 4, y + 23.5);
+        doc.setFont("helvetica", "normal");
+        doc.setFontSize(7.2);
+        doc.text("Máximo estimado", x3c + w3 / 2, y + 28, { align: "center" });
+        doc.setFont("helvetica", "bold");
+        doc.setFontSize(12);
+        doc.text(brl(valorTotal), x3c + w3 / 2, y + 34, { align: "center" });
+        doc.setFont("helvetica", "normal");
+        doc.setFontSize(6.6);
+        if (precoKg > 0 && volMax > 0) {
+          doc.text(`(${Math.round(volMax)} kg × ${brl(precoKg)})`, x3c + w3 / 2, y + 38, {
+            align: "center",
+          });
+        }
       }
 
       y += h3 + 3;
@@ -1283,6 +1337,8 @@ function PropostasPage() {
                         <TableHead className="w-24">Qtd</TableHead>
                         <TableHead className="w-28">Unid.</TableHead>
                         <TableHead className="w-32">Vlr. Unit.</TableHead>
+                        <TableHead className="w-24">Franquia (kg)</TableHead>
+                        <TableHead className="w-28">Vlr. franquia</TableHead>
                         <TableHead className="w-28">R$/kg exc.</TableHead>
                         <TableHead className="w-32">Total</TableHead>
                         <TableHead className="w-10"></TableHead>
@@ -1337,6 +1393,30 @@ function PropostasPage() {
                               value={it.valor_unitario}
                               onChange={(e) =>
                                 setItem(idx, { valor_unitario: Number(e.target.value) })
+                              }
+                            />
+                          </TableCell>
+                          <TableCell>
+                            <Input
+                              type="number"
+                              step="1"
+                              min="0"
+                              placeholder="Ex: 10"
+                              value={it.peso_franquia || ""}
+                              onChange={(e) =>
+                                setItem(idx, { peso_franquia: Number(e.target.value) })
+                              }
+                            />
+                          </TableCell>
+                          <TableCell>
+                            <Input
+                              type="number"
+                              step="0.01"
+                              min="0"
+                              placeholder="Ex: 100,00"
+                              value={it.valor_franquia || ""}
+                              onChange={(e) =>
+                                setItem(idx, { valor_franquia: Number(e.target.value) })
                               }
                             />
                           </TableCell>
