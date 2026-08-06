@@ -651,16 +651,17 @@ function PropostasPage() {
     const volMax = totalKg > 0 ? totalKg : totalQtd;
     const volMin = Math.max(0, Math.round(volMax * 0.4));
 
-    // Franquia + kg excedente: usa o primeiro item que tiver franquia configurada
-    const itemFranquia = itensList.find(
+    // Franquia = faixa de peso já contratada (0 até o volume máximo) + valor total já calculado.
+    // Se algum item tiver franquia customizada (peso_franquia/valor_franquia), ela prevalece.
+    const itemFranquiaCustom = itensList.find(
       (i) => Number(i.peso_franquia) > 0 && Number(i.valor_franquia) > 0,
     );
-    const pesoFranquia = Number(itemFranquia?.peso_franquia || 0);
-    const valorFranquia = Number(itemFranquia?.valor_franquia || 0);
+    const pesoFranquia = itemFranquiaCustom
+      ? Number(itemFranquiaCustom.peso_franquia)
+      : Math.round(volMax);
+    const valorFranquia = itemFranquiaCustom ? Number(itemFranquiaCustom.valor_franquia) : valorTotal;
     const valorKgExcedente = Number(
-      itemFranquia?.valor_kg_excedente ||
-        itensList.find((i) => Number(i.valor_kg_excedente) > 0)?.valor_kg_excedente ||
-        0,
+      itensList.find((i) => Number(i.valor_kg_excedente) > 0)?.valor_kg_excedente || 0,
     );
     const temFranquia = pesoFranquia > 0 && valorFranquia > 0;
 
@@ -936,7 +937,7 @@ function PropostasPage() {
         // Franquia: "até X kg"
         doc.setFont("helvetica", "italic");
         doc.setFontSize(7.2);
-        doc.text(`até ${Math.round(pesoFranquia)} kg`, x3c + w3 / 2, y + 10, { align: "center" });
+        doc.text(`0 a ${Math.round(pesoFranquia)} kg`, x3c + w3 / 2, y + 10, { align: "center" });
 
         // Valor da franquia (destaque)
         doc.setFont("helvetica", "bold");
