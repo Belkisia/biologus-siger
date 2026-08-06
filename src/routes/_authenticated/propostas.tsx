@@ -649,7 +649,6 @@ function PropostasPage() {
     const valorTotal = Number(p.valor_total || 0);
     const precoKg = totalKg > 0 ? valorTotal / totalKg : 0;
     const volMax = totalKg > 0 ? totalKg : totalQtd;
-    const volMin = Math.max(0, Math.round(volMax * 0.4));
 
     // Franquia = faixa de peso já contratada (0 até o volume máximo) + valor total já calculado.
     // Se algum item tiver franquia customizada (peso_franquia/valor_franquia), ela prevalece.
@@ -836,7 +835,7 @@ function PropostasPage() {
         ["Início", p.prazo_coleta || "7 dias úteis após assinatura"],
         ["Pagamento", p.condicoes_pagamento || "30 dias após cada coleta"],
         ["Frequência", "Mensal"],
-        ["Volume", `${volMin} a ${Math.round(volMax)} kg/coleta`],
+        ["Volume", `0 a ${Math.round(pesoFranquia)} kg/coleta`],
       ];
       doc.setTextColor(25);
       doc.setFontSize(t.fSmall);
