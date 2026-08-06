@@ -1530,8 +1530,6 @@ function PropostasPage() {
                         <TableHead className="w-24">Qtd</TableHead>
                         <TableHead className="w-28">Unid.</TableHead>
                         <TableHead className="w-32">Vlr. Unit.</TableHead>
-                        <TableHead className="w-24">Franquia (kg)</TableHead>
-                        <TableHead className="w-28">Vlr. franquia</TableHead>
                         <TableHead className="w-28">R$/kg exc.</TableHead>
                         <TableHead className="w-32">Total</TableHead>
                         <TableHead className="w-10"></TableHead>
@@ -1586,30 +1584,6 @@ function PropostasPage() {
                               value={it.valor_unitario}
                               onChange={(e) =>
                                 setItem(idx, { valor_unitario: Number(e.target.value) })
-                              }
-                            />
-                          </TableCell>
-                          <TableCell>
-                            <Input
-                              type="number"
-                              step="1"
-                              min="0"
-                              placeholder="Ex: 10"
-                              value={it.peso_franquia || ""}
-                              onChange={(e) =>
-                                setItem(idx, { peso_franquia: Number(e.target.value) })
-                              }
-                            />
-                          </TableCell>
-                          <TableCell>
-                            <Input
-                              type="number"
-                              step="0.01"
-                              min="0"
-                              placeholder="Ex: 100,00"
-                              value={it.valor_franquia || ""}
-                              onChange={(e) =>
-                                setItem(idx, { valor_franquia: Number(e.target.value) })
                               }
                             />
                           </TableCell>
