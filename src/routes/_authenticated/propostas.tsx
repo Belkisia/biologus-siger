@@ -77,6 +77,7 @@ type Proposta = {
   validade: string | null;
   condicoes_pagamento: string | null;
   prazo_coleta: string | null;
+  frequencia: string | null;
   valor_total: number;
   status: string;
   observacoes: string | null;
@@ -212,6 +213,7 @@ function PropostasPage() {
     validade: "",
     condicoes_pagamento: "",
     prazo_coleta: "",
+    frequencia: "Mensal",
     observacoes: "",
   });
   const [items, setItems] = useState<Item[]>([emptyItem()]);
@@ -280,9 +282,14 @@ function PropostasPage() {
       contrato_id: "",
       numero: `PROP-${new Date().getFullYear()}-${String((propostas.length || 0) + 1).padStart(4, "0")}`,
       data_emissao: new Date().toISOString().slice(0, 10),
-      validade: "",
+      validade: (() => {
+        const d = new Date();
+        d.setDate(d.getDate() + 30);
+        return d.toISOString().slice(0, 10);
+      })(),
       condicoes_pagamento: "",
-      prazo_coleta: "",
+      prazo_coleta: "5 dias úteis após assinatura",
+      frequencia: "Mensal",
       observacoes: "",
     });
     setItems([emptyItem()]);
@@ -364,6 +371,7 @@ function PropostasPage() {
       validade: p.validade ?? "",
       condicoes_pagamento: p.condicoes_pagamento ?? "",
       prazo_coleta: p.prazo_coleta ?? "",
+      frequencia: p.frequencia ?? "Mensal",
       observacoes: p.observacoes ?? "",
     });
     const { data } = await supabase
@@ -400,6 +408,7 @@ function PropostasPage() {
         validade: form.validade || null,
         condicoes_pagamento: form.condicoes_pagamento || null,
         prazo_coleta: form.prazo_coleta || null,
+        frequencia: form.frequencia || "Mensal",
         observacoes: form.observacoes || null,
         valor_total: itensClean.reduce((a, i) => a + Number(i.valor_total || 0), 0),
       };
@@ -834,7 +843,7 @@ function PropostasPage() {
         ],
         ["Início", p.prazo_coleta || "7 dias úteis após assinatura"],
         ["Pagamento", p.condicoes_pagamento || "30 dias após cada coleta"],
-        ["Frequência", "Mensal"],
+        ["Frequência", p.frequencia || "Mensal"],
         ["Volume", `0 a ${Math.round(pesoFranquia)} kg/coleta`],
       ];
       doc.setTextColor(25);
@@ -1474,12 +1483,53 @@ function PropostasPage() {
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label>Validade</Label>
-                  <Input
-                    type="date"
-                    value={form.validade}
-                    onChange={(e) => setForm({ ...form, validade: e.target.value })}
-                  />
+                  <Label>Validade da proposta</Label>
+                  <Select
+                    value={
+                      form.data_emissao && form.validade
+                        ? String(
+                            Math.round(
+                              (new Date(form.validade).getTime() -
+                                new Date(form.data_emissao).getTime()) /
+                                86400000,
+                            ),
+                          )
+                        : "30"
+                    }
+                    onValueChange={(v) => {
+                      const base = new Date(form.data_emissao || new Date().toISOString());
+                      base.setDate(base.getDate() + Number(v));
+                      setForm({ ...form, validade: base.toISOString().slice(0, 10) });
+                    }}
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Selecione" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="15">15 dias</SelectItem>
+                      <SelectItem value="30">30 dias</SelectItem>
+                      <SelectItem value="45">45 dias</SelectItem>
+                      <SelectItem value="60">60 dias</SelectItem>
+                      <SelectItem value="90">90 dias</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div className="space-y-2">
+                  <Label>Frequência da coleta</Label>
+                  <Select
+                    value={form.frequencia}
+                    onValueChange={(v) => setForm({ ...form, frequencia: v })}
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Selecione" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="Semanal">Semanal</SelectItem>
+                      <SelectItem value="Quinzenal">Quinzenal</SelectItem>
+                      <SelectItem value="Mensal">Mensal</SelectItem>
+                      <SelectItem value="Eventual">Eventual</SelectItem>
+                    </SelectContent>
+                  </Select>
                 </div>
                 <div className="space-y-2">
                   <Label>Condições de pagamento</Label>
@@ -1490,12 +1540,30 @@ function PropostasPage() {
                   />
                 </div>
                 <div className="space-y-2 md:col-span-2">
-                  <Label>Prazo de coleta</Label>
-                  <Input
-                    placeholder="Ex: até 5 dias úteis após aprovação"
+                  <Label>Prazo de início da coleta</Label>
+                  <Select
                     value={form.prazo_coleta}
-                    onChange={(e) => setForm({ ...form, prazo_coleta: e.target.value })}
-                  />
+                    onValueChange={(v) => setForm({ ...form, prazo_coleta: v })}
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Selecione" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="5 dias úteis após assinatura">
+                        5 dias úteis após assinatura
+                      </SelectItem>
+                      <SelectItem value="7 dias úteis após assinatura">
+                        7 dias úteis após assinatura
+                      </SelectItem>
+                      <SelectItem value="10 dias úteis após assinatura">
+                        10 dias úteis após assinatura
+                      </SelectItem>
+                      <SelectItem value="15 dias úteis após assinatura">
+                        15 dias úteis após assinatura
+                      </SelectItem>
+                      <SelectItem value="Imediato">Imediato</SelectItem>
+                    </SelectContent>
+                  </Select>
                 </div>
                 <div className="space-y-2 md:col-span-2">
                   <Label>Observações</Label>

@@ -727,6 +727,7 @@ CREATE TABLE public.propostas (
     cliente_avulso_email text,
     cliente_avulso_telefone text,
     cliente_avulso_endereco text,
+    frequencia text DEFAULT 'Mensal'::text,
     created_at timestamp with time zone DEFAULT now() NOT NULL,
     updated_at timestamp with time zone DEFAULT now() NOT NULL,
     CONSTRAINT propostas_cliente_check CHECK ((cliente_id IS NOT NULL) OR (cliente_avulso_nome IS NOT NULL))
