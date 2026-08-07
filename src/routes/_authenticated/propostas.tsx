@@ -171,8 +171,8 @@ function getErrorMessage(error: unknown, fallback: string) {
 
 function emptyItem(): Item {
   return {
-    descricao: "",
-    tipo_residuo: "",
+    descricao: "Coleta, transporte e destinação final dos resíduos",
+    tipo_residuo: "Grupo A",
     quantidade: 1,
     unidade: "kg",
     valor_unitario: 0,
@@ -1617,11 +1617,19 @@ function PropostasPage() {
                             />
                           </TableCell>
                           <TableCell>
-                            <Input
+                            <Select
                               value={it.tipo_residuo}
-                              onChange={(e) => setItem(idx, { tipo_residuo: e.target.value })}
-                              placeholder="Grupo A"
-                            />
+                              onValueChange={(v) => setItem(idx, { tipo_residuo: v })}
+                            >
+                              <SelectTrigger>
+                                <SelectValue placeholder="Grupo" />
+                              </SelectTrigger>
+                              <SelectContent>
+                                <SelectItem value="Grupo A">Grupo A</SelectItem>
+                                <SelectItem value="Grupo B">Grupo B</SelectItem>
+                                <SelectItem value="Grupo E">Grupo E</SelectItem>
+                              </SelectContent>
+                            </Select>
                           </TableCell>
                           <TableCell>
                             <Input
