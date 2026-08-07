@@ -9,6 +9,7 @@ import { Label } from "@/components/ui/label";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Checkbox } from "@/components/ui/checkbox";
 import {
   ClipboardCheck, Scale, CheckCircle2, Loader2,
   Send, DollarSign, FileCheck, FileText, Plus, Eye, Eraser, RefreshCw
@@ -36,6 +37,7 @@ type Boletim = {
   cdf_enviado: boolean;
   data_envio_cdf: string | null;
   data_pagamento: string | null;
+  fatura_id: string | null;
   mtrs?: { numero: string; descricao_residuo: string; data_emissao?: string; data_baixa?: string } | null;
   clientes?: {
     razao_social: string;
@@ -499,6 +501,7 @@ function BoletimPage() {
   const [openEnvio, setOpenEnvio] = useState<Boletim | null>(null);
   const [openNFSe, setOpenNFSe] = useState<Boletim | null>(null);
   const [filtroStatus, setFiltroStatus] = useState("todos");
+  const [selecionadosFatura, setSelecionadosFatura] = useState<string[]>([]);
   const [dataFiltro, setDataFiltro] = useState(() => new Date().toISOString().slice(0, 10));
 
   const [mtrSelecionado, setMtrSelecionado] = useState<MTR | null>(null);
@@ -532,6 +535,75 @@ function BoletimPage() {
   });
 
   const boletinsFiltrados = filtroStatus === "todos" ? boletins : boletins.filter((b) => b.status === filtroStatus);
+
+  // ── Faturar um ou mais boletins (agrupa automaticamente por cliente) ──
+  const faturarBoletins = useMutation({
+    mutationFn: async (ids: string[]) => {
+      const alvos = boletins.filter((b) => ids.includes(b.id) && !b.fatura_id);
+      if (alvos.length === 0) throw new Error("Selecione ao menos um boletim ainda não faturado");
+
+      const porCliente = new Map<string, Boletim[]>();
+      for (const b of alvos) {
+        const arr = porCliente.get(b.cliente_id) || [];
+        arr.push(b);
+        porCliente.set(b.cliente_id, arr);
+      }
+
+      const hoje = new Date().toISOString().slice(0, 10);
+      const vencimentoDate = new Date();
+      vencimentoDate.setDate(vencimentoDate.getDate() + 30);
+      const vencimento = vencimentoDate.toISOString().slice(0, 10);
+      const competencia = hoje.slice(0, 7);
+
+      const faturasGeradas: string[] = [];
+
+      for (const [clienteId, grupo] of porCliente) {
+        const cliente = grupo[0].clientes;
+        const pesoTotal = grupo.reduce((s, b) => s + Number(b.peso_coletado || 0), 0);
+        const calc = calcularValorNF(pesoTotal, cliente || {});
+        const mtrsNums = grupo.map((g) => g.mtrs?.numero).filter(Boolean).join(", ");
+        const numeroFatura = `FAT-${competencia.replace("-", "")}-${String(Date.now()).slice(-4)}${Math.floor(Math.random() * 10)}`;
+
+        const { data: faturaData, error: fatError } = await supabase
+          .from("faturas")
+          .insert([{
+            owner_id: user.id,
+            numero: numeroFatura,
+            competencia,
+            data_emissao: hoje,
+            data_vencimento: vencimento,
+            valor: calc.valorTotal,
+            status: "pendente",
+            cliente_id: clienteId,
+            descricao: `Coleta(s) de resíduos — ${grupo.length} boletim(ns), ${pesoTotal.toLocaleString("pt-BR")} kg — MTR ${mtrsNums || "—"}`,
+          }] as never[])
+          .select("id, numero")
+          .single();
+        if (fatError) throw fatError;
+
+        const { error: updError } = await supabase
+          .from("boletins_medicao")
+          .update({ fatura_id: faturaData.id })
+          .in("id", grupo.map((g) => g.id));
+        if (updError) throw updError;
+
+        faturasGeradas.push(faturaData.numero);
+      }
+
+      return faturasGeradas;
+    },
+    onSuccess: (faturasGeradas) => {
+      qc.invalidateQueries({ queryKey: ["boletins"] });
+      qc.invalidateQueries({ queryKey: ["faturas"] });
+      toast.success(
+        faturasGeradas.length === 1
+          ? `Fatura ${faturasGeradas[0]} gerada`
+          : `${faturasGeradas.length} faturas geradas`,
+      );
+      setSelecionadosFatura([]);
+    },
+    onError: (e: Error) => toast.error(e.message),
+  });
 
   // ── Abrir CDF a partir de um boletim ──
   const handleAbrirCDF = (b: Boletim) => {
@@ -738,15 +810,29 @@ comercial@biologusambiental.com.br`
       </Card>
 
       {/* Filtro status */}
-      <div className="flex gap-2 flex-wrap">
-        {["todos", "cdf_emitido", "pago", "cdf_enviado"].map((s) => (
-          <button key={s} onClick={() => setFiltroStatus(s)}
-            className={`text-xs px-3 py-1.5 rounded-full border transition-colors ${
-              filtroStatus === s ? "bg-primary text-primary-foreground border-primary" : "border-border text-muted-foreground hover:border-primary/40"
-            }`}>
-            {s === "todos" ? `Todos (${boletins.length})` : STATUS_CONFIG[s]?.label}
-          </button>
-        ))}
+      <div className="flex items-center justify-between gap-2 flex-wrap">
+        <div className="flex gap-2 flex-wrap">
+          {["todos", "cdf_emitido", "pago", "cdf_enviado"].map((s) => (
+            <button key={s} onClick={() => setFiltroStatus(s)}
+              className={`text-xs px-3 py-1.5 rounded-full border transition-colors ${
+                filtroStatus === s ? "bg-primary text-primary-foreground border-primary" : "border-border text-muted-foreground hover:border-primary/40"
+              }`}>
+              {s === "todos" ? `Todos (${boletins.length})` : STATUS_CONFIG[s]?.label}
+            </button>
+          ))}
+        </div>
+        {selecionadosFatura.length > 0 && (
+          <Button
+            size="sm"
+            className="h-8 text-xs gap-1"
+            onClick={() => faturarBoletins.mutate(selecionadosFatura)}
+            disabled={faturarBoletins.isPending}
+          >
+            {faturarBoletins.isPending && <Loader2 className="h-3.5 w-3.5 animate-spin" />}
+            <DollarSign className="h-3.5 w-3.5" />
+            Faturar {selecionadosFatura.length} selecionado{selecionadosFatura.length > 1 ? "s" : ""} (lote)
+          </Button>
+        )}
       </div>
 
       {/* Tabela */}
@@ -762,17 +848,31 @@ comercial@biologusambiental.com.br`
           <Table>
             <TableHeader>
               <TableRow>
+                <TableHead className="w-8"></TableHead>
                 <TableHead>Cliente</TableHead>
                 <TableHead>MTR</TableHead>
                 <TableHead>Peso</TableHead>
                 <TableHead>Assinatura</TableHead>
                 <TableHead>Status</TableHead>
+                <TableHead>Faturamento</TableHead>
                 <TableHead className="text-right">Ações</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
               {boletinsFiltrados.map((b) => (
                 <TableRow key={b.id}>
+                  <TableCell className="w-8">
+                    {!b.fatura_id && (
+                      <Checkbox
+                        checked={selecionadosFatura.includes(b.id)}
+                        onCheckedChange={(checked) =>
+                          setSelecionadosFatura((prev) =>
+                            checked ? [...prev, b.id] : prev.filter((id) => id !== b.id),
+                          )
+                        }
+                      />
+                    )}
+                  </TableCell>
                   <TableCell className="font-medium text-sm">
                     {b.clientes?.nome_fantasia || b.clientes?.razao_social || "—"}
                   </TableCell>
@@ -787,6 +887,22 @@ comercial@biologusambiental.com.br`
                     <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${STATUS_CONFIG[b.status]?.color ?? "bg-gray-100 text-gray-700"}`}>
                       {STATUS_CONFIG[b.status]?.label ?? b.status}
                     </span>
+                  </TableCell>
+                  <TableCell>
+                    {b.fatura_id ? (
+                      <span className="text-xs px-2 py-0.5 rounded-full font-medium bg-emerald-100 text-emerald-700">
+                        Faturado
+                      </span>
+                    ) : (
+                      <Button
+                        size="sm" variant="outline"
+                        className="h-7 text-xs gap-1 text-emerald-700 border-emerald-300 hover:bg-emerald-50"
+                        onClick={() => faturarBoletins.mutate([b.id])}
+                        disabled={faturarBoletins.isPending}
+                      >
+                        <DollarSign className="h-3.5 w-3.5" /> Faturar
+                      </Button>
+                    )}
                   </TableCell>
                   <TableCell>
                     <div className="flex items-center justify-end gap-1">
