@@ -14,7 +14,7 @@ import {
   CalendarDays, MapPin, Plus, Printer, CheckCircle2, Circle,
   Loader2, Route as RouteIcon, ClipboardList, Layers, Trash2,
   Scale, Search, ChevronLeft, Map, Users, FileText, ArrowRight, PenLine, RotateCcw, CheckCheck,
-  QrCode, Eye
+  QrCode, Eye, Pencil
 } from "lucide-react";
 import { toast } from "sonner";
 
@@ -756,6 +756,41 @@ function RotaDetalhe({
     onError: (e: Error) => toast.error(e.message),
   });
 
+  // ─── EDITAR PESO/OBSERVAÇÕES DE UM MTR JÁ BAIXADO ───
+  const editarBaixaMTR = useMutation({
+    mutationFn: async ({
+      mtrId,
+      boletimId,
+      peso,
+      observacoes,
+    }: {
+      mtrId: string;
+      boletimId: string | null;
+      peso: number;
+      observacoes: string | null;
+    }) => {
+      const { error: mtrError } = await supabase
+        .from("mtrs")
+        .update({ quantidade: peso })
+        .eq("id", mtrId);
+      if (mtrError) throw mtrError;
+
+      if (boletimId) {
+        const { error: bolError } = await supabase
+          .from("boletins_medicao")
+          .update({ peso_coletado: peso, observacoes: observacoes || null })
+          .eq("id", boletimId);
+        if (bolError) throw bolError;
+      }
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["mtrs-rota"] });
+      queryClient.invalidateQueries({ queryKey: ["cdfs-rota"] });
+      toast.success("Baixa do MTR atualizada");
+    },
+    onError: (e: Error) => toast.error(e.message),
+  });
+
   const salvarAssinatura = useMutation({
     mutationFn: async ({ mtrId, campo, dataUrl }: { mtrId: string; campo: string; dataUrl: string }) => {
       const { error } = await supabase.from("mtrs").update({ [campo]: dataUrl } as never).eq("id", mtrId);
@@ -1012,6 +1047,34 @@ function RotaDetalhe({
                                 setOpenCDF({ blobUrl, numeroCDF: boletim.cdf_id ?? "" });
                               }}>
                               <Eye className="h-3.5 w-3.5 text-green-600" />
+                            </Button>
+                          )}
+
+                          {/* Botão editar baixa (peso/observações) — caso tenha errado algo */}
+                          {mtr.status === "baixado" && (
+                            <Button
+                              variant="ghost" size="icon" className="h-7 w-7"
+                              title="Editar peso/observações da baixa"
+                              onClick={() => {
+                                const pesoAtual = window.prompt(
+                                  `Corrigir peso coletado (kg) — ${rc.cliente.nome_fantasia || rc.cliente.razao_social}:`,
+                                  String(mtr.quantidade ?? ""),
+                                );
+                                if (pesoAtual === null) return;
+                                const pesoNum = parseFloat(pesoAtual.replace(",", ".")) || 0;
+                                const observacoesAtuais = window.prompt(
+                                  "Corrigir observações (aparece no CDF):",
+                                  boletim?.observacoes ?? "",
+                                );
+                                if (observacoesAtuais === null) return;
+                                editarBaixaMTR.mutate({
+                                  mtrId: mtr.id,
+                                  boletimId: boletim?.id ?? null,
+                                  peso: pesoNum,
+                                  observacoes: observacoesAtuais || null,
+                                });
+                              }}>
+                              <Pencil className="h-3.5 w-3.5 text-muted-foreground" />
                             </Button>
                           )}
 
