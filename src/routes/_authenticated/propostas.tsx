@@ -671,7 +671,7 @@ function PropostasPage() {
     const valorKgExcedente = Number(
       itensList.find((i) => Number(i.valor_kg_excedente) > 0)?.valor_kg_excedente || 0,
     );
-    const temFranquia = pesoFranquia > 0 && valorFranquia > 0;
+    const temFranquia = pesoFranquia > 0;
 
     type Tier = {
       h2: number;
@@ -821,8 +821,7 @@ function PropostasPage() {
       doc.setFont("helvetica", "italic");
       doc.setFontSize(t.fXs);
       doc.setTextColor(...MUTED);
-      const descServ =
-        itensList[0]?.descricao || "Coleta, transporte e destinação final de resíduos";
+      const descServ = "Coleta, transporte e destinação final de resíduos";
       const descLines = doc.splitTextToSize(descServ, colW - 6) as string[];
       doc.text(descLines.slice(0, 2), M + 3, y + h2 - 2.5);
 
@@ -949,8 +948,13 @@ function PropostasPage() {
 
         // Valor da franquia (destaque)
         doc.setFont("helvetica", "bold");
-        doc.setFontSize(20);
-        doc.text(brl(valorFranquia), x3c + w3 / 2, y + 20, { align: "center" });
+        doc.setFontSize(valorFranquia > 0 ? 20 : 12);
+        doc.text(
+          valorFranquia > 0 ? brl(valorFranquia) : "Sob consulta",
+          x3c + w3 / 2,
+          y + 20,
+          { align: "center" },
+        );
 
         // Divisor
         doc.setDrawColor(255);
