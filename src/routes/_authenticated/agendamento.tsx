@@ -678,7 +678,17 @@ function RotaDetalhe({
 
   // ─── BAIXAR MTR + GERAR BOLETIM + GERAR CDF ───
   const baixarMTR = useMutation({
-    mutationFn: async ({ mtrId, peso, cliente }: { mtrId: string; peso: number; cliente: Cliente }) => {
+    mutationFn: async ({
+      mtrId,
+      peso,
+      observacoes,
+      cliente,
+    }: {
+      mtrId: string;
+      peso: number;
+      observacoes?: string | null;
+      cliente: Cliente;
+    }) => {
       const hoje = new Date().toISOString().split("T")[0];
       const numeroCDF = gerarNumeroCDF();
 
@@ -701,6 +711,7 @@ function RotaDetalhe({
           data_coleta: hoje,
           peso_coletado: peso,
           unidade: mtrData.unidade || "kg",
+          observacoes: observacoes || null,
           status: "pendente",
           pagamento_confirmado: false,
           cdf_enviado: false,
@@ -720,9 +731,9 @@ function RotaDetalhe({
       }
 
       // Retorna tudo que o onSuccess precisa
-      return { mtrData, boletimData, numeroCDF, cliente, peso };
+      return { mtrData, boletimData, numeroCDF, cliente, peso, observacoes };
     },
-    onSuccess: ({ mtrData, numeroCDF, cliente, peso }) => {
+    onSuccess: ({ mtrData, numeroCDF, cliente, peso, observacoes }) => {
       queryClient.invalidateQueries({ queryKey: ["mtrs-rota"] });
       queryClient.invalidateQueries({ queryKey: ["cdfs-rota"] });
       toast.success("MTR baixado! Boletim e CDF gerados.");
@@ -737,6 +748,7 @@ function RotaDetalhe({
         periodoFim: hoje,
         peso,
         unidade: mtrData.unidade || "kg",
+        observacoes,
         cliente,
       });
       setOpenCDF({ blobUrl, numeroCDF });
@@ -965,7 +977,15 @@ function RotaDetalhe({
                                 const peso = window.prompt(`Peso coletado (kg) — ${rc.cliente.nome_fantasia || rc.cliente.razao_social}:`);
                                 if (peso === null) return;
                                 const pesoNum = parseFloat(peso.replace(",", ".")) || 0;
-                                baixarMTR.mutate({ mtrId: mtr.id, peso: pesoNum, cliente: rc.cliente });
+                                const observacoes = window.prompt(
+                                  "Observações (opcional) — nº de lacre, nota fiscal, descarte etc. Aparece no CDF:",
+                                );
+                                baixarMTR.mutate({
+                                  mtrId: mtr.id,
+                                  peso: pesoNum,
+                                  observacoes: observacoes || null,
+                                  cliente: rc.cliente,
+                                });
                               }}>
                               <CheckCheck className="h-3.5 w-3.5 text-orange-500" />
                             </Button>
