@@ -894,7 +894,7 @@ function PropostasPage() {
       if (bullets1.length === 0) bullets1.push("Resíduos conforme especificação técnica");
       for (const b of bullets1) {
         doc.setTextColor(...ACC);
-        doc.text("▸", x3a + 2.5, ys);
+        doc.text("•", x3a + 2.5, ys);
         doc.setTextColor(25);
         const lines = doc.splitTextToSize(b, w3 - 7) as string[];
         doc.text(lines.slice(0, 2), x3a + 5.5, ys);
@@ -924,7 +924,7 @@ function PropostasPage() {
       let yi = y + 9;
       for (const it of incl) {
         doc.setTextColor(...ACC);
-        doc.text("✓", x3b + 2.5, yi);
+        doc.text("•", x3b + 2.5, yi);
         doc.setTextColor(25);
         const lines = doc.splitTextToSize(it, w3 - 7) as string[];
         doc.text(lines.slice(0, 1), x3b + 5.5, yi);
@@ -1051,7 +1051,7 @@ function PropostasPage() {
         const gap = (h5 - 11) / arr.length;
         for (const s of arr) {
           doc.setTextColor(...ACC);
-          doc.text("▸", x + 2.5, yy);
+          doc.text("•", x + 2.5, yy);
           doc.setTextColor(25);
           const lines = doc.splitTextToSize(s, w - 7) as string[];
           doc.text(lines.slice(0, 2), x + 5.5, yy);
