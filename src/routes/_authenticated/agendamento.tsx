@@ -109,7 +109,7 @@ function gerarHTMLCDF(params: {
   <title>CDF ${numeroCDF}</title>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
   <style>
-    @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Inter:wght@300;400;500;600&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Inter:wght@300;400;500;600&family=Alex+Brush&display=swap');
     *{box-sizing:border-box;margin:0;padding:0}
     body{font-family:'Inter',Arial,sans-serif;background:#f4f4f4;padding:20px;color:#111}
     .cdf-wrap{background:#fff;border:0.5px solid #d1e8d8;border-radius:14px;overflow:hidden;max-width:720px;margin:0 auto;box-shadow:0 4px 24px rgba(0,0,0,.08)}
@@ -160,6 +160,7 @@ function gerarHTMLCDF(params: {
     /* FOOTER */
     .footer{margin-top:22px;padding-top:18px;border-top:0.5px solid #c8e6d0;display:grid;grid-template-columns:1fr auto;gap:24px;align-items:end}
     .sig-box{border-bottom:1.5px solid #155c2b;height:52px;margin-bottom:6px;display:flex;align-items:center;justify-content:center}
+    .sig-script{font-family:'Alex Brush',cursive;font-size:34px;color:#0a2e1a;line-height:1;transform:rotate(-1.5deg)}
     .sig-lbl{font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:#9ca3af}
     .sig-name{font-size:12px;font-weight:600;color:#111827;margin-top:1px}
     .sig-cnpj{font-size:10px;color:#6b7280}
@@ -285,10 +286,7 @@ function gerarHTMLCDF(params: {
     <div class="footer">
       <div>
         <div class="sig-box">
-          <svg width="130" height="42" viewBox="0 0 130 42">
-            <path d="M8 32 C18 12, 28 38, 44 22 C56 10, 68 34, 85 24 C96 17, 108 30, 122 26"
-                  fill="none" stroke="#155c2b" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
-          </svg>
+          <span class="sig-script">Bio Logus Ambiental</span>
         </div>
         <div class="sig-lbl">Assinatura do certificador</div>
         <div class="sig-name">BIO LOGUS AMBIENTAL LTDA</div>
