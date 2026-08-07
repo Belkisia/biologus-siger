@@ -24,20 +24,27 @@ CREATE TABLE IF NOT EXISTS public.faturas (
 );
 
 ALTER TABLE public.faturas
+  DROP CONSTRAINT IF EXISTS faturas_pkey;
+ALTER TABLE public.faturas
   ADD CONSTRAINT faturas_pkey PRIMARY KEY (id);
 
+ALTER TABLE public.faturas
+  DROP CONSTRAINT IF EXISTS faturas_owner_id_fkey;
 ALTER TABLE public.faturas
   ADD CONSTRAINT faturas_owner_id_fkey FOREIGN KEY (owner_id) REFERENCES auth.users(id) ON DELETE CASCADE;
 
 ALTER TABLE public.faturas
+  DROP CONSTRAINT IF EXISTS faturas_cliente_id_fkey;
+ALTER TABLE public.faturas
   ADD CONSTRAINT faturas_cliente_id_fkey FOREIGN KEY (cliente_id) REFERENCES public.clientes(id) ON DELETE RESTRICT;
 
-ALTER TABLE public.faturas
-  ADD CONSTRAINT faturas_contrato_id_fkey FOREIGN KEY (contrato_id) REFERENCES public.contratos(id) ON DELETE SET NULL;
+-- Sem FK para "contratos": essa tabela não existe neste banco.
+-- contrato_id fica como uuid solto, sem vínculo, por enquanto.
 
 -- Segurança em nível de linha (mesmo padrão usado nas outras tabelas do sistema)
 ALTER TABLE public.faturas ENABLE ROW LEVEL SECURITY;
 
+DROP POLICY IF EXISTS "Owners manage faturas" ON public.faturas;
 CREATE POLICY "Owners manage faturas" ON public.faturas
   TO authenticated
   USING (auth.uid() = owner_id)
