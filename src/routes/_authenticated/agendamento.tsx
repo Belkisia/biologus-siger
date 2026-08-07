@@ -693,7 +693,15 @@ function RotaDetalhe({
         }] as never[])
         .select("id")
         .single();
-      if (bolError) throw bolError;
+      if (bolError) {
+        // Desfaz a baixa do MTR para não ficar em estado inconsistente
+        // (baixado sem boletim correspondente)
+        await supabase
+          .from("mtrs")
+          .update({ status: "pendente", quantidade: null, data_baixa: null })
+          .eq("id", mtrId);
+        throw bolError;
+      }
 
       // Retorna tudo que o onSuccess precisa
       return { mtrData, boletimData, numeroCDF, cliente };
