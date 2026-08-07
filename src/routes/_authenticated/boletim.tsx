@@ -78,6 +78,7 @@ function gerarHTMLCDF(params: {
   periodoFim: string;
   peso: number;
   unidade: string;
+  observacoes?: string | null;
   cliente: {
     razao_social: string;
     nome_fantasia?: string | null;
@@ -86,7 +87,7 @@ function gerarHTMLCDF(params: {
     cnpj?: string | null;
   };
 }) {
-  const { numeroCDF, numeroMTR, dataEmissao, periodoInicio, periodoFim, peso, unidade, cliente } = params;
+  const { numeroCDF, numeroMTR, dataEmissao, periodoInicio, periodoFim, peso, unidade, observacoes, cliente } = params;
 
   const fmt = (d: string) => d ? new Date(d + "T12:00:00").toLocaleDateString("pt-BR") : "—";
   const urlVerificacao = `https://biologus-siger.vercel.app/verificar-cdf/${numeroCDF}`;
@@ -125,6 +126,9 @@ function gerarHTMLCDF(params: {
     .irow .val{font-size:12px;font-weight:500;color:#111827;line-height:1.3}
     .section-divider{font-size:8.5px;letter-spacing:2.5px;text-transform:uppercase;color:#1a6b35;font-weight:600;display:flex;align-items:center;gap:12px;margin:20px 0 12px}
     .section-divider::before,.section-divider::after{content:'';flex:1;height:0.5px;background:#c8e6d0}
+    .obs-box{margin-top:14px;background:#fefaf0;border:0.5px solid #ecdca8;border-left:3px solid #c99a2e;border-radius:0 8px 8px 0;padding:10px 14px}
+    .obs-lbl{font-size:8.5px;letter-spacing:2px;text-transform:uppercase;color:#a37a1f;font-weight:600;margin-bottom:4px}
+    .obs-txt{font-size:11.5px;color:#4a5568;line-height:1.5;white-space:pre-wrap}
     table.rtable{width:100%;border-collapse:separate;border-spacing:0;font-size:11.5px;border:0.5px solid #c8e6d0;border-radius:10px;overflow:hidden}
     table.rtable th{background:#0a2e1a;color:#7dcf9a;padding:10px 13px;text-align:left;font-size:8.5px;letter-spacing:1.5px;text-transform:uppercase;font-weight:500}
     table.rtable td{padding:13px 13px;border-bottom:0.5px solid #e8f4ec;color:#1f2937;vertical-align:middle}
@@ -240,6 +244,15 @@ function gerarHTMLCDF(params: {
         </tr>
       </tbody>
     </table>
+
+    ${
+      observacoes
+        ? `<div class="obs-box">
+      <div class="obs-lbl">Observações</div>
+      <div class="obs-txt">${observacoes.replace(/</g, "&lt;").replace(/>/g, "&gt;")}</div>
+    </div>`
+        : ""
+    }
 
     <div class="footer-sec">
       <div>
@@ -535,6 +548,7 @@ function BoletimPage() {
       periodoFim: b.mtrs?.data_baixa || b.data_coleta || hoje,
       peso: b.peso_coletado,
       unidade: b.unidade || "kg",
+      observacoes: b.observacoes,
       cliente,
     });
     setOpenCDF({ blobUrl, numeroCDF });
@@ -845,14 +859,22 @@ comercial@biologusambiental.com.br`
               </div>
             </div>
             <div className="space-y-1.5">
+              <Label>Observações (opcional)</Label>
+              <Input
+                placeholder="Ex: lacre nº 1234, nota fiscal nº 5678, descarte de..."
+                value={obs}
+                onChange={(e) => setObs(e.target.value)}
+              />
+              <p className="text-xs text-muted-foreground">
+                Aparece no CDF gerado — use para número de lacre, nota fiscal ou detalhes do
+                descarte informados pelo cliente.
+              </p>
+            </div>
+            <div className="space-y-1.5">
               <Label>Nome do responsável (opcional)</Label>
               <Input placeholder="Quem assinou no cliente" value={nomeResp} onChange={(e) => setNomeResp(e.target.value)} />
             </div>
             <AssinaturaCanvas onChange={setAssinatura} />
-            <div className="space-y-1.5">
-              <Label>Observações (opcional)</Label>
-              <Input placeholder="Ex: embalagem danificada..." value={obs} onChange={(e) => setObs(e.target.value)} />
-            </div>
             <div className="bg-teal-50 border border-teal-200 rounded-md p-3 text-xs text-teal-800 flex items-start gap-2">
               <FileCheck className="h-4 w-4 mt-0.5 flex-shrink-0" />
               <div>
