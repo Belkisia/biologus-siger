@@ -172,7 +172,7 @@ function getErrorMessage(error: unknown, fallback: string) {
 function emptyItem(): Item {
   return {
     descricao: "Coleta, transporte e destinação final dos resíduos",
-    tipo_residuo: "Grupo A",
+    tipo_residuo: "Grupos A, B e E",
     quantidade: 1,
     unidade: "kg",
     valor_unitario: 0,
@@ -733,10 +733,14 @@ function PropostasPage() {
 
     // Normas — apenas as aplicáveis (deduz dos tipos de resíduo)
     const tipos = itensList.map((i) => (i.tipo_residuo || "").toLowerCase()).join(" ");
-    const isRSS = /grupo\s*[abe]|biolog|qu[ií]mico|perfuro/.test(tipos);
+    const hasGrupoWord = /grupo/.test(tipos);
+    const grupoLetras = new Set(tipos.match(/\b[a-e]\b/g) || []);
+    const temGrupo = (l: string) => hasGrupoWord && grupoLetras.has(l);
+    const isRSS =
+      temGrupo("a") || temGrupo("b") || temGrupo("e") || /biolog|qu[ií]mico|perfuro/.test(tipos);
     const isClasseI = /classe\s*i\b|perigos|industrial/.test(tipos);
     const isClasseII = /classe\s*ii|n[aã]o[-\s]?perigos/.test(tipos);
-    const isGrupoD = /grupo\s*d|domiciliar|comum/.test(tipos);
+    const isGrupoD = temGrupo("d") || /domiciliar|comum/.test(tipos);
     const normas: string[] = [];
     if (isRSS) normas.push("RDC ANVISA 222/2018", "CONAMA 358/2005");
     if (isClasseI || isClasseII) normas.push("ABNT NBR 10.004:2004");
@@ -747,11 +751,12 @@ function PropostasPage() {
 
     // Acondicionamento por tipo
     const acond: string[] = [];
-    if (/grupo\s*a|biolog/i.test(tipos)) acond.push("Grupo A em bombonas brancas leitosas");
-    if (/grupo\s*b|qu[ií]mico/i.test(tipos))
+    if (temGrupo("a") || /biolog/i.test(tipos)) acond.push("Grupo A em bombonas brancas leitosas");
+    if (temGrupo("b") || /qu[ií]mico/i.test(tipos))
       acond.push("Grupo B em recipiente compatível identificado");
-    if (/grupo\s*e|perfuro/i.test(tipos)) acond.push("Grupo E em coletor descartex rígido");
-    if (/grupo\s*d|domiciliar|comum/i.test(tipos)) acond.push("Grupo D em saco preto reforçado");
+    if (temGrupo("e") || /perfuro/i.test(tipos)) acond.push("Grupo E em coletor descartex rígido");
+    if (temGrupo("d") || /domiciliar|comum/i.test(tipos))
+      acond.push("Grupo D em saco preto reforçado");
     if (/classe\s*i\b|perigos|industrial/i.test(tipos))
       acond.push("Classe I em embalagem homologada com rótulo de risco");
     if (/classe\s*ii/i.test(tipos)) acond.push("Classe II em big bag ou tambor lacrado");
@@ -1625,6 +1630,7 @@ function PropostasPage() {
                                 <SelectValue placeholder="Grupo" />
                               </SelectTrigger>
                               <SelectContent>
+                                <SelectItem value="Grupos A, B e E">Grupos A, B e E</SelectItem>
                                 <SelectItem value="Grupo A">Grupo A</SelectItem>
                                 <SelectItem value="Grupo B">Grupo B</SelectItem>
                                 <SelectItem value="Grupo E">Grupo E</SelectItem>
