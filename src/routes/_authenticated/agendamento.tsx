@@ -82,9 +82,13 @@ function gerarHTMLCDF(params: {
   dataEmissao: string;
   periodoInicio: string;
   periodoFim: string;
+  peso?: number | null;
+  unidade?: string | null;
+  observacoes?: string | null;
   cliente: Cliente;
 }) {
-  const { numeroCDF, numeroMTR, dataEmissao, periodoInicio, periodoFim, cliente } = params;
+  const { numeroCDF, numeroMTR, dataEmissao, periodoInicio, periodoFim, peso, unidade, observacoes, cliente } =
+    params;
   const dataFmt = dataEmissao
     ? new Date(dataEmissao + "T12:00:00").toLocaleDateString("pt-BR")
     : new Date().toLocaleDateString("pt-BR");
@@ -139,6 +143,9 @@ function gerarHTMLCDF(params: {
     .irow .val{font-size:12px;font-weight:500;color:#111827;line-height:1.3}
     .section-divider{font-size:8.5px;letter-spacing:2.5px;text-transform:uppercase;color:#1a6b35;font-weight:600;display:flex;align-items:center;gap:12px;margin:20px 0 12px}
     .section-divider::before,.section-divider::after{content:'';flex:1;height:0.5px;background:#c8e6d0}
+    .obs-box{margin-top:14px;background:#fefaf0;border:0.5px solid #ecdca8;border-left:3px solid #c99a2e;border-radius:0 8px 8px 0;padding:10px 14px}
+    .obs-lbl{font-size:8.5px;letter-spacing:2px;text-transform:uppercase;color:#a37a1f;font-weight:600;margin-bottom:4px}
+    .obs-txt{font-size:11.5px;color:#4a5568;line-height:1.5;white-space:pre-wrap}
 
     /* TABELA */
     table.rtable{width:100%;border-collapse:separate;border-spacing:0;font-size:11.5px;border:0.5px solid #c8e6d0;border-radius:10px;overflow:hidden}
@@ -259,12 +266,21 @@ function gerarHTMLCDF(params: {
             <div><span class="mtr-tag">${numeroMTR}</span></div>
           </td>
           <td style="text-align:center">
-            <div class="qty-big" id="qty-val">—</div>
-            <div class="qty-kg">kg</div>
+            <div class="qty-big" id="qty-val">${peso != null ? String(peso).replace(".", ",") : "—"}</div>
+            <div class="qty-kg">${unidade || "kg"}</div>
           </td>
         </tr>
       </tbody>
     </table>
+
+    ${
+      observacoes
+        ? `<div class="obs-box">
+      <div class="obs-lbl">Observações</div>
+      <div class="obs-txt">${observacoes.replace(/</g, "&lt;").replace(/>/g, "&gt;")}</div>
+    </div>`
+        : ""
+    }
 
     <div class="footer">
       <div>
@@ -616,7 +632,7 @@ function RotaDetalhe({
     queryFn: async () => {
       const { data } = await supabase
         .from("boletins_medicao")
-        .select("id, mtr_id, cdf_id, cdf_enviado, numero")
+        .select("id, mtr_id, cdf_id, cdf_enviado, numero, observacoes")
         .in("mtr_id", mtrsHoje.map((m: any) => m.id));
       return data ?? [];
     },
@@ -704,9 +720,9 @@ function RotaDetalhe({
       }
 
       // Retorna tudo que o onSuccess precisa
-      return { mtrData, boletimData, numeroCDF, cliente };
+      return { mtrData, boletimData, numeroCDF, cliente, peso };
     },
-    onSuccess: ({ mtrData, numeroCDF, cliente }) => {
+    onSuccess: ({ mtrData, numeroCDF, cliente, peso }) => {
       queryClient.invalidateQueries({ queryKey: ["mtrs-rota"] });
       queryClient.invalidateQueries({ queryKey: ["cdfs-rota"] });
       toast.success("MTR baixado! Boletim e CDF gerados.");
@@ -719,6 +735,8 @@ function RotaDetalhe({
         dataEmissao: hoje,
         periodoInicio: mtrData.data_emissao || hoje,
         periodoFim: hoje,
+        peso,
+        unidade: mtrData.unidade || "kg",
         cliente,
       });
       setOpenCDF({ blobUrl, numeroCDF });
@@ -966,6 +984,9 @@ function RotaDetalhe({
                                   dataEmissao: mtr.data_emissao || hoje,
                                   periodoInicio: mtr.data_emissao || hoje,
                                   periodoFim: mtr.data_baixa || hoje,
+                                  peso: mtr.quantidade,
+                                  unidade: mtr.unidade || "kg",
+                                  observacoes: boletim.observacoes,
                                   cliente: rc.cliente,
                                 });
                                 setOpenCDF({ blobUrl, numeroCDF: boletim.cdf_id ?? "" });
