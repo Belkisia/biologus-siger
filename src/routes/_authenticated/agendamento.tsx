@@ -160,7 +160,9 @@ function gerarHTMLCDF(params: {
     /* FOOTER */
     .footer{margin-top:22px;padding-top:18px;border-top:0.5px solid #c8e6d0;display:grid;grid-template-columns:1fr auto;gap:24px;align-items:end}
     .sig-box{border-bottom:1.5px solid #155c2b;height:52px;margin-bottom:6px;display:flex;align-items:center;justify-content:center}
-    .sig-script{font-family:'Alex Brush',cursive;font-size:34px;color:#0a2e1a;line-height:1;transform:rotate(-1.5deg)}
+    .rubrica{display:flex;flex-direction:column;align-items:center}
+    .sig-script{font-family:'Alex Brush',cursive;font-size:40px;color:#0a2e1a;line-height:1;transform:rotate(-3deg)}
+    .rubrica-swirl{margin-top:-8px}
     .sig-lbl{font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:#9ca3af}
     .sig-name{font-size:12px;font-weight:600;color:#111827;margin-top:1px}
     .sig-cnpj{font-size:10px;color:#6b7280}
@@ -286,7 +288,13 @@ function gerarHTMLCDF(params: {
     <div class="footer">
       <div>
         <div class="sig-box">
-          <span class="sig-script">Bio Logus Ambiental</span>
+          <div class="rubrica">
+            <span class="sig-script">BLa</span>
+            <svg class="rubrica-swirl" width="86" height="20" viewBox="0 0 86 20">
+              <path d="M2 11 C 14 -2, 24 20, 36 9 C 46 0, 53 16, 64 7 C 71 1, 77 10, 84 6"
+                    fill="none" stroke="#0a2e1a" stroke-width="1.6" stroke-linecap="round"/>
+            </svg>
+          </div>
         </div>
         <div class="sig-lbl">Assinatura do certificador</div>
         <div class="sig-name">BIO LOGUS AMBIENTAL LTDA</div>
