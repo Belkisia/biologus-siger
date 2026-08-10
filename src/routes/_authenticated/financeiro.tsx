@@ -142,6 +142,14 @@ function FinanceiroPage() {
     onSuccess: () => qc.invalidateQueries({ queryKey: ["faturas"] }),
   });
 
+  const editarValorMutation = useMutation({
+    mutationFn: async ({ id, valor }: { id: string; valor: number }) => {
+      const { error } = await supabase.from("faturas").update({ valor } as never).eq("id", id);
+      if (error) throw error;
+    },
+    onSuccess: () => qc.invalidateQueries({ queryKey: ["faturas"] }),
+  });
+
   const deleteMutation = useMutation({
     mutationFn: async (id: string) => {
       const { error } = await supabase.from("faturas").delete().eq("id", id);
@@ -329,7 +337,24 @@ function FinanceiroPage() {
                     </TableCell>
                     <TableCell className="text-sm">{f.competencia}</TableCell>
                     <TableCell className="text-sm">{new Date(f.data_vencimento).toLocaleDateString("pt-BR")}</TableCell>
-                    <TableCell className="text-sm font-medium">{brl(f.valor)}</TableCell>
+                    <TableCell className="text-sm font-medium">
+                      <button
+                        className="hover:underline decoration-dashed underline-offset-2"
+                        title="Clique para editar o valor"
+                        onClick={() => {
+                          const novo = window.prompt("Novo valor da fatura (R$):", String(f.valor));
+                          if (novo === null) return;
+                          const num = parseFloat(novo.replace(",", ".").replace(/[^\d.-]/g, ""));
+                          if (isNaN(num) || num < 0) {
+                            toast.error("Valor inválido");
+                            return;
+                          }
+                          editarValorMutation.mutate({ id: f.id, valor: num });
+                        }}
+                      >
+                        {brl(f.valor)}
+                      </button>
+                    </TableCell>
                     <TableCell className="text-sm text-muted-foreground">
                       {f.data_pagamento ? new Date(f.data_pagamento).toLocaleDateString("pt-BR") : "—"}
                     </TableCell>
