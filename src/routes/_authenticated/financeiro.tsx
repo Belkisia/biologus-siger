@@ -65,20 +65,16 @@ function FinanceiroPage() {
     },
   });
 
-  const { data: contratos = [] } = useQuery({
-    queryKey: ["contratos-select"],
-    queryFn: async () => {
-      const { data } = await supabase.from("contratos").select("id, numero, cliente_id");
-      return data ?? [];
-    },
-  });
+  // Tabela "contratos" ainda não existe neste banco — mantém a lista vazia
+  // em vez de consultar uma tabela inexistente a cada carregamento.
+  const contratos: { id: string; numero: string; cliente_id: string }[] = [];
 
   const { data: faturas = [], isLoading } = useQuery({
     queryKey: ["faturas"],
     queryFn: async () => {
       const { data, error } = await supabase
         .from("faturas")
-        .select("*, clientes(razao_social), contratos(numero)")
+        .select("*, clientes(razao_social)")
         .order("data_vencimento", { ascending: false });
       if (error) throw error;
       // marcar vencidas client-side (sem persistir até o pagamento ou edição)
