@@ -1,14 +1,14 @@
 -- Importa os contratos e seus itens (franquia/valor/excedente por grupo de
--- resíduo) da planilha Contratos_Cliente_10-08-26.xls para as tabelas
+-- residuo) da planilha Contratos_Cliente_10-08-26.xls para as tabelas
 -- contratos/contrato_itens.
 -- RODE DEPOIS de 2026-08-10_criar_tabelas_contratos.sql (cria as tabelas).
 -- Rode no SQL Editor do Supabase (yqeibkichwddwfjxjtlf.supabase.co).
--- Contém 1127 contratos e 1301 itens.
+-- Contem 1127 contratos e 1301 itens.
 --
--- Casa cliente pelo CNPJ (ignorando pontuação). Contratos cujo CNPJ não bate
--- com nenhum cliente cadastrado são simplesmente ignorados (não gera erro).
--- Se um contrato com o mesmo número já existir para o mesmo cliente, é
--- ignorado (não duplica se você rodar de novo).
+-- Casa cliente pelo CNPJ (ignorando pontuacao). Contratos cujo CNPJ nao bate
+-- com nenhum cliente cadastrado sao simplesmente ignorados (nao gera erro).
+-- Se um contrato com o mesmo numero ja existir para o mesmo cliente, e
+-- ignorado (nao duplica se voce rodar de novo).
 
 DO $$
 DECLARE
@@ -16,7 +16,7 @@ DECLARE
 BEGIN
   SELECT id INTO v_owner_id FROM auth.users WHERE email = 'comercial@biologusambiental.com.br' LIMIT 1;
   IF v_owner_id IS NULL THEN
-    RAISE EXCEPTION 'Usuário comercial@biologusambiental.com.br não encontrado em auth.users';
+    RAISE EXCEPTION 'Usuario comercial@biologusambiental.com.br nao encontrado em auth.users';
   END IF;
 
   -- Contratos
@@ -1153,7 +1153,7 @@ BEGIN
   INSERT INTO public.contratos
     (owner_id, cliente_id, numero, status, data_inicio, data_fim, valor_mensal, grupos_residuos, observacoes)
   SELECT
-    v_owner_id, c.id, d.numero, d.status, d.data_inicio, d.data_fim, d.valor_mensal, d.grupos_residuos, d.observacoes
+    v_owner_id, c.id, d.numero, d.status, d.data_inicio::date, d.data_fim::date, d.valor_mensal::numeric, d.grupos_residuos, d.observacoes
   FROM dados d
   JOIN public.clientes c ON regexp_replace(c.cnpj, '[^0-9]', '', 'g') = d.cnpj_digits
   WHERE NOT EXISTS (
@@ -1161,7 +1161,7 @@ BEGIN
     WHERE existing.numero = d.numero AND existing.cliente_id = c.id
   );
 
-  -- Itens dos contratos recém-criados
+  -- Itens dos contratos recem-criados
   WITH dados_itens (numero, descricao, grupo_residuo, franquia, preco_unitario, preco_excedente, ordem) AS (
     VALUES
   ('0001', 'Coleta, transporte e destinação final — GRUPO A, B, E', 'GRUPO A, B, E', 10, 8.5, 5, 0),
@@ -2469,7 +2469,7 @@ BEGIN
   INSERT INTO public.contrato_itens
     (contrato_id, descricao, grupo_residuo, unidade, franquia, preco_unitario, preco_excedente, ordem)
   SELECT
-    ct.id, di.descricao, di.grupo_residuo, 'kg', di.franquia, di.preco_unitario, di.preco_excedente, di.ordem
+    ct.id, di.descricao, di.grupo_residuo, 'kg', di.franquia::numeric, di.preco_unitario::numeric, di.preco_excedente::numeric, di.ordem::integer
   FROM dados_itens di
   JOIN public.contratos ct ON ct.numero = di.numero AND ct.owner_id = v_owner_id
   WHERE NOT EXISTS (

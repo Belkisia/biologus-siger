@@ -52,7 +52,9 @@ CREATE POLICY "Owners manage contratos" ON public.contratos
   USING (auth.uid() = owner_id)
   WITH CHECK (auth.uid() = owner_id);
 
--- ── contrato_itens ──────────────────────────────────────────────────
+-- =====================================================================
+-- contrato_itens
+-- =====================================================================
 
 CREATE TABLE IF NOT EXISTS public.contrato_itens (
     id uuid DEFAULT gen_random_uuid() NOT NULL,
