@@ -100,11 +100,19 @@ export function buildVars(args: {
         .filter(Boolean)
         .join("; ")
     : "resíduos de serviços de saúde";
+  const cidadeEstado = (() => {
+    const cidade = (c.cidade || "").trim();
+    const estado = (c.estado || "").trim();
+    if (!cidade) return estado;
+    // cidade já contém a UF embutida (ex: "Trindade - GO", "Trindade/GO")
+    if (/[-/]\s*[A-Za-z]{2}\s*$/.test(cidade)) return cidade;
+    return estado ? `${cidade}/${estado}` : cidade;
+  })();
   const localColeta = [
     c.endereco,
     c.numero && `nº ${c.numero}`,
     c.bairro,
-    c.cidade && `${c.cidade}/${c.estado || ""}`,
+    cidadeEstado,
   ]
     .filter(Boolean)
     .join(", ");
@@ -128,12 +136,17 @@ export function buildVars(args: {
     CLIENTE_BAIRRO: c.bairro || "",
     CLIENTE_CIDADE: c.cidade || "",
     CLIENTE_ESTADO: c.estado || "",
+    CLIENTE_CIDADE_ESTADO: cidadeEstado,
     CLIENTE_CEP: c.cep || "",
     CLIENTE_EMAIL: c.email || "",
     CLIENTE_TELEFONE: c.telefone || c.whatsapp || "",
     CLIENTE_WHATSAPP: c.whatsapp || "",
     REPRESENTANTE_NOME:
-      c.responsavel_financeiro || c.responsavel_tecnico || c.responsavel_operacional || "",
+      c.responsavel_financeiro ||
+      c.responsavel_tecnico ||
+      c.responsavel_operacional ||
+      c.razao_social ||
+      "",
     REPRESENTANTE_CPF: c.representante_cpf || c.cnpj || "",
     RESPONSAVEL_TECNICO: c.responsavel_tecnico || "",
     RESPONSAVEL_FINANCEIRO: c.responsavel_financeiro || "",
