@@ -13,10 +13,10 @@ import {
 import {
   Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter,
 } from "@/components/ui/dialog";
-import { Loader2, Plus, Eye, Mail, PenTool, Trash2, FileSignature } from "lucide-react";
+import { Loader2, Plus, Eye, Mail, PenTool, Trash2, FileSignature, Pencil } from "lucide-react";
 import { toast } from "sonner";
 import { useServerFn } from "@tanstack/react-start";
-import { enviarContratoEmail, gerarContratoPadraoBioLogus, visualizarContrato } from "@/lib/contrato.functions";
+import { enviarContratoEmail, gerarContratoPadraoBioLogus, atualizarContratoPadraoBioLogus, visualizarContrato } from "@/lib/contrato.functions";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 export const Route = createFileRoute("/_authenticated/contratos")({
@@ -119,6 +119,9 @@ type Contrato = {
   forma_pagamento: string | null; observacoes: string | null;
   conteudo_html: string | null;
   ultimo_email_em: string | null; ultimo_email_destino: string | null;
+  grupos_residuos: string | null; frequencia_coleta: string | null;
+  limite_kg: number | null; valor_excedente: number | null;
+  vigencia_anos: string | null;
   clientes?: { razao_social: string } | null;
 };
 
@@ -443,6 +446,7 @@ function ContratosPage() {
   const qc = useQueryClient();
 
   const [novoOpen, setNovoOpen] = useState(false);
+  const [editandoContratoId, setEditandoContratoId] = useState<string | null>(null);
   const [filtro, setFiltro] = useState("todos");
   const [busca, setBusca] = useState("");
   const [selectedClienteId, setSelectedClienteId] = useState("");
@@ -468,6 +472,7 @@ function ContratosPage() {
 
   const enviarEmail = useServerFn(enviarContratoEmail);
   const gerarContratoPadrao = useServerFn(gerarContratoPadraoBioLogus);
+  const atualizarContratoPadrao = useServerFn(atualizarContratoPadraoBioLogus);
   const visualizarContratoHtml = useServerFn(visualizarContrato);
   
 
@@ -491,6 +496,7 @@ function ContratosPage() {
   });
 
   const selectedCliente = clientes.find((c) => c.id === selectedClienteId) ?? null;
+  const editingContrato = editandoContratoId ? contratos.find((c) => c.id === editandoContratoId) ?? null : null;
   const proximoNumero = `CT-BLA${String(contratos.length + 1).padStart(4, "0")}`;
 
   function addMonthsISO(d: string, m: number) {
@@ -504,15 +510,31 @@ function ContratosPage() {
 
   const createMutation = useMutation({
     mutationFn: async (payload: Record<string, unknown>) => {
-      await gerarContratoPadrao({
-        data: {
-          ...payload,
-          cliente_id: selectedClienteId,
-          periodicidade_vigencia: periodicidade,
-        } as never,
-      });
+      if (editandoContratoId) {
+        await atualizarContratoPadrao({
+          data: {
+            ...payload,
+            id: editandoContratoId,
+            cliente_id: selectedClienteId,
+            periodicidade_vigencia: periodicidade,
+          } as never,
+        });
+      } else {
+        await gerarContratoPadrao({
+          data: {
+            ...payload,
+            cliente_id: selectedClienteId,
+            periodicidade_vigencia: periodicidade,
+          } as never,
+        });
+      }
     },
-    onSuccess: () => { qc.invalidateQueries({ queryKey: ["contratos"] }); toast.success("Contrato gerado!"); setNovoOpen(false); },
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ["contratos"] });
+      toast.success(editandoContratoId ? "Contrato atualizado!" : "Contrato gerado!");
+      setNovoOpen(false);
+      setEditandoContratoId(null);
+    },
     onError: (e: Error) => toast.error(e.message),
   });
 
@@ -520,6 +542,17 @@ function ContratosPage() {
     mutationFn: async (id: string) => { const { error } = await supabase.from("contratos").delete().eq("id", id); if (error) throw error; },
     onSuccess: () => { qc.invalidateQueries({ queryKey: ["contratos"] }); toast.success("Contrato removido"); },
   });
+
+  const handleEditarContrato = (c: Contrato) => {
+    setEditandoContratoId(c.id);
+    setSelectedClienteId(c.cliente_id);
+    setDataInicio(c.data_inicio);
+    setDataFim(c.data_fim || "");
+    setPeriodicidade(
+      c.vigencia_anos?.includes("0,25") ? "trimestral" : c.vigencia_anos?.includes("0,5") ? "semestral" : "anual",
+    );
+    setNovoOpen(true);
+  };
 
   const handleFormSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -600,7 +633,7 @@ function ContratosPage() {
             <div style={{ fontSize: "12px", color: "#0D6B54", marginTop: "2px" }}>Gere e envie contratos com assinatura digital para seus clientes</div>
           </div>
         </div>
-        <button className="eco-btn eco-btn-p" onClick={() => { setNovoOpen(true); setSelectedClienteId(""); setDataInicio(""); setPeriodicidade("anual"); setDataFim(""); }} disabled={clientes.length === 0}>
+        <button className="eco-btn eco-btn-p" onClick={() => { setEditandoContratoId(null); setNovoOpen(true); setSelectedClienteId(""); setDataInicio(""); setPeriodicidade("anual"); setDataFim(""); }} disabled={clientes.length === 0}>
           <Plus size={14} /> Novo contrato
         </button>
       </div>
@@ -675,6 +708,10 @@ function ContratosPage() {
                             style={{ padding: "5px", borderRadius: "6px", border: "1px solid #E2E8E5", background: "transparent", cursor: "pointer", display: "flex", alignItems: "center" }}>
                             <Eye size={14} />
                           </button>
+                          <button title="Editar contrato" onClick={() => handleEditarContrato(c)}
+                            style={{ padding: "5px", borderRadius: "6px", border: "1px solid #E2E8E5", background: "transparent", cursor: "pointer", display: "flex", alignItems: "center" }}>
+                            <Pencil size={14} />
+                          </button>
                           <button title="Assinar digitalmente" onClick={() => setAssContrato(c)}
                             style={{ padding: "5px", borderRadius: "6px", border: "1px solid #0D6B54", background: "#EAF4ED", color: "#0D6B54", cursor: "pointer", display: "flex", alignItems: "center" }}>
                             <PenTool size={14} />
@@ -699,10 +736,10 @@ function ContratosPage() {
       </div>
 
       {/* Modal: Novo contrato */}
-      <Dialog open={novoOpen} onOpenChange={setNovoOpen}>
+      <Dialog open={novoOpen} onOpenChange={(v) => { setNovoOpen(v); if (!v) setEditandoContratoId(null); }}>
         <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
-          <DialogHeader><DialogTitle>Novo Contrato — Padrão Bio Logus 2026</DialogTitle></DialogHeader>
-          <form onSubmit={handleFormSubmit} className="space-y-4">
+          <DialogHeader><DialogTitle>{editandoContratoId ? `Editar Contrato — ${editingContrato?.numero ?? ""}` : "Novo Contrato — Padrão Bio Logus 2026"}</DialogTitle></DialogHeader>
+          <form key={editandoContratoId || "novo"} onSubmit={handleFormSubmit} className="space-y-4">
 
             {/* 1. Cliente */}
             <div className="space-y-2">
@@ -740,7 +777,7 @@ function ContratosPage() {
                 <div className="grid grid-cols-2 gap-3">
                   <div className="space-y-1.5">
                     <Label className="text-xs">Número *</Label>
-                    <Input name="numero" required defaultValue={proximoNumero} />
+                    <Input name="numero" required defaultValue={editingContrato?.numero ?? proximoNumero} />
                   </div>
                   <div className="space-y-1.5">
                     <Label className="text-xs">Vigência</Label>
@@ -776,7 +813,7 @@ function ContratosPage() {
                 <div className="grid grid-cols-2 gap-3">
                   <div className="space-y-1.5">
                     <Label className="text-xs">Grupos de resíduos — Cláusula 1.1</Label>
-                    <Select name="grupos_residuos" defaultValue="Grupo A, B e E (CONAMA 358/2005 e ANVISA 222/18)">
+                    <Select name="grupos_residuos" defaultValue={editingContrato?.grupos_residuos ?? "Grupo A, B e E (CONAMA 358/2005 e ANVISA 222/18)"}>
                       <SelectTrigger><SelectValue /></SelectTrigger>
                       <SelectContent>
                         <SelectItem value="Grupo A, B e E (CONAMA 358/2005 e ANVISA 222/18)">Grupos A, B e E</SelectItem>
@@ -787,7 +824,7 @@ function ContratosPage() {
                   </div>
                   <div className="space-y-1.5">
                     <Label className="text-xs">Frequência — Cláusula 2.1</Label>
-                    <Select name="frequencia_coleta_texto" defaultValue="Mensal (1x ao mês)">
+                    <Select name="frequencia_coleta_texto" defaultValue={editingContrato?.frequencia_coleta ?? "Mensal (1x ao mês)"}>
                       <SelectTrigger><SelectValue /></SelectTrigger>
                       <SelectContent>
                         <SelectItem value="Mensal (1x ao mês)">Mensal — 1x ao mês</SelectItem>
@@ -799,7 +836,7 @@ function ContratosPage() {
                   <div className="space-y-1.5">
                     <Label className="text-xs">Limite de peso — kg/mês *</Label>
                     <div className="flex items-center gap-2">
-                      <Input name="limite_kg" type="number" step="0.1" min="0" placeholder="Ex.: 10" required className="font-mono" />
+                      <Input name="limite_kg" type="number" step="0.1" min="0" placeholder="Ex.: 10" required className="font-mono" defaultValue={editingContrato?.limite_kg ?? undefined} />
                       <span className="text-sm text-muted-foreground shrink-0">kg</span>
                     </div>
                     <p className="text-xs text-muted-foreground">→ Cláusula 1.2: "0 a X kg…"</p>
@@ -818,20 +855,20 @@ function ContratosPage() {
                     <Label className="text-xs">Valor mensal R$ — Cláusula 3.1 *</Label>
                     <div className="flex items-center gap-2">
                       <span className="font-bold text-sm text-muted-foreground">R$</span>
-                      <Input name="valor_mensal" type="number" step="0.01" min="0" placeholder="70.00" required className="font-mono" />
+                      <Input name="valor_mensal" type="number" step="0.01" min="0" placeholder="70.00" required className="font-mono" defaultValue={editingContrato?.valor_mensal ?? undefined} />
                     </div>
                   </div>
                   <div className="space-y-1.5">
                     <Label className="text-xs">Valor por kg excedente — Cláusula 3.2</Label>
                     <div className="flex items-center gap-2">
                       <span className="font-bold text-sm text-muted-foreground">R$</span>
-                      <Input name="valor_excedente" type="number" step="0.01" min="0" placeholder="8.50" className="font-mono" />
+                      <Input name="valor_excedente" type="number" step="0.01" min="0" placeholder="8.50" className="font-mono" defaultValue={editingContrato?.valor_excedente ?? undefined} />
                       <span className="text-sm text-muted-foreground shrink-0">/kg</span>
                     </div>
                   </div>
                   <div className="space-y-1.5">
                     <Label className="text-xs">Forma de pagamento</Label>
-                    <Select name="forma_pagamento" defaultValue="no ato da coleta de cada mês">
+                    <Select name="forma_pagamento" defaultValue={editingContrato?.forma_pagamento ?? "no ato da coleta de cada mês"}>
                       <SelectTrigger><SelectValue /></SelectTrigger>
                       <SelectContent>
                         <SelectItem value="no ato da coleta de cada mês">No ato da coleta</SelectItem>
@@ -845,10 +882,10 @@ function ContratosPage() {
             </>)}
 
             <DialogFooter>
-              <Button type="button" variant="ghost" onClick={() => setNovoOpen(false)}>Cancelar</Button>
+              <Button type="button" variant="ghost" onClick={() => { setNovoOpen(false); setEditandoContratoId(null); }}>Cancelar</Button>
               <Button type="submit" disabled={createMutation.isPending || !selectedCliente} className="bg-primary hover:bg-primary/90">
                 {createMutation.isPending && <Loader2 className="h-4 w-4 animate-spin mr-2" />}
-                Gerar e salvar contrato
+                {editandoContratoId ? "Salvar alterações" : "Gerar e salvar contrato"}
               </Button>
             </DialogFooter>
           </form>

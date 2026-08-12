@@ -479,6 +479,100 @@ export const gerarContratoPadraoBioLogus = createServerFn({ method: "POST" })
     return { id: novo!.id };
   });
 
+const ContratoPadraoUpdateInput = ContratoPadraoInput.extend({
+  id: z.string().uuid(),
+});
+
+export const atualizarContratoPadraoBioLogus = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((d: z.infer<typeof ContratoPadraoUpdateInput>) =>
+    ContratoPadraoUpdateInput.parse(d),
+  )
+  .handler(async ({ data, context }) => {
+    const [{ data: modelos, error: modelosError }, { data: cliente, error: clienteError }] =
+      await Promise.all([
+        context.supabase
+          .from("contrato_modelos")
+          .select("id,nome,conteudo_html,owner_id")
+          .eq("ativo", true)
+          .order("updated_at", { ascending: false }),
+        context.supabase.from("clientes").select("*").eq("id", data.cliente_id).single(),
+      ]);
+
+    if (modelosError) throw new Error(modelosError.message);
+    if (clienteError || !cliente) throw new Error("Cliente não encontrado.");
+
+    const modelo = (modelos || []).find(
+      (m) => m.owner_id === null && (m.conteudo_html?.length || 0) > 5000,
+    );
+    if (!modelo?.conteudo_html) {
+      throw new Error("Modelo padrão não encontrado. Ative o modelo Bio Logus 2026.");
+    }
+
+    const vigenciaAnos =
+      data.periodicidade_vigencia === "semestral"
+        ? "0,5 (meio)"
+        : data.periodicidade_vigencia === "trimestral"
+          ? "0,25 (três meses)"
+          : "01 (um)";
+
+    const conteudo_html = renderTemplate(
+      modelo.conteudo_html,
+      buildVars({
+        cliente,
+        contrato: {
+          numero: data.numero,
+          data_inicio: data.data_inicio,
+          data_fim: data.data_fim || null,
+          valor_mensal: data.valor_mensal ?? null,
+          forma_pagamento: data.forma_pagamento || "",
+          dia_vencimento: data.dia_vencimento ?? null,
+          frequencia_coleta: data.frequencia_coleta_texto || "mensal (1 vez ao mês)",
+          vigencia_anos: vigenciaAnos,
+        },
+        itens: data.limite_kg
+          ? [
+              {
+                descricao: "Resíduos de serviços de saúde",
+                grupo_residuo: data.grupos_residuos || "Grupo A, B e E",
+                unidade: "kg",
+                franquia: data.limite_kg,
+                preco_unitario: 0,
+                preco_excedente: data.valor_excedente || 0,
+              },
+            ]
+          : [],
+      }),
+    );
+
+    const { error } = await context.supabase
+      .from("contratos")
+      .update({
+        cliente_id: data.cliente_id,
+        numero: data.numero,
+        data_inicio: data.data_inicio,
+        data_fim: data.data_fim || null,
+        valor_mensal: data.valor_mensal ?? null,
+        frequencia_coleta: data.frequencia_coleta_texto || null,
+        grupos_residuos: data.grupos_residuos || null,
+        limite_kg: data.limite_kg ?? null,
+        valor_excedente: data.valor_excedente ?? null,
+        vigencia_anos: vigenciaAnos,
+        indice_reajuste: data.indice_reajuste || null,
+        periodicidade_reajuste: data.periodicidade_reajuste || null,
+        dia_vencimento: data.dia_vencimento ?? null,
+        forma_pagamento: data.forma_pagamento || null,
+        observacoes: data.observacoes || null,
+        status: data.status || "ativo",
+        conteudo_html,
+        modelo_id: modelo.id,
+      })
+      .eq("id", data.id);
+
+    if (error) throw new Error(error.message);
+    return { id: data.id };
+  });
+
 // =============================
 // Renderizar prévia
 // =============================
