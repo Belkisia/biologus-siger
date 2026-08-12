@@ -455,6 +455,7 @@ function ContratosPage() {
   // Modal ver contrato
   const [verContrato, setVerContrato] = useState<Contrato | null>(null);
   const [verContratoHtml, setVerContratoHtml] = useState("");
+  const verRequestRef = useRef(0);
   
 
   // Modal assinatura
@@ -533,12 +534,17 @@ function ContratosPage() {
   };
 
   const handleVerPDF = async (c: Contrato) => {
+    verRequestRef.current += 1;
+    const meuPedido = verRequestRef.current;
     setVerContrato(c);
     setVerContratoHtml("");
     try {
       const res = await visualizarContratoHtml({ data: { contrato_id: c.id } });
+      // Ignora a resposta se, enquanto esperava, o usuário já clicou em outro contrato
+      if (verRequestRef.current !== meuPedido) return;
       setVerContratoHtml(res.html);
     } catch (e) {
+      if (verRequestRef.current !== meuPedido) return;
       toast.error(e instanceof Error ? e.message : "Falha ao abrir contrato");
     }
   };
