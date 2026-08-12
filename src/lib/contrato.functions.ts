@@ -699,7 +699,7 @@ export const visualizarContrato = createServerFn({ method: "POST" })
       .select("numero, conteudo_html, data_inicio, data_fim, valor_mensal, status, forma_pagamento, observacoes, clientes(razao_social, cnpj, endereco, numero, bairro, cidade, estado, cep)")
       .eq("id", data.contrato_id)
       .single();
-    if (error || !c) throw new Error("Contrato não encontrado");
+    if (error || !c) throw new Error("Contrato não encontrado: " + (error?.message || error?.code || JSON.stringify(error) || "sem detalhes"));
 
     let body = c.conteudo_html;
     if (!body || body.trim().length < 20) {
