@@ -16,7 +16,7 @@ import {
 import { Loader2, Plus, Eye, Mail, PenTool, Trash2, FileSignature, Pencil } from "lucide-react";
 import { toast } from "sonner";
 import { useServerFn } from "@tanstack/react-start";
-import { enviarContratoEmail, gerarContratoPadraoBioLogus, atualizarContratoPadraoBioLogus, visualizarContrato } from "@/lib/contrato.functions";
+import { enviarContratoEmail, gerarContratoPadraoBioLogus, atualizarContratoPadraoBioLogus, visualizarContrato, listarContratosSemTexto, regenerarContratoConteudo } from "@/lib/contrato.functions";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 export const Route = createFileRoute("/_authenticated/contratos")({
@@ -472,6 +472,41 @@ function ContratosPage() {
 
   const enviarEmail = useServerFn(enviarContratoEmail);
   const gerarContratoPadrao = useServerFn(gerarContratoPadraoBioLogus);
+  const buscarContratosSemTexto = useServerFn(listarContratosSemTexto);
+  const regenerarContrato = useServerFn(regenerarContratoConteudo);
+  const [regenerando, setRegenerando] = useState<{ total: number; feito: number } | null>(null);
+
+  const handleRegenerarTodos = async () => {
+    setRegenerando({ total: 0, feito: 0 });
+    try {
+      const { ids } = await buscarContratosSemTexto({ data: undefined as never });
+      if (ids.length === 0) {
+        toast.success("Todos os contratos já têm o texto completo.");
+        setRegenerando(null);
+        return;
+      }
+      setRegenerando({ total: ids.length, feito: 0 });
+      let erros = 0;
+      for (let i = 0; i < ids.length; i++) {
+        try {
+          await regenerarContrato({ data: { contrato_id: ids[i] } });
+        } catch {
+          erros++;
+        }
+        setRegenerando({ total: ids.length, feito: i + 1 });
+      }
+      qc.invalidateQueries({ queryKey: ["contratos"] });
+      toast.success(
+        erros > 0
+          ? `${ids.length - erros} contratos atualizados, ${erros} com erro (confira o cadastro do cliente deles).`
+          : `${ids.length} contratos atualizados com o texto completo!`,
+      );
+    } catch (e) {
+      toast.error(e instanceof Error ? e.message : "Falha ao regenerar contratos");
+    } finally {
+      setRegenerando(null);
+    }
+  };
   const atualizarContratoPadrao = useServerFn(atualizarContratoPadraoBioLogus);
   const visualizarContratoHtml = useServerFn(visualizarContrato);
   
@@ -633,9 +668,19 @@ function ContratosPage() {
             <div style={{ fontSize: "12px", color: "#0D6B54", marginTop: "2px" }}>Gere e envie contratos com assinatura digital para seus clientes</div>
           </div>
         </div>
-        <button className="eco-btn eco-btn-p" onClick={() => { setEditandoContratoId(null); setNovoOpen(true); setSelectedClienteId(""); setDataInicio(""); setPeriodicidade("anual"); setDataFim(""); }} disabled={clientes.length === 0}>
-          <Plus size={14} /> Novo contrato
-        </button>
+        <div style={{ display: "flex", gap: "8px" }}>
+          <button
+            className="eco-btn"
+            onClick={handleRegenerarTodos}
+            disabled={!!regenerando}
+            title="Gera o texto jurídico completo para os contratos que ainda mostram só o resumo (importados da planilha antiga)"
+          >
+            {regenerando ? `Atualizando ${regenerando.feito}/${regenerando.total}…` : "Atualizar textos antigos"}
+          </button>
+          <button className="eco-btn eco-btn-p" onClick={() => { setEditandoContratoId(null); setNovoOpen(true); setSelectedClienteId(""); setDataInicio(""); setPeriodicidade("anual"); setDataFim(""); }} disabled={clientes.length === 0}>
+            <Plus size={14} /> Novo contrato
+          </button>
+        </div>
       </div>
 
       {/* KPIs */}

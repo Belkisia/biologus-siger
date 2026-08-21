@@ -890,3 +890,100 @@ export const enviarContratoEmail = createServerFn({ method: "POST" })
     }
     return { ok: true };
   });
+
+// =============================
+// Regenerar conteudo_html de um contrato antigo (importado em massa,
+// sem texto completo) — usa os dados que ja existem no proprio
+// contrato + no primeiro item de contrato_itens (franquia/excedente).
+// =============================
+export const listarContratosSemTexto = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .handler(async ({ context }) => {
+    const { data, error } = await context.supabase
+      .from("contratos")
+      .select("id, numero")
+      .or("conteudo_html.is.null,conteudo_html.eq.");
+    if (error) throw new Error(error.message);
+    return { ids: (data || []).map((c) => c.id) };
+  });
+
+export const regenerarContratoConteudo = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((d: { contrato_id: string }) =>
+    z.object({ contrato_id: z.string().uuid() }).parse(d),
+  )
+  .handler(async ({ data, context }) => {
+    const [{ data: modelos, error: modelosError }, { data: contrato, error: contratoError }] =
+      await Promise.all([
+        context.supabase
+          .from("contrato_modelos")
+          .select("id,nome,conteudo_html,owner_id")
+          .eq("ativo", true)
+          .order("updated_at", { ascending: false }),
+        context.supabase.from("contratos").select("*").eq("id", data.contrato_id).single(),
+      ]);
+
+    if (modelosError) throw new Error(modelosError.message);
+    if (contratoError || !contrato) throw new Error("Contrato não encontrado.");
+
+    const modelo = (modelos || []).find(
+      (m) => m.owner_id === null && (m.conteudo_html?.length || 0) > 5000,
+    );
+    if (!modelo?.conteudo_html) {
+      throw new Error("Modelo padrão não encontrado. Ative o modelo Bio Logus 2026.");
+    }
+
+    const [{ data: cliente, error: clienteError }, { data: itens }] = await Promise.all([
+      context.supabase.from("clientes").select("*").eq("id", contrato.cliente_id).single(),
+      context.supabase
+        .from("contrato_itens")
+        .select("*")
+        .eq("contrato_id", data.contrato_id)
+        .order("ordem"),
+    ]);
+    if (clienteError || !cliente) throw new Error("Cliente do contrato não encontrado.");
+
+    const primeiroItem = (itens || [])[0];
+    const limiteKg = contrato.limite_kg ?? primeiroItem?.franquia ?? null;
+    const valorExcedente = contrato.valor_excedente ?? primeiroItem?.preco_excedente ?? null;
+    const gruposResiduos =
+      contrato.grupos_residuos ||
+      (itens || []).map((i) => i.grupo_residuo).filter(Boolean).join(", ") ||
+      "Grupo A, B e E";
+
+    const conteudo_html = renderTemplate(
+      modelo.conteudo_html,
+      buildVars({
+        cliente,
+        contrato: {
+          numero: contrato.numero,
+          data_inicio: contrato.data_inicio,
+          data_fim: contrato.data_fim,
+          valor_mensal: contrato.valor_mensal,
+          forma_pagamento: contrato.forma_pagamento || "",
+          dia_vencimento: contrato.dia_vencimento,
+          frequencia_coleta: contrato.frequencia_coleta || "mensal (1 vez ao mês)",
+          vigencia_anos: contrato.vigencia_anos || "01 (um)",
+        },
+        itens: limiteKg
+          ? [
+              {
+                descricao: "Resíduos de serviços de saúde",
+                grupo_residuo: gruposResiduos,
+                unidade: "kg",
+                franquia: limiteKg,
+                preco_unitario: 0,
+                preco_excedente: valorExcedente || 0,
+              },
+            ]
+          : [],
+      }),
+    );
+
+    const { error } = await context.supabase
+      .from("contratos")
+      .update({ conteudo_html, modelo_id: modelo.id })
+      .eq("id", data.contrato_id);
+    if (error) throw new Error(error.message);
+    return { id: data.contrato_id };
+  });
