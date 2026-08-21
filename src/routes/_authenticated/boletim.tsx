@@ -153,6 +153,7 @@ function gerarHTMLCDF(params: {
     .qr-lbl{font-size:9px;letter-spacing:1px;text-transform:uppercase;color:#9ca3af;text-align:center}
     .qr-url{font-size:8px;color:#6b7280;text-align:center;max-width:80px;word-break:break-all;margin-top:2px}
     .auth-strip{margin-top:14px;background:#f0faf3;border:0.5px solid #b8ddc4;border-radius:8px;padding:8px 14px;display:flex;align-items:center;gap:8px}
+    .fe-line{text-align:center;font-style:italic;font-size:9.5px;color:#5a7a68;margin-top:16px;letter-spacing:0.3px}
     .auth-dot{width:7px;height:7px;border-radius:50%;background:#1a6b35;flex-shrink:0}
     .auth-txt{font-size:10.5px;color:#374151}
     .pg{font-size:10px;color:#9ca3af;text-align:right;margin-top:8px}
@@ -285,6 +286,8 @@ function gerarHTMLCDF(params: {
       <div class="auth-dot"></div>
       <div class="auth-txt">Escaneie o QR Code para verificar a autenticidade deste certificado.</div>
     </div>
+
+    <div class="fe-line">A Ti, Senhor, toda honra e toda glória.</div>
 
     <div class="pg">PÁG. 1</div>
   </div>

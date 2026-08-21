@@ -159,6 +159,7 @@ function gerarHTMLCDF(params: {
 
     /* FOOTER */
     .footer{margin-top:22px;padding-top:18px;border-top:0.5px solid #c8e6d0;display:grid;grid-template-columns:1fr auto;gap:24px;align-items:end}
+    .fe-line{text-align:center;font-style:italic;font-size:9.5px;color:#5a7a68;margin-top:16px;letter-spacing:0.3px}
     .sig-box{border-bottom:1.5px solid #155c2b;height:52px;margin-bottom:6px;display:flex;align-items:center;justify-content:center}
     .rubrica{display:flex;flex-direction:column;align-items:center}
     .sig-script{font-family:'Alex Brush',cursive;font-size:40px;color:#0a2e1a;line-height:1;transform:rotate(-3deg)}
@@ -311,6 +312,8 @@ function gerarHTMLCDF(params: {
       <div class="auth-dot"></div>
       <div class="auth-txt">Escaneie o QR Code para verificar a autenticidade deste certificado.</div>
     </div>
+
+    <div class="fe-line">A Ti, Senhor, toda honra e toda glória.</div>
 
     <div class="pg">PÁG. 1</div>
   </div>
@@ -493,7 +496,7 @@ function imprimirMTRAgendamento(mtr: any, cliente: any) {
       ${mtr.assinatura_transportador ? `<img src="${mtr.assinatura_transportador}" style="max-width:100%;max-height:70px;display:block;margin:4px auto" /><div style="font-size:9px;color:#555;border-top:1px solid #555;padding-top:3px;margin-top:2px">BIO LOGUS AMBIENTAL LTDA - ME</div>` : `<div class="ass-line">Assinatura / Carimbo</div>`}
     </div>
   </div>
-  <div class="footer">Documento gerado pelo SIGER PRO — Bio Logus Ambiental | ${new Date().toLocaleDateString("pt-BR")}</div>
+  <div class="footer">Documento gerado pelo SIGER PRO — Bio Logus Ambiental | ${new Date().toLocaleDateString("pt-BR")}<br><span style="font-style:italic">A Ti, Senhor, toda honra e toda glória.</span></div>
   <script>window.onload=()=>window.print();</script>
   </body></html>`);
   win.document.close();

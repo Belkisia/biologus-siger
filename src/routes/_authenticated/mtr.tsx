@@ -164,7 +164,7 @@ function imprimirMTR(m: MTR) {
     </div>
   </div>
 
-  <div class="footer">Biologus Ambiental — biologus.sisgr.com — Impresso em ${new Date().toLocaleDateString("pt-BR")} ${new Date().toLocaleTimeString("pt-BR")}</div>
+  <div class="footer">Biologus Ambiental — biologus.sisgr.com — Impresso em ${new Date().toLocaleDateString("pt-BR")} ${new Date().toLocaleTimeString("pt-BR")}<br><span style="font-style:italic">A Ti, Senhor, toda honra e toda glória.</span></div>
   <script>window.onload=()=>window.print();</script>
   </body></html>`);
   win.document.close();
