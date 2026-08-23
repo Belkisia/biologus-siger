@@ -57,6 +57,13 @@ const CATEGORIAS = [
 
 const FORMAS = ["Boleto", "PIX", "Transferência", "Cartão", "Dinheiro"];
 
+const ATALHOS_COMBUSTIVEL = [
+  "Combustível Volks",
+  "Combustível Iveco",
+  "Combustível Strada Nova",
+  "Combustível Strada",
+];
+
 function brl(v: number | null | undefined) {
   return (v ?? 0).toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
 }
@@ -65,6 +72,8 @@ function DespesasPage() {
   const qc = useQueryClient();
   const [open, setOpen] = useState(false);
   const [filtro, setFiltro] = useState<string>("todas");
+  const [descricao, setDescricao] = useState("");
+  const [categoria, setCategoria] = useState("");
   const { user } = Route.useRouteContext();
 
   const { data: despesas = [], isLoading } = useQuery({
@@ -92,9 +101,16 @@ function DespesasPage() {
       qc.invalidateQueries({ queryKey: ["despesas"] });
       toast.success("Despesa lançada");
       setOpen(false);
+      setDescricao("");
+      setCategoria("");
     },
     onError: (e: Error) => toast.error(e.message),
   });
+
+  const handleAtalhoCombustivel = (nome: string) => {
+    setDescricao(nome);
+    setCategoria("Combustível");
+  };
 
   const baixaMutation = useMutation({
     mutationFn: async (d: Despesa) => {
@@ -176,7 +192,7 @@ function DespesasPage() {
           <h1 className="text-2xl font-bold text-foreground">Despesas</h1>
           <p className="text-sm text-muted-foreground">Contas a pagar — combustível, água, energia, salários e outros gastos.</p>
         </div>
-        <Dialog open={open} onOpenChange={setOpen}>
+        <Dialog open={open} onOpenChange={(v) => { setOpen(v); if (!v) { setDescricao(""); setCategoria(""); } }}>
           <DialogTrigger asChild>
             <Button>
               <Plus className="h-4 w-4 mr-2" />Nova despesa
@@ -185,14 +201,37 @@ function DespesasPage() {
           <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
             <DialogHeader><DialogTitle>Lançar despesa</DialogTitle></DialogHeader>
             <form onSubmit={handleSubmit} className="space-y-4">
+              <div className="space-y-2">
+                <Label className="text-xs text-muted-foreground">Atalhos — abastecimento</Label>
+                <div className="flex flex-wrap gap-2">
+                  {ATALHOS_COMBUSTIVEL.map((nome) => (
+                    <Button
+                      key={nome}
+                      type="button"
+                      size="sm"
+                      variant={descricao === nome ? "default" : "outline"}
+                      onClick={() => handleAtalhoCombustivel(nome)}
+                    >
+                      ⛽ {nome.replace("Combustível ", "")}
+                    </Button>
+                  ))}
+                </div>
+              </div>
               <div className="grid md:grid-cols-2 gap-4">
                 <div className="space-y-2 md:col-span-2">
                   <Label htmlFor="descricao">Descrição *</Label>
-                  <Input id="descricao" name="descricao" required placeholder="Ex.: Abastecimento caminhão placa ABC-1234" />
+                  <Input
+                    id="descricao"
+                    name="descricao"
+                    required
+                    placeholder="Ex.: Abastecimento caminhão placa ABC-1234"
+                    value={descricao}
+                    onChange={(e) => setDescricao(e.target.value)}
+                  />
                 </div>
                 <div className="space-y-2">
                   <Label>Categoria *</Label>
-                  <Select name="categoria" required>
+                  <Select name="categoria" required value={categoria} onValueChange={setCategoria}>
                     <SelectTrigger><SelectValue placeholder="Selecione" /></SelectTrigger>
                     <SelectContent>
                       {CATEGORIAS.map((c) => <SelectItem key={c} value={c}>{c}</SelectItem>)}
