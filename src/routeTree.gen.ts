@@ -34,6 +34,7 @@ import { Route as AuthenticatedModelosContratoRouteImport } from './routes/_auth
 import { Route as AuthenticatedLicencasRouteImport } from './routes/_authenticated/licencas'
 import { Route as AuthenticatedHistoricoRouteImport } from './routes/_authenticated/historico'
 import { Route as AuthenticatedFinanceiroRouteImport } from './routes/_authenticated/financeiro'
+import { Route as AuthenticatedDespesasRouteImport } from './routes/_authenticated/despesas'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
 import { Route as AuthenticatedContratosRouteImport } from './routes/_authenticated/contratos'
 import { Route as AuthenticatedConciliacaoRouteImport } from './routes/_authenticated/conciliacao'
@@ -179,6 +180,11 @@ const AuthenticatedFinanceiroRoute = AuthenticatedFinanceiroRouteImport.update({
   path: '/financeiro',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedDespesasRoute = AuthenticatedDespesasRouteImport.update({
+  id: '/despesas',
+  path: '/despesas',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
 const AuthenticatedDashboardRoute = AuthenticatedDashboardRouteImport.update({
   id: '/dashboard',
   path: '/dashboard',
@@ -281,6 +287,7 @@ export interface FileRoutesByFullPath {
   '/conciliacao': typeof AuthenticatedConciliacaoRoute
   '/contratos': typeof AuthenticatedContratosRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
+  '/despesas': typeof AuthenticatedDespesasRoute
   '/financeiro': typeof AuthenticatedFinanceiroRoute
   '/historico': typeof AuthenticatedHistoricoRoute
   '/licencas': typeof AuthenticatedLicencasRoute
@@ -323,6 +330,7 @@ export interface FileRoutesByTo {
   '/conciliacao': typeof AuthenticatedConciliacaoRoute
   '/contratos': typeof AuthenticatedContratosRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
+  '/despesas': typeof AuthenticatedDespesasRoute
   '/financeiro': typeof AuthenticatedFinanceiroRoute
   '/historico': typeof AuthenticatedHistoricoRoute
   '/licencas': typeof AuthenticatedLicencasRoute
@@ -367,6 +375,7 @@ export interface FileRoutesById {
   '/_authenticated/conciliacao': typeof AuthenticatedConciliacaoRoute
   '/_authenticated/contratos': typeof AuthenticatedContratosRoute
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
+  '/_authenticated/despesas': typeof AuthenticatedDespesasRoute
   '/_authenticated/financeiro': typeof AuthenticatedFinanceiroRoute
   '/_authenticated/historico': typeof AuthenticatedHistoricoRoute
   '/_authenticated/licencas': typeof AuthenticatedLicencasRoute
@@ -411,6 +420,7 @@ export interface FileRouteTypes {
     | '/conciliacao'
     | '/contratos'
     | '/dashboard'
+    | '/despesas'
     | '/financeiro'
     | '/historico'
     | '/licencas'
@@ -453,6 +463,7 @@ export interface FileRouteTypes {
     | '/conciliacao'
     | '/contratos'
     | '/dashboard'
+    | '/despesas'
     | '/financeiro'
     | '/historico'
     | '/licencas'
@@ -496,6 +507,7 @@ export interface FileRouteTypes {
     | '/_authenticated/conciliacao'
     | '/_authenticated/contratos'
     | '/_authenticated/dashboard'
+    | '/_authenticated/despesas'
     | '/_authenticated/financeiro'
     | '/_authenticated/historico'
     | '/_authenticated/licencas'
@@ -718,6 +730,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedFinanceiroRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/despesas': {
+      id: '/_authenticated/despesas'
+      path: '/despesas'
+      fullPath: '/despesas'
+      preLoaderRoute: typeof AuthenticatedDespesasRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/dashboard': {
       id: '/_authenticated/dashboard'
       path: '/dashboard'
@@ -873,6 +892,7 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedConciliacaoRoute: typeof AuthenticatedConciliacaoRoute
   AuthenticatedContratosRoute: typeof AuthenticatedContratosRoute
   AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
+  AuthenticatedDespesasRoute: typeof AuthenticatedDespesasRoute
   AuthenticatedFinanceiroRoute: typeof AuthenticatedFinanceiroRoute
   AuthenticatedHistoricoRoute: typeof AuthenticatedHistoricoRoute
   AuthenticatedLicencasRoute: typeof AuthenticatedLicencasRoute
@@ -901,6 +921,7 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedConciliacaoRoute: AuthenticatedConciliacaoRoute,
   AuthenticatedContratosRoute: AuthenticatedContratosRoute,
   AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
+  AuthenticatedDespesasRoute: AuthenticatedDespesasRoute,
   AuthenticatedFinanceiroRoute: AuthenticatedFinanceiroRoute,
   AuthenticatedHistoricoRoute: AuthenticatedHistoricoRoute,
   AuthenticatedLicencasRoute: AuthenticatedLicencasRoute,
