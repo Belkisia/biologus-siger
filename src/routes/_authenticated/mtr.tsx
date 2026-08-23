@@ -318,7 +318,7 @@ function MTRPage() {
                   </Select>
                 </div>
                 <div className="space-y-2"><Label htmlFor="transportador">Transportador</Label><Input id="transportador" name="transportador" defaultValue="ATIVA COMERCIAL COMERCIO E SERVICOS LTDA" /></div>
-                <div className="space-y-2"><Label htmlFor="destinador">Destinador</Label><Input id="destinador" name="destinador" defaultValue="ECO INCINERAR GESTAO AMBIENTAL LTDA" /></div>
+                <div className="space-y-2"><Label htmlFor="destinador">Destinador</Label><Input id="destinador" name="destinador" defaultValue="B-GREEN GESTAO AMBIENTAL S.A." /></div>
                 <div className="space-y-2 md:col-span-2">
                   <Label>Tecnologia de destinação</Label>
                   <Select name="tecnologia_destinacao" defaultValue="Incineração">

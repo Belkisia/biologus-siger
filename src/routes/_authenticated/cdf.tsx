@@ -171,11 +171,11 @@ function imprimirCDF(c: CDF) {
     <div class="section-title">Destinador Final</div>
     <div class="section-body">
       <div class="grid2">
-        <div class="field"><div class="field-label">Razão Social</div><div class="field-value">${c.destinador ?? "ECO INCINERAR GESTAO AMBIENTAL LTDA"}</div></div>
-        <div class="field"><div class="field-label">CNPJ</div><div class="field-value">12.018.483/0001-30</div></div>
-        <div class="field"><div class="field-label">Telefone</div><div class="field-value">(62) 9900-5300</div></div>
+        <div class="field"><div class="field-label">Razão Social</div><div class="field-value">${c.destinador ?? "B-GREEN GESTAO AMBIENTAL S.A."}</div></div>
+        <div class="field"><div class="field-label">CNPJ</div><div class="field-value">01.568.077/0006-30</div></div>
+        <div class="field"><div class="field-label">Telefone</div><div class="field-value">&nbsp;</div></div>
         <div class="field"><div class="field-label">Tecnologia aplicada</div><div class="field-value">${c.tecnologia ?? "Incineração"}</div></div>
-        <div class="field" style="grid-column:span 2"><div class="field-label">Endereço</div><div class="field-value">LOTEAMENTO FLORIDA OURO QUADRA 07 LOTE 08, ZONA INDUSTRIAL, Alexânia - GO, 72930-000</div></div>
+        <div class="field" style="grid-column:span 2"><div class="field-label">Endereço</div><div class="field-value">SETOR INDUSTRIAL DA CEILANDIA QI 21 LOTE 51/53/55, S/N, CEILANDIA, Brasília - DF, 72265-210</div></div>
       </div>
     </div>
   </div>
@@ -349,7 +349,7 @@ function CDFPage() {
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="destinador">Destinador</Label>
-                  <Input id="destinador" name="destinador" defaultValue="ECO INCINERAR GESTAO AMBIENTAL LTDA" />
+                  <Input id="destinador" name="destinador" defaultValue="B-GREEN GESTAO AMBIENTAL S.A." />
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="quantidade_destinada">Quantidade destinada (kg)</Label>
