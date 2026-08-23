@@ -71,7 +71,7 @@ function RelatoriosPage() {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("mtrs")
-        .select("data_emissao, classe_ibama, tecnologia_destinacao, quantidade, unidade, status, clientes(razao_social)")
+        .select("data_emissao, classe_ibama, tecnologia_destinacao, quantidade, unidade, status, peso_descarga, data_descarga, clientes(razao_social)")
         .gte("data_emissao", from).lte("data_emissao", to);
       if (error) throw error;
       return data ?? [];
@@ -148,8 +148,11 @@ function RelatoriosPage() {
 
   const totalFaturado = faturas.reduce((a, f) => a + Number(f.valor ?? 0), 0);
   const totalRecebido = faturas.filter((f) => f.status === "paga").reduce((a, f) => a + Number(f.valor_pago ?? 0), 0);
-  const totalKgColetado = coletas.reduce((a, c) => a + Number(c.peso_real ?? c.quantidade_prevista ?? 0), 0);
   const totalKgMTR = mtrs.reduce((a, m) => a + Number(m.quantidade ?? 0), 0);
+  const totalKgDescarga = mtrs
+    .filter((m) => m.data_descarga && m.data_descarga >= from && m.data_descarga <= to)
+    .reduce((a, m) => a + Number(m.peso_descarga ?? 0), 0);
+  const coletasRealizadas = mtrs.filter((m) => Number(m.quantidade) > 0).length;
 
   return (
     <div className="space-y-6">
@@ -176,13 +179,26 @@ function RelatoriosPage() {
 
       <div className="grid md:grid-cols-4 gap-4">
         <Card className="p-4">
-          <p className="text-xs text-muted-foreground uppercase tracking-wider">Coletado (kg)</p>
-          <p className="text-2xl font-bold mt-1">{totalKgColetado.toLocaleString("pt-BR")}</p>
+          <p className="text-xs text-muted-foreground uppercase tracking-wider">Coletas realizadas</p>
+          <p className="text-2xl font-bold mt-1">{coletasRealizadas}</p>
         </Card>
         <Card className="p-4">
-          <p className="text-xs text-muted-foreground uppercase tracking-wider">Manifestado (kg)</p>
+          <p className="text-xs text-muted-foreground uppercase tracking-wider">Coletado / manifestado (kg)</p>
           <p className="text-2xl font-bold mt-1">{totalKgMTR.toLocaleString("pt-BR")}</p>
         </Card>
+        <Card className="p-4">
+          <p className="text-xs text-muted-foreground uppercase tracking-wider">Descarregado no destino (kg)</p>
+          <p className="text-2xl font-bold mt-1">{totalKgDescarga.toLocaleString("pt-BR")}</p>
+        </Card>
+        <Card className="p-4">
+          <p className="text-xs text-muted-foreground uppercase tracking-wider">Diferença coleta → descarga (kg)</p>
+          <p className={`text-2xl font-bold mt-1 ${Math.abs(totalKgMTR - totalKgDescarga) > 0 ? "text-warning" : ""}`}>
+            {(totalKgMTR - totalKgDescarga).toLocaleString("pt-BR")}
+          </p>
+        </Card>
+      </div>
+
+      <div className="grid md:grid-cols-2 gap-4">
         <Card className="p-4">
           <p className="text-xs text-muted-foreground uppercase tracking-wider">Faturado</p>
           <p className="text-2xl font-bold mt-1">{brl(totalFaturado)}</p>

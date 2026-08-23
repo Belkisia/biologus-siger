@@ -25,7 +25,7 @@ type MTR = {
   classe_ibama: string | null; codigo_residuo: string | null; descricao_residuo: string;
   quantidade: number; unidade: string; acondicionamento: string | null;
   tecnologia_destinacao: string | null; status: string; url_documento: string | null;
-  observacoes: string | null;
+  observacoes: string | null; peso_descarga: number | null; data_descarga: string | null;
   clientes?: { razao_social: string; fantasia: string | null; logradouro: string | null; cidade: string | null; cnpj: string | null } | null;
 };
 
@@ -225,6 +225,32 @@ function MTRPage() {
     onSuccess: () => qc.invalidateQueries({ queryKey: ["mtrs"] }),
   });
 
+  const registrarDescarga = useMutation({
+    mutationFn: async ({ id, peso }: { id: string; peso: number }) => {
+      const { error } = await supabase
+        .from("mtrs")
+        .update({ peso_descarga: peso, data_descarga: new Date().toISOString().slice(0, 10) })
+        .eq("id", id);
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ["mtrs"] });
+      toast.success("Peso da descarga registrado");
+    },
+    onError: (e: Error) => toast.error(e.message),
+  });
+
+  const handleRegistrarDescarga = (m: MTR) => {
+    const valor = window.prompt(
+      `Peso descarregado no destino (kg) — MTR ${m.numero}:`,
+      m.peso_descarga != null ? String(m.peso_descarga) : String(m.quantidade || ""),
+    );
+    if (valor === null) return;
+    const num = parseFloat(valor.replace(",", "."));
+    if (isNaN(num) || num < 0) return toast.error("Peso inválido");
+    registrarDescarga.mutate({ id: m.id, peso: num });
+  };
+
   const deleteMutation = useMutation({
     mutationFn: async (id: string) => {
       const { error } = await supabase.from("mtrs").delete().eq("id", id);
@@ -357,6 +383,7 @@ function MTRPage() {
                 <TableHead>Gerador</TableHead>
                 <TableHead>Resíduo</TableHead>
                 <TableHead>Qtd.</TableHead>
+                <TableHead>Descarga (kg)</TableHead>
                 <TableHead>Status</TableHead>
                 <TableHead className="w-28"></TableHead>
               </TableRow>
@@ -374,6 +401,16 @@ function MTRPage() {
                       {m.classe_ibama && <div className="text-xs text-muted-foreground">{m.classe_ibama}</div>}
                     </TableCell>
                     <TableCell className="text-sm whitespace-nowrap font-semibold">{Number(m.quantidade) > 0 ? `${Number(m.quantidade)} ${m.unidade}` : "—"}</TableCell>
+                    <TableCell className="text-sm whitespace-nowrap">
+                      <button
+                        className="hover:underline decoration-dashed underline-offset-2 flex items-center gap-1"
+                        title="Registrar/editar peso descarregado no destino"
+                        onClick={() => handleRegistrarDescarga(m)}
+                      >
+                        ⚖️ {m.peso_descarga != null ? `${Number(m.peso_descarga)} kg` : <span className="text-muted-foreground">registrar</span>}
+                      </button>
+                      {m.data_descarga && <div className="text-xs text-muted-foreground">{new Date(m.data_descarga + "T12:00:00").toLocaleDateString("pt-BR")}</div>}
+                    </TableCell>
                     <TableCell>
                       <Select value={m.status} onValueChange={(v) => updateStatus.mutate({ id: m.id, status: v })}>
                         <SelectTrigger className="w-36 h-7 border-0 p-0">
