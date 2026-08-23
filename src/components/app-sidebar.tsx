@@ -47,6 +47,7 @@ const operacao: NavItem[] = [
   { title: "Gestão de Rotas", url: "/rotas", icon: MapPin },
   { title: "Coletas", url: "/coletas", icon: Truck },
   { title: "MTR", url: "/mtr", icon: FileText },
+  { title: "Descarga no Destino", url: "/descargas", icon: Scale },
   { title: "Certificados (CDF)", url: "/cdf", icon: Award },
   { title: "Histórico por Cliente", url: "/historico", icon: Clock },
   { title: "Licenças", url: "/licencas", icon: ShieldCheck },

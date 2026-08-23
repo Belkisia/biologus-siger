@@ -35,6 +35,7 @@ import { Route as AuthenticatedLicencasRouteImport } from './routes/_authenticat
 import { Route as AuthenticatedHistoricoRouteImport } from './routes/_authenticated/historico'
 import { Route as AuthenticatedFinanceiroRouteImport } from './routes/_authenticated/financeiro'
 import { Route as AuthenticatedDespesasRouteImport } from './routes/_authenticated/despesas'
+import { Route as AuthenticatedDescargasRouteImport } from './routes/_authenticated/descargas'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
 import { Route as AuthenticatedContratosRouteImport } from './routes/_authenticated/contratos'
 import { Route as AuthenticatedConciliacaoRouteImport } from './routes/_authenticated/conciliacao'
@@ -185,6 +186,11 @@ const AuthenticatedDespesasRoute = AuthenticatedDespesasRouteImport.update({
   path: '/despesas',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedDescargasRoute = AuthenticatedDescargasRouteImport.update({
+  id: '/descargas',
+  path: '/descargas',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
 const AuthenticatedDashboardRoute = AuthenticatedDashboardRouteImport.update({
   id: '/dashboard',
   path: '/dashboard',
@@ -287,6 +293,7 @@ export interface FileRoutesByFullPath {
   '/conciliacao': typeof AuthenticatedConciliacaoRoute
   '/contratos': typeof AuthenticatedContratosRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
+  '/descargas': typeof AuthenticatedDescargasRoute
   '/despesas': typeof AuthenticatedDespesasRoute
   '/financeiro': typeof AuthenticatedFinanceiroRoute
   '/historico': typeof AuthenticatedHistoricoRoute
@@ -330,6 +337,7 @@ export interface FileRoutesByTo {
   '/conciliacao': typeof AuthenticatedConciliacaoRoute
   '/contratos': typeof AuthenticatedContratosRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
+  '/descargas': typeof AuthenticatedDescargasRoute
   '/despesas': typeof AuthenticatedDespesasRoute
   '/financeiro': typeof AuthenticatedFinanceiroRoute
   '/historico': typeof AuthenticatedHistoricoRoute
@@ -375,6 +383,7 @@ export interface FileRoutesById {
   '/_authenticated/conciliacao': typeof AuthenticatedConciliacaoRoute
   '/_authenticated/contratos': typeof AuthenticatedContratosRoute
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
+  '/_authenticated/descargas': typeof AuthenticatedDescargasRoute
   '/_authenticated/despesas': typeof AuthenticatedDespesasRoute
   '/_authenticated/financeiro': typeof AuthenticatedFinanceiroRoute
   '/_authenticated/historico': typeof AuthenticatedHistoricoRoute
@@ -420,6 +429,7 @@ export interface FileRouteTypes {
     | '/conciliacao'
     | '/contratos'
     | '/dashboard'
+    | '/descargas'
     | '/despesas'
     | '/financeiro'
     | '/historico'
@@ -463,6 +473,7 @@ export interface FileRouteTypes {
     | '/conciliacao'
     | '/contratos'
     | '/dashboard'
+    | '/descargas'
     | '/despesas'
     | '/financeiro'
     | '/historico'
@@ -507,6 +518,7 @@ export interface FileRouteTypes {
     | '/_authenticated/conciliacao'
     | '/_authenticated/contratos'
     | '/_authenticated/dashboard'
+    | '/_authenticated/descargas'
     | '/_authenticated/despesas'
     | '/_authenticated/financeiro'
     | '/_authenticated/historico'
@@ -737,6 +749,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedDespesasRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/descargas': {
+      id: '/_authenticated/descargas'
+      path: '/descargas'
+      fullPath: '/descargas'
+      preLoaderRoute: typeof AuthenticatedDescargasRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/dashboard': {
       id: '/_authenticated/dashboard'
       path: '/dashboard'
@@ -892,6 +911,7 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedConciliacaoRoute: typeof AuthenticatedConciliacaoRoute
   AuthenticatedContratosRoute: typeof AuthenticatedContratosRoute
   AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
+  AuthenticatedDescargasRoute: typeof AuthenticatedDescargasRoute
   AuthenticatedDespesasRoute: typeof AuthenticatedDespesasRoute
   AuthenticatedFinanceiroRoute: typeof AuthenticatedFinanceiroRoute
   AuthenticatedHistoricoRoute: typeof AuthenticatedHistoricoRoute
@@ -921,6 +941,7 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedConciliacaoRoute: AuthenticatedConciliacaoRoute,
   AuthenticatedContratosRoute: AuthenticatedContratosRoute,
   AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
+  AuthenticatedDescargasRoute: AuthenticatedDescargasRoute,
   AuthenticatedDespesasRoute: AuthenticatedDespesasRoute,
   AuthenticatedFinanceiroRoute: AuthenticatedFinanceiroRoute,
   AuthenticatedHistoricoRoute: AuthenticatedHistoricoRoute,

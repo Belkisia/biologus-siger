@@ -71,7 +71,7 @@ function RelatoriosPage() {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("mtrs")
-        .select("data_emissao, classe_ibama, tecnologia_destinacao, quantidade, unidade, status, peso_descarga, data_descarga, clientes(razao_social)")
+        .select("data_emissao, classe_ibama, tecnologia_destinacao, quantidade, unidade, status, clientes(razao_social)")
         .gte("data_emissao", from).lte("data_emissao", to);
       if (error) throw error;
       return data ?? [];
@@ -90,7 +90,19 @@ function RelatoriosPage() {
     },
   });
 
-  const isLoading = l1 || l2 || l3;
+  const { data: descargas = [], isLoading: l4 } = useQuery({
+    queryKey: ["rel-descargas", from, to],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("descargas_destino")
+        .select("data_descarga, peso_kg")
+        .gte("data_descarga", from).lte("data_descarga", to);
+      if (error) throw error;
+      return data ?? [];
+    },
+  });
+
+  const isLoading = l1 || l2 || l3 || l4;
 
   // --- Operacional: volume por mês ---
   const volumePorMes = useMemo(() => {
@@ -149,9 +161,7 @@ function RelatoriosPage() {
   const totalFaturado = faturas.reduce((a, f) => a + Number(f.valor ?? 0), 0);
   const totalRecebido = faturas.filter((f) => f.status === "paga").reduce((a, f) => a + Number(f.valor_pago ?? 0), 0);
   const totalKgMTR = mtrs.reduce((a, m) => a + Number(m.quantidade ?? 0), 0);
-  const totalKgDescarga = mtrs
-    .filter((m) => m.data_descarga && m.data_descarga >= from && m.data_descarga <= to)
-    .reduce((a, m) => a + Number(m.peso_descarga ?? 0), 0);
+  const totalKgDescarga = descargas.reduce((a, d) => a + Number(d.peso_kg ?? 0), 0);
   const coletasRealizadas = mtrs.filter((m) => Number(m.quantidade) > 0).length;
 
   return (
