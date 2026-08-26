@@ -22,6 +22,8 @@ export const Route = createFileRoute("/_authenticated/agendamento")({
   component: AgendamentoPage,
 });
 
+import { ClienteSearchSelect } from "@/components/cliente-search-select";
+
 const ROTAS = [
   { id: "centro_aeroporto", label: "Centro / Aeroporto", semana: "S1", dias: "Seg–Sex" },
   { id: "campinas", label: "Campinas e Região", semana: "S1", dias: "2 dias" },
@@ -1303,8 +1305,34 @@ function RotaDetalhe({
 // ─────────────────────────────────────────────
 function AgendamentoPage() {
   const { user } = Route.useRouteContext();
+  const navigate = useNavigate();
   const [dataSelecionada, setDataSelecionada] = useState(() => new Date().toISOString().slice(0, 10));
   const [rotaAtiva, setRotaAtiva] = useState<typeof ROTAS[0] | null>(null);
+  const [buscaClienteId, setBuscaClienteId] = useState("");
+
+  const { data: todosClientesBusca = [] } = useQuery({
+    queryKey: ["clientes-busca-agendamento"],
+    queryFn: async () => {
+      const { data } = await supabase
+        .from("clientes")
+        .select("id, razao_social, nome_fantasia, cnpj, cidade")
+        .order("razao_social");
+      return data ?? [];
+    },
+  });
+
+  const { data: mapaRotaPorCliente = {} } = useQuery({
+    queryKey: ["rota-por-cliente"],
+    queryFn: async () => {
+      const { data } = await supabase.from("rota_clientes").select("cliente_id, rota_codigo");
+      const mapa: Record<string, string> = {};
+      (data ?? []).forEach((rc: any) => { mapa[rc.cliente_id] = rc.rota_codigo; });
+      return mapa;
+    },
+  });
+
+  const clienteEncontrado = todosClientesBusca.find((c) => c.id === buscaClienteId);
+  const rotaDoCliente = buscaClienteId ? ROTAS.find((r) => r.id === mapaRotaPorCliente[buscaClienteId]) : null;
 
   const semanas = [...new Set(ROTAS.map(r => r.semana))];
 
@@ -1326,6 +1354,33 @@ function AgendamentoPage() {
           <Input type="date" value={dataSelecionada} onChange={e => setDataSelecionada(e.target.value)} className="w-40" />
         </div>
       </div>
+
+      <Card className="p-4 space-y-3">
+        <Label className="text-sm font-medium">Não sabe em qual rota o cliente está? Busque aqui:</Label>
+        <div className="flex flex-wrap items-center gap-2">
+          <div className="flex-1 min-w-[260px]">
+            <ClienteSearchSelect
+              clientes={todosClientesBusca as never}
+              value={buscaClienteId}
+              onChange={setBuscaClienteId}
+              placeholder="Buscar cliente por nome ou CNPJ…"
+            />
+          </div>
+          {clienteEncontrado && rotaDoCliente && (
+            <Button onClick={() => setRotaAtiva(rotaDoCliente)}>
+              Abrir rota "{rotaDoCliente.label}" <ArrowRight className="h-4 w-4 ml-1" />
+            </Button>
+          )}
+          {clienteEncontrado && !rotaDoCliente && (
+            <>
+              <span className="text-sm text-muted-foreground">Esse cliente não está em nenhuma rota cadastrada.</span>
+              <Button variant="outline" onClick={() => navigate({ to: "/mtr" })}>
+                Emitir MTR avulso <ArrowRight className="h-4 w-4 ml-1" />
+              </Button>
+            </>
+          )}
+        </div>
+      </Card>
 
       {semanas.map(sem => (
         <div key={sem}>

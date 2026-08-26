@@ -13,6 +13,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, Dialog
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Plus, FileText, Loader2, Trash2, Printer, Search, Filter } from "lucide-react";
 import { DocumentUpload, OpenDocumentButton } from "@/components/document-upload";
+import { ClienteSearchSelect } from "@/components/cliente-search-select";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/_authenticated/mtr")({
@@ -174,6 +175,7 @@ function MTRPage() {
   const qc = useQueryClient();
   const [open, setOpen] = useState(false);
   const [docPath, setDocPath] = useState<string | null>(null);
+  const [clienteFormId, setClienteFormId] = useState("");
   const [busca, setBusca] = useState("");
   const [filtroStatus, setFiltroStatus] = useState("todos");
   const { user } = Route.useRouteContext();
@@ -181,7 +183,7 @@ function MTRPage() {
   const { data: clientes = [] } = useQuery({
     queryKey: ["clientes-select"],
     queryFn: async () => {
-      const { data } = await supabase.from("clientes").select("id, razao_social, fantasia").order('razao_social', { ascending: true });
+      const { data } = await supabase.from("clientes").select("id, razao_social, fantasia, cnpj, cidade").order('razao_social', { ascending: true });
       return data ?? [];
     },
   });
@@ -213,7 +215,7 @@ function MTRPage() {
       const { error } = await supabase.from("mtrs").insert([{ ...payload, owner_id: user.id }] as never[]);
       if (error) throw error;
     },
-    onSuccess: () => { qc.invalidateQueries({ queryKey: ["mtrs"] }); toast.success("MTR registrado"); setDocPath(null); setOpen(false); },
+    onSuccess: () => { qc.invalidateQueries({ queryKey: ["mtrs"] }); toast.success("MTR registrado"); setDocPath(null); setClienteFormId(""); setOpen(false); },
     onError: (e: Error) => toast.error(e.message),
   });
 
@@ -239,6 +241,7 @@ function MTRPage() {
     const fd = new FormData(e.currentTarget);
     const payload: Record<string, unknown> = {};
     fd.forEach((v, k) => { if (v !== "") payload[k] = v; });
+    payload.cliente_id = clienteFormId;
     if (!payload.cliente_id || !payload.numero || !payload.descricao_residuo) return toast.error("Preencha cliente, número e descrição");
     if (payload.quantidade) payload.quantidade = Number(payload.quantidade);
     payload.url_documento = docPath;
@@ -256,7 +259,7 @@ function MTRPage() {
           <h1 className="text-2xl font-bold text-foreground">MTR — Manifesto de Transporte de Resíduos</h1>
           <p className="text-sm text-muted-foreground">Rastreabilidade legal do gerador ao destino final.</p>
         </div>
-        <Dialog open={open} onOpenChange={setOpen}>
+        <Dialog open={open} onOpenChange={(v) => { setOpen(v); if (!v) { setClienteFormId(""); setDocPath(null); } }}>
           <DialogTrigger asChild>
             <Button disabled={clientes.length === 0}><Plus className="h-4 w-4 mr-2" />Novo MTR</Button>
           </DialogTrigger>
@@ -266,10 +269,7 @@ function MTRPage() {
               <div className="grid md:grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <Label>Cliente (Gerador) *</Label>
-                  <Select name="cliente_id" required>
-                    <SelectTrigger><SelectValue placeholder="Selecione" /></SelectTrigger>
-                    <SelectContent>{clientes.map((c) => <SelectItem key={c.id} value={c.id}>{(c as { fantasia?: string | null; razao_social: string }).fantasia || c.razao_social}</SelectItem>)}</SelectContent>
-                  </Select>
+                  <ClienteSearchSelect clientes={clientes} value={clienteFormId} onChange={setClienteFormId} />
                 </div>
                 <div className="space-y-2"><Label htmlFor="numero">Nº MTR *</Label><Input id="numero" name="numero" required placeholder="MTR-2026-0001" /></div>
                 <div className="space-y-2"><Label htmlFor="data_emissao">Data de emissão</Label><Input id="data_emissao" name="data_emissao" type="date" defaultValue={new Date().toISOString().slice(0,10)} /></div>
