@@ -601,6 +601,7 @@ function RotaDetalhe({
   const queryClient = qc;
   const [openAddClientes, setOpenAddClientes] = useState(false);
   const [busca, setBusca] = useState("");
+  const [buscaLista, setBuscaLista] = useState("");
   const [selecionados, setSelecionados] = useState<string[]>([]);
   const [openMTRLote, setOpenMTRLote] = useState(false);
   const [descResiduo, setDescResiduo] = useState("GRUPO A, B, E INFECTANTES, QUIMICOS E PERFURO CORTANTES");
@@ -973,6 +974,17 @@ function RotaDetalhe({
       {/* Lista de clientes */}
       {abaAtiva === "lista" && (
         <Card>
+          {rotaClientes.length > 0 && (
+            <div className="p-3 border-b relative">
+              <Search className="absolute left-6 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+              <Input
+                placeholder="Filtrar por nome do cliente…"
+                value={buscaLista}
+                onChange={(e) => setBuscaLista(e.target.value)}
+                className="pl-9"
+              />
+            </div>
+          )}
           {isLoading ? (
             <div className="py-12 text-center"><Loader2 className="h-5 w-5 animate-spin mx-auto text-muted-foreground" /></div>
           ) : rotaClientes.length === 0 ? (
@@ -983,9 +995,25 @@ function RotaDetalhe({
                 <Plus className="h-4 w-4 mr-1" /> Adicionar clientes
               </Button>
             </div>
+          ) : rotaClientes.filter((rc) =>
+              `${rc.cliente.nome_fantasia ?? ""} ${rc.cliente.razao_social ?? ""}`
+                .toLowerCase()
+                .includes(buscaLista.toLowerCase()),
+            ).length === 0 ? (
+            <div className="py-12 text-center">
+              <Search className="h-8 w-8 mx-auto text-muted-foreground/30 mb-2" />
+              <p className="text-sm text-muted-foreground">Nenhum cliente encontrado com "{buscaLista}".</p>
+            </div>
           ) : (
             <div className="divide-y">
-              {rotaClientes.map((rc, i) => {
+              {rotaClientes
+                .filter((rc) =>
+                  `${rc.cliente.nome_fantasia ?? ""} ${rc.cliente.razao_social ?? ""}`
+                    .toLowerCase()
+                    .includes(buscaLista.toLowerCase()),
+                )
+                .map((rc) => {
+                const i = rotaClientes.indexOf(rc);
                 const mtr = mtrsHoje.find((m: any) => m.cliente_id === rc.cliente.id);
                 const boletim = cdfsGerados.find((b: any) => b.mtr_id === mtr?.id);
                 return (
