@@ -58,7 +58,7 @@ const SEMANA_COLOR: Record<string, string> = {
 type Cliente = {
   id: string; razao_social: string; nome_fantasia: string | null;
   logradouro: string | null; cidade: string | null; cnpj?: string | null;
-  latitude: number | null; longitude: number | null;
+  latitude: number | null; longitude: number | null; status?: string | null;
 };
 
 type RotaCliente = {
@@ -614,7 +614,7 @@ function RotaDetalhe({
     queryFn: async () => {
       const { data } = await supabase
         .from("rota_clientes")
-        .select("id, ordem, coletado, clientes(id, razao_social, nome_fantasia, logradouro, cidade, cnpj, latitude, longitude)")
+        .select("id, ordem, coletado, clientes(id, razao_social, nome_fantasia, logradouro, cidade, cnpj, latitude, longitude, status)")
         .eq("rota_codigo", rota.id)
         .order("ordem");
       return (data ?? []).map((rc: any) => ({
@@ -829,7 +829,8 @@ function RotaDetalhe({
 
   const criarMTRsLote = useMutation({
     mutationFn: async () => {
-      const rows = rotaClientes.map((rc, i) => ({
+      const elegiveis = rotaClientes.filter((rc) => rc.cliente.status !== "bloqueado");
+      const rows = elegiveis.map((rc, i) => ({
         owner_id: user.id,
         cliente_id: rc.cliente.id,
         numero: `MTR-${dataSelecionada.replace(/-/g, "")}-${String(i + 1).padStart(3, "0")}`,
@@ -843,11 +844,16 @@ function RotaDetalhe({
       }));
       const { error } = await supabase.from("mtrs").insert(rows as any);
       if (error) throw error;
+      return { total: elegiveis.length, bloqueados: rotaClientes.length - elegiveis.length };
     },
-    onSuccess: () => {
+    onSuccess: ({ total, bloqueados }) => {
       qc.invalidateQueries({ queryKey: ["mtrs-rota"] });
       qc.invalidateQueries({ queryKey: ["mtrs"] });
-      toast.success(`${rotaClientes.length} MTRs criados!`);
+      toast.success(
+        bloqueados > 0
+          ? `${total} MTRs criados! (${bloqueados} cliente(s) bloqueado(s) por inadimplência foram pulados)`
+          : `${total} MTRs criados!`,
+      );
       setOpenMTRLote(false);
     },
     onError: (e: Error) => toast.error(e.message),
@@ -1055,6 +1061,7 @@ function RotaDetalhe({
                     </div>
                     <div className="flex-1 min-w-0">
                       <p className={`text-sm font-medium truncate ${rc.coletado ? "line-through text-muted-foreground" : ""}`}>
+                        {rc.cliente.status === "bloqueado" && <span title="Cliente bloqueado (inadimplência)">🔒 </span>}
                         {rc.cliente.nome_fantasia || rc.cliente.razao_social}
                       </p>
                       <p className="text-xs text-muted-foreground truncate">
@@ -1156,7 +1163,12 @@ function RotaDetalhe({
                           </Button>
                         </>
                       )}
-                      {!mtr && (
+                      {!mtr && rc.cliente.status === "bloqueado" && (
+                        <Badge variant="destructive" className="text-xs" title="Cliente bloqueado (inadimplência) — não é possível gerar MTR">
+                          🔒 Bloqueado
+                        </Badge>
+                      )}
+                      {!mtr && rc.cliente.status !== "bloqueado" && (
                         <Button
                           size="sm" variant="outline" className="h-7 text-xs"
                           disabled={gerarMTRIndividual.isPending}
@@ -1332,13 +1344,18 @@ function RotaDetalhe({
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2">
               <FileText className="h-5 w-5 text-primary" />
-              Gerar {rotaClientes.length} MTRs em lote
+              Gerar {rotaClientes.filter((rc) => rc.cliente.status !== "bloqueado").length} MTRs em lote
             </DialogTitle>
           </DialogHeader>
           <div className="space-y-4 py-2">
             <p className="text-sm text-muted-foreground">
               Será gerado 1 MTR para cada cliente da rota com a data <strong>{new Date(dataSelecionada + "T12:00:00").toLocaleDateString("pt-BR")}</strong>.
             </p>
+            {rotaClientes.some((rc) => rc.cliente.status === "bloqueado") && (
+              <p className="text-sm text-destructive bg-destructive/10 rounded-md p-2">
+                🔒 {rotaClientes.filter((rc) => rc.cliente.status === "bloqueado").length} cliente(s) bloqueado(s) por inadimplência serão pulados.
+              </p>
+            )}
             <div className="space-y-1.5">
               <Label>Descrição do resíduo</Label>
               <Input value={descResiduo} onChange={e => setDescResiduo(e.target.value)} />
@@ -1346,7 +1363,7 @@ function RotaDetalhe({
             <div className="bg-muted/50 rounded-md p-3 text-sm">
               <p className="font-medium">Numeração automática:</p>
               <p className="text-muted-foreground text-xs mt-0.5">
-                MTR-{dataSelecionada.replace(/-/g, "")}-001 até -{String(rotaClientes.length).padStart(3, "0")}
+                MTR-{dataSelecionada.replace(/-/g, "")}-001 até -{String(rotaClientes.filter((rc) => rc.cliente.status !== "bloqueado").length).padStart(3, "0")}
               </p>
             </div>
           </div>

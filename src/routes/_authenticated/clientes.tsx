@@ -11,7 +11,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogFooter } from "@/components/ui/dialog";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Plus, Search, Building2, Trash2, Loader2, UserPlus, UserMinus, CheckCircle2, FolderOpen } from "lucide-react";
+import { Plus, Search, Building2, Trash2, Loader2, UserPlus, UserMinus, CheckCircle2, FolderOpen, Lock, LockOpen } from "lucide-react";
 import { toast } from "sonner";
 import { vincularClienteUsuario, desvincularClienteUsuario } from "@/lib/clientes.functions";
 
@@ -77,6 +77,21 @@ function ClientesPage() {
       qc.invalidateQueries({ queryKey: ["clientes"] });
       toast.success("Cliente removido");
     },
+  });
+
+  const bloquearMutation = useMutation({
+    mutationFn: async ({ id, bloquear }: { id: string; bloquear: boolean }) => {
+      const { error } = await supabase
+        .from("clientes")
+        .update({ status: bloquear ? "bloqueado" : "ativo" })
+        .eq("id", id);
+      if (error) throw error;
+    },
+    onSuccess: (_data, vars) => {
+      qc.invalidateQueries({ queryKey: ["clientes"] });
+      toast.success(vars.bloquear ? "Cliente bloqueado — não sai mais MTR para ele" : "Cliente desbloqueado");
+    },
+    onError: (e: Error) => toast.error(e.message),
   });
 
   const linkMutation = useMutation({
@@ -244,7 +259,11 @@ function ClientesPage() {
                       <Badge variant="secondary">Sem acesso</Badge>
                     )}
                   </TableCell>
-                  <TableCell><Badge variant={c.status === "ativo" ? "default" : "secondary"}>{c.status}</Badge></TableCell>
+                  <TableCell>
+                    <Badge variant={c.status === "ativo" ? "default" : c.status === "bloqueado" ? "destructive" : "secondary"}>
+                      {c.status === "bloqueado" ? "🔒 Bloqueado" : c.status}
+                    </Badge>
+                  </TableCell>
                   <TableCell>
                     <div className="flex items-center gap-1">
                       <Button variant="ghost" size="icon" title="Pasta digital" asChild>
@@ -263,6 +282,13 @@ function ClientesPage() {
                           <UserPlus className="h-4 w-4" />
                         </Button>
                       )}
+                      <Button
+                        variant="ghost" size="icon"
+                        title={c.status === "bloqueado" ? "Desbloquear cliente" : "Bloquear cliente (inadimplência)"}
+                        onClick={() => bloquearMutation.mutate({ id: c.id, bloquear: c.status !== "bloqueado" })}
+                      >
+                        {c.status === "bloqueado" ? <Lock className="h-4 w-4 text-destructive" /> : <LockOpen className="h-4 w-4 text-muted-foreground" />}
+                      </Button>
                       <Button variant="ghost" size="icon" onClick={() => { if (confirm("Remover este cliente?")) deleteMutation.mutate(c.id); }}>
                         <Trash2 className="h-4 w-4 text-destructive" />
                       </Button>

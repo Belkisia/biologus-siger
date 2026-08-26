@@ -183,7 +183,7 @@ function MTRPage() {
   const { data: clientes = [] } = useQuery({
     queryKey: ["clientes-select"],
     queryFn: async () => {
-      const { data } = await supabase.from("clientes").select("id, razao_social, fantasia, cnpj, cidade").order('razao_social', { ascending: true });
+      const { data } = await supabase.from("clientes").select("id, razao_social, fantasia, cnpj, cidade, status").order('razao_social', { ascending: true });
       return data ?? [];
     },
   });
@@ -269,7 +269,7 @@ function MTRPage() {
               <div className="grid md:grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <Label>Cliente (Gerador) *</Label>
-                  <ClienteSearchSelect clientes={clientes} value={clienteFormId} onChange={setClienteFormId} />
+                  <ClienteSearchSelect clientes={clientes} value={clienteFormId} onChange={setClienteFormId} bloquearBloqueados />
                 </div>
                 <div className="space-y-2"><Label htmlFor="numero">Nº MTR *</Label><Input id="numero" name="numero" required placeholder="MTR-2026-0001" /></div>
                 <div className="space-y-2"><Label htmlFor="data_emissao">Data de emissão</Label><Input id="data_emissao" name="data_emissao" type="date" defaultValue={new Date().toISOString().slice(0,10)} /></div>

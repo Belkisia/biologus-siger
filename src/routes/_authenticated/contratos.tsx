@@ -110,7 +110,7 @@ type Cliente = {
   cnpj: string | null; email: string | null; telefone: string | null;
   endereco: string | null; numero: string | null; bairro: string | null;
   cidade: string | null; estado: string | null; cep: string | null;
-  responsavel_financeiro: string | null;
+  responsavel_financeiro: string | null; status?: string | null;
 };
 
 type Contrato = {
@@ -516,7 +516,7 @@ function ContratosPage() {
     queryKey: ["clientes-select"],
     queryFn: async () => {
       const { data } = await supabase.from("clientes").select(
-        "id,razao_social,nome_fantasia,cnpj,email,telefone,endereco,numero,bairro,cidade,estado,cep,responsavel_financeiro"
+        "id,razao_social,nome_fantasia,cnpj,email,telefone,endereco,numero,bairro,cidade,estado,cep,responsavel_financeiro,status"
       ).order('razao_social', { ascending: true });
       return (data ?? []) as Cliente[];
     },
