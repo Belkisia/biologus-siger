@@ -17,6 +17,7 @@ import { Loader2, Plus, Eye, Mail, PenTool, Trash2, FileSignature, Pencil } from
 import { toast } from "sonner";
 import { useServerFn } from "@tanstack/react-start";
 import { enviarContratoEmail, gerarContratoPadraoBioLogus, atualizarContratoPadraoBioLogus, visualizarContrato, listarContratosSemTexto, regenerarContratoConteudo } from "@/lib/contrato.functions";
+import { ClienteSearchSelect } from "@/components/cliente-search-select";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 export const Route = createFileRoute("/_authenticated/contratos")({
@@ -792,17 +793,7 @@ function ContratosPage() {
                 <div className="w-6 h-6 rounded-full bg-primary text-primary-foreground flex items-center justify-center text-xs font-bold">1</div>
                 <Label>Selecionar cliente *</Label>
               </div>
-              <Select name="cliente_id" required value={selectedClienteId} onValueChange={setSelectedClienteId}>
-                <SelectTrigger><SelectValue placeholder="Buscar cliente cadastrado…" /></SelectTrigger>
-                <SelectContent>
-                  {clientes.map((c) => (
-                    <SelectItem key={c.id} value={c.id}>
-                      <span className="font-medium">{c.razao_social}</span>
-                      {c.cnpj && <span className="ml-2 text-muted-foreground text-xs">{c.cnpj}</span>}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+              <ClienteSearchSelect clientes={clientes} value={selectedClienteId} onChange={setSelectedClienteId} />
               {selectedCliente && (
                 <div style={{ background: "#EAF4ED", borderLeft: "4px solid #0D6B54", borderRadius: "0 8px 8px 0", padding: "10px 14px", fontSize: "12px", color: "#084D3C" }}>
                   <strong>{selectedCliente.razao_social}</strong>
