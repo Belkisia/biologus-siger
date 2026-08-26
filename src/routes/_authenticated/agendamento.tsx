@@ -853,6 +853,32 @@ function RotaDetalhe({
     onError: (e: Error) => toast.error(e.message),
   });
 
+  const gerarMTRIndividual = useMutation({
+    mutationFn: async (clienteId: string) => {
+      const numero = `MTR-${dataSelecionada.replace(/-/g, "")}-${String(mtrsHoje.length + 1).padStart(3, "0")}`;
+      const row = {
+        owner_id: user.id,
+        cliente_id: clienteId,
+        numero,
+        data_emissao: dataSelecionada,
+        descricao_residuo: descResiduo,
+        quantidade: 0,
+        unidade: "kg",
+        acondicionamento: "BOMBONA",
+        status: "emitido",
+        rota_codigo: rota.id,
+      };
+      const { error } = await supabase.from("mtrs").insert([row] as any);
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ["mtrs-rota"] });
+      qc.invalidateQueries({ queryKey: ["mtrs"] });
+      toast.success("MTR gerado!");
+    },
+    onError: (e: Error) => toast.error(e.message),
+  });
+
   const imprimirRota = () => {
     const win = window.open("", "_blank");
     if (!win) return;
@@ -1129,6 +1155,15 @@ function RotaDetalhe({
                             <Printer className="h-3.5 w-3.5 text-primary" />
                           </Button>
                         </>
+                      )}
+                      {!mtr && (
+                        <Button
+                          size="sm" variant="outline" className="h-7 text-xs"
+                          disabled={gerarMTRIndividual.isPending}
+                          onClick={() => gerarMTRIndividual.mutate(rc.cliente.id)}
+                        >
+                          {gerarMTRIndividual.isPending ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : "Gerar MTR"}
+                        </Button>
                       )}
                       <Button variant="ghost" size="icon" className="h-7 w-7"
                         onClick={() => removerCliente.mutate(rc.id)}>
