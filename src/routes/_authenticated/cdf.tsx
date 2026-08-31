@@ -237,7 +237,7 @@ function CDFPage() {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("cdfs")
-        .select("*, mtrs(numero, descricao_residuo, acondicionamento, unidade, classe_ibama, clientes(razao_social, fantasia, logradouro, cidade, cnpj))")
+        .select("*, mtrs(numero, descricao_residuo, unidade, clientes(razao_social, fantasia, logradouro, cidade, cnpj))")
         .order("data_destinacao", { ascending: false });
       if (error) throw error;
       return data as CDF[];
