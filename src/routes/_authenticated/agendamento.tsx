@@ -692,11 +692,13 @@ function RotaDetalhe({
   const baixarMTR = useMutation({
     mutationFn: async ({
       mtrId,
+      rcId,
       peso,
       observacoes,
       cliente,
     }: {
       mtrId: string;
+      rcId?: string;
       peso: number;
       observacoes?: string | null;
       cliente: Cliente;
@@ -742,12 +744,39 @@ function RotaDetalhe({
         throw bolError;
       }
 
+      // 3. Registrar o CDF também na tabela "cdfs" — para aparecer na tela de menu "CDF"
+      const { error: cdfError } = await supabase
+        .from("cdfs")
+        .insert([{
+          owner_id: user.id,
+          mtr_id: mtrData.id,
+          numero: numeroCDF,
+          data_destinacao: hoje,
+          tecnologia: "Incineração",
+          destinador: "B-GREEN GESTAO AMBIENTAL S.A.",
+          quantidade_destinada: peso,
+          observacoes: observacoes || null,
+          enviado: false,
+        }] as never[]);
+      if (cdfError) {
+        // Não desfaz a baixa por causa disso — o CDF já existe no boletim e pode ser
+        // visualizado por lá; só avisamos que a cópia na tela "CDF" falhou.
+        console.error("Falha ao espelhar CDF na tabela cdfs:", cdfError);
+      }
+
+      // 4. Marcar o cliente como "coletado" na rota, para ficar visivelmente marcado/ticado
+      if (rcId) {
+        await supabase.from("rota_clientes").update({ coletado: true }).eq("id", rcId);
+      }
+
       // Retorna tudo que o onSuccess precisa
       return { mtrData, boletimData, numeroCDF, cliente, peso, observacoes };
     },
     onSuccess: ({ mtrData, numeroCDF, cliente, peso, observacoes }) => {
       queryClient.invalidateQueries({ queryKey: ["mtrs-rota"] });
       queryClient.invalidateQueries({ queryKey: ["cdfs-rota"] });
+      queryClient.invalidateQueries({ queryKey: ["rota-clientes"] });
+      queryClient.invalidateQueries({ queryKey: ["cdfs"] });
       toast.success("MTR baixado! Boletim e CDF gerados.");
 
       // 3. Abrir CDF na modal interna (sem popup bloqueado)
@@ -1089,6 +1118,7 @@ function RotaDetalhe({
                                 );
                                 baixarMTR.mutate({
                                   mtrId: mtr.id,
+                                  rcId: rc.id,
                                   peso: pesoNum,
                                   observacoes: observacoes || null,
                                   cliente: rc.cliente,
