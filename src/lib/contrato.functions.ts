@@ -907,6 +907,23 @@ export const listarContratosSemTexto = createServerFn({ method: "POST" })
     return { ids: (data || []).map((c) => c.id) };
   });
 
+// Lista contratos cujo texto já foi gerado mas ainda contém algum campo
+// pendente (aparece em vermelho, tipo [VALOR_EXCEDENTE] ou
+// [REPRESENTANTE_NOME]) — geralmente porque faltava um dado no cadastro
+// do cliente/contrato na hora em que o texto foi gerado. Usado pelo botão
+// "Corrigir campos pendentes" para regenerar só esses, depois que os dados
+// já tiverem sido corrigidos.
+export const listarContratosComCampoPendente = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .handler(async ({ context }) => {
+    const { data, error } = await context.supabase
+      .from("contratos")
+      .select("id, numero")
+      .ilike("conteudo_html", "%#b91c1c%");
+    if (error) throw new Error(error.message);
+    return { ids: (data || []).map((c) => c.id) };
+  });
+
 export const regenerarContratoConteudo = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((d: { contrato_id: string }) =>

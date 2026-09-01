@@ -11,7 +11,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogFooter } from "@/components/ui/dialog";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Plus, Search, Building2, Trash2, Loader2, UserPlus, UserMinus, CheckCircle2, FolderOpen, Lock, LockOpen } from "lucide-react";
+import { Plus, Search, Building2, Trash2, Loader2, UserPlus, UserMinus, CheckCircle2, FolderOpen, Lock, LockOpen, Pencil } from "lucide-react";
 import { toast } from "sonner";
 import { vincularClienteUsuario, desvincularClienteUsuario } from "@/lib/clientes.functions";
 
@@ -32,6 +32,7 @@ type Cliente = {
   user_id: string | null;
   created_at: string;
   transportadora: string | null;
+  [key: string]: unknown;
 };
 
 function ClientesPage() {
@@ -40,6 +41,7 @@ function ClientesPage() {
   const [open, setOpen] = useState(false);
   const [linkTarget, setLinkTarget] = useState<Cliente | null>(null);
   const [linkEmail, setLinkEmail] = useState("");
+  const [editingCliente, setEditingCliente] = useState<Cliente | null>(null);
   const { user } = Route.useRouteContext();
 
   const vincular = useServerFn(vincularClienteUsuario);
@@ -64,6 +66,20 @@ function ClientesPage() {
       qc.invalidateQueries({ queryKey: ["clientes"] });
       toast.success("Cliente cadastrado");
       setOpen(false);
+    },
+    onError: (e: Error) => toast.error(e.message),
+  });
+
+  const updateMutation = useMutation({
+    mutationFn: async ({ id, payload }: { id: string; payload: Record<string, unknown> }) => {
+      const { error } = await supabase.from("clientes").update(payload as never).eq("id", id);
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ["clientes"] });
+      qc.invalidateQueries({ queryKey: ["clientes-select"] });
+      toast.success("Cliente atualizado");
+      setEditingCliente(null);
     },
     onError: (e: Error) => toast.error(e.message),
   });
@@ -125,6 +141,15 @@ function ClientesPage() {
     const payload: Record<string, unknown> = {};
     fd.forEach((v, k) => { if (v) payload[k] = v; });
     createMutation.mutate(payload);
+  };
+
+  const handleEditSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    if (!editingCliente) return;
+    const fd = new FormData(e.currentTarget);
+    const payload: Record<string, unknown> = {};
+    fd.forEach((v, k) => { payload[k] = v || null; });
+    updateMutation.mutate({ id: editingCliente.id, payload });
   };
 
   const filtered = clientes.filter((c) => {
@@ -289,6 +314,9 @@ function ClientesPage() {
                       >
                         {c.status === "bloqueado" ? <Lock className="h-4 w-4 text-destructive" /> : <LockOpen className="h-4 w-4 text-muted-foreground" />}
                       </Button>
+                      <Button variant="ghost" size="icon" title="Editar cliente" onClick={() => setEditingCliente(c)}>
+                        <Pencil className="h-4 w-4" />
+                      </Button>
                       <Button variant="ghost" size="icon" onClick={() => { if (confirm("Remover este cliente?")) deleteMutation.mutate(c.id); }}>
                         <Trash2 className="h-4 w-4 text-destructive" />
                       </Button>
@@ -300,6 +328,82 @@ function ClientesPage() {
           </Table>
         )}
       </Card>
+
+      <Dialog open={!!editingCliente} onOpenChange={(v) => !v && setEditingCliente(null)}>
+        <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+          <DialogHeader><DialogTitle>Editar cliente</DialogTitle></DialogHeader>
+          {editingCliente && (
+            <form onSubmit={handleEditSubmit} className="space-y-4">
+              <div className="grid md:grid-cols-2 gap-4">
+                <Field name="razao_social" label="Razão Social *" required defaultValue={editingCliente.razao_social as string} />
+                <Field name="nome_fantasia" label="Nome Fantasia" defaultValue={(editingCliente.nome_fantasia as string) ?? ""} />
+                <Field name="cnpj" label="CNPJ *" required placeholder="00.000.000/0000-00" defaultValue={editingCliente.cnpj as string} />
+                <Field name="inscricao_estadual" label="Inscrição Estadual" defaultValue={(editingCliente.inscricao_estadual as string) ?? ""} />
+                <Field name="cnae" label="CNAE" defaultValue={(editingCliente.cnae as string) ?? ""} />
+                <Field name="porte" label="Porte" defaultValue={(editingCliente.porte as string) ?? ""} />
+                <Field name="responsavel_tecnico" label="Resp. Técnico" defaultValue={(editingCliente.responsavel_tecnico as string) ?? ""} />
+                <Field name="responsavel_financeiro" label="Resp. Financeiro" defaultValue={(editingCliente.responsavel_financeiro as string) ?? ""} />
+                <Field name="email" label="E-mail" type="email" defaultValue={(editingCliente.email as string) ?? ""} />
+                <Field name="telefone" label="Telefone" defaultValue={(editingCliente.telefone as string) ?? ""} />
+                <Field name="whatsapp" label="WhatsApp" defaultValue={(editingCliente.whatsapp as string) ?? ""} />
+                <Field name="cep" label="CEP" defaultValue={(editingCliente.cep as string) ?? ""} />
+                <Field name="endereco" label="Endereço" defaultValue={(editingCliente.endereco as string) ?? ""} />
+                <Field name="numero" label="Número" defaultValue={(editingCliente.numero as string) ?? ""} />
+                <Field name="bairro" label="Bairro" defaultValue={(editingCliente.bairro as string) ?? ""} />
+                <Field name="cidade" label="Cidade" defaultValue={(editingCliente.cidade as string) ?? ""} />
+                <Field name="estado" label="UF" defaultValue={(editingCliente.estado as string) ?? ""} />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="transportadora">Transportadora</Label>
+                <select
+                  id="transportadora"
+                  name="transportadora"
+                  defaultValue={(editingCliente.transportadora as string) ?? "bio_logus"}
+                  className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                >
+                  <option value="bio_logus">Bio Logus Ambiental Ltda - ME</option>
+                  <option value="ativa">Ativa Comercial Comércio e Serviços Ltda</option>
+                </select>
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="inscricao_municipal">Inscrição Municipal</Label>
+                <Input id="inscricao_municipal" name="inscricao_municipal" placeholder="Opcional — pessoa física deixar em branco" defaultValue={(editingCliente.inscricao_municipal as string) ?? ""} />
+              </div>
+
+              <div className="border rounded-lg p-4 space-y-3 bg-muted/30">
+                <p className="text-sm font-semibold text-foreground">Contrato / Valores</p>
+                <div className="grid grid-cols-3 gap-3">
+                  <div className="space-y-1.5">
+                    <Label htmlFor="valor_franquia">Valor franquia (R$)</Label>
+                    <Input id="valor_franquia" name="valor_franquia" type="number" step="0.01" min="0" placeholder="0,00" defaultValue={(editingCliente.valor_franquia as number) ?? ""} />
+                  </div>
+                  <div className="space-y-1.5">
+                    <Label htmlFor="peso_franquia">Peso franquia (kg)</Label>
+                    <Input id="peso_franquia" name="peso_franquia" type="number" step="0.001" min="0" placeholder="0,000" defaultValue={(editingCliente.peso_franquia as number) ?? ""} />
+                  </div>
+                  <div className="space-y-1.5">
+                    <Label htmlFor="valor_kg_excedente">Valor kg excedente (R$)</Label>
+                    <Input id="valor_kg_excedente" name="valor_kg_excedente" type="number" step="0.01" min="0" placeholder="0,00" defaultValue={(editingCliente.valor_kg_excedente as number) ?? ""} />
+                  </div>
+                </div>
+                <p className="text-xs text-muted-foreground">Se o peso coletado ultrapassar a franquia, o excedente será cobrado pelo valor/kg definido.</p>
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="observacoes">Observações</Label>
+                <Textarea id="observacoes" name="observacoes" rows={3} defaultValue={(editingCliente.observacoes as string) ?? ""} />
+              </div>
+              <DialogFooter>
+                <Button type="button" variant="ghost" onClick={() => setEditingCliente(null)}>Cancelar</Button>
+                <Button type="submit" disabled={updateMutation.isPending}>
+                  {updateMutation.isPending && <Loader2 className="h-4 w-4 mr-2 animate-spin" />}
+                  Salvar alterações
+                </Button>
+              </DialogFooter>
+            </form>
+          )}
+        </DialogContent>
+      </Dialog>
 
       <Dialog open={!!linkTarget} onOpenChange={(v) => !v && setLinkTarget(null)}>
         <DialogContent>

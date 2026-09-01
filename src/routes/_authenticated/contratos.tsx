@@ -16,7 +16,7 @@ import {
 import { Loader2, Plus, Eye, Mail, PenTool, Trash2, FileSignature, Pencil } from "lucide-react";
 import { toast } from "sonner";
 import { useServerFn } from "@tanstack/react-start";
-import { enviarContratoEmail, gerarContratoPadraoBioLogus, atualizarContratoPadraoBioLogus, visualizarContrato, listarContratosSemTexto, regenerarContratoConteudo } from "@/lib/contrato.functions";
+import { enviarContratoEmail, gerarContratoPadraoBioLogus, atualizarContratoPadraoBioLogus, visualizarContrato, listarContratosSemTexto, listarContratosComCampoPendente, regenerarContratoConteudo } from "@/lib/contrato.functions";
 import { ClienteSearchSelect } from "@/components/cliente-search-select";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
@@ -123,7 +123,7 @@ type Contrato = {
   grupos_residuos: string | null; frequencia_coleta: string | null;
   limite_kg: number | null; valor_excedente: number | null;
   vigencia_anos: string | null;
-  clientes?: { razao_social: string } | null;
+  clientes?: { razao_social: string; nome_fantasia?: string | null; cnpj?: string | null } | null;
 };
 
 function ContratoViewer({ contrato, html, onClose, onAssinar }: { contrato: Contrato; html: string; onClose: () => void; onAssinar: () => void; }) {
@@ -474,8 +474,10 @@ function ContratosPage() {
   const enviarEmail = useServerFn(enviarContratoEmail);
   const gerarContratoPadrao = useServerFn(gerarContratoPadraoBioLogus);
   const buscarContratosSemTexto = useServerFn(listarContratosSemTexto);
+  const buscarContratosComCampoPendente = useServerFn(listarContratosComCampoPendente);
   const regenerarContrato = useServerFn(regenerarContratoConteudo);
   const [regenerando, setRegenerando] = useState<{ total: number; feito: number } | null>(null);
+  const [corrigindo, setCorrigindo] = useState<{ total: number; feito: number } | null>(null);
 
   const handleRegenerarTodos = async () => {
     setRegenerando({ total: 0, feito: 0 });
@@ -508,6 +510,37 @@ function ContratosPage() {
       setRegenerando(null);
     }
   };
+  const handleCorrigirPendentes = async () => {
+    setCorrigindo({ total: 0, feito: 0 });
+    try {
+      const { ids } = await buscarContratosComCampoPendente({ data: undefined as never });
+      if (ids.length === 0) {
+        toast.success("Nenhum contrato com campo pendente encontrado.");
+        setCorrigindo(null);
+        return;
+      }
+      setCorrigindo({ total: ids.length, feito: 0 });
+      let erros = 0;
+      for (let i = 0; i < ids.length; i++) {
+        try {
+          await regenerarContrato({ data: { contrato_id: ids[i] } });
+        } catch {
+          erros++;
+        }
+        setCorrigindo({ total: ids.length, feito: i + 1 });
+      }
+      qc.invalidateQueries({ queryKey: ["contratos"] });
+      toast.success(
+        erros > 0
+          ? `${ids.length - erros} contratos corrigidos, ${erros} ainda com campo faltando no cadastro.`
+          : `${ids.length} contratos corrigidos!`,
+      );
+    } catch (e) {
+      toast.error(e instanceof Error ? e.message : "Falha ao corrigir contratos");
+    } finally {
+      setCorrigindo(null);
+    }
+  };
   const atualizarContratoPadrao = useServerFn(atualizarContratoPadraoBioLogus);
   const visualizarContratoHtml = useServerFn(visualizarContrato);
   
@@ -525,7 +558,7 @@ function ContratosPage() {
   const { data: contratos = [], isLoading } = useQuery({
     queryKey: ["contratos"],
     queryFn: async () => {
-      const { data, error } = await supabase.from("contratos").select("*,clientes(razao_social)").order("created_at", { ascending: false });
+      const { data, error } = await supabase.from("contratos").select("*,clientes(razao_social,nome_fantasia,cnpj)").order("created_at", { ascending: false });
       if (error) throw error;
       return data as Contrato[];
     },
@@ -636,7 +669,15 @@ function ContratosPage() {
   // Filtros estilo EcoTrack
   const contratosFiltrados = contratos.filter((c) => {
     const razao = c.clientes?.razao_social?.toLowerCase() || "";
-    const buscaOk = !busca || razao.includes(busca.toLowerCase()) || c.numero.includes(busca);
+    const fantasia = c.clientes?.nome_fantasia?.toLowerCase() || "";
+    const cnpjLimpo = (c.clientes?.cnpj || "").replace(/\D/g, "");
+    const buscaLimpa = busca.replace(/\D/g, "");
+    const buscaOk =
+      !busca ||
+      razao.includes(busca.toLowerCase()) ||
+      fantasia.includes(busca.toLowerCase()) ||
+      c.numero.includes(busca) ||
+      (buscaLimpa.length > 0 && cnpjLimpo.includes(buscaLimpa));
     const filtroOk = filtro === "todos" || c.status === filtro;
     return buscaOk && filtroOk;
   });
@@ -677,6 +718,14 @@ function ContratosPage() {
             title="Gera o texto jurídico completo para os contratos que ainda mostram só o resumo (importados da planilha antiga)"
           >
             {regenerando ? `Atualizando ${regenerando.feito}/${regenerando.total}…` : "Atualizar textos antigos"}
+          </button>
+          <button
+            className="eco-btn"
+            onClick={handleCorrigirPendentes}
+            disabled={!!corrigindo}
+            title="Regera o texto dos contratos que ainda mostram algum campo em vermelho tipo [VALOR_EXCEDENTE], depois que o cadastro já tiver sido corrigido"
+          >
+            {corrigindo ? `Corrigindo ${corrigindo.feito}/${corrigindo.total}…` : "Corrigir campos pendentes"}
           </button>
           <button className="eco-btn eco-btn-p" onClick={() => { setEditandoContratoId(null); setNovoOpen(true); setSelectedClienteId(""); setDataInicio(""); setPeriodicidade("anual"); setDataFim(""); }} disabled={clientes.length === 0}>
             <Plus size={14} /> Novo contrato
