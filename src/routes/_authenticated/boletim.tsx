@@ -12,7 +12,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Checkbox } from "@/components/ui/checkbox";
 import {
   ClipboardCheck, Scale, CheckCircle2, Loader2,
-  Send, DollarSign, FileCheck, FileText, Plus, Eye, Eraser, RefreshCw
+  Send, DollarSign, FileCheck, FileText, Plus, Eye, Eraser, RefreshCw, Search
 } from "lucide-react";
 import { toast } from "sonner";
 
@@ -504,6 +504,7 @@ function BoletimPage() {
   const [openEnvio, setOpenEnvio] = useState<Boletim | null>(null);
   const [openNFSe, setOpenNFSe] = useState<Boletim | null>(null);
   const [filtroStatus, setFiltroStatus] = useState("todos");
+  const [busca, setBusca] = useState("");
   const [selecionadosFatura, setSelecionadosFatura] = useState<string[]>([]);
   const [dataFiltro, setDataFiltro] = useState(() => new Date().toISOString().slice(0, 10));
 
@@ -537,7 +538,22 @@ function BoletimPage() {
     },
   });
 
-  const boletinsFiltrados = filtroStatus === "todos" ? boletins : boletins.filter((b) => b.status === filtroStatus);
+  const boletinsBusca = boletins.filter((b) => {
+    if (!busca.trim()) return true;
+    const termo = busca.trim().toLowerCase();
+    const cliente = (b.clientes?.razao_social || "").toLowerCase();
+    const fantasia = (b.clientes?.nome_fantasia || "").toLowerCase();
+    const mtrNumero = (b.mtrs?.numero || "").toLowerCase();
+    const cnpjLimpo = (b.clientes?.cnpj || "").replace(/\D/g, "");
+    const buscaLimpa = termo.replace(/\D/g, "");
+    return (
+      cliente.includes(termo) ||
+      fantasia.includes(termo) ||
+      mtrNumero.includes(termo) ||
+      (buscaLimpa.length > 0 && cnpjLimpo.includes(buscaLimpa))
+    );
+  });
+  const boletinsFiltrados = filtroStatus === "todos" ? boletinsBusca : boletinsBusca.filter((b) => b.status === filtroStatus);
 
   // ── Faturar um ou mais boletins (agrupa automaticamente por cliente) ──
   const faturarBoletins = useMutation({
@@ -812,6 +828,17 @@ comercial@biologusambiental.com.br`
         </div>
       </Card>
 
+      {/* Busca */}
+      <div className="relative max-w-sm">
+        <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+        <Input
+          placeholder="Buscar por cliente, MTR ou CNPJ..."
+          value={busca}
+          onChange={(e) => setBusca(e.target.value)}
+          className="pl-9"
+        />
+      </div>
+
       {/* Filtro status */}
       <div className="flex items-center justify-between gap-2 flex-wrap">
         <div className="flex gap-2 flex-wrap">
@@ -820,7 +847,7 @@ comercial@biologusambiental.com.br`
               className={`text-xs px-3 py-1.5 rounded-full border transition-colors ${
                 filtroStatus === s ? "bg-primary text-primary-foreground border-primary" : "border-border text-muted-foreground hover:border-primary/40"
               }`}>
-              {s === "todos" ? `Todos (${boletins.length})` : STATUS_CONFIG[s]?.label}
+              {s === "todos" ? `Todos (${boletinsBusca.length})` : STATUS_CONFIG[s]?.label}
             </button>
           ))}
         </div>

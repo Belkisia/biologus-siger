@@ -566,7 +566,16 @@ function ContratosPage() {
 
   const selectedCliente = clientes.find((c) => c.id === selectedClienteId) ?? null;
   const editingContrato = editandoContratoId ? contratos.find((c) => c.id === editandoContratoId) ?? null : null;
-  const proximoNumero = `CT-BLA${String(contratos.length + 1).padStart(4, "0")}`;
+  // Gera o próximo número olhando o MAIOR número "CT-BLA####" já usado
+  // (não a quantidade de contratos), pra nunca colidir com um número
+  // existente e causar erro de duplicado silencioso na criação.
+  const maiorNumeroCTBLA = contratos.reduce((max, c) => {
+    const m = /^CT-BLA(\d+)$/.exec(c.numero || "");
+    if (!m) return max;
+    const n = parseInt(m[1], 10);
+    return n > max ? n : max;
+  }, 0);
+  const proximoNumero = `CT-BLA${String(maiorNumeroCTBLA + 1).padStart(4, "0")}`;
 
   function addMonthsISO(d: string, m: number) {
     const dt = new Date(d + "T00:00:00"); dt.setMonth(dt.getMonth() + m); dt.setDate(dt.getDate() - 1);
