@@ -11,7 +11,7 @@ import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogFooter } from "@/components/ui/dialog";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Plus, DollarSign, Loader2, Trash2, CheckCircle2, FileText } from "lucide-react";
+import { Plus, DollarSign, Loader2, Trash2, CheckCircle2, FileText, Search } from "lucide-react";
 import { toast } from "sonner";
 import { useServerFn } from "@tanstack/react-start";
 import { emitirNfseDeFatura } from "@/lib/nfse.functions";
@@ -55,6 +55,7 @@ function FinanceiroPage() {
   const qc = useQueryClient();
   const [open, setOpen] = useState(false);
   const [filtro, setFiltro] = useState<string>("todas");
+  const [busca, setBusca] = useState("");
   const { user } = Route.useRouteContext();
 
   const { data: clientes = [] } = useQuery({
@@ -184,7 +185,12 @@ function FinanceiroPage() {
     return { recebido, aReceber, vencido, total: faturas.length };
   }, [faturas]);
 
-  const filtradas = filtro === "todas" ? faturas : faturas.filter((f) => f.status === filtro);
+  const filtradas = (filtro === "todas" ? faturas : faturas.filter((f) => f.status === filtro)).filter((f) => {
+    if (!busca.trim()) return true;
+    const termo = busca.trim().toLowerCase();
+    const cliente = (f.clientes?.razao_social || "").toLowerCase();
+    return cliente.includes(termo) || f.numero.toLowerCase().includes(termo);
+  });
 
   return (
     <div className="space-y-6">
@@ -304,6 +310,15 @@ function FinanceiroPage() {
                 {s === "todas" ? "Todas" : STATUS_MAP[s]?.label}
               </Button>
             ))}
+          </div>
+          <div className="relative w-full sm:w-64">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+            <Input
+              placeholder="Buscar por cliente ou nº da fatura..."
+              value={busca}
+              onChange={(e) => setBusca(e.target.value)}
+              className="pl-9"
+            />
           </div>
         </div>
 
