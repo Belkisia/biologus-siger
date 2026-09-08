@@ -130,9 +130,12 @@ function FinanceiroPage() {
   });
 
   const updateStatus = useMutation({
-    mutationFn: async ({ id, status }: { id: string; status: string }) => {
+    mutationFn: async ({ id, status, valor }: { id: string; status: string; valor: number }) => {
       const patch: Record<string, unknown> = { status };
-      if (status !== "paga") {
+      if (status === "paga") {
+        patch.valor_pago = valor;
+        patch.data_pagamento = new Date().toISOString().slice(0, 10);
+      } else {
         patch.valor_pago = null;
         patch.data_pagamento = null;
       }
@@ -359,7 +362,7 @@ function FinanceiroPage() {
                       {f.data_pagamento ? new Date(f.data_pagamento).toLocaleDateString("pt-BR") : "—"}
                     </TableCell>
                     <TableCell>
-                      <Select value={f.status} onValueChange={(v) => updateStatus.mutate({ id: f.id, status: v })}>
+                      <Select value={f.status} onValueChange={(v) => updateStatus.mutate({ id: f.id, status: v, valor: f.valor })}>
                         <SelectTrigger className="w-32 h-8">
                           <Badge variant={s.variant}>{s.label}</Badge>
                         </SelectTrigger>
