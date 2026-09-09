@@ -326,6 +326,10 @@ function abrirCDFBlob(params: Parameters<typeof gerarHTMLCDF>[0]): string {
 // ─────────────────────────────────────────────
 // Calcular valor da nota fiscal
 // ─────────────────────────────────────────────
+function brl(v: number) {
+  return v.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
+}
+
 function calcularValorNF(peso: number, cliente: {
   valor_franquia?: number | null;
   peso_franquia?: number | null;
@@ -883,6 +887,7 @@ comercial@biologusambiental.com.br`
                 <TableHead>Cliente</TableHead>
                 <TableHead>MTR</TableHead>
                 <TableHead>Peso</TableHead>
+                <TableHead>Valor</TableHead>
                 <TableHead>Assinatura</TableHead>
                 <TableHead>Status</TableHead>
                 <TableHead>Faturamento</TableHead>
@@ -909,6 +914,25 @@ comercial@biologusambiental.com.br`
                   </TableCell>
                   <TableCell className="text-sm text-muted-foreground">{b.mtrs?.numero ?? "—"}</TableCell>
                   <TableCell className="text-sm font-semibold">{b.peso_coletado} {b.unidade}</TableCell>
+                  <TableCell className="text-sm">
+                    {(() => {
+                      const c = b.clientes;
+                      if (!c || (!c.valor_franquia && !c.valor_kg_excedente)) {
+                        return <span className="text-xs text-muted-foreground" title="Cadastre a franquia/valor do cliente para calcular">—</span>;
+                      }
+                      const calc = calcularValorNF(b.peso_coletado, c);
+                      return (
+                        <div className="flex flex-col">
+                          <span className="font-semibold">{brl(calc.valorTotal)}</span>
+                          {calc.pesoExcedente > 0 && (
+                            <span className="text-[10px] text-muted-foreground">
+                              +{calc.pesoExcedente.toFixed(2)}kg exc. ({brl(calc.valorExcedente)})
+                            </span>
+                          )}
+                        </div>
+                      );
+                    })()}
+                  </TableCell>
                   <TableCell>
                     {b.assinatura_cliente
                       ? <span className="flex items-center gap-1 text-xs text-green-600"><CheckCircle2 className="h-3.5 w-3.5" /> Assinado</span>
