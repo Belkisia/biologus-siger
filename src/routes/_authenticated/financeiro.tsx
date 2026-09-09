@@ -2,7 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useState, useMemo } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
-import { Card } from "@/components/ui/card";
+import { normalizarBusca } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -187,8 +187,8 @@ function FinanceiroPage() {
 
   const filtradas = (filtro === "todas" ? faturas : faturas.filter((f) => f.status === filtro)).filter((f) => {
     if (!busca.trim()) return true;
-    const termo = busca.trim().toLowerCase();
-    const cliente = (f.clientes?.razao_social || "").toLowerCase();
+    const termo = normalizarBusca(busca.trim());
+    const cliente = normalizarBusca(f.clientes?.razao_social || "");
     return cliente.includes(termo) || f.numero.toLowerCase().includes(termo);
   });
 

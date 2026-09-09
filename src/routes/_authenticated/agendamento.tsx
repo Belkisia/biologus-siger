@@ -209,7 +209,7 @@ function gerarHTMLCDF(params: {
     </div>
     <div class="title-band">
       <div class="cert-title">Certificado de Destinação Final</div>
-      <div class="period-badge">${periodoInicioFmt} — ${periodoFimFmt}</div>
+      <div class="period-badge">${periodoInicioFmt === periodoFimFmt ? periodoInicioFmt : `${periodoInicioFmt} — ${periodoFimFmt}`}</div>
     </div>
   </div>
 
@@ -781,12 +781,15 @@ function RotaDetalhe({
 
       // 3. Abrir CDF na modal interna (sem popup bloqueado)
       const hoje = new Date().toISOString().split("T")[0];
+      const [anoRef, mesRef] = hoje.split("-").map(Number);
+      const primeiroDiaMes = `${anoRef}-${String(mesRef).padStart(2, "0")}-01`;
+      const ultimoDiaMes = new Date(anoRef, mesRef, 0).toISOString().split("T")[0];
       const blobUrl = abrirCDFBlob({
         numeroCDF,
         numeroMTR: mtrData.numero,
         dataEmissao: hoje,
-        periodoInicio: mtrData.data_emissao || hoje,
-        periodoFim: hoje,
+        periodoInicio: primeiroDiaMes,
+        periodoFim: ultimoDiaMes,
         peso,
         unidade: mtrData.unidade || "kg",
         observacoes,
@@ -1135,12 +1138,16 @@ function RotaDetalhe({
                               title={`Visualizar CDF ${boletim.cdf_id}`}
                               onClick={() => {
                                 const hoje = new Date().toISOString().split("T")[0];
+                                const dataReal = mtr.data_baixa || hoje;
+                                const [anoRef, mesRef] = dataReal.split("-").map(Number);
+                                const primeiroDiaMes = `${anoRef}-${String(mesRef).padStart(2, "0")}-01`;
+                                const ultimoDiaMes = new Date(anoRef, mesRef, 0).toISOString().split("T")[0];
                                 const blobUrl = abrirCDFBlob({
                                   numeroCDF: boletim.cdf_id ?? "",
                                   numeroMTR: mtr.numero,
-                                  dataEmissao: mtr.data_emissao || hoje,
-                                  periodoInicio: mtr.data_emissao || hoje,
-                                  periodoFim: mtr.data_baixa || hoje,
+                                  dataEmissao: dataReal,
+                                  periodoInicio: primeiroDiaMes,
+                                  periodoFim: ultimoDiaMes,
                                   peso: mtr.quantidade,
                                   unidade: mtr.unidade || "kg",
                                   observacoes: boletim.observacoes,

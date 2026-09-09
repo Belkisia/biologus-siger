@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Check, ChevronsUpDown, Search } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { cn, normalizarBusca } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import {
   Command,
@@ -70,8 +70,8 @@ export function ClienteSearchSelect({
           filter={(itemId, search) => {
             const c = clientes.find((x) => x.id === itemId);
             if (!c) return 0;
-            const alvo = `${nomeExibicao(c)} ${c.razao_social} ${c.cnpj ?? ""} ${c.cidade ?? ""}`.toLowerCase();
-            return alvo.includes(search.toLowerCase()) ? 1 : 0;
+            const alvo = normalizarBusca(`${nomeExibicao(c)} ${c.razao_social} ${c.cnpj ?? ""} ${c.cidade ?? ""}`);
+            return alvo.includes(normalizarBusca(search)) ? 1 : 0;
           }}
         >
           <CommandInput placeholder="Digite o nome, CNPJ ou cidade…" />

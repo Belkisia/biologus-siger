@@ -2,7 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useState, useRef } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
-import { Card } from "@/components/ui/card";
+import { normalizarBusca } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -540,12 +540,12 @@ function BoletimPage() {
 
   const boletinsBusca = boletins.filter((b) => {
     if (!busca.trim()) return true;
-    const termo = busca.trim().toLowerCase();
-    const cliente = (b.clientes?.razao_social || "").toLowerCase();
-    const fantasia = (b.clientes?.nome_fantasia || "").toLowerCase();
+    const termo = normalizarBusca(busca.trim());
+    const cliente = normalizarBusca(b.clientes?.razao_social || "");
+    const fantasia = normalizarBusca(b.clientes?.nome_fantasia || "");
     const mtrNumero = (b.mtrs?.numero || "").toLowerCase();
     const cnpjLimpo = (b.clientes?.cnpj || "").replace(/\D/g, "");
-    const buscaLimpa = termo.replace(/\D/g, "");
+    const buscaLimpa = busca.replace(/\D/g, "");
     return (
       cliente.includes(termo) ||
       fantasia.includes(termo) ||

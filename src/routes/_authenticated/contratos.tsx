@@ -3,6 +3,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useRef, useState, useCallback, useEffect } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
+import { normalizarBusca } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -677,14 +678,15 @@ function ContratosPage() {
 
   // Filtros estilo EcoTrack
   const contratosFiltrados = contratos.filter((c) => {
-    const razao = c.clientes?.razao_social?.toLowerCase() || "";
-    const fantasia = c.clientes?.nome_fantasia?.toLowerCase() || "";
+    const razao = normalizarBusca(c.clientes?.razao_social || "");
+    const fantasia = normalizarBusca(c.clientes?.nome_fantasia || "");
     const cnpjLimpo = (c.clientes?.cnpj || "").replace(/\D/g, "");
     const buscaLimpa = busca.replace(/\D/g, "");
+    const buscaNorm = normalizarBusca(busca);
     const buscaOk =
       !busca ||
-      razao.includes(busca.toLowerCase()) ||
-      fantasia.includes(busca.toLowerCase()) ||
+      razao.includes(buscaNorm) ||
+      fantasia.includes(buscaNorm) ||
       c.numero.includes(busca) ||
       (buscaLimpa.length > 0 && cnpjLimpo.includes(buscaLimpa));
     const filtroOk = filtro === "todos" || c.status === filtro;
