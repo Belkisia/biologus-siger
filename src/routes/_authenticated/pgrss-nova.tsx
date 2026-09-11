@@ -72,6 +72,14 @@ function NovaPgrssSimples() {
   const salvar = useServerFn(salvarPropostaPgrss);
   const [clientes, setClientes] = useState<Cliente[]>([]);
   const [clienteId, setClienteId] = useState<string>("");
+  const [avulso, setAvulso] = useState(false);
+  const [avRazaoSocial, setAvRazaoSocial] = useState("");
+  const [avCnpj, setAvCnpj] = useState("");
+  const [avCidade, setAvCidade] = useState("");
+  const [avEstado, setAvEstado] = useState("");
+  const [avEndereco, setAvEndereco] = useState("");
+  const [avEmail, setAvEmail] = useState("");
+  const [avTelefone, setAvTelefone] = useState("");
   const [valor, setValor] = useState<string>("");
   const [prazo, setPrazo] = useState<string>("30");
   const [validade, setValidade] = useState<string>("30");
@@ -89,7 +97,26 @@ function NovaPgrssSimples() {
     })();
   }, []);
 
-  const cliente = clientes.find((c) => c.id === clienteId);
+  const clienteExistente = clientes.find((c) => c.id === clienteId);
+  const clienteAvulso: Cliente | null = avulso && avRazaoSocial.trim()
+    ? {
+        id: "",
+        razao_social: avRazaoSocial.trim(),
+        nome_fantasia: null,
+        cnpj: avCnpj.trim(),
+        endereco: avEndereco.trim() || null,
+        numero: null,
+        bairro: null,
+        cidade: avCidade.trim() || null,
+        estado: avEstado.trim() || null,
+        cep: null,
+        email: avEmail.trim() || null,
+        telefone: avTelefone.trim() || null,
+        responsavel_tecnico: null,
+        responsavel_financeiro: null,
+      }
+    : null;
+  const cliente = avulso ? clienteAvulso : clienteExistente;
   const valorNum = Number(valor.replace(/\./g, "").replace(",", ".")) || 0;
 
   function numeroAuto() {
@@ -193,15 +220,38 @@ function NovaPgrssSimples() {
   }
 
   async function onSalvar() {
-    if (!cliente) return toast.error("Selecione um cliente");
+    if (!cliente) return toast.error(avulso ? "Preencha ao menos a razão social" : "Selecione um cliente");
+    if (avulso && !avCnpj.trim()) return toast.error("Informe o CNPJ do cliente");
     if (valorNum <= 0) return toast.error("Informe o valor");
     setSaving(true);
     try {
+      let clienteIdReal = cliente.id;
+      if (avulso) {
+        const { data: userData } = await supabase.auth.getUser();
+        const { data: novoCliente, error: erroCliente } = await supabase
+          .from("clientes")
+          .insert({
+            owner_id: userData.user?.id,
+            razao_social: cliente.razao_social,
+            nome_fantasia: cliente.nome_fantasia,
+            cnpj: cliente.cnpj,
+            endereco: cliente.endereco,
+            cidade: cliente.cidade,
+            estado: cliente.estado,
+            email: cliente.email,
+            telefone: cliente.telefone,
+            status: "ativo",
+          } as never)
+          .select("id")
+          .single();
+        if (erroCliente) throw new Error(erroCliente.message);
+        clienteIdReal = (novoCliente as { id: string }).id;
+      }
       const numero = numeroAuto();
       const html = gerarHtml(numero);
       const res = await salvar({
         data: {
-          cliente_id: cliente.id,
+          cliente_id: clienteIdReal,
           numero,
           validade: new Date(Date.now() + Number(validade) * 86400000).toISOString().slice(0, 10),
           questionario: {
@@ -245,16 +295,62 @@ function NovaPgrssSimples() {
       {/* 1. Cliente */}
       <section className="border rounded-lg p-4 space-y-3">
         <h2 className="font-semibold text-lg">1. Cliente</h2>
-        <Select value={clienteId} onValueChange={setClienteId}>
-          <SelectTrigger><SelectValue placeholder="Selecione um cliente" /></SelectTrigger>
-          <SelectContent>
-            {clientes.map((c) => (
-              <SelectItem key={c.id} value={c.id}>
-                {c.razao_social}{c.nome_fantasia ? ` (${c.nome_fantasia})` : ""}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
+        <div className="flex items-center gap-2">
+          <input
+            type="checkbox"
+            id="cliente-avulso"
+            checked={avulso}
+            onChange={(e) => { setAvulso(e.target.checked); setClienteId(""); }}
+            className="h-4 w-4"
+          />
+          <Label htmlFor="cliente-avulso" className="cursor-pointer font-normal">
+            Cliente ainda não cadastrado (avulso) — será cadastrado automaticamente ao salvar
+          </Label>
+        </div>
+
+        {avulso ? (
+          <div className="grid md:grid-cols-2 gap-3">
+            <div className="space-y-1.5 md:col-span-2">
+              <Label>Razão Social *</Label>
+              <Input value={avRazaoSocial} onChange={(e) => setAvRazaoSocial(e.target.value)} placeholder="Nome da empresa" />
+            </div>
+            <div className="space-y-1.5">
+              <Label>CNPJ *</Label>
+              <Input value={avCnpj} onChange={(e) => setAvCnpj(e.target.value)} placeholder="00.000.000/0000-00" />
+            </div>
+            <div className="space-y-1.5">
+              <Label>Cidade</Label>
+              <Input value={avCidade} onChange={(e) => setAvCidade(e.target.value)} />
+            </div>
+            <div className="space-y-1.5">
+              <Label>UF</Label>
+              <Input value={avEstado} onChange={(e) => setAvEstado(e.target.value)} maxLength={2} />
+            </div>
+            <div className="space-y-1.5">
+              <Label>Endereço</Label>
+              <Input value={avEndereco} onChange={(e) => setAvEndereco(e.target.value)} />
+            </div>
+            <div className="space-y-1.5">
+              <Label>E-mail</Label>
+              <Input value={avEmail} onChange={(e) => setAvEmail(e.target.value)} type="email" />
+            </div>
+            <div className="space-y-1.5">
+              <Label>Telefone</Label>
+              <Input value={avTelefone} onChange={(e) => setAvTelefone(e.target.value)} />
+            </div>
+          </div>
+        ) : (
+          <Select value={clienteId} onValueChange={setClienteId}>
+            <SelectTrigger><SelectValue placeholder="Selecione um cliente" /></SelectTrigger>
+            <SelectContent>
+              {clientes.map((c) => (
+                <SelectItem key={c.id} value={c.id}>
+                  {c.razao_social}{c.nome_fantasia ? ` (${c.nome_fantasia})` : ""}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        )}
         {cliente && (
           <div className="rounded-md bg-green-50 border border-green-200 p-3 text-sm space-y-1">
             <div><b>{cliente.razao_social}</b>{cliente.nome_fantasia && ` — ${cliente.nome_fantasia}`}</div>
