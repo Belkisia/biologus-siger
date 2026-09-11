@@ -135,6 +135,33 @@ function ClientesPage() {
     onError: (e: Error) => toast.error(e.message),
   });
 
+  // Busca o endereço automaticamente pelo CEP (API pública ViaCEP), preenchendo
+  // Endereço, Bairro, Cidade e UF do mesmo formulário.
+  const buscarEnderecoPorCep = async (e: React.FocusEvent<HTMLInputElement>) => {
+    const cep = e.target.value.replace(/\D/g, "");
+    if (cep.length !== 8) return;
+    const form = e.target.form;
+    if (!form) return;
+    try {
+      const res = await fetch(`https://viacep.com.br/ws/${cep}/json/`);
+      const data = await res.json();
+      if (data.erro) {
+        toast.error("CEP não encontrado");
+        return;
+      }
+      const setVal = (name: string, value: string) => {
+        const el = form.elements.namedItem(name) as HTMLInputElement | null;
+        if (el) el.value = value;
+      };
+      setVal("endereco", data.logradouro || "");
+      setVal("bairro", data.bairro || "");
+      setVal("cidade", data.localidade || "");
+      setVal("estado", data.uf || "");
+    } catch {
+      // Falha na busca (sem internet, API fora do ar etc.) — usuário preenche manualmente
+    }
+  };
+
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const fd = new FormData(e.currentTarget);
@@ -183,7 +210,7 @@ function ClientesPage() {
                 <Field name="email" label="E-mail" type="email" />
                 <Field name="telefone" label="Telefone" />
                 <Field name="whatsapp" label="WhatsApp" />
-                <Field name="cep" label="CEP" />
+                <Field name="cep" label="CEP" onBlur={buscarEnderecoPorCep} placeholder="00000-000" />
                 <Field name="endereco" label="Endereço" />
                 <Field name="numero" label="Número" />
                 <Field name="bairro" label="Bairro" />
@@ -346,7 +373,7 @@ function ClientesPage() {
                 <Field name="email" label="E-mail" type="email" defaultValue={(editingCliente.email as string) ?? ""} />
                 <Field name="telefone" label="Telefone" defaultValue={(editingCliente.telefone as string) ?? ""} />
                 <Field name="whatsapp" label="WhatsApp" defaultValue={(editingCliente.whatsapp as string) ?? ""} />
-                <Field name="cep" label="CEP" defaultValue={(editingCliente.cep as string) ?? ""} />
+                <Field name="cep" label="CEP" onBlur={buscarEnderecoPorCep} placeholder="00000-000" defaultValue={(editingCliente.cep as string) ?? ""} />
                 <Field name="endereco" label="Endereço" defaultValue={(editingCliente.endereco as string) ?? ""} />
                 <Field name="numero" label="Número" defaultValue={(editingCliente.numero as string) ?? ""} />
                 <Field name="bairro" label="Bairro" defaultValue={(editingCliente.bairro as string) ?? ""} />

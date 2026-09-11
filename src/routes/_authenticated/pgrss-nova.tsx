@@ -4,6 +4,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
 import {
   Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
 } from "@/components/ui/select";
@@ -84,6 +85,7 @@ function NovaPgrssSimples() {
   const [prazo, setPrazo] = useState<string>("30");
   const [validade, setValidade] = useState<string>("30");
   const [condicoes, setCondicoes] = useState<string>("50% no aceite da proposta e 50% na entrega do documento final");
+  const [observacoes, setObservacoes] = useState<string>("");
   const [saving, setSaving] = useState(false);
   const [preview, setPreview] = useState(false);
 
@@ -183,7 +185,12 @@ function NovaPgrssSimples() {
     <b>Do Cliente:</b> fornecimento de plantas arquitetônicas (se houver), acesso às instalações e execução das melhorias estruturais propostas no plano.
   </p>
 
-  <div style="margin-bottom:4px"><b style="color:#0E3D1A">7. DE ACORDO / ACEITE</b></div>
+  ${observacoes.trim() ? `
+  <div style="margin-bottom:4px"><b style="color:#0E3D1A">7. OBSERVAÇÕES</b></div>
+  <p style="margin:0 0 8px 0;text-align:justify;white-space:pre-line">${observacoes.trim()}</p>
+  ` : ""}
+
+  <div style="margin-bottom:4px"><b style="color:#0E3D1A">${observacoes.trim() ? "8" : "7"}. DE ACORDO / ACEITE</b></div>
   <p style="margin:0 0 10px 0">Para aprovação, por favor, assine este documento e devolva-o por e-mail ou WhatsApp.</p>
 
   <div style="font-size:11px;line-height:1.9">
@@ -422,6 +429,15 @@ function NovaPgrssSimples() {
               </SelectContent>
             </Select>
           </div>
+        </div>
+        <div className="space-y-1.5">
+          <Label>Observações (opcional)</Label>
+          <Textarea
+            value={observacoes}
+            onChange={(e) => setObservacoes(e.target.value)}
+            placeholder="Alguma condição especial, detalhe combinado com o cliente, etc."
+            rows={3}
+          />
         </div>
       </section>
 
