@@ -85,6 +85,8 @@ function NovaPgrssSimples() {
   const [prazo, setPrazo] = useState<string>("30");
   const [validade, setValidade] = useState<string>("30");
   const [condicoes, setCondicoes] = useState<string>("50% no aceite da proposta e 50% na entrega do documento final");
+  const [pagamentoOutro, setPagamentoOutro] = useState<string>("");
+  const condicoesEfetivas = condicoes === "outra" ? pagamentoOutro : condicoes;
   const [observacoes, setObservacoes] = useState<string>("");
   const [saving, setSaving] = useState(false);
   const [preview, setPreview] = useState(false);
@@ -173,7 +175,7 @@ function NovaPgrssSimples() {
 
   <div style="margin-bottom:4px"><b style="color:#0E3D1A">4. INVESTIMENTO</b></div>
   <p style="margin:0 0 8px 0">O valor total para a prestação dos serviços descritos acima é de <b>${fmtBRL(valorNum)}</b> (${valorPorExtenso(valorNum)}).<br/>
-    <b>Condições de Pagamento:</b> ${condicoes}.<br/>
+    <b>Condições de Pagamento:</b> ${condicoesEfetivas}.<br/>
     <b>Formas aceitas:</b> Boleto bancário, PIX ou transferência bancária.
   </p>
 
@@ -193,13 +195,23 @@ function NovaPgrssSimples() {
   <div style="margin-bottom:4px"><b style="color:#0E3D1A">${observacoes.trim() ? "8" : "7"}. DE ACORDO / ACEITE</b></div>
   <p style="margin:0 0 10px 0">Para aprovação, por favor, assine este documento e devolva-o por e-mail ou WhatsApp.</p>
 
-  <div style="font-size:11px;line-height:1.9">
-    <div><b>De acordo:</b></div>
-    <div>Nome: ______________________________________________</div>
-    <div>Cargo: ______________________________________________</div>
-    <div>Data: ____ / ____ / ______</div>
-    <div style="margin-top:14px;border-top:1px solid #111;width:60%;text-align:center;padding-top:4px">Assinatura</div>
-  </div>
+  <table style="width:100%;border-collapse:collapse;font-size:11px;line-height:1.7">
+    <tr>
+      <td style="width:50%;vertical-align:top;padding-right:10px">
+        <div><b>Pela Contratada:</b></div>
+        <div>${EMPRESA.nome}</div>
+        <div>CNPJ: ${EMPRESA.cnpj}</div>
+        <div style="margin-top:22px;border-top:1px solid #111;width:90%;text-align:center;padding-top:4px">Assinatura</div>
+      </td>
+      <td style="width:50%;vertical-align:top;padding-left:10px;border-left:1px solid #e5e7eb">
+        <div><b>De acordo (Contratante):</b></div>
+        <div>Nome: __________________________________</div>
+        <div>Cargo: __________________________________</div>
+        <div>Data: ____ / ____ / ______</div>
+        <div style="margin-top:14px;border-top:1px solid #111;width:90%;text-align:center;padding-top:4px">Assinatura</div>
+      </td>
+    </tr>
+  </table>
 
   <div style="margin-top:10px;font-size:8.5px;color:#6b7280;text-align:center;border-top:1px solid #e5e7eb;padding-top:4px">
     RDC ANVISA nº 222/2018 · CONAMA nº 358/2005 · Lei nº 12.305/2010 (PNRS)
@@ -210,6 +222,7 @@ function NovaPgrssSimples() {
   function imprimir() {
     if (!cliente) return toast.error("Selecione um cliente");
     if (valorNum <= 0) return toast.error("Informe o valor");
+    if (condicoes === "outra" && !pagamentoOutro.trim()) return toast.error("Informe a forma de pagamento personalizada");
     const html = gerarHtml(numeroAuto());
     const iframe = document.createElement("iframe");
     iframe.style.cssText = "position:fixed;top:-9999px;left:-9999px;width:210mm;height:297mm;border:none;";
@@ -230,6 +243,7 @@ function NovaPgrssSimples() {
     if (!cliente) return toast.error(avulso ? "Preencha ao menos a razão social" : "Selecione um cliente");
     if (avulso && !avCnpj.trim()) return toast.error("Informe o CNPJ do cliente");
     if (valorNum <= 0) return toast.error("Informe o valor");
+    if (condicoes === "outra" && !pagamentoOutro.trim()) return toast.error("Informe a forma de pagamento personalizada");
     setSaving(true);
     try {
       let clienteIdReal = cliente.id;
@@ -271,7 +285,7 @@ function NovaPgrssSimples() {
             distancia_km: 0, qtd_visitas: 1, qtd_treinamentos: 0,
             incluir_art: true, incluir_atualizacao_anual: false, incluir_consultoria_mensal: false,
             meses_consultoria: 0, porte: "pequeno",
-            observacoes: condicoes,
+            observacoes: condicoesEfetivas,
           },
           conteudo_html: html,
           itens: [{
@@ -404,8 +418,17 @@ function NovaPgrssSimples() {
                 <SelectItem value="100% no aceite da proposta">100% no aceite</SelectItem>
                 <SelectItem value="100% na entrega do documento final">100% na entrega</SelectItem>
                 <SelectItem value="3 parcelas iguais (entrada + 2 mensais)">3 parcelas iguais</SelectItem>
+                <SelectItem value="outra">Outra (personalizar)</SelectItem>
               </SelectContent>
             </Select>
+            {condicoes === "outra" && (
+              <Input
+                className="mt-2"
+                value={pagamentoOutro}
+                onChange={(e) => setPagamentoOutro(e.target.value)}
+                placeholder="Ex.: Pagamento em 3x sem juros no cartão"
+              />
+            )}
           </div>
           <div>
             <Label>Prazo de execução (dias úteis)</Label>
