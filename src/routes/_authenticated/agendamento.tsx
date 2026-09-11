@@ -772,7 +772,7 @@ function RotaDetalhe({
       // Retorna tudo que o onSuccess precisa
       return { mtrData, boletimData, numeroCDF, cliente, peso, observacoes };
     },
-    onSuccess: ({ mtrData, numeroCDF, cliente, peso, observacoes }) => {
+    onSuccess: async ({ mtrData, numeroCDF, cliente, peso, observacoes }) => {
       queryClient.invalidateQueries({ queryKey: ["mtrs-rota"] });
       queryClient.invalidateQueries({ queryKey: ["cdfs-rota"] });
       queryClient.invalidateQueries({ queryKey: ["rota-clientes"] });
@@ -784,12 +784,24 @@ function RotaDetalhe({
       const [anoRef, mesRef] = hoje.split("-").map(Number);
       const primeiroDiaMes = `${anoRef}-${String(mesRef).padStart(2, "0")}-01`;
       const ultimoDiaMes = new Date(anoRef, mesRef, 0).toISOString().split("T")[0];
+
+      // Se o cliente já teve mais de uma coleta nesse mesmo mês (coleta
+      // semanal/quinzenal), o CDF mostra a data exata dessa coleta, não o
+      // mês inteiro — pra não parecer que um único CDF cobre o mês todo.
+      const { count: coletasNoMes } = await supabase
+        .from("boletins_medicao")
+        .select("id", { count: "exact", head: true })
+        .eq("cliente_id", mtrData.cliente_id)
+        .gte("data_coleta", primeiroDiaMes)
+        .lte("data_coleta", ultimoDiaMes);
+      const multiplasNoMes = (coletasNoMes ?? 0) > 1;
+
       const blobUrl = abrirCDFBlob({
         numeroCDF,
         numeroMTR: mtrData.numero,
         dataEmissao: hoje,
-        periodoInicio: primeiroDiaMes,
-        periodoFim: ultimoDiaMes,
+        periodoInicio: multiplasNoMes ? hoje : primeiroDiaMes,
+        periodoFim: multiplasNoMes ? hoje : ultimoDiaMes,
         peso,
         unidade: mtrData.unidade || "kg",
         observacoes,
@@ -1136,18 +1148,25 @@ function RotaDetalhe({
                             <Button
                               variant="ghost" size="icon" className="h-7 w-7"
                               title={`Visualizar CDF ${boletim.cdf_id}`}
-                              onClick={() => {
+                              onClick={async () => {
                                 const hoje = new Date().toISOString().split("T")[0];
                                 const dataReal = mtr.data_baixa || hoje;
                                 const [anoRef, mesRef] = dataReal.split("-").map(Number);
                                 const primeiroDiaMes = `${anoRef}-${String(mesRef).padStart(2, "0")}-01`;
                                 const ultimoDiaMes = new Date(anoRef, mesRef, 0).toISOString().split("T")[0];
+                                const { count: coletasNoMes } = await supabase
+                                  .from("boletins_medicao")
+                                  .select("id", { count: "exact", head: true })
+                                  .eq("cliente_id", mtr.cliente_id)
+                                  .gte("data_coleta", primeiroDiaMes)
+                                  .lte("data_coleta", ultimoDiaMes);
+                                const multiplasNoMes = (coletasNoMes ?? 0) > 1;
                                 const blobUrl = abrirCDFBlob({
                                   numeroCDF: boletim.cdf_id ?? "",
                                   numeroMTR: mtr.numero,
                                   dataEmissao: dataReal,
-                                  periodoInicio: primeiroDiaMes,
-                                  periodoFim: ultimoDiaMes,
+                                  periodoInicio: multiplasNoMes ? dataReal : primeiroDiaMes,
+                                  periodoFim: multiplasNoMes ? dataReal : ultimoDiaMes,
                                   peso: mtr.quantidade,
                                   unidade: mtr.unidade || "kg",
                                   observacoes: boletim.observacoes,
