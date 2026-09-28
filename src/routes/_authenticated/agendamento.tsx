@@ -1461,14 +1461,24 @@ function AgendamentoPage() {
     queryKey: ["rota-por-cliente"],
     queryFn: async () => {
       const { data } = await supabase.from("rota_clientes").select("cliente_id, rota_codigo");
-      const mapa: Record<string, string> = {};
-      (data ?? []).forEach((rc: any) => { mapa[rc.cliente_id] = rc.rota_codigo; });
+      const idsValidos = new Set(ROTAS.map((r) => r.id));
+      const mapa: Record<string, string[]> = {};
+      (data ?? []).forEach((rc: any) => {
+        // Ignora códigos de rota órfãos/antigos que não existem mais no cadastro de rotas
+        if (!idsValidos.has(rc.rota_codigo)) return;
+        if (!mapa[rc.cliente_id]) mapa[rc.cliente_id] = [];
+        if (!mapa[rc.cliente_id].includes(rc.rota_codigo)) mapa[rc.cliente_id].push(rc.rota_codigo);
+      });
       return mapa;
     },
   });
 
   const clienteEncontrado = todosClientesBusca.find((c) => c.id === buscaClienteId);
-  const rotaDoCliente = buscaClienteId ? ROTAS.find((r) => r.id === mapaRotaPorCliente[buscaClienteId]) : null;
+  const rotasDoCliente = buscaClienteId
+    ? (mapaRotaPorCliente[buscaClienteId] ?? [])
+        .map((id) => ROTAS.find((r) => r.id === id))
+        .filter((r): r is typeof ROTAS[number] => !!r)
+    : [];
 
   const semanas = [...new Set(ROTAS.map(r => r.semana))];
 
@@ -1502,13 +1512,12 @@ function AgendamentoPage() {
               placeholder="Buscar cliente por nome ou CNPJ…"
             />
           </div>
-          {clienteEncontrado && rotaDoCliente && (
-            <Button onClick={() => setRotaAtiva(rotaDoCliente)}>
-              Abrir rota "{rotaDoCliente.label}" <ArrowRight className="h-4 w-4 ml-1" />
+                    {clienteEncontrado && rotasDoCliente.length > 0 && rotasDoCliente.map((r) => (
+            <Button key={r.id} onClick={() => setRotaAtiva(r)}>
+              Abrir rota "{r.label}" <ArrowRight className="h-4 w-4 ml-1" />
             </Button>
-          )}
-          {clienteEncontrado && !rotaDoCliente && (
-            <>
+          ))}
+          {clienteEncontrado && rotasDoCliente.length === 0 && (            <>
               <span className="text-sm text-muted-foreground">Esse cliente não está em nenhuma rota cadastrada.</span>
               <Button variant="outline" onClick={() => navigate({ to: "/mtr" })}>
                 Emitir MTR avulso <ArrowRight className="h-4 w-4 ml-1" />
