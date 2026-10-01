@@ -370,8 +370,9 @@ function ClientesPage() {
                 <Field name="cnae" label="CNAE" defaultValue={(editingCliente.cnae as string) ?? ""} />
                 <Field name="porte" label="Porte" defaultValue={(editingCliente.porte as string) ?? ""} />
                 <Field name="responsavel_tecnico" label="Resp. Técnico" defaultValue={(editingCliente.responsavel_tecnico as string) ?? ""} />
-                <Field name="responsavel_financeiro" label="Resp. Financeiro" defaultValue={(editingCliente.responsavel_financeiro as string) ?? ""} /><Field <Field name="responsavel_financeiro" label="Resp. Financeiro" defaultValue={(editingCliente.responsavel_financeiro as string) ?? ""} />
+              <Field name="responsavel_financeiro" label="Resp. Financeiro" defaultValue={(editingCliente.responsavel_financeiro as string) ?? ""} />
 <Field name="representante_cpf" label="CPF do Responsável (sai no contrato)" placeholder="000.000.000-00" defaultValue={(editingCliente.representante_cpf as string) ?? ""} />
+<Field name="email" label="E-mail" type="email" defaultValue={(editingCliente.email as string) ?? ""} />
 <Field name="email" label="E-mail" type="email" defaultValue={(editingCliente.email as string) ?? ""} />
                 <Field name="whatsapp" label="WhatsApp" defaultValue={(editingCliente.whatsapp as string) ?? ""} />
                 <Field name="cep" label="CEP" onBlur={buscarEnderecoPorCep} placeholder="00000-000" defaultValue={(editingCliente.cep as string) ?? ""} />
