@@ -53,6 +53,8 @@ type Boletim = {
     valor_kg_excedente?: number | null;
     inscricao_municipal?: string | null;
     transportadora?: string | null;
+    ciclo_faturamento?: string | null;
+    faturamento_liberado_em?: string | null;
   } | null;
 };
 
@@ -330,6 +332,16 @@ function brl(v: number) {
   return v.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
 }
 
+// Clientes com faturamento trimestral (ou outro ciclo futuro) ficam bloqueados
+// pra faturamento em lote até a data marcada em `faturamento_liberado_em`,
+// pra não serem cobrados no mês errado por engano (ex.: Contrato Guarda-Chuva,
+// faturado só a cada 3 meses).
+function estaBloqueadoParaFaturar(cliente?: { faturamento_liberado_em?: string | null } | null): boolean {
+  if (!cliente?.faturamento_liberado_em) return false;
+  const hoje = new Date().toISOString().slice(0, 10);
+  return hoje < cliente.faturamento_liberado_em;
+}
+
 function calcularValorNF(peso: number, cliente: {
   valor_franquia?: number | null;
   peso_franquia?: number | null;
@@ -536,7 +548,7 @@ function BoletimPage() {
     queryFn: async () => {
       const { data } = await supabase
         .from("boletins_medicao")
-        .select("*, mtrs(numero, descricao_residuo, data_emissao, data_baixa), clientes(razao_social, nome_fantasia, logradouro, cidade, cnpj, email, telefone, valor_franquia, peso_franquia, valor_kg_excedente, inscricao_municipal, transportadora)")
+        .select("*, mtrs(numero, descricao_residuo, data_emissao, data_baixa), clientes(razao_social, nome_fantasia, logradouro, cidade, cnpj, email, telefone, valor_franquia, peso_franquia, valor_kg_excedente, inscricao_municipal, transportadora, ciclo_faturamento, faturamento_liberado_em)")
         .eq("data_coleta", dataFiltro)
         .order("created_at", { ascending: false });
       return (data ?? []) as Boletim[];
@@ -563,8 +575,8 @@ function BoletimPage() {
   // ── Faturar um ou mais boletins (agrupa automaticamente por cliente) ──
   const faturarBoletins = useMutation({
     mutationFn: async (ids: string[]) => {
-      const alvos = boletins.filter((b) => ids.includes(b.id) && !b.fatura_id);
-      if (alvos.length === 0) throw new Error("Selecione ao menos um boletim ainda não faturado");
+      const alvos = boletins.filter((b) => ids.includes(b.id) && !b.fatura_id && !estaBloqueadoParaFaturar(b.clientes));
+      if (alvos.length === 0) throw new Error("Selecione ao menos um boletim ainda não faturado e liberado para faturamento");
 
       const porCliente = new Map<string, Boletim[]>();
       for (const b of alvos) {
@@ -899,14 +911,23 @@ comercial@biologusambiental.com.br`
                 <TableRow key={b.id}>
                   <TableCell className="w-8">
                     {!b.fatura_id && (
-                      <Checkbox
-                        checked={selecionadosFatura.includes(b.id)}
-                        onCheckedChange={(checked) =>
-                          setSelecionadosFatura((prev) =>
-                            checked ? [...prev, b.id] : prev.filter((id) => id !== b.id),
-                          )
-                        }
-                      />
+                      estaBloqueadoParaFaturar(b.clientes) ? (
+                        <span
+                          className="text-[10px] text-amber-600 font-medium whitespace-nowrap"
+                          title={`Faturamento ${b.clientes?.ciclo_faturamento || "trimestral"} — libera em ${new Date((b.clientes?.faturamento_liberado_em || "") + "T12:00:00").toLocaleDateString("pt-BR")}`}
+                        >
+                          🔒 até {new Date((b.clientes?.faturamento_liberado_em || "") + "T12:00:00").toLocaleDateString("pt-BR")}
+                        </span>
+                      ) : (
+                        <Checkbox
+                          checked={selecionadosFatura.includes(b.id)}
+                          onCheckedChange={(checked) =>
+                            setSelecionadosFatura((prev) =>
+                              checked ? [...prev, b.id] : prev.filter((id) => id !== b.id),
+                            )
+                          }
+                        />
+                      )
                     )}
                   </TableCell>
                   <TableCell className="font-medium text-sm">
