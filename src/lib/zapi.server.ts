@@ -1,116 +1,51 @@
-// Envio de e-mails via Resend (gratuito 3k/mês)
+// Envio de mensagens de WhatsApp via Z-API.
 // Server-only — nunca importar em código de cliente.
+//
+// Credenciais esperadas nas variáveis de ambiente (configuradas na Vercel,
+// nunca coladas no código nem no chat):
+//   ZAPI_INSTANCE_ID
+//   ZAPI_TOKEN
+//   ZAPI_CLIENT_TOKEN (opcional — só se a instância do Z-API exigir o
+//                       cabeçalho "Client-Token" de segurança da conta)
 
-const RESEND_URL = "https://api.resend.com/emails";
-
-function getKey() {
-  const key = process.env.RESEND_API_KEY;
-  if (!key) throw new Error("RESEND_API_KEY não configurado");
-  return key;
+function getZapiConfig() {
+  const instanceId = process.env.ZAPI_INSTANCE_ID;
+  const token = process.env.ZAPI_TOKEN;
+  if (!instanceId || !token) {
+    throw new Error("Z-API não configurado (ZAPI_INSTANCE_ID / ZAPI_TOKEN)");
+  }
+  return { instanceId, token, clientToken: process.env.ZAPI_CLIENT_TOKEN };
 }
 
-// Em produção, troque por um domínio verificado no Resend (ex: assinaturas@biologus.com.br)
-const FROM = "Bio Logus Ambiental <onboarding@resend.dev>";
+function normalizarTelefone(telefone: string): string {
+  const digitos = telefone.replace(/\D/g, "");
+  // Z-API espera DDI (55) + DDD + número, só dígitos
+  return digitos.startsWith("55") ? digitos : `55${digitos}`;
+}
 
-async function send(to: string, subject: string, html: string, attachments?: Array<{ filename: string; content: string }>) {
-  const body: any = { from: FROM, to: [to], subject, html };
-  if (attachments?.length) body.attachments = attachments;
-  const res = await fetch(RESEND_URL, {
+export async function enviarWhatsApp(args: { telefone: string; mensagem: string }) {
+  const { instanceId, token, clientToken } = getZapiConfig();
+  const phone = normalizarTelefone(args.telefone);
+
+  const url = `https://api.z-api.io/instances/${instanceId}/token/${token}/send-text`;
+  const res = await fetch(url, {
     method: "POST",
     headers: {
-      Authorization: `Bearer ${getKey()}`,
       "Content-Type": "application/json",
+      ...(clientToken ? { "Client-Token": clientToken } : {}),
     },
-    body: JSON.stringify(body),
+    body: JSON.stringify({ phone, message: args.mensagem }),
   });
   if (!res.ok) {
     const txt = await res.text();
-    throw new Error(`Resend ${res.status}: ${txt}`);
+    throw new Error(`Z-API ${res.status}: ${txt}`);
   }
   return res.json();
 }
 
-
-const baseStyle = `font-family:-apple-system,Segoe UI,Roboto,sans-serif;max-width:560px;margin:0 auto;padding:32px 24px;color:#1a1a1a`;
-const greenHeader = `background:linear-gradient(135deg,#1a5d3f,#2d8a5f);color:#fff;padding:24px;border-radius:8px 8px 0 0;text-align:center`;
-const card = `background:#f7faf8;border:1px solid #d4e3d9;border-radius:0 0 8px 8px;padding:28px 24px`;
-const btn = `display:inline-block;background:#1a5d3f;color:#fff;text-decoration:none;padding:14px 28px;border-radius:6px;font-weight:600;margin:16px 0`;
-
-export async function enviarConviteAssinatura(args: {
-  to: string;
-  nome: string;
-  documentoNome: string;
-  url: string;
-  remetente?: string;
-}) {
-  const html = `
-<div style="${baseStyle}">
-  <div style="${greenHeader}">
-    <h1 style="margin:0;font-size:20px;font-weight:600">Bio Logus Ambiental</h1>
-    <p style="margin:4px 0 0;font-size:13px;opacity:.85">Soluções em Gestão de Resíduos</p>
-  </div>
-  <div style="${card}">
-    <h2 style="margin:0 0 12px;font-size:18px;color:#1a5d3f">Convite para assinatura eletrônica</h2>
-    <p style="margin:0 0 8px">Olá, <strong>${escape(args.nome)}</strong>.</p>
-    <p style="margin:0 0 8px">Você foi convidado(a) a assinar eletronicamente o documento:</p>
-    <p style="margin:0 0 16px;padding:12px;background:#fff;border-left:3px solid #2d8a5f;font-weight:600">${escape(args.documentoNome)}</p>
-    <p style="margin:0 0 8px">Clique no botão abaixo para revisar e assinar. O processo leva menos de 2 minutos.</p>
-    <p style="text-align:center"><a href="${args.url}" style="${btn}">Assinar documento</a></p>
-    <p style="margin:24px 0 0;font-size:12px;color:#666">Esta assinatura tem validade jurídica conforme a MP 2.200-2/2001, art. 10, §2º. O sistema captura IP, data/hora e código de confirmação enviado ao seu e-mail.</p>
-    <p style="margin:8px 0 0;font-size:11px;color:#999">Se você não esperava este convite, ignore este e-mail.</p>
-  </div>
-</div>`;
-  return send(args.to, `Assinatura solicitada: ${args.documentoNome}`, html);
-}
-
-export async function enviarCodigoOTP(args: { to: string; nome: string; codigo: string }) {
-  const html = `
-<div style="${baseStyle}">
-  <div style="${greenHeader}">
-    <h1 style="margin:0;font-size:20px;font-weight:600">Bio Logus Ambiental</h1>
-  </div>
-  <div style="${card}">
-    <h2 style="margin:0 0 12px;font-size:18px;color:#1a5d3f">Seu código de assinatura</h2>
-    <p style="margin:0 0 16px">Olá, <strong>${escape(args.nome)}</strong>. Digite o código abaixo na tela de assinatura para confirmar sua autoria:</p>
-    <p style="text-align:center;margin:24px 0">
-      <span style="display:inline-block;font-size:36px;font-weight:700;letter-spacing:8px;color:#1a5d3f;background:#fff;padding:16px 28px;border-radius:8px;border:2px solid #2d8a5f;font-family:monospace">${args.codigo}</span>
-    </p>
-    <p style="margin:0;font-size:13px;color:#666;text-align:center">Válido por 10 minutos. Não compartilhe este código.</p>
-  </div>
-</div>`;
-  return send(args.to, `Código de assinatura: ${args.codigo}`, html);
-}
-
-export async function enviarContratoInformativo(args: {
-  to: string;
+// Monta a mensagem padrão de cobrança com o link do boleto
+export function montarMensagemBoleto(args: {
   nomeCliente: string;
-  numeroContrato: string;
-  mensagem?: string;
-  pdfBase64: string;
-}) {
-  const html = `
-<div style="${baseStyle}">
-  <div style="${greenHeader}">
-    <h1 style="margin:0;font-size:20px;font-weight:600">Bio Logus Ambiental</h1>
-    <p style="margin:4px 0 0;font-size:13px;opacity:.85">Soluções em Gestão de Resíduos</p>
-  </div>
-  <div style="${card}">
-    <h2 style="margin:0 0 12px;font-size:18px;color:#1a5d3f">Contrato ${escape(args.numeroContrato)}</h2>
-    <p style="margin:0 0 8px">Olá, <strong>${escape(args.nomeCliente)}</strong>.</p>
-    <p style="margin:0 0 12px">Segue em anexo o contrato <strong>${escape(args.numeroContrato)}</strong> para sua análise.</p>
-    ${args.mensagem ? `<p style="margin:12px 0;padding:12px;background:#fff;border-left:3px solid #2d8a5f;white-space:pre-wrap">${escape(args.mensagem)}</p>` : ""}
-    <p style="margin:24px 0 0;font-size:12px;color:#666">Em caso de dúvidas, responda este e-mail.</p>
-  </div>
-</div>`;
-  return send(args.to, `Contrato ${args.numeroContrato} - Bio Logus`, html, [
-    { filename: `contrato-${args.numeroContrato}.pdf`, content: args.pdfBase64 },
-  ]);
-}
-
-export async function enviarBoletoPorEmail(args: {
-  to: string;
-  nomeCliente: string;
-  numero: string;
   valor: number;
   vencimento: string; // YYYY-MM-DD
   url?: string;
@@ -118,29 +53,13 @@ export async function enviarBoletoPorEmail(args: {
 }) {
   const valorFmt = args.valor.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
   const vencFmt = new Date(args.vencimento + "T12:00:00").toLocaleDateString("pt-BR");
-  const html = `
-<div style="${baseStyle}">
-  <div style="${greenHeader}">
-    <h1 style="margin:0;font-size:20px;font-weight:600">Bio Logus Ambiental</h1>
-    <p style="margin:4px 0 0;font-size:13px;opacity:.85">Soluções em Gestão de Resíduos</p>
-  </div>
-  <div style="${card}">
-    <h2 style="margin:0 0 12px;font-size:18px;color:#1a5d3f">Boleto ${escape(args.numero)}</h2>
-    <p style="margin:0 0 8px">Olá, <strong>${escape(args.nomeCliente)}</strong>.</p>
-    <p style="margin:0 0 16px">Segue o boleto referente aos nossos serviços:</p>
-    <table style="width:100%;margin:0 0 16px;font-size:14px">
-      <tr><td style="padding:4px 0;color:#666">Valor</td><td style="padding:4px 0;text-align:right;font-weight:600">${valorFmt}</td></tr>
-      <tr><td style="padding:4px 0;color:#666">Vencimento</td><td style="padding:4px 0;text-align:right;font-weight:600">${vencFmt}</td></tr>
-    </table>
-    ${args.url ? `<p style="text-align:center"><a href="${args.url}" style="${btn}">Ver e pagar boleto</a></p>` : ""}
-    ${args.linhaDigitavel ? `<p style="margin:16px 0 0;font-size:12px;color:#666">Linha digitável:</p><p style="margin:4px 0;padding:10px;background:#fff;border-radius:4px;font-family:monospace;font-size:13px;word-break:break-all">${escape(args.linhaDigitavel)}</p>` : ""}
-    <p style="margin:24px 0 0;font-size:12px;color:#666">Em caso de dúvidas, responda este e-mail.</p>
-  </div>
-</div>`;
-  return send(args.to, `Boleto ${args.numero} - vencimento ${vencFmt} - Bio Logus`, html);
+  const linhas = [
+    `Olá, ${args.nomeCliente}! Segue o boleto da Bio Logus Ambiental.`,
+    ``,
+    `Valor: ${valorFmt}`,
+    `Vencimento: ${vencFmt}`,
+  ];
+  if (args.url) linhas.push(``, `Link para pagamento: ${args.url}`);
+  if (args.linhaDigitavel) linhas.push(``, `Linha digitável: ${args.linhaDigitavel}`);
+  return linhas.join("\n");
 }
-
-function escape(s: string) {
-  return String(s).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]!));
-}
-
