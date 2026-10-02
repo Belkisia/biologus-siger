@@ -24,7 +24,7 @@ export const gerarBoletosEmLote = createServerFn({ method: "POST" })
     const { data: faturas, error } = await supabaseAdmin
       .from("faturas")
       .select(
-        "id, numero, valor, data_vencimento, cora_invoice_id, clientes(razao_social, nome_fantasia, cnpj, email, telefone)",
+        "id, numero, valor, data_vencimento, cora_invoice_id, clientes(razao_social, nome_fantasia, cnpj, email, telefone, endereco, numero, bairro, cidade, estado, cep)",
       )
       .in("id", data.faturaIds)
       .eq("owner_id", context.userId);
@@ -58,6 +58,12 @@ export const gerarBoletosEmLote = createServerFn({ method: "POST" })
             nome: cliente?.razao_social || nomeCliente,
             documento: cliente?.cnpj || "",
             email: cliente?.email,
+            endereco: cliente?.endereco,
+            numero: cliente?.numero,
+            bairro: cliente?.bairro,
+            cidade: cliente?.cidade,
+            estado: cliente?.estado,
+            cep: cliente?.cep,
           },
           descricao: "Serviço de coleta e destinação de resíduos",
         });
