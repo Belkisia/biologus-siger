@@ -107,6 +107,39 @@ export async function enviarContratoInformativo(args: {
   ]);
 }
 
+export async function enviarBoletoPorEmail(args: {
+  to: string;
+  nomeCliente: string;
+  numero: string;
+  valor: number;
+  vencimento: string; // YYYY-MM-DD
+  url?: string;
+  linhaDigitavel?: string;
+}) {
+  const valorFmt = args.valor.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
+  const vencFmt = new Date(args.vencimento + "T12:00:00").toLocaleDateString("pt-BR");
+  const html = `
+<div style="${baseStyle}">
+  <div style="${greenHeader}">
+    <h1 style="margin:0;font-size:20px;font-weight:600">Bio Logus Ambiental</h1>
+    <p style="margin:4px 0 0;font-size:13px;opacity:.85">Soluções em Gestão de Resíduos</p>
+  </div>
+  <div style="${card}">
+    <h2 style="margin:0 0 12px;font-size:18px;color:#1a5d3f">Boleto ${escape(args.numero)}</h2>
+    <p style="margin:0 0 8px">Olá, <strong>${escape(args.nomeCliente)}</strong>.</p>
+    <p style="margin:0 0 16px">Segue o boleto referente aos nossos serviços:</p>
+    <table style="width:100%;margin:0 0 16px;font-size:14px">
+      <tr><td style="padding:4px 0;color:#666">Valor</td><td style="padding:4px 0;text-align:right;font-weight:600">${valorFmt}</td></tr>
+      <tr><td style="padding:4px 0;color:#666">Vencimento</td><td style="padding:4px 0;text-align:right;font-weight:600">${vencFmt}</td></tr>
+    </table>
+    ${args.url ? `<p style="text-align:center"><a href="${args.url}" style="${btn}">Ver e pagar boleto</a></p>` : ""}
+    ${args.linhaDigitavel ? `<p style="margin:16px 0 0;font-size:12px;color:#666">Linha digitável:</p><p style="margin:4px 0;padding:10px;background:#fff;border-radius:4px;font-family:monospace;font-size:13px;word-break:break-all">${escape(args.linhaDigitavel)}</p>` : ""}
+    <p style="margin:24px 0 0;font-size:12px;color:#666">Em caso de dúvidas, responda este e-mail.</p>
+  </div>
+</div>`;
+  return send(args.to, `Boleto ${args.numero} - vencimento ${vencFmt} - Bio Logus`, html);
+}
+
 function escape(s: string) {
   return String(s).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]!));
 }
