@@ -12,10 +12,12 @@ import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogFooter } from "@/components/ui/dialog";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Plus, DollarSign, Loader2, Trash2, CheckCircle2, FileText, Search } from "lucide-react";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Plus, DollarSign, Loader2, Trash2, CheckCircle2, FileText, Search, Send, Banknote } from "lucide-react";
 import { toast } from "sonner";
 import { useServerFn } from "@tanstack/react-start";
 import { emitirNfseDeFatura } from "@/lib/nfse.functions";
+import { gerarBoletosEmLote } from "@/lib/faturamento-boleto.functions";
 
 export const Route = createFileRoute("/_authenticated/financeiro")({
   component: FinanceiroPage,
@@ -37,6 +39,11 @@ type Fatura = {
   contrato_id: string | null;
   clientes?: { razao_social: string } | null;
   contratos?: { numero: string } | null;
+  cora_invoice_id?: string | null;
+  boleto_url?: string | null;
+  boleto_erro?: string | null;
+  enviado_email_em?: string | null;
+  enviado_whatsapp_em?: string | null;
 };
 
 const STATUS_MAP: Record<string, { label: string; variant: "default" | "secondary" | "outline" | "destructive" }> = {
@@ -57,6 +64,7 @@ function FinanceiroPage() {
   const [open, setOpen] = useState(false);
   const [filtro, setFiltro] = useState<string>("todas");
   const [busca, setBusca] = useState("");
+  const [selecionadosBoleto, setSelecionadosBoleto] = useState<string[]>([]);
   const { user } = Route.useRouteContext();
 
   const { data: clientes = [] } = useQuery({
@@ -107,6 +115,21 @@ function FinanceiroPage() {
     onSuccess: (r) => {
       if (r.mensagemErro) toast.error(r.mensagemErro);
       else toast.success("NFS-e enviada — acompanhe em Notas Fiscais");
+    },
+    onError: (e: Error) => toast.error(e.message),
+  });
+
+  const gerarBoletosFn = useServerFn(gerarBoletosEmLote);
+  const gerarBoletosMutation = useMutation({
+    mutationFn: async (faturaIds: string[]) => gerarBoletosFn({ data: { faturaIds } }),
+    onSuccess: (r) => {
+      qc.invalidateQueries({ queryKey: ["faturas"] });
+      setSelecionadosBoleto([]);
+      if (r.falhas.length === 0) {
+        toast.success(`${r.sucesso} boleto(s) gerado(s) e enviado(s)`);
+      } else {
+        toast.error(`${r.sucesso} ok, ${r.falhas.length} com problema — veja a coluna Boleto`);
+      }
     },
     onError: (e: Error) => toast.error(e.message),
   });
@@ -323,6 +346,24 @@ function FinanceiroPage() {
           </div>
         </div>
 
+        {selecionadosBoleto.length > 0 && (
+          <div className="flex items-center justify-between mb-4 p-3 rounded-md bg-primary/5 border border-primary/20">
+            <span className="text-sm">{selecionadosBoleto.length} fatura(s) selecionada(s)</span>
+            <Button
+              size="sm"
+              disabled={gerarBoletosMutation.isPending}
+              onClick={() => gerarBoletosMutation.mutate(selecionadosBoleto)}
+            >
+              {gerarBoletosMutation.isPending ? (
+                <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+              ) : (
+                <Banknote className="h-4 w-4 mr-2" />
+              )}
+              Gerar boleto e enviar (e-mail + WhatsApp)
+            </Button>
+          </div>
+        )}
+
         {isLoading ? (
           <div className="py-12 text-center"><Loader2 className="h-6 w-6 mx-auto animate-spin text-muted-foreground" /></div>
         ) : filtradas.length === 0 ? (
@@ -334,6 +375,7 @@ function FinanceiroPage() {
           <Table>
             <TableHeader>
               <TableRow>
+                <TableHead className="w-8"></TableHead>
                 <TableHead>Nº</TableHead>
                 <TableHead>Cliente</TableHead>
                 <TableHead>Competência</TableHead>
@@ -341,14 +383,28 @@ function FinanceiroPage() {
                 <TableHead>Valor</TableHead>
                 <TableHead>Pago em</TableHead>
                 <TableHead>Status</TableHead>
+                <TableHead>Boleto</TableHead>
                 <TableHead className="w-24"></TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
               {filtradas.map((f) => {
                 const s = STATUS_MAP[f.status] ?? STATUS_MAP.pendente;
+                const podeGerarBoleto = f.status !== "paga" && f.status !== "cancelada" && !f.cora_invoice_id;
                 return (
                   <TableRow key={f.id}>
+                    <TableCell className="w-8">
+                      {podeGerarBoleto && (
+                        <Checkbox
+                          checked={selecionadosBoleto.includes(f.id)}
+                          onCheckedChange={(checked) =>
+                            setSelecionadosBoleto((prev) =>
+                              checked ? [...prev, f.id] : prev.filter((id) => id !== f.id),
+                            )
+                          }
+                        />
+                      )}
+                    </TableCell>
                     <TableCell className="font-medium">{f.numero}</TableCell>
                     <TableCell>
                       <div className="text-sm">{f.clientes?.razao_social ?? "—"}</div>
@@ -388,6 +444,27 @@ function FinanceiroPage() {
                           ))}
                         </SelectContent>
                       </Select>
+                    </TableCell>
+                    <TableCell className="text-xs">
+                      {f.boleto_erro ? (
+                        <span className="text-destructive" title={f.boleto_erro}>Erro ao gerar</span>
+                      ) : f.cora_invoice_id ? (
+                        <div className="flex flex-col gap-0.5">
+                          {f.boleto_url ? (
+                            <a href={f.boleto_url} target="_blank" rel="noreferrer" className="text-primary hover:underline">
+                              Ver boleto
+                            </a>
+                          ) : (
+                            <span className="text-muted-foreground">Gerado</span>
+                          )}
+                          <span className="text-muted-foreground flex items-center gap-1">
+                            {f.enviado_email_em && <span title={`E-mail enviado em ${new Date(f.enviado_email_em).toLocaleString("pt-BR")}`}>✉️</span>}
+                            {f.enviado_whatsapp_em && <span title={`WhatsApp enviado em ${new Date(f.enviado_whatsapp_em).toLocaleString("pt-BR")}`}>📱</span>}
+                          </span>
+                        </div>
+                      ) : (
+                        <span className="text-muted-foreground">—</span>
+                      )}
                     </TableCell>
                     <TableCell>
                       <div className="flex items-center gap-1">
