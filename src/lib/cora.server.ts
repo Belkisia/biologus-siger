@@ -8,12 +8,14 @@
 //   CORA_CERTIFICADO_PEM    = conteúdo completo do arquivo de certificado (.pem/.crt)
 //   CORA_CHAVE_PRIVADA_PEM  = conteúdo completo do arquivo de chave privada (.key)
 //
-// IMPORTANTE: o caminho de EMISSÃO do boleto (criarBoletoCora, endpoint
-// POST /v2/invoices) é o mais provável de acordo com a documentação pública
-// do Cora (developers.cora.com.br), mas ainda precisa ser confirmado com um
-// teste real no ambiente de stage antes de ligar isso em produção — a
-// autenticação (getCoraToken) e a consulta (consultarBoletoCora) já foram
-// confirmadas na documentação oficial.
+// Endpoints confirmados em 02/10/2026 direto na documentação oficial
+// (developers.cora.com.br), com prints da tela de "Emissão de boleto
+// registrado" e "Pagar boleto em stage":
+//   - Token (autenticação):      POST https://matls-clients.api.stage.cora.com.br/token
+//   - Emitir boleto registrado:  POST https://api.stage.cora.com.br/v2/invoices/
+//   - Consultar boleto:          GET  https://api.stage.cora.com.br/v2/invoices/{id}
+// Repare que o host do token é diferente do host dos boletos — os dois
+// exigem o certificado mTLS em toda chamada (exigência da Integração Direta).
 
 import https from "node:https";
 
@@ -23,10 +25,14 @@ function getAmbiente(): CoraAmbiente {
   return process.env.CORA_AMBIENTE === "producao" ? "producao" : "stage";
 }
 
-function getBaseHost() {
+function getTokenHost() {
   return getAmbiente() === "producao"
     ? "matls-clients.api.cora.com.br"
     : "matls-clients.api.stage.cora.com.br";
+}
+
+function getApiHost() {
+  return getAmbiente() === "producao" ? "api.cora.com.br" : "api.stage.cora.com.br";
 }
 
 function getCredenciais() {
@@ -43,6 +49,7 @@ function getCredenciais() {
 
 // Chamada HTTPS com certificado mTLS (obrigatório em toda chamada ao Cora)
 function requestComCertificado(opts: {
+  hostname: string;
   method: string;
   path: string;
   body?: unknown;
@@ -55,13 +62,14 @@ function requestComCertificado(opts: {
   return new Promise((resolve, reject) => {
     const req = https.request(
       {
-        hostname: getBaseHost(),
+        hostname: opts.hostname,
         path: opts.path,
         method: opts.method,
         cert,
         key,
         headers: {
           "Content-Type": "application/json",
+          accept: "application/json",
           ...(opts.bearerToken ? { Authorization: `Bearer ${opts.bearerToken}` } : {}),
           ...(opts.idempotencyKey ? { "Idempotency-Key": opts.idempotencyKey } : {}),
           ...(payload ? { "Content-Length": Buffer.byteLength(payload) } : {}),
@@ -95,7 +103,7 @@ export async function getCoraToken(): Promise<string> {
   return new Promise((resolve, reject) => {
     const req = https.request(
       {
-        hostname: getBaseHost(),
+        hostname: getTokenHost(),
         path: "/token",
         method: "POST",
         cert,
@@ -137,6 +145,12 @@ export type DadosBoleto = {
     nome: string;
     documento: string; // CPF ou CNPJ (com ou sem pontuação)
     email?: string | null;
+    endereco?: string | null; // rua
+    numero?: string | null;
+    bairro?: string | null;
+    cidade?: string | null;
+    estado?: string | null;
+    cep?: string | null;
   };
   descricao?: string;
 };
@@ -157,31 +171,44 @@ export type ResultadoBoleto = {
 export async function criarBoletoCora(dados: DadosBoleto): Promise<ResultadoBoleto> {
   const token = await getCoraToken();
   const documento = dados.cliente.documento.replace(/\D/g, "");
+  const cepLimpo = (dados.cliente.cep || "").replace(/\D/g, "");
 
   const payload = {
     code: dados.numero,
     customer: {
       name: dados.cliente.nome,
+      email: dados.cliente.email || undefined,
       document: {
         identity: documento,
         type: documento.length > 11 ? "CNPJ" : "CPF",
       },
-      email: dados.cliente.email || undefined,
+      address: {
+        street: dados.cliente.endereco || "Não informado",
+        number: dados.cliente.numero || "S/N",
+        district: dados.cliente.bairro || "Não informado",
+        city: dados.cliente.cidade || "Não informado",
+        state: dados.cliente.estado || "GO",
+        complement: "N/A",
+        zip_code: cepLimpo || "00000000",
+      },
     },
     services: [
       {
         name: dados.descricao || "Serviço de coleta de resíduos",
+        description: dados.descricao || "Serviço de coleta de resíduos",
         amount: Math.round(dados.valor * 100), // Cora trabalha em centavos
       },
     ],
     payment_terms: {
       due_date: dados.vencimento,
     },
+    payment_forms: ["BANK_SLIP", "PIX"],
   };
 
   const { status, json } = await requestComCertificado({
+    hostname: getApiHost(),
     method: "POST",
-    path: "/v2/invoices",
+    path: "/v2/invoices/",
     body: payload,
     bearerToken: token,
     idempotencyKey: dados.faturaId,
@@ -197,7 +224,7 @@ export async function criarBoletoCora(dados: DadosBoleto): Promise<ResultadoBole
     linhaDigitavel: json.payment_options?.bank_slip?.digitable ?? json.digitable_line,
     codigoBarras: json.payment_options?.bank_slip?.barcode ?? json.barcode,
     url: json.payment_options?.bank_slip?.url ?? json.pdf_url ?? json.url,
-    pixCopiaCola: json.pix?.emv ?? json.pix?.copy_paste,
+    pixCopiaCola: json.payment_options?.pix?.emv ?? json.pix?.emv ?? json.pix?.copy_paste,
   };
 }
 
@@ -207,6 +234,7 @@ export async function consultarBoletoCora(
 ): Promise<ResultadoBoleto & { totalPago?: number }> {
   const token = await getCoraToken();
   const { status, json } = await requestComCertificado({
+    hostname: getApiHost(),
     method: "GET",
     path: `/v2/invoices/${coraInvoiceId}`,
     bearerToken: token,
@@ -220,7 +248,7 @@ export async function consultarBoletoCora(
     linhaDigitavel: json.payment_options?.bank_slip?.digitable,
     codigoBarras: json.payment_options?.bank_slip?.barcode,
     url: json.payment_options?.bank_slip?.url,
-    pixCopiaCola: json.pix?.emv,
+    pixCopiaCola: json.payment_options?.pix?.emv,
     totalPago: json.total_paid ? json.total_paid / 100 : 0,
   };
 }
