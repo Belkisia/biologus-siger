@@ -35,13 +35,38 @@ function getApiHost() {
   return getAmbiente() === "producao" ? "api.cora.com.br" : "api.stage.cora.com.br";
 }
 
+// Normaliza um PEM colado em variável de ambiente: às vezes o editor da
+// Vercel (ou um copia/cola) transforma as quebras de linha reais em "\n"
+// literal (texto), e o OpenSSL exige quebras de linha de verdade dentro do
+// certificado/chave — sem isso ele erra com "PEM routines::no start line".
+function normalizarPem(valor: string): string {
+  let v = valor.trim();
+  // Se não tem nenhuma quebra de linha real mas tem "\n" como texto, converte.
+  if (!v.includes("\n") && v.includes("\\n")) {
+    v = v.replace(/\\n/g, "\n");
+  }
+  return v;
+}
+
 function getCredenciais() {
   const clientId = process.env.CORA_CLIENT_ID;
-  const cert = process.env.CORA_CERTIFICADO_PEM;
-  const key = process.env.CORA_CHAVE_PRIVADA_PEM;
-  if (!clientId || !cert || !key) {
+  const certRaw = process.env.CORA_CERTIFICADO_PEM;
+  const keyRaw = process.env.CORA_CHAVE_PRIVADA_PEM;
+  if (!clientId || !certRaw || !keyRaw) {
     throw new Error(
       "Credenciais do Cora não configuradas (CORA_CLIENT_ID / CORA_CERTIFICADO_PEM / CORA_CHAVE_PRIVADA_PEM)",
+    );
+  }
+  const cert = normalizarPem(certRaw);
+  const key = normalizarPem(keyRaw);
+  if (!cert.includes("-----BEGIN")) {
+    throw new Error(
+      "CORA_CERTIFICADO_PEM não parece um certificado válido (não tem '-----BEGIN...'). Confira se o conteúdo completo do arquivo .pem/.crt foi colado, com as quebras de linha.",
+    );
+  }
+  if (!key.includes("-----BEGIN")) {
+    throw new Error(
+      "CORA_CHAVE_PRIVADA_PEM não parece uma chave válida (não tem '-----BEGIN...'). Confira se o conteúdo completo do arquivo .key foi colado, com as quebras de linha.",
     );
   }
   return { clientId, cert, key };
