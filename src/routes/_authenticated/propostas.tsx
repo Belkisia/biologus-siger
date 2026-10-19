@@ -1602,33 +1602,21 @@ function PropostasPage() {
                     Adicionar item
                   </Button>
                 </div>
-                <Card className="p-3 overflow-x-auto">
-                  <Table>
-                    <TableHeader>
-                      <TableRow>
-                        <TableHead className="min-w-48">Descrição</TableHead>
-                        <TableHead>Resíduo</TableHead>
-                        <TableHead className="w-24">Qtd</TableHead>
-                        <TableHead className="w-28">Unid.</TableHead>
-                        <TableHead className="w-32">Vlr. Unit.</TableHead>
-                        <TableHead className="w-28">Franquia (kg)</TableHead>
-                        <TableHead className="w-32">Franquia (R$)</TableHead>
-                        <TableHead className="w-28">R$/kg exc.</TableHead>
-                        <TableHead className="w-32">Total</TableHead>
-                        <TableHead className="w-10"></TableHead>
-                      </TableRow>
-                    </TableHeader>
-                    <TableBody>
-                      {items.map((it, idx) => (
-                        <TableRow key={idx}>
-                          <TableCell>
+                <div className="space-y-3">
+                  {items.map((it, idx) => (
+                    <Card key={idx} className="p-4 space-y-4">
+                      <div className="flex items-start gap-3">
+                        <div className="grid gap-3 sm:grid-cols-2 flex-1">
+                          <div className="space-y-1">
+                            <Label className="text-xs">Descrição</Label>
                             <Input
                               value={it.descricao}
                               onChange={(e) => setItem(idx, { descricao: e.target.value })}
                               placeholder="Coleta e destinação..."
                             />
-                          </TableCell>
-                          <TableCell>
+                          </div>
+                          <div className="space-y-1">
+                            <Label className="text-xs">Resíduo</Label>
                             <Select
                               value={it.tipo_residuo}
                               onValueChange={(v) => setItem(idx, { tipo_residuo: v })}
@@ -1643,16 +1631,81 @@ function PropostasPage() {
                                 <SelectItem value="Grupo E">Grupo E</SelectItem>
                               </SelectContent>
                             </Select>
-                          </TableCell>
-                          <TableCell>
+                          </div>
+                        </div>
+                        <Button
+                          type="button"
+                          variant="ghost"
+                          size="icon"
+                          title="Remover item"
+                          onClick={() => setItems(items.filter((_, i) => i !== idx))}
+                        >
+                          <Trash2 className="h-4 w-4 text-destructive" />
+                        </Button>
+                      </div>
+
+                      <div className="rounded-md border bg-muted/30 p-3 space-y-2">
+                        <p className="text-sm font-medium">Franquia (valor fixo até certo peso)</p>
+                        <div className="grid gap-3 sm:grid-cols-3">
+                          <div className="space-y-1">
+                            <Label className="text-xs">Peso da franquia (kg)</Label>
+                            <Input
+                              type="number"
+                              step="0.01"
+                              min="0"
+                              placeholder="ex.: 15"
+                              value={it.peso_franquia || ""}
+                              onChange={(e) =>
+                                setItem(idx, { peso_franquia: Number(e.target.value) })
+                              }
+                            />
+                          </div>
+                          <div className="space-y-1">
+                            <Label className="text-xs">Valor da franquia (R$)</Label>
+                            <Input
+                              type="number"
+                              step="0.01"
+                              min="0"
+                              placeholder="ex.: 200"
+                              value={it.valor_franquia || ""}
+                              onChange={(e) =>
+                                setItem(idx, { valor_franquia: Number(e.target.value) })
+                              }
+                            />
+                          </div>
+                          <div className="space-y-1">
+                            <Label className="text-xs">Valor por kg excedente (R$)</Label>
+                            <Input
+                              type="number"
+                              step="0.01"
+                              min="0"
+                              placeholder="ex.: 8,50"
+                              value={it.valor_kg_excedente || ""}
+                              onChange={(e) =>
+                                setItem(idx, { valor_kg_excedente: Number(e.target.value) })
+                              }
+                            />
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className="space-y-2">
+                        <p className="text-xs text-muted-foreground">
+                          Sem franquia? Calcule por quantidade × valor unitário (deixe a franquia em
+                          branco).
+                        </p>
+                        <div className="grid gap-3 grid-cols-3">
+                          <div className="space-y-1">
+                            <Label className="text-xs">Quantidade</Label>
                             <Input
                               type="number"
                               step="0.01"
                               value={it.quantidade}
                               onChange={(e) => setItem(idx, { quantidade: Number(e.target.value) })}
                             />
-                          </TableCell>
-                          <TableCell>
+                          </div>
+                          <div className="space-y-1">
+                            <Label className="text-xs">Unidade</Label>
                             <Select
                               value={it.unidade}
                               onValueChange={(v) => setItem(idx, { unidade: v })}
@@ -1668,8 +1721,9 @@ function PropostasPage() {
                                 ))}
                               </SelectContent>
                             </Select>
-                          </TableCell>
-                          <TableCell>
+                          </div>
+                          <div className="space-y-1">
+                            <Label className="text-xs">Valor unitário (R$)</Label>
                             <Input
                               type="number"
                               step="0.01"
@@ -1678,65 +1732,23 @@ function PropostasPage() {
                                 setItem(idx, { valor_unitario: Number(e.target.value) })
                               }
                             />
-                          </TableCell>
-                          <TableCell>
-                            <Input
-                              type="number"
-                              step="0.01"
-                              min="0"
-                              placeholder="ex.: 15"
-                              value={it.peso_franquia || ""}
-                              onChange={(e) =>
-                                setItem(idx, { peso_franquia: Number(e.target.value) })
-                              }
-                            />
-                          </TableCell>
-                          <TableCell>
-                            <Input
-                              type="number"
-                              step="0.01"
-                              min="0"
-                              placeholder="ex.: 200"
-                              value={it.valor_franquia || ""}
-                              onChange={(e) =>
-                                setItem(idx, { valor_franquia: Number(e.target.value) })
-                              }
-                            />
-                          </TableCell>
-                          <TableCell>
-                            <Input
-                              type="number"
-                              step="0.01"
-                              min="0"
-                              placeholder="R$/kg"
-                              value={it.valor_kg_excedente || ""}
-                              onChange={(e) =>
-                                setItem(idx, { valor_kg_excedente: Number(e.target.value) })
-                              }
-                            />
-                          </TableCell>
-                          <TableCell className="font-medium">{brl(it.valor_total)}</TableCell>
-                          <TableCell>
-                            <Button
-                              type="button"
-                              variant="ghost"
-                              size="icon"
-                              onClick={() => setItems(items.filter((_, i) => i !== idx))}
-                            >
-                              <Trash2 className="h-4 w-4 text-destructive" />
-                            </Button>
-                          </TableCell>
-                        </TableRow>
-                      ))}
-                    </TableBody>
-                  </Table>
-                  <div className="flex justify-end mt-3 pr-12">
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className="flex justify-end text-sm">
+                        <span className="text-muted-foreground mr-2">Total do item:</span>
+                        <span className="font-semibold">{brl(it.valor_total)}</span>
+                      </div>
+                    </Card>
+                  ))}
+                  <div className="flex justify-end pr-2">
                     <div className="text-right">
                       <p className="text-xs text-muted-foreground">Valor total</p>
                       <p className="text-2xl font-bold text-primary">{brl(valorTotal)}</p>
                     </div>
                   </div>
-                </Card>
+                </div>
               </div>
             </div>
 
